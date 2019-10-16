@@ -1,0 +1,96 @@
+name: Rift
+main: com.java.Main
+author: eChris
+version: 0.0.1
+description: Command and Feature Suite
+api-version: 1.14
+commands:
+  party:
+    description: Group up with friends!
+    aliases: [parties, group, p, pa]
+  skill:
+    description: Cast a skill!
+    aliases: [cast, spell]
+  class:
+    description: Select a class!
+    aliases: [soul]
+  heal:
+    description: Heal a target.
+    permission: core.mod
+  list:
+    description: List all online players
+    aliases: [listplayers, playerlist]
+  killall:
+    description: Kill all entities in your world
+    permission: core.admin
+  speed:
+    description: Set your fly and walk speed
+    permission: core.mod
+  lag:
+    description: View detailed RAM Usage
+    aliases: [gc, top, ram]
+  fly:
+    description: Fly and Speed Control
+    permission: core.mod
+  gmss:
+    description: Alias for Spectator
+    permission: core.mod
+  gms:
+    description: Alias for Survival
+    permission: core.mod
+  gmc:
+    description: Alias for Creative
+    permission: core.mod
+  msg:
+    description: Message fellow players
+    aliases: [message, tell, w, whisper, dm, pm]
+  r:
+    description: Reply to messages
+    aliases: [reply]
+  inv:
+    description: View a player's inventory
+    permission: core.mod
+    aliases: [invsee]
+  dummy:
+    description: Spawn a dummy
+    permission: core.admin
+  mana:
+    description: Restore your mana
+    permission: core.admin
+  skills:
+    description: View your skills
+    aliases: [abilities, skilllist, skillslist, spells, magic]
+  cd:
+    description: Reset cooldowns
+    permission: core.admin
+  level:
+    description: View level
+    aliases: [exp, lvl]
+  seen:
+    description: Check when someone last logged in
+  biome:
+    description: Get the level range of your current location
+    aliases: [locinfo, locationinfo, loclevel, biomelevel, biomelvl, nl, bl, ll]
+  arestart:
+    description: Restart the server on a 60 second timer
+    aliases: [autorestart, timedrestart, trestart]
+    permission: core.admin
+  setexp:
+    description: Set a player's EXP
+    permission: core.admin
+  addexp:
+    description: Add to a player's EXP
+    permission: core.admin
+  setlevel:
+    description: Set a player's level
+    permission: core.admin
+  addlevel:
+    description: Add to a player's level
+    permission: core.admin
+  help:
+    description: Useful commands
+  settings:
+    description: Access your settings
+  biomes:
+    description: View all biome levels
+depend: [ProtocolLib, Vault]
