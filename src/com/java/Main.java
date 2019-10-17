@@ -116,6 +116,19 @@ public class Main extends JavaPlugin {
     *
     */
 
+    //Current Issue: Environmental Damage is not hologrammed (use e.getDamager)
+    //  Another Issue: Damages stacking up (meteorshower) Meteorshower hard breaking. Perhaps equal damage check? (dangerous)
+
+    //ANOTHER ISSUE: FIREBALL AND METEORSHOWER AOE DAMAGE STYLE DOES NOT TRIGGER ENT DMG BY ENT. MUST CHECK ENTDMGEVENT
+
+    //In general with all skills, the way they trigger damage does not trigger EntDmgByEnt. Change to EntDmg. All skills
+    //       occasionally leave a buffer where another attack triggers an empty event
+
+    //ANOTHER ISSUE: Warming up a skill and losing mana will not check mana after casting after warmup. Perpetually check mana
+    //on warmup.
+
+    //PERHAPS ENABLE NO DAMAGE COOLDOWN FROM CUSTOM SOURCES AND ENTITY ATTACKS
+
     public String noperm = "&cNo permission!";
 
     public static Main getInstance() {

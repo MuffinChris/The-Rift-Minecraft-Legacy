@@ -2,6 +2,7 @@ package com.java.rpg.classes;
 
 import com.java.Main;
 import com.java.holograms.Hologram;
+import com.java.rpg.Damage;
 import com.java.rpg.party.Party;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -37,6 +38,8 @@ public class RPGPlayer extends Leveleable {
     private double currentMana;
 
     private Skillboard board;
+
+    private List<Damage> damages;
 
     public void setMana(double m) {
         double dif = (m - getCMana());
@@ -158,7 +161,13 @@ public class RPGPlayer extends Leveleable {
         board = new Skillboard(p);
         pstrength = 100;
 
+        damages = new ArrayList<>();
+
         walkspeed.getStatuses().add(new StatusValue("Init", 20, 0, 0, true));
+    }
+
+    public List<Damage> getDamages() {
+        return damages;
     }
 
     public Map<String, Integer> getSkillLevels() {
@@ -773,6 +782,7 @@ public class RPGPlayer extends Leveleable {
         skillsToRemove = new ArrayList<>();
         board.scrub();
         board = null;
+        damages = new ArrayList<>();
         cooldowns = new HashMap<>();
         statuses = new ArrayList<>();
         passives = new ArrayList<>();
