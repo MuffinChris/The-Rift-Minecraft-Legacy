@@ -35,6 +35,9 @@ public class Fireball extends Skill implements Listener {
     private Main main = Main.getInstance();
 
     private double damage = 120;
+
+    private double apscale = 0.2;
+
     private int range = 4;
 
     public Fireball() {

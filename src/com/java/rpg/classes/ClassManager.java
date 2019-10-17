@@ -259,7 +259,7 @@ public class ClassManager implements Listener {
 
     public static void createClasses() {
         List<Skill> skillsNone = new ArrayList<>();
-        classes.put("None", new PlayerClass("None", "&eNone", RPGConstants.defaultHP, 12.0, 100, 2, 3, 0.1, "SWORD", 30, 40, 32, 0.5, 0.25, skillsNone, 150));
+        classes.put("None", new PlayerClass("None", "&eNone", RPGConstants.defaultHP, 12.0, 100, 2, 3, 0.1, "SWORD", 30, 30, 0, 40, 32, 0.5, 0.25, skillsNone, 150));
 
 
         List<Skill> skillsPyro = new ArrayList<>();
@@ -269,7 +269,7 @@ public class ClassManager implements Listener {
         skillsPyro.add(new Pyroclasm());
         skillsPyro.add(new MeteorShower());
 
-        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 10, 400, 5, 7, 0.14, "HOE", 20, 20, 22, 0.41, 0.22, skillsPyro, 110));
+        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 10, 400, 5, 7, 0.14, "HOE", 20, 20, 0,20, 22, 0.41, 0.22, skillsPyro, 110));
     }
 
     public PlayerClass getPClassFromString(String s) {

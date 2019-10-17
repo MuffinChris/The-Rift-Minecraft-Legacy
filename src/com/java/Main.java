@@ -61,8 +61,9 @@ public class Main extends JavaPlugin {
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
 
-        -13. Perhaps redesign damage system to be attached to players. Rn potential issues.
-        -12. Party exp share
+        -13. Perhaps redesign damage system to be attached to players. Rn potential issues. (test!)
+        -12. Party exp share (test!)
+
         -11. Add toggle if shift-offhand even works
 
         -10. AD and AP scaling

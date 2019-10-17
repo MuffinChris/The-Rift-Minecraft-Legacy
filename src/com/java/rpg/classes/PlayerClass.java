@@ -28,6 +28,17 @@ public class PlayerClass {
     private double armorPerLevel;
     private double magicResistPerLevel;
 
+    private double baseAD;
+    private double baseAP;
+
+    public double getBaseAD() {
+        return baseAD;
+    }
+
+    public double getBaseAP() {
+        return baseAP;
+    }
+
     public double getArmorPerLevel() {
         return armorPerLevel;
     }
@@ -43,7 +54,7 @@ public class PlayerClass {
 
     private List<Skill> skills;
 
-    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, int weight) {
+    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, int weight) {
         this.name = name;
         this.fancyname = fancyname;
         this.basehp = basehp;
@@ -60,6 +71,8 @@ public class PlayerClass {
         this.armorPerLevel = armorPerLevel;
         this.magicResistPerLevel = magicResistPerLevel;
         this.weight = weight;
+        baseAD = ad;
+        baseAP = ap;
     }
 
     public void setWeight(int w) {
