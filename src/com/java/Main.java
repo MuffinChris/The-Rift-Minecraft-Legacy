@@ -345,11 +345,14 @@ public class Main extends JavaPlugin {
         if (getInstance().getPC().get(p) != null) {
             RPGPlayer player = getInstance().getPC().get(p);
             DecimalFormat dF = new DecimalFormat("#.##");
+            DecimalFormat df = new DecimalFormat("#");
             double mr = player.getPClass().getCalcMR(player.getLevel());
             double armor = player.getPClass().getCalcArmor(player.getLevel());
-            String mrper = Main.color("&b" + dF.format(100.0 * (1-(300.0/(300.0+mr)))) + "% MR");
-            String amper = Main.color("&c" + dF.format(100.0 * (1-(300.0/(300.0+armor)))) + "% AM");
-            pl.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c" + dF.format(pl.getHealth()) + " HP   &b" + player.getPrettyCMana() + " M   &a" + player.getPrettyPercent() + "% XP   &e" + player.getLevel() + " LVL   " + amper + "   " + mrper)));
+            //String mrper = Main.color("&b" + dF.format(100.0 * (1-(300.0/(300.0+mr)))) + "% MR");
+            //String amper = Main.color("&c" + dF.format(100.0 * (1-(300.0/(300.0+armor)))) + "% AM");
+            String ad = Main.color("&c" + df.format(Main.getInstance().getRP(pl).getAD()) + " AD");
+            String ap = Main.color("&b" + df.format(Main.getInstance().getRP(pl).getAP()) + " AP");
+            pl.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c" + dF.format(pl.getHealth()) + " HP   &b" + player.getPrettyCMana() + " M   &a" + player.getPrettyPercent() + "% XP   &e" + player.getLevel() + " LVL   " + ad + "   " + ap)));
         }
     }
 

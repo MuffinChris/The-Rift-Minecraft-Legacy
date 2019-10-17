@@ -36,7 +36,7 @@ public class Fireball extends Skill implements Listener {
 
     private double damage = 120;
 
-    private double apscale = 0.2;
+    private double apscale = 0.4;
 
     private int range = 4;
 
@@ -50,6 +50,10 @@ public class Fireball extends Skill implements Listener {
         setDescription(desc);
     }
 
+    public double getDmg(Player p) {
+        return damage + main.getRP(p).getAP() * apscale;
+    }
+
     public void cast(Player p) {
         super.cast(p);
         /*Location loc = p.getLocation();
@@ -60,7 +64,7 @@ public class Fireball extends Skill implements Listener {
         }*/
         Location loc = new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY() - 0.1, p.getEyeLocation().getZ());
         final Arrow arrow = (Arrow) p.getWorld().spawn(loc, Arrow.class);
-        arrow.setCustomName("Fireball:" + damage);
+        arrow.setCustomName("Fireball:" + getDmg(p));
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(arrow.getEntityId());
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
@@ -77,7 +81,7 @@ public class Fireball extends Skill implements Listener {
                     if (!arrow.isDead()) {
                         player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04);
                         if (arrow.isOnGround() || arrow.isDead()) {
-                            lightEntities(arrow, p, arrow.getLocation(), damage);
+                            lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
                             arrow.remove();
                             arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
                         }
@@ -90,7 +94,7 @@ public class Fireball extends Skill implements Listener {
                     if (!arrow.isDead()) {
                         player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04);
                         if (arrow.isOnGround() || arrow.isDead()) {
-                            lightEntities(arrow, p, arrow.getLocation(), damage);
+                            lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
                             arrow.remove();
                             arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
                         }
@@ -102,7 +106,7 @@ public class Fireball extends Skill implements Listener {
                 @Override
                 public void run(){
                     if (!(arrow.isOnGround() || arrow.isDead())) {
-                        lightEntities(arrow, p, arrow.getLocation(), damage);
+                        lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
                         arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
                     }
                     scheduler.cancelTask(task);
