@@ -49,7 +49,7 @@ public class RPGPlayer extends Leveleable {
     }
 
     public double getAP() {
-        return ap;
+        return ap + bonusap.getValue();
     }
 
     public void setAD(double d) {
@@ -122,6 +122,7 @@ public class RPGPlayer extends Leveleable {
     private StatusObject hpfreeze;
     private StatusObject pstrength2;
     private StatusObject walkspeed;
+    private StatusObject bonusap;
 
 
     public StatusObject getWalkspeed() {
@@ -149,6 +150,10 @@ public class RPGPlayer extends Leveleable {
         return pstrength2;
     }
 
+    public StatusObject getBonusAP() {
+        return bonusap;
+    }
+
     public RPGPlayer(Player p) {
         super (0, 50, p);
 
@@ -162,6 +167,7 @@ public class RPGPlayer extends Leveleable {
         hpfreeze = new StatusObject("HPFreeze", "HP Frozen", false);
         pstrength2 = new StatusObject("PStrength", "Power Strength", false);
         walkspeed = new StatusObject("Walkspeed", "Walkspeed", true);
+        bonusap = new StatusObject("AP", "AP", false);
         so = new ArrayList<>();
         so.add(stun);
         so.add(root);
@@ -170,6 +176,7 @@ public class RPGPlayer extends Leveleable {
         so.add(hpfreeze);
         so.add(pstrength2);
         so.add(walkspeed);
+        so.add(bonusap);
 
         player = p;
         currentMana = 0;
@@ -429,9 +436,14 @@ public class RPGPlayer extends Leveleable {
             double hp = getPClass().getCalcHP(getLevel());
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
             player.setHealth(Math.min(hp, hp * hpprev));
-            player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(pclass.getBaseDmg());
+            player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(ad);
             player.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
-            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(main.getRP(player).getWalkspeed().getValue() / 100.0F);
+            DecimalFormat df = new DecimalFormat("#.##");
+            double currentWs = Double.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue())));
+            double actualWs = Double.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0F) / 100.0F)));
+            if (currentWs != actualWs) {
+                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(actualWs);
+            }
         }
     }
 
@@ -833,6 +845,8 @@ public class RPGPlayer extends Leveleable {
         hpfreeze.scrub();
         manafreeze.scrub();
         pstrength2.scrub();
+        bonusap.scrub();
+        bonusap = null;
         stun = null;
         root = null;
         silence = null;
