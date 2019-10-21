@@ -41,23 +41,12 @@ public class RPGPlayer extends Leveleable {
 
     private List<Damage> damages;
 
-    private double ad;
-    private double ap;
-
     public double getAD() {
-        return ad;
+        return bonusad.getValue() + pclass.getBaseAD();
     }
 
     public double getAP() {
-        return ap + bonusap.getValue();
-    }
-
-    public void setAD(double d) {
-        ad = d;
-    }
-
-    public void setAP(double d) {
-        ap = d;
+        return bonusap.getValue() + pclass.getBaseAP();
     }
 
 
@@ -123,6 +112,7 @@ public class RPGPlayer extends Leveleable {
     private StatusObject pstrength2;
     private StatusObject walkspeed;
     private StatusObject bonusap;
+    private StatusObject bonusad;
 
 
     public StatusObject getWalkspeed() {
@@ -154,11 +144,12 @@ public class RPGPlayer extends Leveleable {
         return bonusap;
     }
 
+    public StatusObject getBonusAD() {
+        return bonusad;
+    }
+
     public RPGPlayer(Player p) {
         super (0, 50, p);
-
-        ad = 0;
-        ap = 0;
 
         stun = new StatusObject("Stun", "Stunned", false);
         root = new StatusObject("Root", "Rooted", false);
@@ -167,7 +158,8 @@ public class RPGPlayer extends Leveleable {
         hpfreeze = new StatusObject("HPFreeze", "HP Frozen", false);
         pstrength2 = new StatusObject("PStrength", "Power Strength", false);
         walkspeed = new StatusObject("Walkspeed", "Walkspeed", true);
-        bonusap = new StatusObject("AP", "AP", false);
+        bonusap = new StatusObject("AP", "AP", true);
+        bonusad = new StatusObject("AD", "AD", true);
         so = new ArrayList<>();
         so.add(stun);
         so.add(root);
@@ -177,6 +169,7 @@ public class RPGPlayer extends Leveleable {
         so.add(pstrength2);
         so.add(walkspeed);
         so.add(bonusap);
+        so.add(bonusad);
 
         player = p;
         currentMana = 0;
@@ -258,8 +251,8 @@ public class RPGPlayer extends Leveleable {
             pData.set(name + "Level", getLevel());
             pData.set(name + "Exp", getExp());
             pData.set(name + "CMana", currentMana);
-            pData.set(name + "AD", pclass.getBaseAD());
-            pData.set(name + "AP", pclass.getBaseAP());
+            /*pData.set(name + "AD", pclass.getBaseAD());
+            pData.set(name + "AP", pclass.getBaseAP());*/
             String output = "";
             for (String s : skillLevels.keySet()) {
                 output+=s + "-" + skillLevels.get(s) + ",";
@@ -367,7 +360,7 @@ public class RPGPlayer extends Leveleable {
                 pData.set("IdleSlot", 0);
                 setIdleSlot(pData.getInt("IdleSlot"));
             }
-
+            /*
             if (pData.contains(name + "AD")) {
                 ad = pData.getDouble(name + "AD");
             }
@@ -375,7 +368,7 @@ public class RPGPlayer extends Leveleable {
             if (pData.contains(name + "AP")) {
                 ap = pData.getDouble(name + "AP");
             }
-
+            */
             updateStats();
         } else {
             pushFiles();
@@ -436,7 +429,7 @@ public class RPGPlayer extends Leveleable {
             double hp = getPClass().getCalcHP(getLevel());
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
             player.setHealth(Math.min(hp, hp * hpprev));
-            player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(ad);
+            player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(getAD());
             player.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
             DecimalFormat df = new DecimalFormat("#.##");
             double currentWs = Double.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue())));
@@ -846,6 +839,8 @@ public class RPGPlayer extends Leveleable {
         manafreeze.scrub();
         pstrength2.scrub();
         bonusap.scrub();
+        bonusad.scrub();
+        bonusad = null;
         bonusap = null;
         stun = null;
         root = null;

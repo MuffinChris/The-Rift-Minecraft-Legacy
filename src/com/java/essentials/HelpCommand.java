@@ -1,6 +1,7 @@
 package com.java.essentials;
 
 import com.java.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,8 @@ public class HelpCommand implements CommandExecutor {
             Main.msg(p, "&8» &e/skill &7- &fCast a skill");
             Main.msg(p, "&8» &ePress F &8(&eOffhand Key&8) &7- &fOpen Skill UI");
             Main.msg(p, "");
+        } else {
+            Bukkit.dispatchCommand(sender.getServer().getConsoleSender(), "?");
         }
         return false;
     }

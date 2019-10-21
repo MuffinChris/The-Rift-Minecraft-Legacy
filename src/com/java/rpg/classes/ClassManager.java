@@ -219,7 +219,9 @@ public class ClassManager implements Listener {
 
     @EventHandler
     public void onJoin (PlayerJoinEvent e) {
-        main.getPC().put(e.getPlayer().getUniqueId(), new RPGPlayer(e.getPlayer()));
+        if (!main.getPC().containsKey(e.getPlayer().getUniqueId())) {
+            main.getPC().put(e.getPlayer().getUniqueId(), new RPGPlayer(e.getPlayer()));
+        }
     }
 
     @EventHandler
