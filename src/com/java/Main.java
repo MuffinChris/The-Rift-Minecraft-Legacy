@@ -119,9 +119,6 @@ public class Main extends JavaPlugin {
     *
     */
 
-    //Current Issue: Environmental Damage is not hologrammed (use e.getDamager)
-    //  Another Issue: Damages stacking up (meteorshower) Meteorshower hard breaking. Perhaps equal damage check? (dangerous)
-
     //ANOTHER ISSUE: FIREBALL AND METEORSHOWER AOE DAMAGE STYLE DOES NOT TRIGGER ENT DMG BY ENT. MUST CHECK ENTDMGEVENT
 
     //In general with all skills, the way they trigger damage does not trigger EntDmgByEnt. Change to EntDmg. All skills
@@ -190,7 +187,7 @@ public class Main extends JavaPlugin {
                     }
                 }.runTaskLater(Main.getInstance(), 5 * 60 * 20);
             }
-        }.runTaskLater(this, 12 * 60 * 60 * 20);
+        }.runTaskLater(this, 24 * 60 * 60 * 20);
     }
 
     /*

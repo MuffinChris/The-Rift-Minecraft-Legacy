@@ -73,7 +73,7 @@ public class AFKInvuln implements Listener {
 
     @EventHandler
     public void onSpec (PlayerStartSpectatingEntityEvent e) {
-        if (hasMoved.containsKey(e.getPlayer())) {
+        if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
             Main.msg(e.getPlayer(), "&cYou cannot spectate while in the entry menu. If the GUI is not showing up, please reconnect!");
         }
     }
