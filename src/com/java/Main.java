@@ -441,6 +441,7 @@ public class Main extends JavaPlugin {
                             }
                         }
                     }
+                    getRP(pl).updateWS();
                 }
             }
         }.runTaskTimer(this, 1L, 1L);

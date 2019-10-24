@@ -422,21 +422,26 @@ public class RPGPlayer extends Leveleable {
         return true;
     }
 
+    private DecimalFormat df = new DecimalFormat("#.##");
+
     public void updateStats() {
         player.setHealthScale(20);
-        if (pclass instanceof PlayerClass) {
+        if (pclass != null) {
             double hpprev = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
             double hp = getPClass().getCalcHP(getLevel());
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
             player.setHealth(Math.min(hp, hp * hpprev));
             player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(getAD());
             player.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
-            DecimalFormat df = new DecimalFormat("#.##");
-            double currentWs = Double.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue())));
-            double actualWs = Double.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0F) / 100.0F)));
-            if (currentWs != actualWs) {
-                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(actualWs);
-            }
+            updateWS();
+        }
+    }
+
+    public void updateWS() {
+        double currentWs = Math.max(0, Double.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()))));
+        double actualWs = Math.max(0, Double.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0) / 100.0))));
+        if (currentWs != actualWs) {
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(actualWs);
         }
     }
 

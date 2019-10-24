@@ -172,34 +172,50 @@ public class ClassManager implements Listener {
     @EventHandler
     public void newArmor (PlayerArmorChangeEvent e) {
         updateArmor(e.getPlayer());
-            double fullweight = 0;
-            double maxweight = main.getRP(e.getPlayer()).getPClass().getWeight();
-            for (ItemStack armor : e.getPlayer().getInventory().getArmorContents()) {
-                if (armor != null && weight.containsKey(armor.getType())) {
-                    fullweight += weight.get(armor.getType());
-                }
+        double fullweight = 0;
+        double maxweight = main.getRP(e.getPlayer()).getPClass().getWeight();
+        for (ItemStack armor : e.getPlayer().getInventory().getArmorContents()) {
+            if (armor != null && weight.containsKey(armor.getType())) {
+                fullweight += weight.get(armor.getType());
             }
+        }
         if (e.getPlayer().getLastLogin() + 2000 < System.currentTimeMillis() &&  (((e.getOldItem() == null && e.getNewItem() != null)||(e.getOldItem() == null && e.getNewItem() != null))||(e.getOldItem() != null && e.getNewItem() != null && e.getOldItem().getType() != e.getNewItem().getType()))) {
             Main.msg(e.getPlayer(), "&e&lArmor Weight: &f" + fullweight + " &8/ &f" + maxweight);
         }
-            if (fullweight > maxweight) {
-                if (fullweight < maxweight * 1.5) {
-                    Main.msg(e.getPlayer(), "&cYour armor is too heavy, you're afflicted with slowness.");
-                    e.getPlayer().setWalkSpeed(0.05F);
-                } else if (fullweight < maxweight * 2) {
-                    Main.msg(e.getPlayer(), "&cYour armor is far too heavy, you're afflicted with slowness.");
-                    e.getPlayer().setWalkSpeed(0.02F);
-                } else if (fullweight < maxweight * 2.5) {
-                    Main.msg(e.getPlayer(), "&cYour armor is extremely heavy, you're afflicted with high slowness.");
-                    e.getPlayer().setWalkSpeed(0.01F);
-                } else {
-                    Main.msg(e.getPlayer(), "&cYour armor is impossibly heavy, you can't move!");
-                    e.getPlayer().setWalkSpeed(0.0F);
-                }
+        if (fullweight > maxweight) {
+            if (fullweight < maxweight * 1.5) {
+                clearArmorWS(e.getPlayer());
+                Main.msg(e.getPlayer(), "&cYour armor is too heavy, you're afflicted with slowness.");
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -15, 0, 0, true));
+            } else if (fullweight < maxweight * 2) {
+                clearArmorWS(e.getPlayer());
+                Main.msg(e.getPlayer(), "&cYour armor is far too heavy, you're afflicted with slowness.");
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -17, 0, 0, true));
+            } else if (fullweight < maxweight * 2.5) {
+                clearArmorWS(e.getPlayer());
+                Main.msg(e.getPlayer(), "&cYour armor is extremely heavy, you're afflicted with high slowness.");
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -19, 0, 0, true));
             } else {
-                float walkspeed = (main.getRP(e.getPlayer()).getWalkspeed().getValue() / 100.0F);
-                e.getPlayer().setWalkSpeed(walkspeed);
+                clearArmorWS(e.getPlayer());
+                Main.msg(e.getPlayer(), "&cYour armor is impossibly heavy, you can't move!");
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -50, 0, 0, true));
             }
+        } else {
+            main.getRP(e.getPlayer()).updateWS();
+        }
+    }
+
+    public void clearArmorWS(Player p) {
+        List<StatusValue> remove = new ArrayList<>();
+        for (StatusValue st : main.getRP(p).getWalkspeed().getStatuses()) {
+            if (st.getSource().contains("armor")) {
+                remove.add(st);
+            }
+        }
+        for (StatusValue st: remove) {
+            main.getRP(p).getWalkspeed().getStatuses().remove(st);
+        }
+        remove = null;
     }
 
     @EventHandler
