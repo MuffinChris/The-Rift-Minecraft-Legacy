@@ -13,4 +13,6 @@ public class RPGConstants {
 
     public static double partyXpMod = 1.5;
 
+    public static String defaultClassName = "Wanderer";
+
 }

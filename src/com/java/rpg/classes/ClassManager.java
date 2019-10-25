@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Pyromancer.*;
+import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -186,19 +187,19 @@ public class ClassManager implements Listener {
             if (fullweight < maxweight * 1.5) {
                 clearArmorWS(e.getPlayer());
                 Main.msg(e.getPlayer(), "&cYour armor is too heavy, you're afflicted with slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -15, 0, 0, true));
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -15, 0, 0, true));
             } else if (fullweight < maxweight * 2) {
                 clearArmorWS(e.getPlayer());
                 Main.msg(e.getPlayer(), "&cYour armor is far too heavy, you're afflicted with slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -17, 0, 0, true));
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -17, 0, 0, true));
             } else if (fullweight < maxweight * 2.5) {
                 clearArmorWS(e.getPlayer());
                 Main.msg(e.getPlayer(), "&cYour armor is extremely heavy, you're afflicted with high slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -19, 0, 0, true));
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -19, 0, 0, true));
             } else {
                 clearArmorWS(e.getPlayer());
                 Main.msg(e.getPlayer(), "&cYour armor is impossibly heavy, you can't move!");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("armor", -50, 0, 0, true));
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -50, 0, 0, true));
             }
         } else {
             main.getRP(e.getPlayer()).updateWS();
@@ -206,16 +207,7 @@ public class ClassManager implements Listener {
     }
 
     public void clearArmorWS(Player p) {
-        List<StatusValue> remove = new ArrayList<>();
-        for (StatusValue st : main.getRP(p).getWalkspeed().getStatuses()) {
-            if (st.getSource().contains("armor")) {
-                remove.add(st);
-            }
-        }
-        for (StatusValue st: remove) {
-            main.getRP(p).getWalkspeed().getStatuses().remove(st);
-        }
-        remove = null;
+        main.getRP(p).getWalkspeed().clearBasedTitle("ARMOR", p);
     }
 
     @EventHandler
@@ -277,17 +269,18 @@ public class ClassManager implements Listener {
 
     public static void createClasses() {
         List<Skill> skillsNone = new ArrayList<>();
-        classes.put("None", new PlayerClass("None", "&eNone", RPGConstants.defaultHP, 12.0, 100, 2, 3, 0.1, "SWORD", 10, 30, 0, 40, 32, 0.5, 0.25, skillsNone, 150));
+        skillsNone.add(new Adrenaline());
+        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 15.0, 100, 2, 3, 0.1, "SWORD", 10, 30, 0, 0.3, 0.1, 40, 32, 0.5, 0.25, skillsNone, 150));
 
 
         List<Skill> skillsPyro = new ArrayList<>();
         skillsPyro.add(new Fireball());
         skillsPyro.add(new WorldOnFire());
-        skillsPyro.add(new InfernoVault());
+        skillsPyro.add(new Blaze());
         skillsPyro.add(new Pyroclasm());
         skillsPyro.add(new MeteorShower());
 
-        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 10, 400, 5, 7, 0.14, "HOE", 10, 20, 0,20, 22, 0.41, 0.22, skillsPyro, 110));
+        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 0.2, 2,20, 22, 0.41, 0.22, skillsPyro, 110));
     }
 
     public PlayerClass getPClassFromString(String s) {

@@ -112,11 +112,12 @@ public class Leveleable {
         Main.msg(p, "");
         Main.msg(p, "&e&lLEVEL UP &7- &6" + playerclass.getName() + " &7(&f" + (oldlvl) + " &7-> &f" + newlvl + "&7)");
         Main.msg(p, "");
-        Main.msg(p, "&e&lSTAT INCREASES:");
+        //Main.msg(p, "&e&lSTAT INCREASES:");
         int dif = newlvl - oldlvl;
         Main.msg(p, "&8» &7" + sign + dF.format(playerclass.getHpPerLevel() * dif) + " &7HP");
         Main.msg(p, "&8» &7" + sign + dF.format(playerclass.getManaPerLevel() * dif) + " &7M &8| " + "&7" + sign + dF.format(playerclass.getManaRegenPerLevel() * dif) + " &7M/s");
         Main.msg(p, "&8» &7" + sign + dF.format(playerclass.getArmorPerLevel() * dif) + " &7A &8| " + "&7" + sign + dF.format(playerclass.getMagicResistPerLevel() * dif) + " &7MR");
+        Main.msg(p, "&8» &7" + sign + dF.format(playerclass.getADPerLevel() * dif) + " &7AD &8| " + "&7" + sign + dF.format(playerclass.getAPPerLevel() * dif) + " &7AP");
 
         int cnt = 0;
         while (dif > 0) {

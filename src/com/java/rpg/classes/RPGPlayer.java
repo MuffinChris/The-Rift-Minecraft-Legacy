@@ -42,11 +42,11 @@ public class RPGPlayer extends Leveleable {
     private List<Damage> damages;
 
     public double getAD() {
-        return bonusad.getValue() + pclass.getBaseAD();
+        return bonusad.getValue() + pclass.getCalcAD(getLevel());
     }
 
     public double getAP() {
-        return bonusap.getValue() + pclass.getBaseAP();
+        return bonusap.getValue() + pclass.getCalcAP(getLevel());
     }
 
 
@@ -240,13 +240,13 @@ public class RPGPlayer extends Leveleable {
             } else {
                 pData.set("Username", player.getName());
             }
-            String name = "None";
+            String name = RPGConstants.defaultClassName;
             if (pclass instanceof PlayerClass) {
                 name = pclass.getName();
                 pData.set("Current Class", name);
             } else {
-                pData.set("Current Class", "None");
-                pclass = main.getCM().getPClassFromString("None");
+                pData.set("Current Class", RPGConstants.defaultClassName);
+                pclass = main.getCM().getPClassFromString(RPGConstants.defaultClassName);
             }
             pData.set(name + "Level", getLevel());
             pData.set(name + "Exp", getExp());
@@ -261,7 +261,7 @@ public class RPGPlayer extends Leveleable {
                 output = output.substring(0, output.length() - 1);
             }
             boolean none = false;
-            if (pData.contains(name + "Skills") && pData.get(name + "Skills").equals("") && !pclass.getName().equals("None")) {
+            if (pData.contains(name + "Skills") && pData.get(name + "Skills").equals("") && !pclass.getName().equals(RPGConstants.defaultClassName)) {
                 none = true;
             }
             if (pData.contains(name + "Skills") && !none) {
@@ -312,7 +312,7 @@ public class RPGPlayer extends Leveleable {
             } else {
                 pData.set("Username", player.getName());
             }
-            String name = "None";
+            String name = RPGConstants.defaultClassName;
             pclass = main.getCM().getPClassFromString(pData.getString("Current Class"));
             if (pclass instanceof PlayerClass) {
                 name = pclass.getName();
@@ -321,7 +321,7 @@ public class RPGPlayer extends Leveleable {
             setExp(pData.getDouble(name + "Exp"));
             currentMana = (pData.getInt(name + "CMana"));
             if(pData.contains(name + "Skills")) {
-                if (pData.get(name + "Skills").equals("") && !pclass.getName().equals("None")) {
+                if (pData.get(name + "Skills").equals("") && !pclass.getName().equals(RPGConstants.defaultClassName)) {
                     pushFiles();
                 }
                 String skstr = pData.getString(name + "Skills");
@@ -380,11 +380,11 @@ public class RPGPlayer extends Leveleable {
         cooldowns.clear();
         double hp = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         pushFiles();
-        pclass = main.getCM().getPClassFromString("None");
+        pclass = main.getCM().getPClassFromString(RPGConstants.defaultClassName);
         File pFile = new File("plugins/Rift/data/classes/" + player.getUniqueId() + ".yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
         try {
-            pData.set("Current Class", "None");
+            pData.set("Current Class", RPGConstants.defaultClassName);
             pData.save(pFile);
         } catch (Exception e) {
             e.printStackTrace();
@@ -409,7 +409,7 @@ public class RPGPlayer extends Leveleable {
             if (pclass instanceof PlayerClass) {
                 pData.set("Current Class", pclass.getName());
             } else {
-                pData.set("Current Class", "None");
+                pData.set("Current Class", RPGConstants.defaultClassName);
             }
             pData.save(pFile);
         } catch (Exception e) {
