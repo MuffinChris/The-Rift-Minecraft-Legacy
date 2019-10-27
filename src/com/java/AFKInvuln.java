@@ -34,6 +34,7 @@ public class AFKInvuln implements Listener {
                     p.setGameMode(GameMode.SURVIVAL);
                     hasMoved.remove(p.getUniqueId());
                 }
+                e.setCancelled(true);
             }
         }
     }
@@ -47,9 +48,10 @@ public class AFKInvuln implements Listener {
                         if (e.getPlayer().getOpenInventory().getTitle() != null && e.getPlayer().getOpenInventory().getTitle().contains("JOIN MENU")) {
 
                         } else {
-                            ((Player) e.getPlayer()).teleport(hasMoved.get(e.getPlayer().getUniqueId()));
-                            sendInv((Player) e.getPlayer());
-                            e.getPlayer().setGameMode(GameMode.SPECTATOR);
+                            Player p = (Player) e.getPlayer();
+                            p.teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+                            sendInv(p);
+                            p.setGameMode(GameMode.SPECTATOR);
                         }
                     }
                 }.runTaskLater(Main.getInstance(), 1L);
@@ -89,9 +91,9 @@ public class AFKInvuln implements Listener {
         new BukkitRunnable() {
             public void run() {
                 e.getPlayer().setGameMode(GameMode.SPECTATOR);
+                sendInv(e.getPlayer());
             }
         }.runTaskLater(Main.getInstance(), 1L);
-        sendInv(e.getPlayer());
 
         /*
         e.getPlayer().setCollidable(false);

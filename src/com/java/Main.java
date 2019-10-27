@@ -20,6 +20,7 @@ import com.java.rpg.DamageTypes;
 import com.java.rpg.classes.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
+import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.modifiers.Environmental;
 import com.java.rpg.player.PlayerListener;
 import de.slikey.effectlib.EffectManager;
@@ -46,7 +47,6 @@ import java.util.*;
 
 public class Main extends JavaPlugin {
 
-
     /*
 
     DIRECT LINE TODO LIST:
@@ -60,6 +60,18 @@ public class Main extends JavaPlugin {
 
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
+
+        -15. CHANGING CLASS INHERITS PAST XP
+
+        -16. Bulwark doesnt block projectiles
+
+        -17. Wanderer no skill levels
+
+        -18. custom death event
+
+        -19. anti jump in rest is fucking troll
+
+        -20. rework damage to obey cancels
 
         -14. WALKSPEED IN UPDATESTATS IS BROKEN!
 
@@ -541,6 +553,8 @@ public class Main extends JavaPlugin {
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
+
+        Bukkit.getPluginManager().registerEvents(new Bulwark(), this);
 
         Bukkit.getPluginManager().registerEvents(new Fireball(), this);
         Bukkit.getPluginManager().registerEvents(new MeteorShower(), this);

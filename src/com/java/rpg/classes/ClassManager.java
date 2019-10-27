@@ -5,6 +5,8 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
+import com.java.rpg.classes.skills.Wanderer.Bulwark;
+import com.java.rpg.classes.skills.Wanderer.Rest;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -270,6 +272,8 @@ public class ClassManager implements Listener {
     public static void createClasses() {
         List<Skill> skillsNone = new ArrayList<>();
         skillsNone.add(new Adrenaline());
+        skillsNone.add(new Rest());
+        skillsNone.add(new Bulwark());
         classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 15.0, 100, 2, 3, 0.1, "SWORD", 10, 30, 0, 0.3, 0.1, 40, 32, 0.5, 0.25, skillsNone, 150));
 
 

@@ -305,12 +305,15 @@ public class RPGPlayer extends Leveleable {
             if (pData.contains("Username")) {
                 if (pData.getString("Username").equalsIgnoreCase(player.getName())) {
                     pData.set("Username", player.getName());
+                    pData.set("IP Address", player.getAddress());
                 } else {
                     pData.set("PreviousUsername", pData.getString("Username"));
                     pData.set("Username", player.getName());
+                    pData.set("IP Address", player.getAddress());
                 }
             } else {
                 pData.set("Username", player.getName());
+                pData.set("IP Address", player.getAddress());
             }
             String name = RPGConstants.defaultClassName;
             pclass = main.getCM().getPClassFromString(pData.getString("Current Class"));
@@ -321,7 +324,7 @@ public class RPGPlayer extends Leveleable {
             setExp(pData.getDouble(name + "Exp"));
             currentMana = (pData.getInt(name + "CMana"));
             if(pData.contains(name + "Skills")) {
-                if (pData.get(name + "Skills").equals("") && !pclass.getName().equals(RPGConstants.defaultClassName)) {
+                if (pData.get(name + "Skills").equals("")) {
                     pushFiles();
                 }
                 String skstr = pData.getString(name + "Skills");
@@ -401,6 +404,7 @@ public class RPGPlayer extends Leveleable {
         if (pclass instanceof PlayerClass && pc.getName().equalsIgnoreCase(pclass.getName())) {
             return false;
         }
+        setExp(0);
         pclass = pc;
         skillLevels.clear();
         File pFile = new File("plugins/Rift/data/classes/" + player.getUniqueId() + ".yml");
@@ -438,10 +442,10 @@ public class RPGPlayer extends Leveleable {
     }
 
     public void updateWS() {
-        double currentWs = Math.max(0, Double.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()))));
-        double actualWs = Math.max(0, Double.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0) / 100.0))));
+        float currentWs = Math.max(0, Float.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()))));
+        float actualWs = Math.max(0, Float.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0) / 100.0))));
         if (currentWs != actualWs) {
-            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(actualWs);
+            player.setWalkSpeed(actualWs);
         }
     }
 
