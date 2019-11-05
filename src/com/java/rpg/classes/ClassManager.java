@@ -272,7 +272,7 @@ public class ClassManager implements Listener {
     public static void createClasses() {
         List<Skill> skillsNone = new ArrayList<>();
         skillsNone.add(new Adrenaline());
-        skillsNone.add(new Rest());
+        //skillsNone.add(new Rest());
         skillsNone.add(new Bulwark());
         classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 15.0, 100, 2, 3, 0.1, "SWORD", 10, 30, 0, 0.3, 0.1, 40, 32, 0.5, 0.25, skillsNone, 150));
 

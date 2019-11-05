@@ -69,8 +69,6 @@ public class Main extends JavaPlugin {
 
         -18. custom death event
 
-        -19. anti jump in rest is fucking troll
-
         -20. rework damage to obey cancels
 
         -14. WALKSPEED IN UPDATESTATS IS BROKEN!
