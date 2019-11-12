@@ -34,7 +34,7 @@ public class Pyroclasm extends Skill implements Listener {
     double travelspeed = 0.5;
 
     public Pyroclasm() {
-        super("Pyroclasm", 100, 8 * 20, 20, 6, "%player% has shot a fireball!", "CAST-TARGET");
+        super("Pyroclasm", 150, 8 * 20, 20, 6, "%player% has shot a fireball!", "CAST-TARGET");
         DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
         List<String> desc = new ArrayList<>();

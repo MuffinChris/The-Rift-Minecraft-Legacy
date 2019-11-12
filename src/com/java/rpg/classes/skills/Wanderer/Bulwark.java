@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,10 +68,11 @@ public class Bulwark extends Skill implements Listener {
             int times = 0;
             public void run() {
                 if (times * 20 <= duration * 20) {
-                    p.getWorld().spawnParticle(Particle.CRIT, p.getEyeLocation(), 50, 0.2, 0.1, 0.1, 0.1);
+                    p.getWorld().spawnParticle(Particle.CRIT, p.getEyeLocation().subtract(new Vector(0, 0.3, 0)), 50, 0.2, 0.1, 0.1, 0.1);
                 } else {
                     cancel();
                 }
+                times++;
             }
         }.runTaskTimer(Main.getInstance(), 1L, 1L);
 

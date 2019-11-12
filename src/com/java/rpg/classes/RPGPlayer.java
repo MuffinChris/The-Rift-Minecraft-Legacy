@@ -261,7 +261,7 @@ public class RPGPlayer extends Leveleable {
                 output = output.substring(0, output.length() - 1);
             }
             boolean none = false;
-            if (pData.contains(name + "Skills") && pData.get(name + "Skills").equals("") && !pclass.getName().equals(RPGConstants.defaultClassName)) {
+            if (pData.contains(name + "Skills") && pData.get(name + "Skills").equals("")) { //&& !pclass.getName().equals(RPGConstants.defaultClassName)) {
                 none = true;
             }
             if (pData.contains(name + "Skills") && !none) {
@@ -305,15 +305,15 @@ public class RPGPlayer extends Leveleable {
             if (pData.contains("Username")) {
                 if (pData.getString("Username").equalsIgnoreCase(player.getName())) {
                     pData.set("Username", player.getName());
-                    pData.set("IP Address", player.getAddress());
+                    pData.set("IPAddress", player.getAddress());
                 } else {
                     pData.set("PreviousUsername", pData.getString("Username"));
                     pData.set("Username", player.getName());
-                    pData.set("IP Address", player.getAddress());
+                    pData.set("IPAddress", player.getAddress());
                 }
             } else {
                 pData.set("Username", player.getName());
-                pData.set("IP Address", player.getAddress());
+                pData.set("IPAddress", player.getAddress());
             }
             String name = RPGConstants.defaultClassName;
             pclass = main.getCM().getPClassFromString(pData.getString("Current Class"));

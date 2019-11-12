@@ -22,6 +22,7 @@ import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.modifiers.Environmental;
+import com.java.rpg.player.CustomDeath;
 import com.java.rpg.player.PlayerListener;
 import de.slikey.effectlib.EffectManager;
 import net.md_5.bungee.api.ChatMessageType;
@@ -70,6 +71,10 @@ public class Main extends JavaPlugin {
         -18. custom death event
 
         -20. rework damage to obey cancels
+
+        -21. allow players to set spawnpoint at their town maybe?
+
+        -22. Make blaze target listing global so less obnoxious
 
         -14. WALKSPEED IN UPDATESTATS IS BROKEN!
 
@@ -429,11 +434,10 @@ public class Main extends JavaPlugin {
                     if (statuses != null) {
                         for (StatusObject so : statuses) {
 
-                            List<StatusValue> remove = new ArrayList<>();
+                            //List<StatusValue> remove = new ArrayList<>();
                             for (StatusValue s : so.getStatuses()) {
                                 if (20 * 0.001 * (System.currentTimeMillis() - s.getTimestamp()) >= s.getDuration() && !s.getDurationless()) {
-                                    s.scrub();
-                                    remove.add(s);
+                                    so.getCBT().add(s);
                                 }
                             }
 
@@ -442,10 +446,10 @@ public class Main extends JavaPlugin {
                                 so.getStatuses().remove(rem);
                             }
 
-                            for (StatusValue rem : remove) {
+                            /*for (StatusValue rem : remove) {
                                 rem.scrub();
                                 so.getStatuses().remove(rem);
-                            }
+                            }*/
                         }
                     }
                     getRP(pl).updateWS();
@@ -548,6 +552,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MobEXP(), this);
         Bukkit.getPluginManager().registerEvents(new AFKInvuln(), this);
         Bukkit.getPluginManager().registerEvents(new SettingsCommand(), this);
+        Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
@@ -559,6 +564,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new WorldOnFire(), this);
         Bukkit.getPluginManager().registerEvents(new InfernoVault(), this);
         Bukkit.getPluginManager().registerEvents(new Pyroclasm(), this);
+        Bukkit.getPluginManager().registerEvents(new Combust(), this);
         so("&bRIFT: &fRegistered events!");
 
         pm = new PartyManager();

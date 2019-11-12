@@ -414,12 +414,6 @@ public class MobEXP implements Listener {
         }
     }
 
-    @EventHandler
-    public void playerDeath (PlayerDeathEvent e) {
-        RPGPlayer rp = main.getRP(e.getEntity());
-        rp.giveExpFromSource(e.getEntity(), e.getEntity().getLocation(), rp.getMaxExp() * -0.2, "");
-    }
-
 
     @EventHandler
     public void onSpawn (EntityAddToWorldEvent e) {

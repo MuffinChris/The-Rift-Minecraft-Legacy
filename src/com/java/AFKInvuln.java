@@ -90,10 +90,15 @@ public class AFKInvuln implements Listener {
         hasMoved.put(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
         new BukkitRunnable() {
             public void run() {
-                e.getPlayer().setGameMode(GameMode.SPECTATOR);
-                sendInv(e.getPlayer());
+                if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
+                    e.getPlayer().setGameMode(GameMode.SPECTATOR);
+                    //e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+                    //Main.msg(e.getPlayer(), "&a&lResource Pack loading...");
+                } else {
+                    cancel();
+                }
             }
-        }.runTaskLater(Main.getInstance(), 1L);
+        }.runTaskTimer(Main.getInstance(), 1L, 1L);
 
         /*
         e.getPlayer().setCollidable(false);
@@ -134,13 +139,16 @@ public class AFKInvuln implements Listener {
     public void rp (PlayerResourcePackStatusEvent e) {
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED) {
             Main.msg(e.getPlayer(), "&c&lPlease use the resource pack! Edit this server's settings to enable resource packs.");
+            sendInv(e.getPlayer());
         }
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
-            Main.msg(e.getPlayer(), "&c&lFailed to download resource pack.");
+            Main.msg(e.getPlayer(), "&c&lFailed to download resource pack. We recommend retrying with a reconnect!");
+            sendInv(e.getPlayer());
         }
-        /*if (e.getStatus() == PlayerResourcePackStatusEvent.Status.ACCEPTED) {
+        if (e.getStatus() == PlayerResourcePackStatusEvent.Status.ACCEPTED) {
             Main.msg(e.getPlayer(), "&a&lResource Pack Enabled!");
-        }*/
+            sendInv(e.getPlayer());
+        }
     }
 
     /*

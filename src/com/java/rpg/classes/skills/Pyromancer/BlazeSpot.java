@@ -38,7 +38,7 @@ public class BlazeSpot {
         damage = dmg;
         radius = rad;
         lifetime = duration * 20;
-        ticks = new HashMap<>();
+        ticks = Blaze.getTicks().get(caster);
         l = loc;
         new BukkitRunnable() {
             public void run() {
@@ -72,20 +72,22 @@ public class BlazeSpot {
                     } else {
                         ticks.put(ent, 10);
                         Skill.spellDamageStatic(caster, ent, damage);
+                        ent.setFireTicks(Math.min(ent.getFireTicks() + 10, 60));
                     }
 
                 }
-                l.getWorld().spawnParticle(Particle.FLAME, l, 60, 0.1, 0.04, 0.04, 0.04);
-                makePowderCircle(caster, duration, 0, radius, 16);
+                l.getWorld().spawnParticle(Particle.FLAME, l, 20, 0.04, 0.04, 0.005, 0.04);
+                /*makePowderCircle(caster, duration, 0, radius, 16);
                 makePowderCircle(caster, duration, 1, 0.2, 4);
                 makePowderCircle(caster, duration, -1, 0.2, 4);
                 makePowderCircle(caster, duration, 0.5, 0.5, 8);
-                makePowderCircle(caster, duration, -0.5, 0.5, 8);
+                makePowderCircle(caster, duration, -0.5, 0.5, 8);*/
             }
         }.runTaskTimer(Main.getInstance(), 0L, 1L);
 
     }
 
+    // need to remove ittems
     public void makePowderCircle(Player caster, int duration, double height, double radius, int cnt) {
         for (double alpha = 0; alpha < Math.PI; alpha+= Math.PI/cnt) {
             Location loc = caster.getLocation();

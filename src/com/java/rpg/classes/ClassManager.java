@@ -282,7 +282,7 @@ public class ClassManager implements Listener {
         skillsPyro.add(new WorldOnFire());
         skillsPyro.add(new Blaze());
         skillsPyro.add(new Pyroclasm());
-        skillsPyro.add(new MeteorShower());
+        skillsPyro.add(new Combust());
 
         classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 0.2, 2,20, 22, 0.41, 0.22, skillsPyro, 110));
     }

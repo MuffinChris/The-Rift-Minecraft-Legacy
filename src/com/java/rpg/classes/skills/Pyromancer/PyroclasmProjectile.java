@@ -97,7 +97,7 @@ public class PyroclasmProjectile {
                     }
                     if (!found) {
                         hangingticks++;
-                        if (hangingticks > 10) {
+                        if (hangingticks > 40) {
                             times = duration + 100;
                         }
                     }
