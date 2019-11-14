@@ -1,12 +1,10 @@
+package com.java.rpg.classes.skills.Earthshaker;
+
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.skills.Pyromancer.PyroclasmProjectile;
 import com.java.rpg.party.Party;
 
-import Rift.src.com.java.rpg.classes.String;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.ArmorStand;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.LivingEntity;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.Player;
 import net.minecraft.server.v1_14_R1.DataWatcherObject;
 import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
 import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
@@ -70,7 +68,7 @@ public class RollingStone extends Skill implements Listener {
                                 continue;
                             }
                     	}
-                    	ent.teleport(ent.getLocation().add(new Vector(0, 1, 0)));
+                    	ent.teleport(ent.getLocation().add(new Vector(0, 0.5, 0)));
                     }
                 }
                 if(times < 1) {
@@ -112,23 +110,23 @@ public class RollingStone extends Skill implements Listener {
     }
     
     // launch enemies forwards or something idk
-    public void launch(Player pl) {
-    	for (LivingEntity ent: pl.getLocation().getNearbyLivingEntities(rad)) {
+    public void launch(Player caster) {
+    	for (LivingEntity ent: caster.getLocation().getNearbyLivingEntities(rad)) {
     		if (ent instanceof ArmorStand) {
                 continue;
             }
             if (ent instanceof Player) {
-                Player player = (Player) ent;
+                Player pl = (Player) ent;
                 if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
-                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
+                    if (main.getPM().getParty(pl).getPlayers().contains(caster)) {
                         continue;
                     }
                 }
-                if (player.equals(pl)) {
+                if (pl.equals(caster)) {
                     continue;
                 }
             }
-    		ent.setVelocity(ent.getVelocity().add(new Vector(0, 0.5, 0)));
+    		ent.setVelocity(ent.getVelocity().add(ent.getVelocity().add(new Vector(0, 1, 0).multiply(1.25))));
     	}
     }
     

@@ -1,12 +1,10 @@
+package com.java.rpg.classes.skills.Earthshaker;
+
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.skills.Pyromancer.PyroclasmProjectile;
 import com.java.rpg.party.Party;
 
-import Rift.src.com.java.rpg.classes.String;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.ArmorStand;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.LivingEntity;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.Player;
 import net.minecraft.server.v1_14_R1.DataWatcherObject;
 import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
 import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
@@ -71,11 +69,11 @@ public class Avalanche extends Skill implements Listener {
 		                        continue;
 		                    }
 		                }
-		                if (p.equals(pl) {
+		                if (p.equals(pl)) {
 		                    continue;
 		                }
 		            }
-		            spellDamage(p, ent, damage);
+		            spellDamage(pl, ent, damage);
 		            //STUN 2 TICKS
 		        }
 				times++;

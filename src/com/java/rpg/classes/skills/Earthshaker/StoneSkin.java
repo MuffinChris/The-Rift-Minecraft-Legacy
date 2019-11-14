@@ -4,7 +4,6 @@ import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 
-import Rift.src.com.java.rpg.classes.String;
 import net.minecraft.server.v1_14_R1.DataWatcherObject;
 import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
 import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
@@ -43,13 +42,17 @@ public class StoneSkin extends Skill implements Listener {
     	
     }
     
-    public int bigDamage(int stacks) {	
+    public double bigDamage(int stacks) {
     	stacks = 0;
     	return damage + 40 * Math.pow(1.2, stacks);
     }
     
     public int damageReduction(int inp) {
-    	if(inp > )
+    	if(inp > 0) {
+    	    return 0;
+    	    // not done??
+        }
+    	return 1;
     }
     
 }

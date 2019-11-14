@@ -29,10 +29,14 @@ public class Shatterstrike extends Skill implements Listener {
 
     private double damage = 120;
     private int range = 4;
-	
+
+    public Shatterstrike() {
+        super("Shatterstrike", 0, 0, 0, 2, " ", "Passive");
+    }
+
     public void cast(Player p)
     {
     	Location loc = p.getLocation();
-    	Location c1 = loc.
+    	//Location c1 = loc.
     }
 }
