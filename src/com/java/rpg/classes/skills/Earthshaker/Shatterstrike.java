@@ -31,12 +31,13 @@ public class Shatterstrike extends Skill implements Listener {
     private int range = 4;
 
     public Shatterstrike() {
-        super("Shatterstrike", 0, 0, 0, 2, " ", "Passive");
+        super("Shatterstrike", 0, 0, 0, 2, " ", "cast");
     }
 
     public void cast(Player p)
     {
     	Location loc = p.getLocation();
     	//Location c1 = loc.
+    	// I dont know how to make cone
     }
 }

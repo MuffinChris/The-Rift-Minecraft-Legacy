@@ -30,13 +30,14 @@ public class Earthquake extends Skill implements Listener {
 
     private double damage = 200;
     private int range = 3;
+    private int stunDuration = 2 * 20;
 
     public void target(Player p, LivingEntity t) {
         super.target(p, t);
-
+        //stun t for 2 seconds
     }
 
-    public Earthquake() {
+    public Overwhelm() {
         super("Overwhelm", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
         DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
@@ -44,5 +45,4 @@ public class Earthquake extends Skill implements Listener {
         desc.add(Main.color("&bis this supposed to be earthquake or overwhelm"));
         setDescription(desc);
     }
-
 }

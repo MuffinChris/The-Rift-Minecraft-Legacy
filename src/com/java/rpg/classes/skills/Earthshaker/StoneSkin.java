@@ -39,7 +39,11 @@ public class StoneSkin extends Skill implements Listener {
     }
     
     public void passive(Player p) {
+    	//every second or so you should get a stack
+    	//when you hit or cast a spell it should eat up the stacks and deal extra damage (use bigdamage)
+    	//then set stacks to 0 and put on the cooldown
     	
+    	//2nd part of passive just reduce damage if it exceeds a threshold
     }
     
     public double bigDamage(int stacks) {
@@ -50,7 +54,7 @@ public class StoneSkin extends Skill implements Listener {
     public int damageReduction(int inp) {
     	if(inp > 0) {
     	    return 0;
-    	    // not done??
+    	    // reduce damage by like 60% against attacks that would deal more than like 200 hp idk should be damage reduction against big damage
         }
     	return 1;
     }

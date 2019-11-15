@@ -32,7 +32,6 @@ public class Avalanche extends Skill implements Listener {
     private int damage = 20;
     private int duration = 2 * 20;
     private int stun = 2;
-    private int interval = 6;
     private int range = 6;
     private int rad = 2;
     
@@ -77,7 +76,7 @@ public class Avalanche extends Skill implements Listener {
 		            //STUN 2 TICKS
 		        }
 				times++;
-				if(times >= 5)
+				if(times >= duration / 8)
 					cancel();
 			}
     	}.runTaskTimer(Main.getInstance(), 0L, 8L);
