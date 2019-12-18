@@ -113,6 +113,7 @@ public class RPGPlayer extends Leveleable {
     private StatusObject walkspeed;
     private StatusObject bonusap;
     private StatusObject bonusad;
+    private StatusObject autoLife;
 
 
     public StatusObject getWalkspeed() {
@@ -147,6 +148,10 @@ public class RPGPlayer extends Leveleable {
     public StatusObject getBonusAD() {
         return bonusad;
     }
+    
+    public StatusObject getAutoLife() {
+    	return autoLife;
+    }
 
     public RPGPlayer(Player p) {
         super (0, 50, p);
@@ -160,6 +165,7 @@ public class RPGPlayer extends Leveleable {
         walkspeed = new StatusObject("Walkspeed", "Walkspeed", true);
         bonusap = new StatusObject("AP", "AP", true);
         bonusad = new StatusObject("AD", "AD", true);
+        autoLife = new StatusObject("AutoLife", "Protected", true);
         so = new ArrayList<>();
         so.add(stun);
         so.add(root);
@@ -170,6 +176,7 @@ public class RPGPlayer extends Leveleable {
         so.add(walkspeed);
         so.add(bonusap);
         so.add(bonusad);
+        so.add(autoLife);
 
         player = p;
         currentMana = 0;
