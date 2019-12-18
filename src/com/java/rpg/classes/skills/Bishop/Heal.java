@@ -31,7 +31,18 @@ public class Heal extends Skill {
 
 	private double damage = 200;
 	private double healVal = 800;
+	
+	private double APscale = 1;
+	
 	private int range = 8;
+	
+	public double getDmg(Player p) {
+        return damage + main.getRP(p).getAP() * APscale;
+    }
+    
+    public double getHeal(Player p) {
+        return healVal + main.getRP(p).getAP() * APscale;
+    }
 
 	// You should not be able to die with a healer spamming heal off cd on you,
 	// unless you have some healing debuff, or you get oneshot
@@ -55,7 +66,7 @@ public class Heal extends Skill {
 					|| ent instanceof WitherSkeleton || ent instanceof Wither || ent instanceof Drowned
 					|| ent instanceof Husk || ent instanceof PigZombie || ent instanceof ZombieVillager
 					|| ent instanceof Phantom) {
-				spellDamage(p, ent, damage);
+				spellDamage(p, ent, getDmg(p));
 				p.spawnParticle(Particle.VILLAGER_ANGRY, p.getEyeLocation(), 20, 0.5, 0.5, 0.5);
 			}
 			if (ent instanceof Player) {
@@ -65,7 +76,7 @@ public class Heal extends Skill {
 
 						pl.spawnParticle(Particle.HEART, pl.getEyeLocation(), 20, 0.5, 0.5, 0.5);
 
-						// USE WHATEVER GAY ASS HEAL METHOD YOU HAVE I CANT FIND IT
+						healTarget(pl, getHeal(p));
 					}
 				}
 			}
