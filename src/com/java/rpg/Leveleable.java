@@ -121,14 +121,15 @@ public class Leveleable {
 
         int cnt = 0;
         while (dif > 0) {
-            dif-=2;
+            dif--;
             if (dif >= 0) {
-                cnt++;
+                cnt+=RPGConstants.spPerLevel;
             }
         }
 
         if (cnt > 0) {
             Main.msg(p, "&8» &7+" + cnt + " &7SKILL POINT");
+            main.getRP(p).setSP(main.getRP(p).getSP() + cnt);
         }
         Main.msg(p, "");
         p.sendTitle(new Title(Main.color("&e&lLEVEL UP!"), Main.color("&6" + (oldlvl) + " &f-> &6" + newlvl), 5, 40, 5));

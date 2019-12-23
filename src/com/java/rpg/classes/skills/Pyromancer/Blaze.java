@@ -33,7 +33,7 @@ public class Blaze extends Skill {
     }
 
     public Blaze() {
-        super("Blaze", 100, 15 * 20, 0, 4, "%player% has shot a fireball!", "CAST");
+        super("Blaze", 100, 25 * 20, 0, 4, "%player% has shot a fireball!", "CAST", 3, 6, 9, 12);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fFor &e" + duration + " &fseconds, leave a trail of flame"));
@@ -49,6 +49,7 @@ public class Blaze extends Skill {
         super.cast(p);
         main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), movespeed, duration * 20, System.currentTimeMillis(), false));
         main.getRP(p).updateStats();
+
         if (blazeLocations.containsKey(p)) {
             blazeLocations.remove(p);
         }
@@ -64,6 +65,16 @@ public class Blaze extends Skill {
         new BukkitRunnable() {
             int times = 0;
             public void run() {
+                if (!p.isOnline()) {
+                    blazeLocations.remove(p);
+                    cancel();
+                    return;
+                }
+                if (p.isDead()) {
+                    blazeLocations.remove(p);
+                    cancel();
+                    return;
+                }
                 times++;
                 if (times == duration * 20) {
                     blazeLocations.remove(p);

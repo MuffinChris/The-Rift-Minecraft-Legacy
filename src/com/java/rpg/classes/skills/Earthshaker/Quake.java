@@ -32,7 +32,7 @@ public class Quake extends Skill implements Listener {
     private int range = 8;
 
     public Quake() {
-        super("Quake", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
+        super("Quake", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET", 0, 0, 0 ,0);
         DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
         List<String> desc = new ArrayList<>();

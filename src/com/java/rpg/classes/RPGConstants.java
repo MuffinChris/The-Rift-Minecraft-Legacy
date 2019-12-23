@@ -15,4 +15,6 @@ public class RPGConstants {
 
     public static String defaultClassName = "Wanderer";
 
+    public static int spPerLevel = 3;
+
 }

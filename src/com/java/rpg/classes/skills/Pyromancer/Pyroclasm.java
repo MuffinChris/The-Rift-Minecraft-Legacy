@@ -25,7 +25,7 @@ public class Pyroclasm extends Skill implements Listener {
 
     private Main main = Main.getInstance();
 
-    private double damage = 60;
+    private double damage = 100;
     private double empowered = 1.75;
     private int range = 11;
     private int duration = 20 * 10;
@@ -34,7 +34,7 @@ public class Pyroclasm extends Skill implements Listener {
     double travelspeed = 0.5;
 
     public Pyroclasm() {
-        super("Pyroclasm", 150, 8 * 20, 20, 6, "%player% has shot a fireball!", "CAST-TARGET");
+        super("Pyroclasm", 150, 15 * 20, 40, 6, "%player% has shot a fireball!", "CAST-TARGET", 4, 8, 12, 16);
         DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
         List<String> desc = new ArrayList<>();

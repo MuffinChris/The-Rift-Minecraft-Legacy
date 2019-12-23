@@ -28,7 +28,7 @@ public class Combust extends Skill implements Listener {
     private int range = 12;
 
     public Combust() {
-        super("Combust", 200, 30 * 20, 30, 8, "%player% has shot a fireball!", "CAST");
+        super("Combust", 200, 30 * 20, 30, 8, "%player% has shot a fireball!", "CAST", 5, 10, 15, 20);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fLaunch an explosive projectile."));

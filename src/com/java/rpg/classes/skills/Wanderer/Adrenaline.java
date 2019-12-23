@@ -17,7 +17,7 @@ public class Adrenaline extends Skill {
     private int duration = 5;
 
     public Adrenaline() {
-        super("Adrenaline", 30, 13 * 20, 0, 0, "%player% has shot a fireball!", "CAST");
+        super("Adrenaline", 30, 13 * 20, 0, 0, "%player% has shot a fireball!", "CAST", 1, 2, 3, 4);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fSpeed yourself up for &a" + duration + " &fseconds!"));
@@ -29,7 +29,7 @@ public class Adrenaline extends Skill {
         main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue("Adrenaline:" + p.getName(), 12, duration * 20, System.currentTimeMillis(), false));
         main.getRP(p).updateWS();
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_SPLASH_HIGH_SPEED, 1.0F, 1.0F);
-        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_SPLASH_POTION_BREAK, 1.0F, 1.0F);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 1.0F, 1.0F);
     }
 
 }

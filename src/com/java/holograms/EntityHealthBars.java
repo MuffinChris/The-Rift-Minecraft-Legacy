@@ -91,6 +91,9 @@ public class EntityHealthBars implements Listener {
             if (!main.getHpBars().containsKey(ent) && !(ent instanceof Player)) {
                 DecimalFormat dF = new DecimalFormat("#.##");
                 main.getHpBars().put(ent, new Hologram(ent, ent.getLocation().add(new Vector(0, ent.getHeight() - 0.2, 0)), "&f" + dF.format(ent.getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
+                if (ent.getCustomName() != null) {
+                    ent.setCustomNameVisible(true);
+                }
             }
             if (main.getHpBars().containsKey(ent)) {
                 if (ent.isDead() || (ent instanceof Player && !((Player)ent).isOnline())) {
@@ -111,6 +114,9 @@ public class EntityHealthBars implements Listener {
                             if (main.getHpBars().containsKey(ent)) {
                                 main.getHpBars().get(ent).destroy();
                                 main.getHpBars().remove(ent);
+                            }
+                            if (ent.getCustomName() != null) {
+                                ent.setCustomNameVisible(false);
                             }
                             return;
                         }

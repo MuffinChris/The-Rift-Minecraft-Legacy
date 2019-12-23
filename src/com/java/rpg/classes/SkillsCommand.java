@@ -34,17 +34,19 @@ public class SkillsCommand implements CommandExecutor, Listener {
         return false;
     }
 
+    need to set skill level to 1 at the right level (levelup check or something, and periodic, make a method)
+
     public void sendSkillsInv(Player p) {
         RPGPlayer rp = main.getRP(p);
-        Inventory playerInv = Bukkit.createInventory(null, 27, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
-        ArrayList<String> lore;
+        Inventory playerInv = Bukkit.createInventory(null, 27, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills &8(&f" + rp.getSP() + " SP&8)"));
+        ArrayList<String> lore;//
         int i = 10;
         for (Skill s : rp.getPClass().getSkills()) {
             ItemStack sp = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
             ItemMeta spMeta = sp.getItemMeta();
             spMeta.setDisplayName(Main.color("&e&l" + s.getName()));
             lore = new ArrayList<>();
-            if (s.getLevel() <= rp.getLevel()) {
+            if (main.getSkillLevel(p, s.getName()) > 0) {
                 lore.add(Main.color("&aUNLOCKED"));
                 lore.add(Main.color(""));
                 lore.add(Main.color("&eSkill Level: &f" + main.getSkillLevel(p, s.getName())));

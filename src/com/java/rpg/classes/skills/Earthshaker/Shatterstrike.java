@@ -31,7 +31,7 @@ public class Shatterstrike extends Skill implements Listener {
     private int range = 4;
 
     public Shatterstrike() {
-        super("Shatterstrike", 0, 0, 0, 2, " ", "cast");
+        super("Shatterstrike", 0, 0, 0, 2, " ", "cast", 2, 4, 6, 8);
     }
 
     public void cast(Player p)

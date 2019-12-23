@@ -44,7 +44,7 @@ public class HolyArrow extends Skill implements Listener {
     }
 
     public HolyArrow() {
-        super("HolyArrow", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST");
+        super("HolyArrow", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST", 0, 0, 0, 0);
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));

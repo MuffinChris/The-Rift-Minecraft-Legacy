@@ -26,7 +26,7 @@ public class Bulwark extends Skill implements Listener {
     private int duration = 8;
 
     public Bulwark() {
-        super("Bulwark", 25, 20 * 20, 0, 4, "%player% has shot a fireball!", "CAST");
+        super("Bulwark", 25, 20 * 20, 0, 4, "%player% has shot a fireball!", "CAST", 2, 4, 6, 8);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fTake a defensive stance, slowing yourself but"));
@@ -41,6 +41,7 @@ public class Bulwark extends Skill implements Listener {
             Player p = (Player) e.getEntity();
             if (main.getRP(p).getStatuses().contains("Bulwark")) {
                 e.setCancelled(true);
+                e.getDamager().remove();
                 p.getWorld().playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1.0F, 1.0F);
             }
         }
@@ -58,6 +59,10 @@ public class Bulwark extends Skill implements Listener {
 
         new BukkitRunnable() {
             public void run() {
+                if (!p.isOnline()) {
+                    cancel();
+                    return;
+                }
                 if (main.getRP(p).getStatuses().contains("Bulwark")) {
                     main.getRP(p).getStatuses().remove("Bulwark");
                 }
@@ -67,7 +72,15 @@ public class Bulwark extends Skill implements Listener {
         new BukkitRunnable() {
             int times = 0;
             public void run() {
-                if (times * 20 <= duration * 20) {
+                if (!p.isOnline()) {
+                    cancel();
+                    return;
+                }
+                if (p.isDead()) {
+                    cancel();
+                    return;
+                }
+                if (times <= duration * 20) {
                     p.getWorld().spawnParticle(Particle.CRIT, p.getEyeLocation().subtract(new Vector(0, 0.3, 0)), 50, 0.2, 0.1, 0.1, 0.1);
                 } else {
                     cancel();

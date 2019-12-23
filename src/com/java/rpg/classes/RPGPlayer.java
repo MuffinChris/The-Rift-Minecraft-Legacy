@@ -32,6 +32,16 @@ public class RPGPlayer extends Leveleable {
 
     private int pstrength;
 
+    private int skillpoints;
+
+    public int getSP() {
+        return skillpoints;
+    }
+
+    public void setSP(int i) {
+        skillpoints = i;
+    }
+
     private Player player;
     private PlayerClass pclass;
 
@@ -194,7 +204,7 @@ public class RPGPlayer extends Leveleable {
 
         damages = new ArrayList<>();
 
-        walkspeed.getStatuses().add(new StatusValue("Init", 20, 0, 0, true));
+        walkspeed.getStatuses().add(new StatusValue("InitWalkspeed", 20, 0, 0, true));
     }
 
     public List<Damage> getDamages() {
@@ -258,6 +268,12 @@ public class RPGPlayer extends Leveleable {
             pData.set(name + "Level", getLevel());
             pData.set(name + "Exp", getExp());
             pData.set(name + "CMana", currentMana);
+            if (!pData.contains(name + "SP")) {
+                pData.set(name + "SP", 0);
+                skillpoints = 0;
+            } else {
+                pData.set(name + "SP", skillpoints);
+            }
             /*pData.set(name + "AD", pclass.getBaseAD());
             pData.set(name + "AP", pclass.getBaseAP());*/
             String output = "";
@@ -330,6 +346,14 @@ public class RPGPlayer extends Leveleable {
             setLevel(pData.getInt(name + "Level"));
             setExp(pData.getDouble(name + "Exp"));
             currentMana = (pData.getInt(name + "CMana"));
+
+            if (pData.contains(name + "SP")) {
+                skillpoints = pData.getInt(name + "SP");
+            } else {
+                pData.set(name + "SP", 0);
+                skillpoints = 0;
+            }
+
             if(pData.contains(name + "Skills")) {
                 if (pData.get(name + "Skills").equals("")) {
                     pushFiles();

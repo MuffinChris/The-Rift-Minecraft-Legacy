@@ -247,18 +247,16 @@ public class MobEXP implements Listener {
         if (ent.getCustomName() == null) {
             if (ent.getName().contains("Lv.")) {
                 ent.setCustomName(Main.color(ChatColor.stripColor(ent.getName()).substring(0, ChatColor.stripColor(ent.getName()).indexOf("Lv.") - 1).trim() + " &6Lv. " + level));
-                ent.setCustomNameVisible(true);
             } else {
                 ent.setCustomName(Main.color(ChatColor.stripColor(ent.getName()).trim() + " &6Lv. " + level));
-                ent.setCustomNameVisible(true);
             }
         } else if (ent.getCustomName().contains("Lv.")){
             ent.setCustomName(Main.color(ChatColor.stripColor(ent.getCustomName()).substring(0, ChatColor.stripColor(ent.getCustomName()).indexOf("Lv.") - 1).trim() + " &6Lv. " + level));
-            ent.setCustomNameVisible(true);
         }
     }
 
     public void scaleHealth(LivingEntity ent, int level, double modifier) {
+
         double hp = 200 + Math.pow(level, 1.25) * 8 * Math.pow(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/20.0, 1.0/2.5);
         hp*=modifier;
         ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);

@@ -62,23 +62,24 @@ public class Main extends JavaPlugin {
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
 
-        -15. CHANGING CLASS INHERITS PAST XP
+        -15. CHANGING CLASS INHERITS PAST XP (assumed completed but testable)
 
-        -16. Bulwark doesnt block projectiles
+        -16. Bulwark doesnt block projectiles (test this)
 
-        -17. Wanderer no skill levels
+        -17. Wanderer no skill levels (test this)
 
-        -18. custom death event
+        -18. custom death event (assumed completed)
 
-        -20. rework damage to obey cancels
+        -20. rework damage to obey cancels (Assumed Completed!)
 
-        -21. allow players to set spawnpoint at their town maybe?
+        -21. allow players to set spawnpoint at their town maybe? (later)
 
-        -22. Make blaze target listing global so less obnoxious
+        -22. Make blaze target listing global so less obnoxious (Completed!)
 
-        -14. WALKSPEED IN UPDATESTATS IS BROKEN!
+        -14. WALKSPEED IN UPDATESTATS IS BROKEN! (false but true I forgot what the issue was)
 
         -13. Perhaps redesign damage system to be attached to players. Rn potential issues. (test!)
+
         -12. Party exp share (test!)
 
         -11. Add toggle if shift-offhand even works
@@ -89,6 +90,7 @@ public class Main extends JavaPlugin {
                ^^^ MUST DEBUG USING PRINTING NBT TAG INFO
 
         -2. Meteor Shower blows shit up when entity dmg event only
+
         -1. Create info cmd
 
         0. Create a settings GUI
@@ -436,7 +438,7 @@ public class Main extends JavaPlugin {
 
                             //List<StatusValue> remove = new ArrayList<>();
                             for (StatusValue s : so.getStatuses()) {
-                                if (20 * 0.001 * (System.currentTimeMillis() - s.getTimestamp()) >= s.getDuration() && !s.getDurationless()) {
+                                if (!s.getDurationless() && 20 * 0.001 * (System.currentTimeMillis() - s.getTimestamp()) >= s.getDuration()) {
                                     so.getCBT().add(s);
                                 }
                             }

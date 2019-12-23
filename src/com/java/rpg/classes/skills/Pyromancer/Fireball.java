@@ -41,7 +41,7 @@ public class Fireball extends Skill implements Listener {
     private int range = 4;
 
     public Fireball() {
-        super("Fireball", 50, 3 * 20, 0, 0, "%player% has shot a fireball!", "CAST");
+        super("Fireball", 50, 3 * 20, 0, 0, "%player% has shot a fireball!", "CAST", 1, 2, 3, 4);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fShoot a flaming projectile that travels for &e" + range + "&f seconds."));

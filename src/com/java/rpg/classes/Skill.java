@@ -22,6 +22,31 @@ public class Skill {
 
     // Description should be list.
 
+    private int lvlOneCost;
+    private int lvlTwoCost;
+    private int lvlThreeCost;
+    private int lvlFourCost;
+
+    public int getSPCost(int level) {
+        if (level == 0) {
+            return -1;
+        } else
+        if (level == 1) {
+            return lvlOneCost;
+        } else
+        if (level == 2) {
+            return lvlTwoCost;
+        } else
+        if (level == 3) {
+            return lvlThreeCost;
+        } else
+        if (level == 4) {
+            return lvlFourCost;
+        } else {
+            return 0;
+        }
+    }
+
     public void spellDamage(Player caster, LivingEntity target, double damage) {
         if (target.isDead() || target.isInvulnerable()) {
             return;
@@ -113,7 +138,7 @@ public class Skill {
 
     private List<Integer> tasks;
 
-    public Skill(String name, int manaCost, double cooldown, int warmup, int level, String flavor, String type) {
+    public Skill(String name, int manaCost, double cooldown, int warmup, int level, String flavor, String type, int lvlOneCost, int lvlTwoCost, int lvlThreeCost, int lvlFourCost) {
         this.name = name;
         this.manaCost = manaCost;
         this.cooldown = cooldown;
@@ -121,6 +146,10 @@ public class Skill {
         this.level = level;
         this.flavor = flavor;
         this.type = type;
+        this.lvlOneCost = lvlOneCost;
+        this.lvlTwoCost = lvlTwoCost;
+        this.lvlThreeCost = lvlThreeCost;
+        this.lvlFourCost = lvlFourCost;
         tasks = new ArrayList<>();
     }
 

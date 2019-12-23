@@ -36,7 +36,7 @@ public class Genesis extends Skill {
     // Perimeter of beacon beams or some shit in a circle
     // Lightning bolt will work, but it will overlap with thunderlord
     public Genesis() {
-        super("Genesis", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST");
+        super("Genesis", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST", 0, 0, 0,0);
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));

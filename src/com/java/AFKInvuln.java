@@ -22,7 +22,11 @@ import java.util.*;
 public class AFKInvuln implements Listener {
 
 
-    Map<UUID, Location> hasMoved = new HashMap<>();
+    Map<UUID, Location> hasMoved;
+
+    public AFKInvuln() {
+        hasMoved = new HashMap<>();
+    }
 
     @EventHandler
     public void onClick (InventoryClickEvent e) {
