@@ -55,7 +55,7 @@ public class InfernoVault extends Skill implements Listener {
             }
         }.runTaskTimer(Main.getInstance(), 0L, 2L);
 
-        p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), 1, 0, 0, 0, 0);
+        p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), 1);
         p.getWorld().spawnParticle(Particle.LAVA, p.getEyeLocation(), 45, 0, 0.2, 0.2, 0.2);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1.0F, 1.0F);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
@@ -74,7 +74,7 @@ public class InfernoVault extends Skill implements Listener {
                                 main.getCM().getFallMap().remove(p.getUniqueId());
                             }
                             landDamage(p);
-                            p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), 1, 0, 0, 0, 0);
+                            p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), 1);
                             p.getWorld().spawnParticle(Particle.LAVA, p.getEyeLocation(), 45, 0, 0.2, 0.2, 0.2);
                             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
                             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0F, 1.0F);
@@ -104,7 +104,7 @@ public class InfernoVault extends Skill implements Listener {
                     main.getCM().getFallMap().remove(p.getUniqueId());
                 }
                 landDamage(p);
-                p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), 1, 0, 0, 0, 0);
+                p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), 1);
                 p.getWorld().spawnParticle(Particle.LAVA, p.getEyeLocation(), 45, 0, 0.2, 0.2, 0.2);
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0F, 1.0F);

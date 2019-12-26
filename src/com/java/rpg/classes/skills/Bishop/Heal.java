@@ -47,7 +47,7 @@ public class Heal extends Skill {
 	// You should not be able to die with a healer spamming heal off cd on you,
 	// unless you have some healing debuff, or you get oneshot
 	public Heal() {
-		super("Heal", 80, 20, 0, 3, "%player% has shot a fireball!", "CAST", 0, 0, 0, 0);
+		super("Heal", 80, 20, 0, 3, "%player% has shot a fireball!", "CAST");
 		DecimalFormat df = new DecimalFormat("#");
 		List<String> desc = new ArrayList<>();
 		desc.add(Main.color("&bActive:"));

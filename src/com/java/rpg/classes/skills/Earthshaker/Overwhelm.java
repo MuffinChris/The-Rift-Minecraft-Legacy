@@ -37,7 +37,7 @@ public class Overwhelm extends Skill {
     private int duration = 40;
 
     public Overwhelm() {
-        super("Overwhelm", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST", 0, 0, 0, 0);
+        super("Overwhelm", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST");
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));

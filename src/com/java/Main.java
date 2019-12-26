@@ -62,6 +62,8 @@ public class Main extends JavaPlugin {
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
 
+        -29. Zombie convert to Drowned and Pig to Pigmen should be broken expand hp wise
+
         -28. Allow splles to be casted twice! (no errors lul)
 
         -27. update spell description dmg with ap scalr... in general add ap scales

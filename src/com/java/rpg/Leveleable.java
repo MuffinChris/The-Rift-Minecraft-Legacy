@@ -119,7 +119,7 @@ public class Leveleable {
         Main.msg(p, "&8» &7" + sign + dF.format(playerclass.getArmorPerLevel() * dif) + " &7A &8| " + "&7" + sign + dF.format(playerclass.getMagicResistPerLevel() * dif) + " &7MR");
         Main.msg(p, "&8» &7" + sign + dF.format(playerclass.getADPerLevel() * dif) + " &7AD &8| " + "&7" + sign + dF.format(playerclass.getAPPerLevel() * dif) + " &7AP");
 
-        int cnt = 0;
+        /*int cnt = 0;
         while (dif > 0) {
             dif--;
             if (dif >= 0) {
@@ -130,7 +130,18 @@ public class Leveleable {
         if (cnt > 0) {
             Main.msg(p, "&8» &7+" + cnt + " &7SKILL POINT");
             main.getRP(p).setSP(main.getRP(p).getSP() + cnt);
+        }*/
+
+        if (newlvl >= 40 && oldlvl < 40 && newlvl < 50) {
+            Main.msg(p, "&8» &7+" + 1 + " &7SKILL UPGRADE POINT");
         }
+        if (newlvl >= 50 && oldlvl < 40) {
+            Main.msg(p, "&8» &7+" + 2 + " &7SKILL UPGRADE POINT");
+        }
+        if (newlvl >= 50 && oldlvl < 50 && oldlvl >= 40) {
+            Main.msg(p, "&8» &7+" + 1 + " &7SKILL UPGRADE POINT");
+        }
+
         Main.msg(p, "");
         p.sendTitle(new Title(Main.color("&e&lLEVEL UP!"), Main.color("&6" + (oldlvl) + " &f-> &6" + newlvl), 5, 40, 5));
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);

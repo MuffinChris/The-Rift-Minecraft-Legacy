@@ -268,12 +268,12 @@ public class RPGPlayer extends Leveleable {
             pData.set(name + "Level", getLevel());
             pData.set(name + "Exp", getExp());
             pData.set(name + "CMana", currentMana);
-            if (!pData.contains(name + "SP")) {
+            /*if (!pData.contains(name + "SP")) {
                 pData.set(name + "SP", 0);
                 skillpoints = 0;
             } else {
                 pData.set(name + "SP", skillpoints);
-            }
+            }*/
             /*pData.set(name + "AD", pclass.getBaseAD());
             pData.set(name + "AP", pclass.getBaseAP());*/
             String output = "";
@@ -347,12 +347,12 @@ public class RPGPlayer extends Leveleable {
             setExp(pData.getDouble(name + "Exp"));
             currentMana = (pData.getInt(name + "CMana"));
 
-            if (pData.contains(name + "SP")) {
+            /*if (pData.contains(name + "SP")) {
                 skillpoints = pData.getInt(name + "SP");
             } else {
                 pData.set(name + "SP", 0);
                 skillpoints = 0;
-            }
+            }*/
 
             if(pData.contains(name + "Skills")) {
                 if (pData.get(name + "Skills").equals("")) {

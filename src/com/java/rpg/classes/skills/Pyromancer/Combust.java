@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +29,18 @@ public class Combust extends Skill implements Listener {
     private int range = 12;
 
     public Combust() {
-        super("Combust", 200, 30 * 20, 30, 8, "%player% has shot a fireball!", "CAST", 5, 10, 15, 20);
+        super("Combust", 200, 30 * 20, 30, 35, "%player% has shot a fireball!", "CAST");
+    }
+
+    public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fLaunch an explosive projectile."));
         desc.add(Main.color("&fIt explodes at the nearest target hit for &b" + damage + " &fdamage."));
-        desc.add(Main.color("&fAfter a delay, a second explosion affects a huge radius of &e" + range + "&f."));
-        desc.add(Main.color("&fThis second explosion deals &b" + damage + " &fdamage + &b" + damagePerEntity + " &fdamage per nearby entity."));
-        setDescription(desc);
+        desc.add(Main.color("&fA second explosion affects a huge radius of &e" + range + "&f."));
+        desc.add(Main.color("&fThis second explosion deals &b" + damage + " &fdamage + &b" + damagePerEntity));
+        desc.add(Main.color("&fdamage per nearby entity."));
+        return desc;
     }
 
     public double getDmg(Player p) {

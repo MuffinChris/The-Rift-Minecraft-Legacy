@@ -43,6 +43,11 @@ public class WorldOnFire extends Skill implements Listener {
     private int maxramp = 300;
     private Map<Player, Integer> amp;
     private double enddamage = 75;
+    private double apscale = 0.5;
+
+    public double getDmg(Player p) {
+        return enddamage + main.getRP(p).getAP() * apscale;
+    }
 
     public void toggleEnd(Player p) {
         super.toggleEnd(p);
@@ -90,10 +95,10 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
-            if (ent.getHealth() < enddamage && !(ent instanceof Player)) {
+            if (ent.getHealth() < getDmg(caster) && !(ent instanceof Player)) {
                 ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
             }
-            spellDamage(caster, ent, enddamage);
+            spellDamage(caster, ent, getDmg(caster));
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
             caster.getWorld().spawnParticle(Particle.LAVA, ent.getEyeLocation(), 75, 0.1, 0.2, 0.2, 0.2);
         }
@@ -162,7 +167,14 @@ public class WorldOnFire extends Skill implements Listener {
     }
 
     public WorldOnFire() {
-        super("WorldOnFire", 50, 3 * 20, 0, 2, "%player% has conjured a burst of Flame!", "TOGGLE-PASSIVE-CAST", 2, 4, 6, 8);
+        super("WorldOnFire", 50, 3 * 20, 0, 5, "%player% has conjured a burst of Flame!", "TOGGLE-PASSIVE-CAST");
+        setPassiveTicks(20);
+        setToggleTicks(10);
+        setToggleMana(10);
+        amp = new HashMap<>();
+    }
+
+    public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&aPassive:"));
         desc.add(Main.color("&fSpell damage dealt to enemies on fire"));
@@ -173,12 +185,8 @@ public class WorldOnFire extends Skill implements Listener {
         desc.add(Main.color("&fGrant yourself &a" + initRamp + "&f% power strength."));
         desc.add(Main.color("&fGain &a" + ramp + "&f% power strength with each nearby entity on fire."));
         desc.add(Main.color("&fMax power strength is &a" + maxramp + "&f%"));
-        desc.add(Main.color("&fWhen ended, nearby enemies take &b" + enddamage + " &fdamage!"));
-        setDescription(desc);
-        setPassiveTicks(20);
-        setToggleTicks(10);
-        setToggleMana(10);
-        amp = new HashMap<>();
+        desc.add(Main.color("&fWhen ended, nearby enemies take &b" + getDmg(p) + " &fdamage!"));
+        return desc;
     }
 
     public void passive(Player p) {

@@ -25,7 +25,7 @@ public class Blaze extends Skill {
     int duration = 8;
     int spotduration = 3;
     double damage = 20;
-    double apscale = 0.25;
+    double apscale = 0.05;
     double radius = 0.75;
 
     Map<Player, List<BlazeSpot>> blazeLocations;
@@ -37,16 +37,19 @@ public class Blaze extends Skill {
     }
 
     public Blaze() {
-        super("Blaze", 100, 25 * 20, 0, 4, "%player% has shot a fireball!", "CAST", 3, 6, 9, 12);
+        super("Blaze", 100, 25 * 20, 0, 15, "%player% has shot a fireball!", "CAST");
+        blazeLocations = new HashMap<>();
+        ticks = new HashMap<>();
+    }
+
+    public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fFor &e" + duration + " &fseconds, leave a trail of flame"));
         desc.add(Main.color("&fin your wake and increase your"));
         desc.add(Main.color("&fmovement speed by &a" + movespeed + " &fpoints."));
-        desc.add(Main.color("&fThe flame trail deals &b" + damage + " &fevery half a second."));
-        setDescription(desc);
-        blazeLocations = new HashMap<>();
-        ticks = new HashMap<>();
+        desc.add(Main.color("&fThe flame trail deals &b" + getDmg(p) + " &fevery half a second."));
+        return desc;
     }
 
     public void cast(Player p) {
@@ -139,10 +142,10 @@ public class Blaze extends Skill {
                             if (ticks.containsKey(p) && ticks.get(p).containsKey(ent)) {
                             } else {
                                 ticks.get(p).put(ent, 10);
-                                if (ent.getHealth() < damage && !(ent instanceof Player)) {
+                                if (ent.getHealth() < getDmg(p) && !(ent instanceof Player)) {
                                     ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 60));
                                 }
-                                Skill.spellDamageStatic(p, ent, damage);
+                                Skill.spellDamageStatic(p, ent, getDmg(p));
                                 ent.setFireTicks(Math.min(ent.getFireTicks() + 20, 60));
                             }
                             alreadyLooped.add(ent);
@@ -151,7 +154,7 @@ public class Blaze extends Skill {
                 }
                 if (!fail) {
                     if (!(times >= duration * 20)) {
-                        blazeLocations.get(p).add(new BlazeSpot(p, p.getEyeLocation().subtract(new Vector(0, p.getHeight() * 0.7, 0)), damage + main.getRP(p).getAP() * apscale, 0.75, spotduration));
+                        blazeLocations.get(p).add(new BlazeSpot(p, p.getEyeLocation().subtract(new Vector(0, p.getHeight() * 0.7, 0)), getDmg(p), 0.75, spotduration));
                     }
                     if (times == duration * 20) {
                         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_BURN, 1.0F, 1.0F);
@@ -160,6 +163,10 @@ public class Blaze extends Skill {
 
             }
         }.runTaskTimer(Main.getInstance(), 0, 1);
+    }
+
+    public double getDmg(Player p) {
+        return damage + main.getRP(p).getAP() * apscale;
     }
 
 }

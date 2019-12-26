@@ -26,13 +26,16 @@ public class Bulwark extends Skill implements Listener {
     private int duration = 8;
 
     public Bulwark() {
-        super("Bulwark", 25, 20 * 20, 0, 4, "%player% has shot a fireball!", "CAST", 2, 4, 6, 8);
+        super("Bulwark", 25, 20 * 20, 0, 4, "%player% has shot a fireball!", "CAST");
+    }
+
+    public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fTake a defensive stance, slowing yourself but"));
         desc.add(Main.color("&falso block all non-magic projectiles and take reduced damage."));
         desc.add(Main.color("&fThe stance lasts for &e" + duration + " &fseconds"));
-        setDescription(desc);
+        return desc;
     }
 
     @EventHandler (priority = EventPriority.LOWEST)

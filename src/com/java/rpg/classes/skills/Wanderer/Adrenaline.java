@@ -17,11 +17,14 @@ public class Adrenaline extends Skill {
     private int duration = 5;
 
     public Adrenaline() {
-        super("Adrenaline", 30, 13 * 20, 0, 0, "%player% has shot a fireball!", "CAST", 1, 2, 3, 4);
+        super("Adrenaline", 30, 13 * 20, 0, 0, "%player% has shot a fireball!", "CAST");
+    }
+
+    public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fSpeed yourself up for &a" + duration + " &fseconds!"));
-        setDescription(desc);
+        return desc;
     }
 
     public void cast(Player p) {

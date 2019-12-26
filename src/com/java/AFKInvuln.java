@@ -104,54 +104,22 @@ public class AFKInvuln implements Listener {
                 }
             }
         }.runTaskTimer(Main.getInstance(), 1L, 1L);
-
-        /*
-        e.getPlayer().setCollidable(false);
-        new BukkitRunnable() {
-            public void run() {
-                if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
-                    if (haveTheyMoved(e.getPlayer())) {
-                        hasMoved.remove(e.getPlayer().getUniqueId());
-                        e.getPlayer().setCollidable(true);
-                        cancel();
-                    } else {
-                        e.getPlayer().getWorld().spawnParticle(Particle.CRIT_MAGIC, e.getPlayer().getEyeLocation().subtract(new Vector(0, 0.25, 0)), 40, 0.1, 0.1, 0.1, 0.1);
-                    }
-                } else {
-                    cancel();
-                }
-            }
-        }.runTaskTimer(Main.getInstance(), 0, 5);*/
     }
-    /*
-    @EventHandler (priority = EventPriority.LOWEST)
-    public void invuln (EntityDamageEvent e) {
-
-        if (e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
-            if (hasMoved.containsKey(p.getUniqueId())) {
-                if (haveTheyMoved(p)) {
-                    hasMoved.remove(p.getUniqueId());
-                    p.setCollidable(true);
-                } else {
-                    e.setCancelled(true);
-                }
-            }
-        }
-    }
-    */
     @EventHandler
     public void rp (PlayerResourcePackStatusEvent e) {
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED) {
-            Main.msg(e.getPlayer(), "&c&lPlease use the resource pack! Edit this server's settings to enable resource packs.");
+            Main.msg(e.getPlayer(), "&c&lPlease use the resource pack! Select the Server and click Edit to enable resource packs.");
+            e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
         }
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
             Main.msg(e.getPlayer(), "&c&lFailed to download resource pack. We recommend retrying with a reconnect!");
+            e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
         }
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.ACCEPTED) {
             Main.msg(e.getPlayer(), "&a&lResource Pack Enabled!");
+            e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
         }
     }

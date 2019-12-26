@@ -32,30 +32,38 @@ public class Pyroclasm extends Skill implements Listener {
     private int maxbounces = 18;
     private double ratio = 0.75;
     double travelspeed = 0.9;
+    private double apscale = 0.3;
 
     public Pyroclasm() {
-        super("Pyroclasm", 150, 15 * 20, 40, 6, "%player% has shot a fireball!", "CAST-TARGET", 4, 8, 12, 16);
-        DecimalFormat df = new DecimalFormat("#");
+        super("Pyroclasm", 150, 15 * 20, 40, 25, "%player% has shot a fireball!", "CAST-TARGET");
         setTargetRange(range);
+    }
+
+    public double getDmg(Player p) {
+        return damage + main.getRP(p).getAP() * apscale;
+    }
+
+    public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("#");
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fLaunch a flaming projectile at the target."));
         desc.add(Main.color("&fThe projectile leaves a trail of flame."));
         desc.add(Main.color("&fIt has a base lifetime of &e" + df.format((duration * 1.0)/20.0) + " &fseconds"));
         desc.add(Main.color("&fand bounces around targets within &e" + range + " &fblocks."));
-        desc.add(Main.color("&fEach hit deals &b" + damage + " &fmagic damage."));
+        desc.add(Main.color("&fEach hit deals &b" + getDmg(p) + " &fmagic damage."));
         desc.add(Main.color("&fIf the target is on fire it deals &e" + empowered + "x &fmore damage."));
         desc.add(Main.color("&fEach bounce increases the lifetime by &e1 &fsecond."));
         desc.add(Main.color("&fEach bounce deals &e" + df.format(ratio * 100.0) + "% &fdamage"));
         desc.add(Main.color("&fof the previous bounce."));
         desc.add(Main.color("&fThe projectile bounces a maximum of &e" + maxbounces + " &ftimes."));
-        setDescription(desc);
+        return desc;
     }
 
 
     public void target(Player p, LivingEntity t) {
         super.target(p, t);
-        PyroclasmProjectile proj = new PyroclasmProjectile(p, t, damage, empowered, range, duration, maxbounces, ratio, travelspeed);
+        PyroclasmProjectile proj = new PyroclasmProjectile(p, t, getDmg(p), empowered, range, duration, maxbounces, ratio, travelspeed);
     }
 
     public void targetParticles(Player p, LivingEntity t) {

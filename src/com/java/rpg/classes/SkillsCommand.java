@@ -46,11 +46,13 @@ public class SkillsCommand implements CommandExecutor, Listener {
             ItemMeta spMeta = sp.getItemMeta();
             spMeta.setDisplayName(Main.color("&e&l" + s.getName()));
             lore = new ArrayList<>();
-            if (main.getSkillLevel(p, s.getName()) > 0) {
+            if (s.getLevel() <= rp.getLevel()) {
                 lore.add(Main.color("&aUNLOCKED"));
                 lore.add(Main.color(""));
-                lore.add(Main.color("&eSkill Level: &f" + main.getSkillLevel(p, s.getName())));
-                lore.add(Main.color(""));
+                if (main.getSkillLevel(p, s.getName()) > 0) {
+                    lore.add(Main.color("&bSkill Upgraded"));
+                    lore.add(Main.color(""));
+                }
             } else {
                 sp.setType(Material.GRAY_STAINED_GLASS_PANE);
                 lore.add(Main.color("&cLOCKED &8(&cLVL " + s.getLevel() + "&8)"));
@@ -73,7 +75,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 lore.add(Main.color("&eCooldown: &f" + dF.format((s.getCooldown()*1.0)/20.0) + " seconds"));
             }
             lore.add(Main.color(""));
-            for (String st : s.getDescription()) {
+            for (String st : s.getDescription(p)) {
                 lore.add(Main.color(st));
             }
 
