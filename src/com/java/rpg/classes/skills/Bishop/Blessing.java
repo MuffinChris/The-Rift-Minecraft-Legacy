@@ -32,7 +32,7 @@ public class Blessing extends Skill {
 	private double range = 6;
 	
 	public Blessing() {
-		super("Blessing", 0, 0, 0, 3, "%player% has shot a fireball!", "PASSIVE", 0, 0, 0 , 0);
+		super("Blessing", 0, 0, 0, 3, "%player% has shot a fireball!", "PASSIVE");
 		DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bPassive:"));

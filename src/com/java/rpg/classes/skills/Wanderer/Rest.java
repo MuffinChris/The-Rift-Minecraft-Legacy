@@ -27,7 +27,7 @@ public class Rest extends Skill {
     private int fps = 1;
 
     public Rest() {
-        super("Rest", 10, 3 * 20, 0, 2, "%player% has shot a fireball!", "TOGGLE-CAST", 0, 0,0,0);
+        super("Rest", 10, 3 * 20, 0, 2, "%player% has shot a fireball!", "TOGGLE-CAST");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bToggle:"));
         desc.add(Main.color("&fWhile resting, gain &c" + hps + " &fhealth per second"));

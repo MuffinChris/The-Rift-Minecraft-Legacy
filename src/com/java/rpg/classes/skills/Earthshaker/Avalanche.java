@@ -36,7 +36,7 @@ public class Avalanche extends Skill implements Listener {
     private int rad = 2;
     
     public Avalanche() {
-    	super("Avalanche", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET", 0, 0, 0 ,0);
+    	super("Avalanche", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
     	DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
         List<String> desc = new ArrayList<>();

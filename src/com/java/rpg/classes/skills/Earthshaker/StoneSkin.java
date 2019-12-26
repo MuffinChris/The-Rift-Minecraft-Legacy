@@ -35,7 +35,7 @@ public class StoneSkin extends Skill implements Listener {
     private int cooldown = 2 * 20;
 	
     public StoneSkin() {
-    	super("Stone Skin", 0, 0, 0, 2, " ", "Passive", 2 ,4 ,6,8);
+    	super("Stone Skin", 0, 0, 0, 2, " ", "Passive");
     }
     
     public void passive(Player p) {

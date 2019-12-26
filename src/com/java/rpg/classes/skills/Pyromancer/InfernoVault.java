@@ -30,7 +30,7 @@ public class InfernoVault extends Skill implements Listener {
     private int range = 3;
 
     public InfernoVault() {
-        super("InfernoVault", 100, 14 * 20, 0, 4, "%player% has shot a fireball!", "CAST", 0, 0, 0,0);
+        super("InfernoVault", 100, 14 * 20, 0, 4, "%player% has shot a fireball!", "CAST");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fCombust the location at your feet, dealing &b" + vaultdamage + " &fdamage."));
