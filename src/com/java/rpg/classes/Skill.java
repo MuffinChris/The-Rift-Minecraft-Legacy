@@ -65,7 +65,7 @@ public class Skill {
         if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire") && target.getFireTicks() > 0) {
             damage*= WorldOnFire.getEmp();
         }
-        main.getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.SPELL_MAGIC, damage));
+        main.getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.SPELL_MAGIC, damage, 5));
         target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         target.setNoDamageTicks(0);
         target.damage(damage, caster);
@@ -102,7 +102,7 @@ public class Skill {
         if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire") && target.getFireTicks() > 0) {
             damage*= WorldOnFire.getEmp();
         }
-        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.SPELL_MAGIC, damage));
+        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.SPELL_MAGIC, damage, 5));
         target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         target.setNoDamageTicks(0);
         target.damage(damage, caster);

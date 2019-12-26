@@ -15,7 +15,7 @@ public class ExpCommand implements CommandExecutor {
 
     //need to make a rebalance skills method to check skill lvl level and sp and reset it all
 
-    public void rexe
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

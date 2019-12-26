@@ -28,10 +28,9 @@ import de.slikey.effectlib.EffectManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,6 +42,7 @@ import com.java.rpg.party.PartyManager;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -61,6 +61,18 @@ public class Main extends JavaPlugin {
 
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
+
+        -28. Allow splles to be casted twice! (no errors lul)
+
+        -27. update spell description dmg with ap scalr... in general add ap scales
+
+        -26. Explore simply reducing the targets health on magic damage instead of using buggy ass damage. (would have to acc for armor and stuff)
+
+        -25. If you pyroclasm something that teleports it follows them?... (need to apply to all abilities)
+
+        -24. On death RPG Player needs to scrub all things status related
+
+        -23. Override restart and stop cmd to be restart in 3 seconds. (important so can file save bfore death)
 
         -15. CHANGING CLASS INHERITS PAST XP (assumed completed but testable)
 
@@ -178,6 +190,10 @@ public class Main extends JavaPlugin {
                     for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
                         p.sendTitle(new Title(Main.color("&a&lSERVER RESTARTING..."), Main.color("&fSee you in a minute!"), 5, 80, 5));
+
+                        getRP(p).updateStats();
+                        getRP(p).pushFiles();
+
                     }
                     Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lSERVER RESTARTING..."));
                     cancel();
@@ -240,6 +256,9 @@ public class Main extends JavaPlugin {
                     }
                 }
                 for (Entity e : remove) {
+                    if (e != null && !e.isDead() && e.getCustomName() != null) {
+                        e.setCustomNameVisible(false);
+                    }
                     getHolos().remove(hpBars.get(e));
                     hpBars.get(e).destroy();
                     hpBars.remove(e);
@@ -432,6 +451,18 @@ public class Main extends JavaPlugin {
             public void run() {
                 for (Player  pl : Bukkit.getOnlinePlayers()) {
                     getRP(pl).getBoard().statusUpdate();
+                    List<Damage> remo = new ArrayList<>();
+                    for (Damage d : getRP(pl).getDamages()) {
+                        if (d.getLifetime() <= 0) {
+                            remo.add(d);
+                        } else {
+                            d.decLifetime();
+                        }
+                    }
+                    for (Damage d : remo) {
+                        d.scrub();
+                        getRP(pl).getDamages().remove(d);
+                    }
                     List<StatusObject> statuses = getRP(pl).getSo();
                     if (statuses != null) {
                         for (StatusObject so : statuses) {
@@ -537,6 +568,12 @@ public class Main extends JavaPlugin {
         getCommand("help").setExecutor(new HelpCommand());
         getCommand("biomes").setExecutor(new BiomesCommand());
 
+        getCommand("warp").setExecutor(new WarpsCommand());
+        getCommand("setwarp").setExecutor(new SetWarpCommand());
+        getCommand("delwarp").setExecutor(new DelWarpCommand());
+        getCommand("spawn").setExecutor(new SpawnCommand());
+
+
         getCommand("settings").setExecutor(new SettingsCommand());
         so("&bRIFT: &fEnabled commands!");
 
@@ -555,6 +592,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AFKInvuln(), this);
         Bukkit.getPluginManager().registerEvents(new SettingsCommand(), this);
         Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
+        Bukkit.getPluginManager().registerEvents(new BetterRestart(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
@@ -702,6 +740,16 @@ public class Main extends JavaPlugin {
 
     public static void msg(Player p, String text) {
         p.sendMessage(ChatColor.translateAlternateColorCodes('&', text));
+    }
+
+    public Location getSpawn() {
+        File pFile = new File("plugins/Rift/warps.yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if (pData.contains("Spawn")) {
+            return (Location) pData.get("Spawn");
+        } else {
+            return null;
+        }
     }
 
 }

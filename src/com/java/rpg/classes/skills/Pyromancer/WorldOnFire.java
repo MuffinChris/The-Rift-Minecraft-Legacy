@@ -153,10 +153,11 @@ public class WorldOnFire extends Skill implements Listener {
     }
 
     public int toggleInit(Player p) {
-        DecimalFormat df = new DecimalFormat("#.##");
+        //DecimalFormat df = new DecimalFormat("#.##");
         /*amp.put(p, 0);
         main.getPC().get(p.getUniqueId()).setPStrength(main.getPC().get(p.getUniqueId()).getPStrength() + initRamp);*/
         main.getRP(p).getPStrength2().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), initRamp, 0, 0, true));
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0F, 1.0F);
         return super.toggleInit(p);
     }
 

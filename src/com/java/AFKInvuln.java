@@ -34,9 +34,10 @@ public class AFKInvuln implements Listener {
             Player p = (Player) e.getWhoClicked();
             if (e.getView().getTitle().contains("JOIN MENU") && e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getDisplayName().contains("ENTER")) {
                 if (hasMoved.containsKey(p.getUniqueId())) {
-                    p.teleport(hasMoved.get(p.getUniqueId()));
-                    p.setGameMode(GameMode.SURVIVAL);
+                    Location l = hasMoved.get(p.getUniqueId());
                     hasMoved.remove(p.getUniqueId());
+                    p.teleport(l);
+                    p.setGameMode(GameMode.SURVIVAL);
                 }
                 e.setCancelled(true);
             }

@@ -37,12 +37,19 @@
   </build>
   <dependencies>
     <dependency>
-    <groupId>com.destroystokyo.paper</groupId>
+    <groupId>com.destroystokyo.paper.server</groupId>
     <artifactId>paper-server</artifactId>
-    <version>1.14.2-R0.1-SNAPSHOT</version>
+    <version>1.15.1-R0.1-SNAPSHOT</version>
     <scope>system</scope>
-    <systemPath>${project.basedir}/apiresources/paper-1.14.2.jar</systemPath>
+    <systemPath>${project.basedir}/apiresources/paper-api-1.15.1-R0.1-SNAPSHOT.jar</systemPath>
   </dependency>
+    <dependency>
+      <groupId>com.destroystokyo.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>1.15.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/apiresources/paper-1.15.1.jar</systemPath>
+    </dependency>
   <dependency>
     <groupId>viaver.api</groupId>
     <artifactId>viaver</artifactId>
@@ -60,7 +67,7 @@
   <dependency>
     <groupId>protlib.api</groupId>
     <artifactId>protocollib</artifactId>
-    <version>1.14</version>
+    <version>4.5.0</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/apiresources/ProtocolLib.jar</systemPath>
   </dependency>

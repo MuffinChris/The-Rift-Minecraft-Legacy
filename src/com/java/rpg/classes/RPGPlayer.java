@@ -461,7 +461,7 @@ public class RPGPlayer extends Leveleable {
 
     public void updateStats() {
         player.setHealthScale(20);
-        if (pclass != null) {
+        if (pclass != null && !player.isDead()) {
             double hpprev = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
             double hp = getPClass().getCalcHP(getLevel());
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);

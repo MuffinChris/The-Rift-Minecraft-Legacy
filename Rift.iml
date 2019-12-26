@@ -10,9 +10,18 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="Maven: com.destroystokyo.paper:paper-server:1.14.2-R0.1-SNAPSHOT">
+      <library name="Maven: com.destroystokyo.paper.server:paper-server:1.15.1-R0.1-SNAPSHOT">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/apiresources/paper-1.14.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/apiresources/paper-api-1.15.1-R0.1-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: com.destroystokyo.paper:paper-api:1.15.1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/apiresources/paper-1.15.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -37,7 +46,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: protlib.api:protocollib:1.14">
+      <library name="Maven: protlib.api:protocollib:4.5.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/apiresources/ProtocolLib.jar!/" />
         </CLASSES>

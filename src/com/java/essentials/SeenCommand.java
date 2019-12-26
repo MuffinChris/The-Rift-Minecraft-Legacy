@@ -36,6 +36,8 @@ public class SeenCommand implements CommandExecutor {
             } else {
                 Main.msg(p, "Usage: /seen <player>");
             }
+        } else {
+            // CONSOLE SHIT THNX!
         }
         return false;
     }

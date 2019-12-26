@@ -93,4 +93,16 @@ commands:
     description: Access your settings
   biomes:
     description: View all biome levels
+  warp:
+    description: Warp to locations
+    aliases: [warps]
+  setwarp:
+    description: Set a warp location
+    permission: core.admin
+  delwarp:
+    description: Delete a warp
+    permission: core.admin
+  spawn:
+    description: Warp to spawn
+    aliases: [s]
 depend: [ProtocolLib, Vault]

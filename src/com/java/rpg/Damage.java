@@ -14,17 +14,19 @@ public class Damage {
     private Double damage;
     private DamageType dt;
     private Player caster;
+    private int lifetime;
     public enum DamageType
     {
         ATTACK, ATTACK_MAGIC, ATTACK_TRUE, SPELL_MAGIC, SPELL_PHYSICAL, SPELL_TRUE
     }
     private int task;
 
-    public Damage(Player caster, LivingEntity p, DamageType dt, Double damage) {
+    public Damage(Player caster, LivingEntity p, DamageType dt, Double damage, int lifetime) {
         target = p;
         this.dt = dt;
         this.damage = damage;
         this.caster = caster;
+        this.lifetime = lifetime;
         /*
         BukkitScheduler sched = Bukkit.getScheduler();
         task = sched.scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
@@ -40,6 +42,14 @@ public class Damage {
                 sched.cancelTask(task);
             }
         }, 1, 1);*/
+    }
+
+    public int getLifetime() {
+        return lifetime;
+    }
+
+    public void decLifetime() {
+        lifetime--;
     }
 
     public int getTask() {

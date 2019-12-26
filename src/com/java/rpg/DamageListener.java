@@ -69,7 +69,7 @@ public class DamageListener implements Listener {
                     }
                 }
 
-                main.getRP(damager).getDamages().add(new Damage(damager, (LivingEntity) e.getEntity(), Damage.DamageType.ATTACK, e.getDamage()));
+                main.getRP(damager).getDamages().add(new Damage(damager, (LivingEntity) e.getEntity(), Damage.DamageType.ATTACK, e.getDamage(), 5));
                 if (main.getPC().get(damager.getUniqueId()) != null) {
                     if (main.getPC().get(damager.getUniqueId()).getStatuses() != null) {
                         List<String> statuses = main.getPC().get(damager.getUniqueId()).getStatuses();

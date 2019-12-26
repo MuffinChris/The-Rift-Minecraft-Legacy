@@ -34,7 +34,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
         return false;
     }
 
-    need to set skill level to 1 at the right level (levelup check or something, and periodic, make a method)
+    //need to set skill level to 1 at the right level (levelup check or something, and periodic, make a method)
 
     public void sendSkillsInv(Player p) {
         RPGPlayer rp = main.getRP(p);

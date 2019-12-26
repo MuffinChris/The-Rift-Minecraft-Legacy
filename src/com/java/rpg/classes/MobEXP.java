@@ -129,7 +129,7 @@ public class MobEXP implements Listener {
         xpmods.put(EntityType.DOLPHIN , 0.75);
         xpmods.put(EntityType.DROWNED , 1.1);
         xpmods.put(EntityType.ELDER_GUARDIAN , 4.0);
-        xpmods.put(EntityType.ENDER_DRAGON , 500.0);
+        xpmods.put(EntityType.ENDER_DRAGON , 1000.0);
         xpmods.put(EntityType.ENDERMAN , 2.5);
         xpmods.put(EntityType.ENDERMITE , 1.1);
         xpmods.put(EntityType.EVOKER , 1.3);
@@ -257,7 +257,13 @@ public class MobEXP implements Listener {
 
     public void scaleHealth(LivingEntity ent, int level, double modifier) {
 
-        double hp = 200 + Math.pow(level, 1.25) * 8 * Math.pow(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/20.0, 1.0/2.5);
+        double hp = 200 + Math.pow(level, 1.25) * 11 * Math.pow(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/20.0, 1.0/2.5);
+        if (peaceful.contains(ent)) {
+            hp-=200;
+            if (hp <= 50) {
+                hp = 50;
+            }
+        }
         hp*=modifier;
         ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
         ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
@@ -274,22 +280,27 @@ public class MobEXP implements Listener {
         if (ent instanceof Creeper) {
             Creeper creeper = (Creeper) ent;
             if (level >= 0 && level < 10) {
-                creeper.setExplosionRadius(1);
-            } else if (level >= 10 && level < 20) {
-                creeper.setExplosionRadius(2);
-            } else if (level >= 20 && level < 30) {
                 creeper.setExplosionRadius(3);
+                creeper.setMaxFuseTicks(40);
+            } else if (level >= 10 && level < 20) {
+                creeper.setExplosionRadius(3);
+                creeper.setMaxFuseTicks(30);
+            } else if (level >= 20 && level < 30) {
+                creeper.setExplosionRadius(4);
+                creeper.setMaxFuseTicks(30);
             } else if (level >= 30 && level < 40) {
                 creeper.setExplosionRadius(4);
+                creeper.setMaxFuseTicks(25);
             } else {
                 creeper.setExplosionRadius(5);
+                creeper.setMaxFuseTicks(20);
                 if (level == 50) {
-                    creeper.setExplosionRadius(7);
                     creeper.setPowered(true);
                 }
             }
         }
     }
+
 
     public void setExp(LivingEntity ent, double exp) {
         if (ent.getMetadata("EXP") != null && ent.hasMetadata("EXP")) {
@@ -302,7 +313,7 @@ public class MobEXP implements Listener {
         if (getLevel(ent) == -1 || !(Integer.valueOf(getLevel(ent)) instanceof Integer)) {
             return 0;
         }
-        return (0.5 * Math.pow(getLevel(ent), 2.1) + 50) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
+        return (0.25 * Math.pow(getLevel(ent), 2.1) + 50) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
     }
 
 
@@ -355,19 +366,26 @@ public class MobEXP implements Listener {
     public void mobDamage (EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof LivingEntity && !(e.getDamager() instanceof ArmorStand) && !(e.getDamager() instanceof Player)) {
             if (e.getDamager() instanceof IronGolem) {
-                e.setDamage(e.getDamage() + getLevel((IronGolem) e.getDamager()) * 3);
+                e.setDamage(e.getDamage() * 3 + getLevel((IronGolem) e.getDamager()) * 4);
             }
             if (e.getDamager() instanceof Slime) {
-                e.setDamage(e.getDamage() + getLevel((Slime) e.getDamager()) * 1.5);
+                e.setDamage(e.getDamage() * 1.5 + getLevel((Slime) e.getDamager()) * 0.5 * (1 + ((Slime)e.getDamager()).getSize()));
             }
             if (e.getDamager() instanceof MagmaCube) {
-                e.setDamage(e.getDamage() + getLevel((MagmaCube) e.getDamager()) * 1.8);
+                e.setDamage(e.getDamage() * 1.5 + getLevel((MagmaCube) e.getDamager()) * 0.5 * (1 + ((MagmaCube)e.getDamager()).getSize()));
+            }
+            if (e.getDamager() instanceof EnderDragon) {
+                if (e.getEntity() instanceof LivingEntity) {
+                    e.setDamage(Math.random() * 200 + 150 + ((LivingEntity)e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.15);
+                } else {
+                    e.setDamage(300 + Math.random() * 200);
+                }
             }
         }
         if (e.getDamager() instanceof EvokerFangs) {
             EvokerFangs fangs = (EvokerFangs) e.getDamager();
             if (fangs.getOwner() instanceof Evoker) {
-                e.setDamage(getLevel(fangs.getOwner()) * 3 + 25);
+                e.setDamage(getLevel(fangs.getOwner()) * 4 + 25);
             }
         }
         if (e.getDamager() instanceof Projectile) {
@@ -375,13 +393,13 @@ public class MobEXP implements Listener {
                 LivingEntity ent = (LivingEntity) ((Projectile) e.getDamager()).getShooter();
                 if (!(ent instanceof Player) && !(ent instanceof ArmorStand)) {
                     if (ent instanceof Skeleton) {
-                        e.setDamage(getLevel(ent) * 3 + 25);
+                        e.setDamage(getLevel(ent) * 3.5 + 25);
                     }
                     if (ent instanceof Snowman) {
                         e.setDamage(10);
                     }
                     if (ent instanceof Llama) {
-                        e.setDamage(getLevel(ent) * 2 + 10);
+                        e.setDamage(getLevel(ent) * 3 + 10);
                     }
                     if (ent instanceof Stray) {
                         e.setDamage(getLevel(ent) * 2.75 + 25);
@@ -405,7 +423,7 @@ public class MobEXP implements Listener {
                         e.setDamage(getLevel(ent) * 2 + 50);
                     }
                     if (ent instanceof EnderDragon) {
-                        e.setDamage(getLevel(ent) * 2 + 40);
+                        e.setDamage(getLevel(ent) * 10 + 40);
                     }
                 }
             }

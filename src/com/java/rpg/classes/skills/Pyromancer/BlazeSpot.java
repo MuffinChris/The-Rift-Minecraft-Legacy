@@ -13,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class BlazeSpot {
 
     private double damage;
     private double radius;
-    Map<LivingEntity, Integer> ticks;
+    //Map<LivingEntity, Integer> ticks;
     int lifetime;
     private Location l;
 
@@ -39,46 +40,19 @@ public class BlazeSpot {
         damage = dmg;
         radius = rad;
         lifetime = duration * 20;
-        ticks = Blaze.getTicks().get(caster);
+        //ticks = Blaze.getTicks().get(caster);
         l = loc;
         new BukkitRunnable() {
             public void run() {
                 lifetime--;
                 if (lifetime <= 0) {
-                    ticks = new HashMap<>();
+                    //ticks = new HashMap<>();
                     cancel();
                     return;
                 }
-                for (LivingEntity ent : l.getNearbyLivingEntities(radius)) {
-                    if (ent instanceof ArmorStand) {
-                        continue;
-                    }
-                    if (ent instanceof Player) {
-                        Player p = (Player) ent;
-                        if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
-                            if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                                continue;
-                            }
-                        }
-                        if (p.equals(caster)) {
-                            continue;
-                        }
-                    }
-
-                    if (ticks.containsKey(ent)) {
-                        ticks.replace(ent, ticks.get(ent) - 1);
-                        if (ticks.get(ent) <= 0) {
-                            ticks.remove(ent);
-                        }
-                    } else {
-                        ticks.put(ent, 10);
-                        Skill.spellDamageStatic(caster, ent, damage);
-                        ent.setFireTicks(Math.min(ent.getFireTicks() + 10, 60));
-                    }
-
-                }
-                l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, 1);
-                l.getWorld().spawnParticle(Particle.FLAME, l, 5, 0, 0.01, 0.01, 0.01);
+                //l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, 1);
+                l.getWorld().spawnParticle(Particle.FLAME, l, 2, 0, 0.05, 0.01, 0.05);
+                l.clone().add(new Vector(0, 0.5, 0)).getWorld().spawnParticle(Particle.FLAME, l, 2, 0, 0.05, 0.01, 0.05);
                 /*makePowderCircle(caster, duration, 0, radius, 16);
                 makePowderCircle(caster, duration, 1, 0.2, 4);
                 makePowderCircle(caster, duration, -1, 0.2, 4);

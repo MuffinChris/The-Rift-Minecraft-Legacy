@@ -16,12 +16,12 @@ public class TimedrestartCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (p.hasPermission("core.admin")) {
-                Main.getInstance().restartTimer(60);
+                Main.getInstance().restartTimer(30);
             } else {
                 Main.msg(p, Main.getInstance().noperm);
             }
         } else {
-            Main.getInstance().restartTimer(60);
+            Main.getInstance().restartTimer(30);
         }
         return false;
     }

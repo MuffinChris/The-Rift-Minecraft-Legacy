@@ -1,5 +1,7 @@
 package com.java.rpg.modifiers;
 
+import com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent;
+import com.destroystokyo.paper.event.entity.EnderDragonFlameEvent;
 import com.java.Main;
 import com.java.holograms.Hologram;
 import org.bukkit.Material;
@@ -86,7 +88,7 @@ public class Environmental implements Listener {
                 e.setDamage(hp * 0.1);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                e.setDamage((e.getDamage() / 20.0) * hp * 0.75);
+                e.setDamage((e.getDamage() / 20.0) * hp * 0.6);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
                 e.setDamage(0.5 * (e.getDamage() / 20.0) * hp);
@@ -126,12 +128,26 @@ public class Environmental implements Listener {
     }
 
     @EventHandler
+    public void dragonBreath (EnderDragonFlameEvent e) {
+        e.getAreaEffectCloud().setCustomName("EdragFlame");
+    }
+
+    @EventHandler
+    public void dragonFireball (EnderDragonFireballHitEvent e) {
+        e.getAreaEffectCloud().setCustomName("EdragFlame");
+    }
+
+    @EventHandler
     public void lingeringPotion(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof AreaEffectCloud) {
             AreaEffectCloud cloud = (AreaEffectCloud) e.getDamager();
-            if (cloud.getBasePotionData().getType() == PotionType.INSTANT_DAMAGE) {
+            if (cloud.getBasePotionData().getType() == PotionType.INSTANT_DAMAGE || (cloud.getCustomName() != null && cloud.getCustomName().equals("EdragFlame"))) {
                 if (e.getEntity() instanceof LivingEntity) {
-                    e.setDamage((e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.04));
+                    if ((cloud.getCustomName() != null && cloud.getCustomName().equals("EdragFlame"))) {
+                        e.setDamage((e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.15));
+                    } else {
+                        e.setDamage((e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.04));
+                    }
                 }
             }
         }

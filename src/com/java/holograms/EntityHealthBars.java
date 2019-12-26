@@ -115,9 +115,6 @@ public class EntityHealthBars implements Listener {
                                 main.getHpBars().get(ent).destroy();
                                 main.getHpBars().remove(ent);
                             }
-                            if (ent.getCustomName() != null) {
-                                ent.setCustomNameVisible(false);
-                            }
                             return;
                         }
                         if (main.getHpBars().containsKey(ent)) {

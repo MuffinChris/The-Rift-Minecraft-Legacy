@@ -7,10 +7,10 @@ import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.classes.skills.Wanderer.Rest;
-import net.minecraft.server.v1_14_R1.*;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class ClassManager implements Listener {
@@ -108,34 +109,53 @@ public class ClassManager implements Listener {
         return (s.contains("HELMET") || s.contains("CHESTPLATE") || s.contains("LEGGINGS") || s.contains("BOOTS") || s.contains("ELYTRA"));
     }
 
-    public static ItemStack fixItem(ItemStack i) {
+    public static ItemStack fixItem(ItemStack i) throws Exception {
         if (i != null && i.getType() != null && isArmor(i.getType().toString())) {
-            net.minecraft.server.v1_14_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
+            net.minecraft.server.v1_15_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
             if (nmsStack.getTag() == null || (nmsStack.getTag().getList("AttributeModifiers", 0) == null)) {
                 NBTTagCompound itemTagC = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
                 NBTTagList modifiers = new NBTTagList();
                 NBTTagCompound itemC = new NBTTagCompound();
 
-                itemC.set("AttributeName", new NBTTagString("generic.armor"));
-                itemC.set("Name", new NBTTagString("generic.armor"));
-                itemC.set("Amount", new NBTTagDouble(0));
-                itemC.set("Operation", new NBTTagInt(0));
-                itemC.set("UUIDLeast", new NBTTagInt(894654));
-                itemC.set("UUIDMost", new NBTTagInt(2872));
+                Constructor<NBTTagString> constructorS = NBTTagString.class.getDeclaredConstructor();
+                constructorS.setAccessible(true);
+                NBTTagString nbts = constructorS.newInstance("generic.armor");
+
+                Constructor<NBTTagDouble> constructorD = NBTTagDouble.class.getDeclaredConstructor();
+                constructorD.setAccessible(true);
+                NBTTagDouble nbtd = constructorD.newInstance(0);
+
+                Constructor<NBTTagInt> constructorI = NBTTagInt.class.getDeclaredConstructor();
+                constructorI.setAccessible(true);
+                NBTTagInt nbti = constructorI.newInstance(0);
+                NBTTagInt nbtiL = constructorI.newInstance(894654);
+                NBTTagInt nbtiM = constructorI.newInstance(2827);
+
+                itemC.set("AttributeName", nbts);
+                itemC.set("Name", nbts);
+                itemC.set("Amount", nbtd);
+                itemC.set("Operation", nbti);
+                itemC.set("UUIDLeast", nbtiL);
+                itemC.set("UUIDMost", nbtiM);
 
                 String item = i.toString().toLowerCase();
 
+                NBTTagString nbthe = constructorS.newInstance("head");
+                NBTTagString nbtch = constructorS.newInstance("chest");
+                NBTTagString nbtle = constructorS.newInstance("legs");
+                NBTTagString nbtbo = constructorS.newInstance("feet");
+
                 if (item.contains("helmet") || item.contains("cap")) {
-                    itemC.set("Slot", new NBTTagString("head"));
+                    itemC.set("Slot", nbthe);
                 }
                 if (item.contains("chestplate") || item.contains("tunic") || item.contains("elytra")) {
-                    itemC.set("Slot", new NBTTagString("chest"));
+                    itemC.set("Slot", nbtch);
                 }
                 if (item.contains("leggings") || item.contains("pants")) {
-                    itemC.set("Slot", new NBTTagString("legs"));
+                    itemC.set("Slot", nbtle);
                 }
                 if (item.contains("boots")) {
-                    itemC.set("Slot", new NBTTagString("feet"));
+                    itemC.set("Slot", nbtbo);
                 }
 
                 modifiers.add(itemC);
@@ -166,8 +186,12 @@ public class ClassManager implements Listener {
             if (p.getInventory().getItem(i) instanceof ItemStack) {
                 ItemStack it = p.getInventory().getItem(i);
                 if (it != null && it.getType() != null && isArmor(it.getType().toString())) {
-                    p.getInventory().setItem(i, fixItem(it));
-                }
+                    try {
+                        p.getInventory().setItem(i, fixItem(it));
+                    } catch (Exception e) {
+
+                    }
+                 }
             }
         }
     }
