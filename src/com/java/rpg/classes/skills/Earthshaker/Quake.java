@@ -3,13 +3,13 @@ package com.java.rpg.classes.skills.Earthshaker;
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
-import net.minecraft.server.v1_15_R1.DataWatcherObject;
-import net.minecraft.server.v1_15_R1.DataWatcherRegistry;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_14_R1.DataWatcherObject;
+import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
+import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -37,9 +37,8 @@ public class Quake extends Skill implements Listener {
         setTargetRange(range);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fCharge forwards with a shell of rocks around you"));
-        desc.add(Main.color("&fEnemies around you are caught in the rockslide"));
-        desc.add(Main.color("&fand will travel with you until you stop."));
+        desc.add(Main.color("&fStart tremors around you"));
+        desc.add(Main.color("&fdamaging all nearby enemies"));
         setDescription(desc);
     }
 	
@@ -50,7 +49,7 @@ public class Quake extends Skill implements Listener {
     		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
     	for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(range)) {
             if (ent instanceof ArmorStand) {
-                continue;
+                continue; 
             }
             if (ent instanceof Player) {
                 Player pl = (Player) ent;
