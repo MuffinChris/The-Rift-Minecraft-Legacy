@@ -35,11 +35,22 @@ public class StatusObject {
         return value;
     }
 
+    public boolean allDurationless() {
+        for (StatusValue sv : statuses) {
+            if (!sv.getDurationless()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public int ticksMore() {
         int ticks = 0;
         for (StatusValue s : statuses) {
-            int ticksleft = s.getDuration() - Integer.valueOf(String.valueOf(Math.round(20 * 0.001 * (System.currentTimeMillis() - s.getTimestamp()))));
-            ticks+=ticksleft;
+            if (!s.getDurationless()) {
+                int ticksleft = s.getDuration() - Integer.valueOf(String.valueOf(Math.round(20 * 0.001 * (System.currentTimeMillis() - s.getTimestamp()))));
+                ticks += ticksleft;
+            }
         }
         return ticks;
     }

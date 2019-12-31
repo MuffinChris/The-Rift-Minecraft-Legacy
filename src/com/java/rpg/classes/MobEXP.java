@@ -3,6 +3,7 @@ package com.java.rpg.classes;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.java.Main;
 import com.java.rpg.player.XPList;
+import net.minecraft.server.v1_15_R1.EntityIronGolem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -347,8 +348,12 @@ public class MobEXP implements Listener {
                 setLevel(ent, level);
                 level = getLevel(ent);
             } else {
-                scaleHealth(ent, level, 1);
-                scaleDamage(ent, level, 1);
+                if (ent.getType() == EntityType.IRON_GOLEM) {
+                    scaleHealth(ent, level, 3);
+                } else {
+                    scaleHealth(ent, level, 1);
+                    scaleDamage(ent, level, 1);
+                }
             }
 
             if (ent instanceof Slime || ent instanceof MagmaCube) {
@@ -458,6 +463,71 @@ public class MobEXP implements Listener {
                     }
                 }
             }.runTaskLater(Main.getInstance(), 1);
+        }
+    }
+
+    @EventHandler
+    public void pig (PigZapEvent e) {
+        LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+        ent.setCustomName(Main.color("&fZombie Pigman" + " &6Lv. " + getLevel(ent)));
+        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        ent.setHealth(20);
+        ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(12);
+        scaleHealth(ent, getLevel(ent), 1);
+        scaleDamage(ent, getLevel(ent), 1);
+    }
+
+    @EventHandler
+    public void transforms (EntityTransformEvent e) {
+        if (e.getTransformReason() == EntityTransformEvent.TransformReason.DROWNED) {
+            if (e.getTransformedEntity() instanceof LivingEntity) {
+                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                ent.setCustomName(Main.color("&fDrowned" + " &6Lv. " + getLevel(ent)));
+                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                ent.setHealth(20);
+                ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4);
+                scaleHealth(ent, getLevel(ent), 1);
+                scaleDamage(ent, getLevel(ent), 1);
+            }
+        }
+        if (e.getTransformReason() == EntityTransformEvent.TransformReason.CURED) {
+            if (e.getTransformedEntity() instanceof LivingEntity) {
+                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                int level = Math.min(getLevel(ent), 20);
+                ent.setCustomName(Main.color("&fVillager" + " &6Lv. " + level));
+                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                ent.setHealth(20);
+                scaleHealth(ent, level, 1);
+            }
+        }
+        if (e.getTransformReason() == EntityTransformEvent.TransformReason.INFECTION) {
+            if (e.getTransformedEntity() instanceof LivingEntity) {
+                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                ent.setCustomName(Main.color("&fZombie Villager" + " &6Lv. " + getLevel(ent)));
+                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                ent.setHealth(20);
+                ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(5);
+                scaleHealth(ent, getLevel(ent), 1);
+                scaleDamage(ent, getLevel(ent), 1);
+            }
+        }
+        if (e.getTransformReason() == EntityTransformEvent.TransformReason.SHEARED) {
+            if (e.getTransformedEntity() instanceof LivingEntity) {
+                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                ent.setCustomName(Main.color("&fCow" + " &6Lv. " + getLevel(ent)));
+                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
+                ent.setHealth(10);
+                scaleHealth(ent, getLevel(ent), 1);
+            }
+        }
+        if (e.getTransformReason() == EntityTransformEvent.TransformReason.LIGHTNING) {
+            if (e.getTransformedEntity() instanceof Witch) {
+                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                ent.setCustomName(Main.color("&fWitch" + " &6Lv. " + getLevel(ent)));
+                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                ent.setHealth(20);
+                scaleHealth(ent, getLevel(ent), 1);
+            }
         }
     }
 

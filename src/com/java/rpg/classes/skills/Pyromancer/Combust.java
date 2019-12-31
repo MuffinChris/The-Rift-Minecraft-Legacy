@@ -29,7 +29,7 @@ public class Combust extends Skill implements Listener {
     private int range = 12;
 
     public Combust() {
-        super("Combust", 200, 30 * 20, 30, 35, "%player% has shot a fireball!", "CAST");
+        super("Combust", 200, 30 * 20, 30, 25, "%player% has shot a fireball!", "CAST");
     }
 
     public List<String> getDescription(Player p) {
@@ -57,7 +57,7 @@ public class Combust extends Skill implements Listener {
     }
 
     public void explode(Player caster, Location loc) {
-        loc.getWorld().spawnParticle(Particle.LAVA, loc, 50, 0.04, 0.12, 0.12, 0.12);
+        loc.getWorld().spawnParticle(Particle.LAVA, loc, 50, 0.04, 0.12, 0.12, 0.12,null, true);
         for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
             if (ent instanceof ArmorStand) {
                 continue;
@@ -81,7 +81,7 @@ public class Combust extends Skill implements Listener {
                     spellDamage(caster, ent, damage);
                     ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
                     ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
-                    ent.getLocation().getWorld().spawnParticle(Particle.EXPLOSION_LARGE, ent.getLocation(), 1, 1, 0.12, 0.12, 0.12);
+                    ent.getLocation().getWorld().spawnParticle(Particle.EXPLOSION_LARGE, ent.getLocation(), 1, 0.12, 0.12, 0.12, 0.12,null, true);
                 }
             }.runTaskLater(Main.getInstance(), 1L);
         }

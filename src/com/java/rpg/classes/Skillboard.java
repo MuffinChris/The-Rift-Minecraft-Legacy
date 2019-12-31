@@ -71,8 +71,14 @@ public class Skillboard {
             if (so.active() && !so.getSilent()) {
                 if (so.getName().equals("PStrength")) {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "%&f, ";
+                } else if (so.getName().equals("AP")) {
+                    statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "&f, ";
                 } else {
-                    statuses += "&e" + so.getFlavor() + "&8: &6" + dF.format(so.ticksMore() * 1.0 / 20.0) + "s&f, ";
+                    if (so.allDurationless()) {
+                        statuses += "&e" + so.getFlavor() + "&f, ";
+                    } else {
+                        statuses += "&e" + so.getFlavor() + "&8: &6" + dF.format(so.ticksMore() * 1.0 / 20.0) + "s&f, ";
+                    }
                 }
             }
         }

@@ -35,7 +35,7 @@ public class Pyroclasm extends Skill implements Listener {
     private double apscale = 0.3;
 
     public Pyroclasm() {
-        super("Pyroclasm", 150, 15 * 20, 40, 25, "%player% has shot a fireball!", "CAST-TARGET");
+        super("Pyroclasm", 150, 15 * 20, 40, 20, "%player% has shot a fireball!", "CAST-TARGET");
         setTargetRange(range);
     }
 
@@ -67,13 +67,13 @@ public class Pyroclasm extends Skill implements Listener {
     }
 
     public void targetParticles(Player p, LivingEntity t) {
-        t.getWorld().spawnParticle(Particle.LAVA, t.getEyeLocation().subtract(new Vector(0, t.getHeight() * 0.25, 0)), 10, 0, 0.01, 0.01, 0.01);
+        t.getWorld().spawnParticle(Particle.LAVA, t.getEyeLocation().subtract(new Vector(0, t.getHeight() * 0.25, 0)), 10, 0.01, 0.01, 0.01, 0.01,null, true);
     }
 
     public void warmup(Player p) {
         super.warmup(p);
-        p.getWorld().spawnParticle(Particle.DRIP_LAVA, p.getLocation().add(new Vector(0, 0.1, 0)), 10, 0, 0.04, 0.04, 0.04);
-        p.getWorld().spawnParticle(Particle.FLAME, p.getLocation().add(new Vector(0, 0.5, 0)), 10, 0, 0.04, 0.04, 0.04);
+        //p.getWorld().spawnParticle(Particle.DRIP_LAVA, p.getLocation().add(new Vector(0, 0.1, 0)), 10, 0.04, 0.04, 0.04, 0.04,null, true);
+        p.getWorld().spawnParticle(Particle.FLAME, p.getLocation().add(new Vector(0, 0.5, 0)), 3, 0.2, 0.2, 0.2, 0.01,null, true);
     }
 
     @EventHandler

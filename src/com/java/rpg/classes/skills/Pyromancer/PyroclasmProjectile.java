@@ -192,14 +192,14 @@ public class PyroclasmProjectile {
         }.runTaskTimer(Main.getInstance(), 0, 1);
     }
     public void makeProjectile(Location loc, Player caster) {
-        double radius = 0;
+        /*double radius = 0;
         double height2 = 0;
         while (radius <= 0.6) {
             for (double alpha = 0; alpha < Math.PI; alpha += Math.PI / 4) {
                 Location firstLocation = loc.clone().add(radius * Math.cos(alpha), height2, radius * Math.sin(alpha));
                 Location secondLocation = loc.clone().add(radius * Math.cos(alpha + Math.PI), height2, radius * Math.sin(alpha + Math.PI));
-                loc.getWorld().spawnParticle(Particle.DRIP_LAVA, firstLocation,  0, 0.001, 0.001, 0.001);
-                loc.getWorld().spawnParticle(Particle.DRIP_LAVA, secondLocation,  0, 0.001, 0.001, 0.001);
+                loc.getWorld().spawnParticle(Particle.FLAME, firstLocation, 0, 0.001, 0.001, 0.001, 0.001, null, true);
+                loc.getWorld().spawnParticle(Particle.FLAME, secondLocation,  0, 0.001, 0.001, 0.001, 0.001,null, true);
             }
             radius+=0.2;
             height2+=0.1;
@@ -211,18 +211,19 @@ public class PyroclasmProjectile {
             for (double alpha = 0; alpha < Math.PI; alpha += Math.PI / 4) {
                 Location firstLocation = loc.clone().add(radius * Math.cos(alpha), height2, radius * Math.sin(alpha));
                 Location secondLocation = loc.clone().add(radius * Math.cos(alpha + Math.PI), height2, radius * Math.sin(alpha + Math.PI));
-                loc.getWorld().spawnParticle(Particle.DRIP_LAVA, firstLocation, 0, 0.001, 0.001, 0.001);
-                loc.getWorld().spawnParticle(Particle.DRIP_LAVA, secondLocation,  0, 0.001, 0.001, 0.001);
+                loc.getWorld().spawnParticle(Particle.FLAME, firstLocation, 0, 0.001, 0.001, 0.001, 0.001,null, true);
+                loc.getWorld().spawnParticle(Particle.FLAME, secondLocation,  0, 0.001, 0.001, 0.001, 0.001,null, true);
             }
             radius-=0.2;
             height2+=0.1;
-        }
+        }*/
+        loc.getWorld().spawnParticle(Particle.FLAME, loc,  10, 0.2, 0.03, 0.2, 0.05,null, true);
         if (loc.getBlock().getType() == Material.AIR) {
             fireblocks.put(loc, 0);
             loc.getBlock().setMetadata("noFire", new FixedMetadataValue(Main.getInstance(), "noFire"));
             loc.getBlock().setType(Material.FIRE);
         }
-        loc.getWorld().spawnParticle(Particle.LAVA, loc, 1, 0.0, 0.001, 0.001, 0.001);
+        //loc.getWorld().spawnParticle(Particle.LAVA, loc, 1, 0.0, 0.001, 0.001, 0.001);
     }
 
     public List<LivingEntity> getNearbyEnts(Location loc, Player p) {

@@ -80,7 +80,7 @@ public class MsgCommand implements CommandExecutor {
 						}
 						index++;
 					}
-					Main.so("&7[&eYou &8\u00BB &e" + t.getName() + "&7] &f" + output);
+					Main.so("&7[&eCONSOLE (YOU) &8\u00BB &e" + t.getName() + "&7] &f" + output);
 					Main.msg(t, "&7[&eCONSOLE" + " &8\u00BB &eYou&7] &f" + output);
 				} else {
 					Main.so("&cInvalid Player.");

@@ -123,6 +123,9 @@ public class RPGPlayer extends Leveleable {
     private StatusObject walkspeed;
     private StatusObject bonusap;
     private StatusObject bonusad;
+    private StatusObject bonusapS;
+    private StatusObject bonusadS;
+
     private StatusObject autoLife;
 
 
@@ -158,6 +161,14 @@ public class RPGPlayer extends Leveleable {
     public StatusObject getBonusAD() {
         return bonusad;
     }
+
+    public StatusObject getBonusAPS() {
+        return bonusapS;
+    }
+
+    public StatusObject getBonusADS() {
+        return bonusadS;
+    }
     
     public StatusObject getAutoLife() {
     	return autoLife;
@@ -173,9 +184,12 @@ public class RPGPlayer extends Leveleable {
         hpfreeze = new StatusObject("HPFreeze", "HP Frozen", false);
         pstrength2 = new StatusObject("PStrength", "Power Strength", false);
         walkspeed = new StatusObject("Walkspeed", "Walkspeed", true);
-        bonusap = new StatusObject("AP", "AP", true);
-        bonusad = new StatusObject("AD", "AD", true);
+        bonusap = new StatusObject("AP", "AP", false);
+        bonusapS = new StatusObject("AP", "AP", true);
+        bonusad = new StatusObject("AD", "AD", false);
+        bonusadS = new StatusObject("AD", "AD", true);
         autoLife = new StatusObject("AutoLife", "Protected", true);
+
         so = new ArrayList<>();
         so.add(stun);
         so.add(root);
@@ -186,6 +200,8 @@ public class RPGPlayer extends Leveleable {
         so.add(walkspeed);
         so.add(bonusap);
         so.add(bonusad);
+        so.add(bonusapS);
+        so.add(bonusapS);
         so.add(autoLife);
 
         player = p;
@@ -257,6 +273,7 @@ public class RPGPlayer extends Leveleable {
             } else {
                 pData.set("Username", player.getName());
             }
+            pData.set("LastSeen", System.currentTimeMillis());
             String name = RPGConstants.defaultClassName;
             if (pclass instanceof PlayerClass) {
                 name = pclass.getName();
@@ -328,16 +345,14 @@ public class RPGPlayer extends Leveleable {
             if (pData.contains("Username")) {
                 if (pData.getString("Username").equalsIgnoreCase(player.getName())) {
                     pData.set("Username", player.getName());
-                    pData.set("IPAddress", player.getAddress());
                 } else {
                     pData.set("PreviousUsername", pData.getString("Username"));
                     pData.set("Username", player.getName());
-                    pData.set("IPAddress", player.getAddress());
                 }
             } else {
                 pData.set("Username", player.getName());
-                pData.set("IPAddress", player.getAddress());
             }
+            pData.set("LastSeen", System.currentTimeMillis());
             String name = RPGConstants.defaultClassName;
             pclass = main.getCM().getPClassFromString(pData.getString("Current Class"));
             if (pclass instanceof PlayerClass) {
@@ -539,6 +554,9 @@ public class RPGPlayer extends Leveleable {
                 if (name.equalsIgnoreCase(s.getName())) {
                     if (s.getLevel() <= getLevel()) {
                         if (s.getManaCost() <= currentMana || (s.getType().contains("TOGGLE") && getToggles().contains(s.getName()))) {
+                            if (stun.getValue() > 0) {
+                                return "Stunned";
+                            }
                             String cd = getCooldown(s);
                             final BukkitScheduler scheduler = Bukkit.getScheduler();
                             if (cd.equalsIgnoreCase("Warmup")) {
@@ -880,8 +898,12 @@ public class RPGPlayer extends Leveleable {
         pstrength2.scrub();
         bonusap.scrub();
         bonusad.scrub();
+        bonusapS.scrub();
+        bonusadS.scrub();
         bonusad = null;
         bonusap = null;
+        bonusapS = null;
+        bonusadS = null;
         stun = null;
         root = null;
         silence = null;

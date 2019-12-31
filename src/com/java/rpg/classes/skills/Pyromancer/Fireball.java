@@ -83,11 +83,11 @@ public class Fireball extends Skill implements Listener {
                 @Override
                 public void run() {
                     if (!arrow.isDead()) {
-                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04);
+                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
                         if (arrow.isOnGround() || arrow.isDead()) {
                             lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
                             arrow.remove();
-                            arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
+                            arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04,null, true);
                         }
                     }
                 }
@@ -96,11 +96,11 @@ public class Fireball extends Skill implements Listener {
                 @Override
                 public void run() {
                     if (!arrow.isDead()) {
-                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04);
+                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
                         if (arrow.isOnGround() || arrow.isDead()) {
                             lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
                             arrow.remove();
-                            arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
+                            arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.02,null, true);
                         }
                     }
                 }
@@ -111,7 +111,7 @@ public class Fireball extends Skill implements Listener {
                 public void run(){
                     if (!(arrow.isOnGround() || arrow.isDead())) {
                         lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
-                        arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
+                        arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.04,null, true);
                     }
                     scheduler.cancelTask(task);
                     scheduler.cancelTask(task2);
@@ -130,10 +130,10 @@ public class Fireball extends Skill implements Listener {
                 Player shooter = (Player) a.getShooter();
                 if (e.getHitEntity() instanceof Entity) {
                     lightEntities(e.getHitEntity(), shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Fireball:", "")));
-                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 50, 0.04, 0.08, 0.08, 0.08);
+                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
                 } else {
                     lightEntities(e.getEntity(), shooter, e.getEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Fireball:", "")));
-                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 50, 0.04, 0.08, 0.08, 0.08);
+                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
 
                 }
                 a.remove();
@@ -176,7 +176,7 @@ public class Fireball extends Skill implements Listener {
     }
 
     public void lightEntities(Entity e, Player caster, Location loc, double damage) {
-        loc.getWorld().spawnParticle(Particle.LAVA, loc, 50, 0.04, 0.12, 0.12, 0.12);
+        loc.getWorld().spawnParticle(Particle.LAVA, loc, 25, 0.12, 0.12, 0.12, 0.12,null, true);
         for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
             if (ent instanceof ArmorStand) {
                 continue;

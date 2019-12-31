@@ -42,7 +42,7 @@ public class Bulwark extends Skill implements Listener {
     public void onHit (EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
             Player p = (Player) e.getEntity();
-            if (main.getRP(p).getStatuses().contains("Bulwark")) {
+            if (main.getRP(p) != null && main.getRP(p).getStatuses().contains("Bulwark")) {
                 e.setCancelled(true);
                 e.getDamager().remove();
                 p.getWorld().playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1.0F, 1.0F);
@@ -84,7 +84,7 @@ public class Bulwark extends Skill implements Listener {
                     return;
                 }
                 if (times <= duration * 20) {
-                    p.getWorld().spawnParticle(Particle.CRIT, p.getEyeLocation().subtract(new Vector(0, 0.3, 0)), 50, 0.2, 0.1, 0.1, 0.1);
+                    p.getWorld().spawnParticle(Particle.CRIT, p.getEyeLocation().subtract(new Vector(0, 0.5, 0)), 15, 0.2, 0.1, 0.2, 0.05,null, true);
                 } else {
                     cancel();
                 }
@@ -96,7 +96,7 @@ public class Bulwark extends Skill implements Listener {
         p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_HIT, 1.0F, 1.0F);
         p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, duration * 20, 1));
 
-        p.getWorld().spawnParticle(Particle.CRIT, p.getEyeLocation(), 50, 0.2, 0.1, 0.1, 0.1);
+        p.getWorld().spawnParticle(Particle.CRIT, p.getEyeLocation(), 50, 0.1, 0.1, 0.1, 0.1,null, true);
 
     }
 

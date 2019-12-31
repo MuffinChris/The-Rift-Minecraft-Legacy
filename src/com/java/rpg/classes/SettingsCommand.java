@@ -28,7 +28,7 @@ public class SettingsCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void cancelClick(InventoryClickEvent e) {
-        if (e.getView().getTitle().contains("SETTINGS")) {
+        if (e.getView().getTitle().contains("§e§lSETTINGS")) {
             e.setCancelled(true);
             if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Skill Cast Slot")) {
                 Player p = (Player) e.getWhoClicked();
@@ -37,7 +37,7 @@ public class SettingsCommand implements CommandExecutor, Listener {
             }
         }
 
-        if (e.getView().getTitle().contains("SKILLCAST SLOT")) {
+        if (e.getView().getTitle().contains("§e§lSKILLCAST SLOT")) {
             e.setCancelled(true);
             if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Slot ")) {
                 Player p = (Player) e.getWhoClicked();

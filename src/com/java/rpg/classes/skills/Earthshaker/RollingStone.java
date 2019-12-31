@@ -37,7 +37,7 @@ public class RollingStone extends Skill implements Listener {
     private int rad = 2;
     
     public RollingStone() {
-    	super("RollingStone", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
+    	super("RollingStone", 100, 20, 0, 20, "%player% has shot a fireball!", "CAST-TARGET");
     	DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
         List<String> desc = new ArrayList<>();

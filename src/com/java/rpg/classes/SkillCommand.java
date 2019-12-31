@@ -68,6 +68,8 @@ public class SkillCommand implements CommandExecutor {
                     Main.msg(p, "&cInvalid target.");
                 } else if (flavor.contains("OutOfRangeTarget")) {
                     Main.msg(p, "&cTarget out of range!");
+                } else if (flavor.contains("Stunned")) {
+                    Main.msg(p, "&cYou're stunned!");
                 }
             } else {
                 Main.msg(p, "&fUsage: /skill <skill>");

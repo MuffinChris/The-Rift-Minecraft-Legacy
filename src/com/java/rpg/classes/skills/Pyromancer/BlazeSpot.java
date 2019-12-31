@@ -44,15 +44,15 @@ public class BlazeSpot {
         l = loc;
         new BukkitRunnable() {
             public void run() {
-                lifetime--;
+                lifetime-=1;
                 if (lifetime <= 0) {
                     //ticks = new HashMap<>();
                     cancel();
                     return;
                 }
                 //l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, 1);
-                l.getWorld().spawnParticle(Particle.FLAME, l, 2, 0, 0.05, 0.01, 0.05);
-                l.clone().add(new Vector(0, 0.5, 0)).getWorld().spawnParticle(Particle.FLAME, l, 2, 0, 0.05, 0.01, 0.05);
+                l.getWorld().spawnParticle(Particle.FLAME, l, 2, 0.35, 0.25, 0.35, 0.03, null, true);
+                //l.clone().add(new Vector(0, 0.5, 0)).getWorld().spawnParticle(Particle.FLAME, l, 2, 0, 0.05, 0.01, 0.05);
                 /*makePowderCircle(caster, duration, 0, radius, 16);
                 makePowderCircle(caster, duration, 1, 0.2, 4);
                 makePowderCircle(caster, duration, -1, 0.2, 4);

@@ -17,6 +17,7 @@ import com.java.holograms.Hologram;
 import com.java.rpg.Damage;
 import com.java.rpg.DamageListener;
 import com.java.rpg.DamageTypes;
+import com.java.rpg.Stuns;
 import com.java.rpg.classes.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
@@ -62,11 +63,21 @@ public class Main extends JavaPlugin {
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
 
+        -35. Player not teleported when close inventory afkinvuln. Also can pull item out of afk invuln lul?
+
+        -34. weird error after stopping sometimes when someone online (file related rpolly)
+
+        -33. xp metadata for dungeons?
+
+        -31. people can take out skill icons (/skills)
+
+        -30. Iron golem healing is absolute dogshit
+
         -29. Zombie convert to Drowned and Pig to Pigmen should be broken expand hp wise
 
-        -28. Allow splles to be casted twice! (no errors lul)
+        -28. Allow spells to be casted twice! (no errors lul)
 
-        -27. update spell description dmg with ap scalr... in general add ap scales
+        -27. update spell description dmg with ap scale... in general add ap scales
 
         -26. Explore simply reducing the targets health on magic damage instead of using buggy ass damage. (would have to acc for armor and stuff)
 
@@ -387,8 +398,8 @@ public class Main extends JavaPlugin {
             //double armor = player.getPClass().getCalcArmor(player.getLevel());
             //String mrper = Main.color("&b" + dF.format(100.0 * (1-(300.0/(300.0+mr)))) + "% MR");
             //String amper = Main.color("&c" + dF.format(100.0 * (1-(300.0/(300.0+armor)))) + "% AM");
-            String ad = Main.color("&c" + df.format(Main.getInstance().getRP(pl).getAD()) + " AD");
-            String ap = Main.color("&b" + df.format(Main.getInstance().getRP(pl).getAP()) + " AP");
+            String ad = Main.color("&c" + dF.format(Main.getInstance().getRP(pl).getAD()) + " AD");
+            String ap = Main.color("&b" + dF.format(Main.getInstance().getRP(pl).getAP()) + " AP");
             pl.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c" + dF.format(pl.getHealth()) + " HP   &b" + player.getPrettyCMana() + " M   &a" + player.getPrettyPercent() + "% XP   &e" + player.getLevel() + " LVL   " + ad + "   " + ap)));
         }
     }
@@ -526,16 +537,16 @@ public class Main extends JavaPlugin {
 
     public void onEnable() {
 
-        so("&bRIFT: &fEnabling Plugin!");
+        so("&dRIFT: &fEnabling Plugin!");
 
         setupChat();
-        so("&bRIFT: &fHooked into Vault Chat!");
+        so("&dRIFT: &fHooked into Vault Chat!");
 
         protocolManager = ProtocolLibrary.getProtocolManager();
-        so("&bRIFT&7: &fProtocolLib hooked!");
+        so("&dRIFT&7: &fProtocolLib hooked!");
 
         setupPacketListeners();
-        so("&bRIFT&7: &fProtocolLib Packet Listeners Enabled!");
+        so("&dRIFT&7: &fProtocolLib Packet Listeners Enabled!");
 
         getCommand("party").setExecutor(new PartyCommand());
         getCommand("skill").setExecutor(new SkillCommand());
@@ -577,7 +588,7 @@ public class Main extends JavaPlugin {
 
 
         getCommand("settings").setExecutor(new SettingsCommand());
-        so("&bRIFT: &fEnabled commands!");
+        so("&dRIFT: &fEnabled commands!");
 
         Bukkit.getPluginManager().registerEvents(new PartyCommand(), this);
         Bukkit.getPluginManager().registerEvents(new ClassManager(), this);
@@ -595,6 +606,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SettingsCommand(), this);
         Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
         Bukkit.getPluginManager().registerEvents(new BetterRestart(), this);
+        Bukkit.getPluginManager().registerEvents(new Stuns(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
@@ -607,7 +619,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InfernoVault(), this);
         Bukkit.getPluginManager().registerEvents(new Pyroclasm(), this);
         Bukkit.getPluginManager().registerEvents(new Combust(), this);
-        so("&bRIFT: &fRegistered events!");
+        so("&dRIFT: &fRegistered events!");
 
         pm = new PartyManager();
         cm = new ClassManager();
@@ -640,7 +652,7 @@ public class Main extends JavaPlugin {
 
         autorestart();
 
-        so("&bRIFT: &fSetup complete!");
+        so("&dRIFT: &fSetup complete!");
 
     }
 
@@ -665,7 +677,7 @@ public class Main extends JavaPlugin {
             }
         }
 
-        so("&bRIFT: &fDisabling Plugin!");
+        so("&dRIFT: &fDisabling Plugin!");
 
     }
 

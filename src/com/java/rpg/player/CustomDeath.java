@@ -44,7 +44,9 @@ public class CustomDeath implements Listener {
         } else {
             e.setCancelled(true);
         }*/
-        doDeath(e.getEntity());
+        if (e.getEntity().isOnline()) {
+            doDeath(e.getEntity());
+        }
     }
 
     @EventHandler

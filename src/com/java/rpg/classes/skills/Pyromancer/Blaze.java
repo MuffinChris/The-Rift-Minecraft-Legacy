@@ -24,7 +24,7 @@ public class Blaze extends Skill {
     int movespeed = 8;
     int duration = 8;
     int spotduration = 3;
-    double damage = 20;
+    double damage = 80;
     double apscale = 0.05;
     double radius = 0.75;
 
@@ -37,7 +37,7 @@ public class Blaze extends Skill {
     }
 
     public Blaze() {
-        super("Blaze", 100, 25 * 20, 0, 15, "%player% has shot a fireball!", "CAST");
+        super("Blaze", 100, 25 * 20, 0, 10, "%player% has shot a fireball!", "CAST");
         blazeLocations = new HashMap<>();
         ticks = new HashMap<>();
     }

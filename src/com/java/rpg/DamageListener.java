@@ -206,7 +206,7 @@ public class DamageListener implements Listener {
                         found = true;
                         double pstrength = 1.0;
                         if (d.getCaster().isOnline()) {
-                            pstrength+=((main.getPC().get(damager.getUniqueId()).getPStrength2().getValue() * 1.0) / 100.0);
+                            //pstrength+=((main.getPC().get(damager.getUniqueId()).getPStrength2().getValue() * 1.0) / 100.0);
                         }
                         boolean party = false;
                         if (d.getPlayer() instanceof Player) {

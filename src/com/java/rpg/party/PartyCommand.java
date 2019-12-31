@@ -53,7 +53,7 @@ public class PartyCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void cancelClick(InventoryClickEvent e) {
-        if (e.getView().getTitle().contains("YOUR PARTY")) {
+        if (e.getView().getTitle().contains("§e§lYOUR PARTY")) {
             e.setCancelled(true);
         }
     }

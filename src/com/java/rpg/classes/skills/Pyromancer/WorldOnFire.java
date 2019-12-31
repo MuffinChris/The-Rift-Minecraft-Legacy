@@ -35,14 +35,14 @@ public class WorldOnFire extends Skill implements Listener {
         return empowered;
     }
 
-    private int range = 8;
+    private int range = 6;
     private int hp = 5;
     private int mana = 5;
-    private int ramp = 2;
+    private int ramp = 5;
     private int initRamp = 20;
     private int maxramp = 300;
     private Map<Player, Integer> amp;
-    private double enddamage = 75;
+    private double enddamage = 50;
     private double apscale = 0.5;
 
     public double getDmg(Player p) {
@@ -53,7 +53,8 @@ public class WorldOnFire extends Skill implements Listener {
         super.toggleEnd(p);
         //main.getPC().get(p.getUniqueId()).setPStrength((main.getPC().get(p.getUniqueId()).getPStrength() - initRamp - amp.get(p)));
         //amp.remove(p);
-        main.getRP(p).getPStrength2().clearBasedTitle(getName(), p);
+        main.getRP(p).getBonusAP().clearBasedTitle(getName(), p);
+        //main.getRP(p).getPStrength2().clearBasedTitle(getName(), p);
         endDamage(p);
     }
 
@@ -64,8 +65,8 @@ public class WorldOnFire extends Skill implements Listener {
             Location secondLocation = loc.clone().add( radius * Math.cos( alpha + Math.PI ), height, radius * Math.sin( alpha + Math.PI ) );
             //Location firstLocation = loc.clone().add( Math.cos( alpha ), Math.sin( alpha ) + 1, Math.sin( alpha ) );
             //Location secondLocation = loc.clone().add( Math.cos( alpha + Math.PI ), Math.sin( alpha ) + 1, Math.sin( alpha + Math.PI ) );
-            caster.getWorld().spawnParticle( Particle.FLAME, firstLocation, 1, 0, 0.01, 0.01, 0.01 );
-            caster.getWorld().spawnParticle( Particle.FLAME, secondLocation, 1, 0, 0.01, 0.01, 0.01 );
+            caster.getWorld().spawnParticle( Particle.FLAME, firstLocation, 1, 0.01, 0.01, 0.01, 0.01, null, true);
+            caster.getWorld().spawnParticle( Particle.FLAME, secondLocation, 1, 0.01, 0.01, 0.01, 0.01,null, true);
         }
     }
 
@@ -76,8 +77,8 @@ public class WorldOnFire extends Skill implements Listener {
         makeCircle(caster, 5, 48, 0.2);
         makeCircle(caster, 4, 32, 0.2);
         makeCircle(caster, 2, 32, 0.2);
-        caster.getWorld().spawnParticle(Particle.DRIP_LAVA, caster.getLocation(), 20, 0.25, 0, 0, 0);
-        caster.getWorld().spawnParticle(Particle.LAVA, caster.getEyeLocation(), 45, 0, 0.2, 0.2, 0.2);
+        //caster.getWorld().spawnParticle(Particle.DRIP_LAVA, caster.getLocation(), 20, 0.25, 0, 0, 0,null, true);
+        //caster.getWorld().spawnParticle(Particle.LAVA, caster.getEyeLocation(), 45, 0, 0.2, 0.2, 0.2);
         caster.getWorld().playSound(caster.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
         caster.getWorld().playSound(caster.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
         for (LivingEntity ent : caster.getLocation().getNearbyLivingEntities(range)) {
@@ -95,12 +96,15 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+                continue;
+            }
             if (ent.getHealth() < getDmg(caster) && !(ent instanceof Player)) {
-                ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
+                ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
             }
             spellDamage(caster, ent, getDmg(caster));
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-            caster.getWorld().spawnParticle(Particle.LAVA, ent.getEyeLocation(), 75, 0.1, 0.2, 0.2, 0.2);
+            caster.getWorld().spawnParticle(Particle.LAVA, ent.getEyeLocation(), 15, 0.2, 0.2, 0.2, 0.2,null, true);
         }
     }
 
@@ -130,9 +134,14 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
+            if (!(Math.abs(ent.getLocation().getY() - p.getLocation().getY()) < 2)) {
+                continue;
+            }
             ent.setKiller(p);
             if (ent.getFireTicks() > 0) {
-                main.getRP(p).getPStrength2().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), ramp, 0, 0, true));
+                if (!(main.getRP(p).getBonusAP().getValue() >= maxramp)) {
+                    main.getRP(p).getBonusAP().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), ramp, 0, 0, true));
+                }
 
                 /*if (amp.get(p)+ramp <= maxramp) {
                     amp.replace(p, amp.get(p) + ramp);
@@ -141,7 +150,7 @@ public class WorldOnFire extends Skill implements Listener {
             } else {
                 drawLine(p, ent);
                 ent.setFireTicks(100);
-                ent.getWorld().spawnParticle(Particle.FLAME, ent.getEyeLocation().subtract(new Vector(0, ent.getHeight() * 0.4, 0)), 35, 0.04, 0.04, 0.04, 0.04);
+                ent.getWorld().spawnParticle(Particle.FLAME, ent.getEyeLocation().subtract(new Vector(0, ent.getHeight() * 0.4, 0)), 35, 0.04, 0.04, 0.04, 0.04,null, true);
                 ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 0.25F, 0.5F);
             }
         }
@@ -151,8 +160,8 @@ public class WorldOnFire extends Skill implements Listener {
             Location secondLocation = loc.clone().add( range * Math.cos( alpha + Math.PI ), 0.1, range * Math.sin( alpha + Math.PI ) );
             //Location firstLocation = loc.clone().add( Math.cos( alpha ), Math.sin( alpha ) + 1, Math.sin( alpha ) );
             //Location secondLocation = loc.clone().add( Math.cos( alpha + Math.PI ), Math.sin( alpha ) + 1, Math.sin( alpha + Math.PI ) );
-            p.getWorld().spawnParticle( Particle.FLAME, firstLocation, 1, 0, 0.01, 0.01, 0.01 );
-            p.getWorld().spawnParticle( Particle.FLAME, secondLocation, 1, 0, 0.01, 0.01, 0.01 );
+            p.getWorld().spawnParticle( Particle.FLAME, firstLocation, 1, 0, 0.01, 0.01, 0.01 ,null, true);
+            p.getWorld().spawnParticle( Particle.FLAME, secondLocation, 1, 0, 0.01, 0.01, 0.01 ,null, true);
         }
         return false;
     }
@@ -161,7 +170,7 @@ public class WorldOnFire extends Skill implements Listener {
         //DecimalFormat df = new DecimalFormat("#.##");
         /*amp.put(p, 0);
         main.getPC().get(p.getUniqueId()).setPStrength(main.getPC().get(p.getUniqueId()).getPStrength() + initRamp);*/
-        main.getRP(p).getPStrength2().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), initRamp, 0, 0, true));
+        main.getRP(p).getBonusAP().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), initRamp, 0, 0, true));
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0F, 1.0F);
         return super.toggleInit(p);
     }
@@ -182,9 +191,9 @@ public class WorldOnFire extends Skill implements Listener {
         desc.add(Main.color(""));
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fActively ignite nearby enemies."));
-        desc.add(Main.color("&fGrant yourself &a" + initRamp + "&f% power strength."));
-        desc.add(Main.color("&fGain &a" + ramp + "&f% power strength with each nearby entity on fire."));
-        desc.add(Main.color("&fMax power strength is &a" + maxramp + "&f%"));
+        desc.add(Main.color("&fGrant yourself &a" + initRamp + " &fAP."));
+        desc.add(Main.color("&fGain &a" + ramp + " &fAP every tick for each nearby."));
+        desc.add(Main.color("&fentity on fire. Max AP is &a" + maxramp + "&f."));
         desc.add(Main.color("&fWhen ended, nearby enemies take &b" + getDmg(p) + " &fdamage!"));
         return desc;
     }
@@ -214,6 +223,9 @@ public class WorldOnFire extends Skill implements Listener {
                 if (p.equals(caster)) {
                     continue;
                 }
+            }
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+                continue;
             }
             ent.setKiller(caster);
             if (ent.getFireTicks() == 0) {
@@ -257,10 +269,14 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+                continue;
+            }
             ent.setKiller(caster);
             if (ent.getFireTicks() == 0) {
                 drawLine(caster, ent);
             }
+
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
         }
     }
@@ -281,9 +297,12 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+                continue;
+            }
             if (ent.getFireTicks() > 0) {
                 if (!caster.isDead() && !ent.isDead()) {
-                    ent.getWorld().spawnParticle(Particle.FLAME, ent.getLocation(), 15, 0.04, 0.04, 0.04, 0.04);
+                    ent.getWorld().spawnParticle(Particle.FLAME, ent.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
                     ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 0.25F, 0.5F);
 
                     Skill.healTarget(caster, hp);
@@ -304,7 +323,7 @@ public class WorldOnFire extends Skill implements Listener {
         Vector vector = p2.clone().subtract(p1).normalize().multiply(0.3);
         double length = 0;
         for (; length < distance; p1.add(vector)) {
-            caster.getWorld().spawnParticle(Particle.FLAME, p1.getX(), p1.getY(), p1.getZ(), 1, 0.01, 0.01, 0.01, 0.01);
+            caster.getWorld().spawnParticle(Particle.FLAME, p1.getX(), p1.getY(), p1.getZ(), 1, 0.01, 0.01, 0.01, 0.01,null, true);
             length += 0.3;
         }
     }

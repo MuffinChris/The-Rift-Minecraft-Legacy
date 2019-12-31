@@ -117,15 +117,15 @@ public class ClassManager implements Listener {
                 NBTTagList modifiers = new NBTTagList();
                 NBTTagCompound itemC = new NBTTagCompound();
 
-                Constructor<NBTTagString> constructorS = NBTTagString.class.getDeclaredConstructor();
+                Constructor<NBTTagString> constructorS = NBTTagString.class.getDeclaredConstructor(String.class);
                 constructorS.setAccessible(true);
                 NBTTagString nbts = constructorS.newInstance("generic.armor");
 
-                Constructor<NBTTagDouble> constructorD = NBTTagDouble.class.getDeclaredConstructor();
+                Constructor<NBTTagDouble> constructorD = NBTTagDouble.class.getDeclaredConstructor(double.class);
                 constructorD.setAccessible(true);
                 NBTTagDouble nbtd = constructorD.newInstance(0);
 
-                Constructor<NBTTagInt> constructorI = NBTTagInt.class.getDeclaredConstructor();
+                Constructor<NBTTagInt> constructorI = NBTTagInt.class.getDeclaredConstructor(int.class);
                 constructorI.setAccessible(true);
                 NBTTagInt nbti = constructorI.newInstance(0);
                 NBTTagInt nbtiL = constructorI.newInstance(894654);
@@ -167,7 +167,7 @@ public class ClassManager implements Listener {
                 List<String> lore = new ArrayList<>();
                 if (meta.hasLore()) {
                     lore = meta.getLore();
-            }
+                }
                 if (weight.containsKey(nItem.getType())) {
                     if (lore.isEmpty() || !lore.contains(Main.color("&eWeight: &f" + weight.get(nItem.getType())))) {
                         lore.add(Main.color("&eWeight: &f" + weight.get(nItem.getType())));
@@ -213,11 +213,11 @@ public class ClassManager implements Listener {
             if (fullweight < maxweight * 1.5) {
                 clearArmorWS(e.getPlayer());
                 Main.msg(e.getPlayer(), "&cYour armor is too heavy, you're afflicted with slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -15, 0, 0, true));
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -10, 0, 0, true));
             } else if (fullweight < maxweight * 2) {
                 clearArmorWS(e.getPlayer());
                 Main.msg(e.getPlayer(), "&cYour armor is far too heavy, you're afflicted with slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -17, 0, 0, true));
+                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -15, 0, 0, true));
             } else if (fullweight < maxweight * 2.5) {
                 clearArmorWS(e.getPlayer());
                 Main.msg(e.getPlayer(), "&cYour armor is extremely heavy, you're afflicted with high slowness.");

@@ -29,7 +29,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             sendSkillsInv(p);
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
         }
         return false;
     }
@@ -38,7 +38,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
     public void sendSkillsInv(Player p) {
         RPGPlayer rp = main.getRP(p);
-        Inventory playerInv = Bukkit.createInventory(null, 27, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills &8(&f" + rp.getSP() + " SP&8)"));
+        Inventory playerInv = Bukkit.createInventory(null, 27, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
         ArrayList<String> lore;//
         int i = 10;
         for (Skill s : rp.getPClass().getSkills()) {
@@ -89,7 +89,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (e.getView().getTitle().contains("Skills")) {
+        if (e.getView().getTitle().contains("§e§lSkills")) {
             e.setCancelled(true);
         }
     }

@@ -37,6 +37,7 @@ public class WarpsCommand implements CommandExecutor {
                     File pFile = new File("plugins/Rift/warps.yml");
                     FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
                     if (pData.contains(String.valueOf(args[0]))) {
+                        p.setFallDistance(0);
                         p.teleport((Location) pData.get(String.valueOf(args[0])));
                         p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
                     } else {
