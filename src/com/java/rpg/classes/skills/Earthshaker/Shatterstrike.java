@@ -3,13 +3,13 @@ package com.java.rpg.classes.skills.Earthshaker;
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
-import net.minecraft.server.v1_15_R1.DataWatcherObject;
-import net.minecraft.server.v1_15_R1.DataWatcherRegistry;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_14_R1.DataWatcherObject;
+import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
+import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,15 +29,10 @@ public class Shatterstrike extends Skill implements Listener {
 
     private double damage = 120;
     private int range = 4;
-
-    public Shatterstrike() {
-        super("Shatterstrike", 0, 0, 0, 0, " ", "CAST");
-    }
-
+	
     public void cast(Player p)
     {
     	Location loc = p.getLocation();
-    	//Location c1 = loc.
-    	// I dont know how to make cone
+    	Location c1 = loc.
     }
 }

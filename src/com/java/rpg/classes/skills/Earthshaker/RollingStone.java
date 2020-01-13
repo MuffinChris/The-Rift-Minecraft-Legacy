@@ -1,17 +1,19 @@
-package com.java.rpg.classes.skills.Earthshaker;
-
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.skills.Pyromancer.PyroclasmProjectile;
 import com.java.rpg.party.Party;
 
-import net.minecraft.server.v1_15_R1.DataWatcherObject;
-import net.minecraft.server.v1_15_R1.DataWatcherRegistry;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
+import Rift.src.com.java.rpg.classes.String;
+import Rift.src.com.java.rpg.classes.skills.Pyromancer.ArmorStand;
+import Rift.src.com.java.rpg.classes.skills.Pyromancer.LivingEntity;
+import Rift.src.com.java.rpg.classes.skills.Pyromancer.Player;
+import net.minecraft.server.v1_14_R1.DataWatcherObject;
+import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
+import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -37,7 +39,7 @@ public class RollingStone extends Skill implements Listener {
     private int rad = 2;
     
     public RollingStone() {
-    	super("RollingStone", 100, 20, 0, 20, "%player% has shot a fireball!", "CAST-TARGET");
+    	super("RollingStone", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
     	DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
         List<String> desc = new ArrayList<>();
@@ -68,7 +70,7 @@ public class RollingStone extends Skill implements Listener {
                                 continue;
                             }
                     	}
-                    	ent.teleport(ent.getLocation().add(new Vector(0, 0.5, 0)));
+                    	ent.teleport(ent.getLocation().add(new Vector(0, 1, 0)));
                     }
                 }
                 if(times < 1) {
@@ -110,23 +112,23 @@ public class RollingStone extends Skill implements Listener {
     }
     
     // launch enemies forwards or something idk
-    public void launch(Player caster) {
-    	for (LivingEntity ent: caster.getLocation().getNearbyLivingEntities(rad)) {
+    public void launch(Player pl) {
+    	for (LivingEntity ent: pl.getLocation().getNearbyLivingEntities(rad)) {
     		if (ent instanceof ArmorStand) {
                 continue;
             }
             if (ent instanceof Player) {
-                Player pl = (Player) ent;
+                Player player = (Player) ent;
                 if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
-                    if (main.getPM().getParty(pl).getPlayers().contains(caster)) {
+                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
                         continue;
                     }
                 }
-                if (pl.equals(caster)) {
+                if (player.equals(pl)) {
                     continue;
                 }
             }
-    		ent.setVelocity(ent.getVelocity().add(ent.getVelocity().add(new Vector(0, 1, 0).multiply(1.25))));
+    		ent.setVelocity(ent.getVelocity().add(new Vector(0, 0.5, 0)));
     	}
     }
     
