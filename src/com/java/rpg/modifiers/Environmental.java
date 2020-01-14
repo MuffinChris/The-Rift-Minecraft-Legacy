@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
@@ -78,10 +79,10 @@ public class Environmental implements Listener {
                 e.setDamage(hp / 30.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
-                e.setDamage(10);
+                e.setDamage(hp * 0.025);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE) {
-                e.setDamage(10);
+                e.setDamage(hp * 0.025);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
                 e.setDamage(hp * 0.1);
@@ -123,6 +124,13 @@ public class Environmental implements Listener {
                 Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), "&c&l❤" + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
                 magic.rise();
             }
+        }
+    }
+
+    @EventHandler
+    public void ePearlDamage (PlayerTeleportEvent e) {
+        if (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            e.getPlayer().setNoDamageTicks(1);
         }
     }
 

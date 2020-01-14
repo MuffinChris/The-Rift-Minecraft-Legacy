@@ -85,7 +85,7 @@ public class Fireball extends Skill implements Listener {
                     if (!arrow.isDead()) {
                         player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
                         if (arrow.isOnGround() || arrow.isDead()) {
-                            lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
+                            lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
                             arrow.remove();
                             arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04,null, true);
                         }
@@ -98,7 +98,7 @@ public class Fireball extends Skill implements Listener {
                     if (!arrow.isDead()) {
                         player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
                         if (arrow.isOnGround() || arrow.isDead()) {
-                            lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
+                            lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
                             arrow.remove();
                             arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.02,null, true);
                         }
@@ -110,7 +110,7 @@ public class Fireball extends Skill implements Listener {
                 @Override
                 public void run(){
                     if (!(arrow.isOnGround() || arrow.isDead())) {
-                        lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
+                        lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
                         arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.04,null, true);
                     }
                     scheduler.cancelTask(task);

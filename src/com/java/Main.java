@@ -662,6 +662,7 @@ public class Main extends JavaPlugin {
         List<String> projectiles = new ArrayList<>();
         projectiles.add("Fireball");
         projectiles.add("Meteor");
+        projectiles.add("Combust");
 
         for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {

@@ -10,7 +10,11 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -62,7 +66,7 @@ public class Combust extends Skill implements Listener {
             PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(arrow.getEntityId());
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
             arrow.setShooter(p);
-            arrow.setVelocity(p.getEyeLocation().getDirection().multiply(2));
+            arrow.setVelocity(p.getEyeLocation().getDirection().multiply(0.5));
             arrow.setBounce(false);
             arrow.setGravity(false);
             arrow.setKnockbackStrength(0);
@@ -72,20 +76,97 @@ public class Combust extends Skill implements Listener {
                 @Override
                 public void run() {
                     if (!arrow.isDead()) {
-                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04, null, true);
+                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.25, 0.15, 0.25, 0.05, null, true);
                         if (arrow.isOnGround() || arrow.isDead()) {
-                            lightEntities(arrow, p, arrow.getLocation(), getDmg(p));
+                            explodeSingle(player, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Combust:", "")));
                             arrow.remove();
-                            arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04, null, true);
                         }
                     }
                 }
             }, 1, 1);
+            final int task2 = scheduler.scheduleSyncRepeatingTask(main, new Runnable(){
+                @Override
+                public void run() {
+                    if (!arrow.isDead()) {
+                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.25, 0.15, 0.25, 0.05,null, true);
+                        if (arrow.isOnGround() || arrow.isDead()) {
+                            explodeSingle(player, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Combust:", "")));
+                            arrow.remove();
+
+                        }
+                    }
+                }
+            }, 0, 1);
+
+            scheduler.scheduleSyncDelayedTask(main, new Runnable() {
+                @Override
+                public void run(){
+                    if (!(arrow.isOnGround() || arrow.isDead())) {
+                        explodeSingle(player, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Combust:", "")));
+                    }
+                    scheduler.cancelTask(task);
+                    scheduler.cancelTask(task2);
+                    arrow.remove();
+                }
+            }, 20 * range);
+        }
+    }
+    @EventHandler
+    public void projectileHe (ProjectileHitEvent e) {
+        if (e.getEntity() instanceof Arrow) {
+            Arrow a = (Arrow) e.getEntity();
+            if (a.getCustomName() instanceof String && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
+                Player shooter = (Player) a.getShooter();
+                if (e.getHitEntity() instanceof Entity) {
+                    explodeSingle(shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
+                    //e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
+                } else {
+                    explodeSingle(shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
+                    //e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
+                }
+                a.remove();
+            }
         }
     }
 
-    public void explode(Player caster, Location loc) {
-        loc.getWorld().spawnParticle(Particle.LAVA, loc, 50, 0.04, 0.12, 0.12, 0.12,null, true);
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onHit (EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Arrow && !(e.getEntity() instanceof ArmorStand)) {
+            Arrow a = (Arrow) e.getDamager();
+            if (a.getCustomName() instanceof String && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
+                Player shooter = (Player) a.getShooter();
+                if (e.getEntity() instanceof Player) {
+                    Player p = (Player) e.getEntity();
+                    if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                        if (main.getPM().getParty(p).getPlayers().contains(a.getShooter())) {
+                            a.remove();
+                            e.setCancelled(true);
+                            return;
+                        }
+                    }
+                    if (p.equals(shooter)) {
+                        a.remove();
+                        e.setCancelled(true);
+                        return;
+                    }
+                    //((CraftPlayer)p).getHandle().getDataWatcher().set(new DataWatcherObject<>(10, DataWatcherRegistry.b),0);
+                }
+                /*if (e.getEntity() instanceof LivingEntity) {
+                    LivingEntity ent = (LivingEntity) e.getEntity();
+                    lightEntities(e.getEntity(), shooter, e.getEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Fireball:", "")));
+                    ent.getWorld().spawnParticle(Particle.LAVA, ent.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
+                }*/
+                a.remove();
+                e.setDamage(0);
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    public void explodeSingle(Player caster, Location loc, double damage) {
+        loc.getWorld().spawnParticle(Particle.LAVA, loc, 10, 0.1, 0.1, 0.1, 0.05,null, true);
+        loc.getWorld().playSound(loc, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1.0F, 1.0F);
+        loc.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, loc, 1, 0.12, 0.12, 0.12, 0.12,null, true);
         for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
             if (ent instanceof ArmorStand) {
                 continue;
@@ -109,10 +190,20 @@ public class Combust extends Skill implements Listener {
                     spellDamage(caster, ent, damage);
                     ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
                     ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
-                    ent.getLocation().getWorld().spawnParticle(Particle.EXPLOSION_LARGE, ent.getLocation(), 1, 0.12, 0.12, 0.12, 0.12,null, true);
                 }
             }.runTaskLater(Main.getInstance(), 1L);
         }
+
+        loc.getWorld().playSound(loc, Sound.BLOCK_BEACON_AMBIENT, 1.0F, 1.0F);
+        new BukkitRunnable() {
+            public void run() {
+                explodeMulti(caster, loc, damage);
+            }
+        }.runTaskLater(Main.getInstance(), 20L);
+    }
+
+    public void explodeMulti(Player caster, Location loc, double damage) {
+        
     }
 
 }
