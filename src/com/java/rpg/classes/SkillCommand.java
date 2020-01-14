@@ -70,6 +70,10 @@ public class SkillCommand implements CommandExecutor {
                     Main.msg(p, "&cTarget out of range!");
                 } else if (flavor.contains("Stunned")) {
                     Main.msg(p, "&cYou're stunned!");
+                } else if (flavor.contains("AlreadySuper")) {
+                    Main.msg(p, "&cYou can only use the upgraded form of this skill.");
+                } else if (flavor.contains("NotSuper")) {
+                    Main.msg(p, "&cYou have not upgraded to this skill.");
                 }
             } else {
                 Main.msg(p, "&fUsage: /skill <skill>");

@@ -91,23 +91,34 @@ public class Skillboard {
 
     public void updateSkillbar() {
         if (skillbar) {
+            Player p = Bukkit.getPlayer(uuid);
             String output = "";
             int slot = 1;
-            for (Skill s : main.getRP(Bukkit.getPlayer(uuid)).getPClass().getSkills()) {
-                if (slot == main.getRP(Bukkit.getPlayer(uuid)).getIdleSlot() + 1) {
+            List<Skill> pSkills = new ArrayList<>();
+            int index = 0;
+            for (Skill s : main.getRP(p).getPClass().getSkills()) {
+                if (main.getRP(p).getSkillLevels().get(s.getName()) == 0) {
+                    pSkills.add(s);
+                } else {
+                    pSkills.add(main.getRP(p).getPClass().getSuperSkills().get(index));
+                }
+                index++;
+            }
+            for (Skill s : pSkills) {
+                if (slot == main.getRP(p).getIdleSlot() + 1) {
                     slot++;
                 }
                 String name = s.getName();
                 boolean nolevel = false;
                 boolean cd = false;
                 boolean manacost = false;
-                if (main.getRP(Bukkit.getPlayer(uuid)).getLevel() < s.getLevel()) {
+                if (main.getRP(p).getLevel() < s.getLevel()) {
                     name = "&c" + s.getName();
                     nolevel = true;
-                } else if (main.getRP(Bukkit.getPlayer(uuid)).getCooldown(s).contains("CD:")) {
+                } else if (main.getRP(p).getCooldown(s).contains("CD:")) {
                     name = "&c" + s.getName();
                     cd = true;
-                } else if (main.getMana(Bukkit.getPlayer(uuid)) < s.getManaCost()) {
+                } else if (main.getMana(p) < s.getManaCost()) {
                     name = "&c" + s.getName();
                     manacost = true;
                 }
@@ -115,7 +126,7 @@ public class Skillboard {
                 if (nolevel) {
                     output+=" &8<&cLv. " + s.getLevel() + "&8> || ";
                 } else if (cd) {
-                    output+=" &8<&f" + main.getRP(Bukkit.getPlayer(uuid)).getCooldown(s).replace("CD:", "") + "s" + "&8> || ";
+                    output+=" &8<&f" + main.getRP(p).getCooldown(s).replace("CD:", "") + "s" + "&8> || ";
                 } else if (manacost) {
                     output+=" &8<&b" + s.getManaCost() + " M" + "&8> || ";
                 } else {

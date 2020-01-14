@@ -64,8 +64,9 @@ public class PlayerClass {
     private String fancyResourceName = "&bMana";
 
     private List<Skill> skills;
+    private List<Skill> superSkills;
 
-    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, int weight) {
+    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, List<Skill> superSkills, int weight) {
         this.name = name;
         this.fancyname = fancyname;
         this.basehp = basehp;
@@ -86,6 +87,7 @@ public class PlayerClass {
         baseAP = ap;
         adPerLevel = adperlevel;
         apPerLevel = apperlevel;
+        this.superSkills = superSkills;
     }
 
     public double getCalcAD(int level) {
@@ -114,6 +116,9 @@ public class PlayerClass {
 
     public List<Skill> getSkills() {
         return skills;
+    }
+    public List<Skill> getSuperSkills() {
+        return superSkills;
     }
 
     public String getName() {

@@ -34,7 +34,6 @@ public class AFKInvuln implements Listener {
 
     @EventHandler
     public void onRes (PlayerRespawnEvent e) {
-        not wrkn still
         if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
             hasMoved.replace(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
         }
@@ -68,7 +67,6 @@ public class AFKInvuln implements Listener {
             }
         }
     }
--35. Player not teleported when close inventory afkinvuln. Also can pull item out of afk invuln lul?
     @EventHandler
     public void onClose (InventoryCloseEvent e) {
         if (e.getPlayer() instanceof Player) {
@@ -79,7 +77,12 @@ public class AFKInvuln implements Listener {
 
                         } else {
                             Player p = (Player) e.getPlayer();
-                            p.teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+                            if (e.getPlayer().isDead()) {
+
+                            } else {
+                                Location l = hasMoved.get(e.getPlayer().getUniqueId());
+                                p.teleport(l);
+                            }
                             sendInv(p);
                             p.setGameMode(GameMode.SPECTATOR);
                         }
@@ -118,12 +121,14 @@ public class AFKInvuln implements Listener {
         if (hasMoved.containsKey(e.getPlayer())) {
             hasMoved.remove(e.getPlayer());
         }
+        e.getPlayer().setGameMode(GameMode.SPECTATOR);
         hasMoved.put(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
         new BukkitRunnable() {
             public void run() {
                 if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
                     e.getPlayer().setGameMode(GameMode.SPECTATOR);
-                    //e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+                    e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+                    //unsure why removed teleport, but it could cause errors!
                     //Main.msg(e.getPlayer(), "&a&lResource Pack loading...");
                     if (packAccepted.containsKey(e.getPlayer().getUniqueId())) {
                         if (e.getPlayer().getOpenInventory() != null) {
@@ -132,6 +137,8 @@ public class AFKInvuln implements Listener {
                             }
                         }
                         sendInv(e.getPlayer());
+                    } else {
+                        e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
                     }
                 } else {
                     cancel();

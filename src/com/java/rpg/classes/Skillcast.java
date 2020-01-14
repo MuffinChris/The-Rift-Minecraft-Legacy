@@ -58,10 +58,20 @@ public class Skillcast implements Listener {
             list.add(e.getPreviousSlot());
             list.add(slot);
             lastSlot.put(e.getPlayer().getUniqueId(), e.getPreviousSlot());*/
+            List<Skill> pSkills = new ArrayList<>();
+            int index = 0;
+            for (Skill s : main.getRP(e.getPlayer()).getPClass().getSkills()) {
+                if (main.getRP(e.getPlayer()).getSkillLevels().get(s.getName()) == 0) {
+                    pSkills.add(s);
+                } else {
+                    pSkills.add(main.getRP(e.getPlayer()).getPClass().getSuperSkills().get(index));
+                }
+                index++;
+            }
             if (slot < idle) {
-                e.getPlayer().performCommand("skill " + ((Skill) main.getRP(e.getPlayer()).getPClass().getSkills().toArray()[slot]).getName());
+                e.getPlayer().performCommand("skill " + ((Skill) pSkills.toArray()[slot]).getName());
             } else {
-                e.getPlayer().performCommand("skill " + ((Skill) main.getRP(e.getPlayer()).getPClass().getSkills().toArray()[slot - 1]).getName());
+                e.getPlayer().performCommand("skill " + ((Skill) pSkills.toArray()[slot - 1]).getName());
             }
 
         }/* else {

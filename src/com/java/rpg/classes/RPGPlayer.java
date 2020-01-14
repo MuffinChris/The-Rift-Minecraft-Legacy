@@ -550,8 +550,28 @@ public class RPGPlayer extends Leveleable {
 
     public String castSkill(String name) {
         if (pclass instanceof PlayerClass) {
-            for (Skill s : pclass.getSkills()) {
-                if (name.equalsIgnoreCase(s.getName())) {
+            Skill s = null;
+            for (Skill st : pclass.getSkills()) {
+                if (name.equalsIgnoreCase(st.getName())) {
+                    if (skillLevels.get(st.getName()) != 0) {
+                        return "AlreadySuper";
+                    }
+                    s = st;
+                }
+            }
+            int indexx = 0;
+            for (Skill st : pclass.getSuperSkills()) {
+                if (name.equalsIgnoreCase(st.getName())) {
+                    if (skillLevels.get(pclass.getSkills().get(0).getName()) == 0) {
+                        return "NotSuper";
+                    }
+                    s = st;
+                }
+                indexx++;
+            }
+            if (s != null) {
+            /*for (Skill s : pclass.getSkills()) {
+                if (name.equalsIgnoreCase(s.getName())) {*/
                     if (s.getLevel() <= getLevel()) {
                         if (s.getManaCost() <= currentMana || (s.getType().contains("TOGGLE") && getToggles().contains(s.getName()))) {
                             if (stun.getValue() > 0) {
@@ -595,30 +615,34 @@ public class RPGPlayer extends Leveleable {
                                 for (int ind : indexesToRemove) {
                                     statuses.remove(ind);
                                 }
-
+                                String nameS = s.getName();
+                                int warmup = s.getWarmup();
+                                int manaCost = s.getManaCost();
+                                String type = s.getType();
+                                final Skill sk = s;
                                 final int task = scheduler.scheduleSyncDelayedTask(main, new Runnable() {
                                     public void run() {
-                                        if (cooldowns.containsKey(s.getName())) {
-                                            cooldowns.replace(s.getName(), System.currentTimeMillis());
+                                        if (cooldowns.containsKey(nameS)) {
+                                            cooldowns.replace(nameS, System.currentTimeMillis());
                                         } else {
-                                            cooldowns.put(s.getName(), System.currentTimeMillis());
+                                            cooldowns.put(nameS, System.currentTimeMillis());
                                         }
-                                        if (currentMana >= s.getManaCost()) {
-                                            if (s.getType().contains("TARGET")) {
+                                        if (currentMana >= manaCost) {
+                                            if (type.contains("TARGET")) {
                                                 if (target == null || (target != null && target.isDead())) {
-                                                    statuses.remove("Warmup" + s.getName());
+                                                    statuses.remove("Warmup" + nameS);
                                                     return;
                                                 }
-                                                s.target(player, target);
+                                                sk.target(player, target);
                                                 target = null;
                                             } else {
-                                                s.cast(player);
+                                                sk.cast(player);
                                             }
-                                            currentMana -= s.getManaCost();
+                                            currentMana -= manaCost;
                                         } else {
-                                            Main.msg(player, "&cOut of mana to cast " + s.getName() + "!");
+                                            Main.msg(player, "&cOut of mana to cast " + nameS + "!");
                                         }
-                                        statuses.remove("Warmup" + s.getName());
+                                        statuses.remove("Warmup" + nameS);
                                     }
                                 }, s.getWarmup());
 
@@ -626,19 +650,19 @@ public class RPGPlayer extends Leveleable {
                                     int time = 0;
                                     public void run() {
                                         time++;
-                                        if (time >= s.getWarmup()) {
+                                        if (time >= warmup) {
                                             cancel();
                                             return;
                                         }
-                                        if (!getStatuses().contains("Warmup" + s.getName()) || (target != null) && target.isDead() && s.getType().contains("TARGET") || (target == null && s.getType().contains("TARGET"))) {
+                                        if (!getStatuses().contains("Warmup" + nameS) || (target != null) && target.isDead() && type.contains("TARGET") || (target == null && type.contains("TARGET"))) {
                                             scheduler.cancelTask(task);
-                                            if (target == null && s.getType().contains("TARGET")) {
+                                            if (target == null && type.contains("TARGET")) {
                                                 Main.msg(player, "&cYour target died!");
-                                                statuses.remove("Warmup" + s.getName());
+                                                statuses.remove("Warmup" + name);
                                             }
-                                            if (target != null && target.isDead() && s.getType().contains("TARGET")) {
+                                            if (target != null && target.isDead() && type.contains("TARGET")) {
                                                 Main.msg(player, "&cYour target died!");
-                                                statuses.remove("Warmup" + s.getName());
+                                                statuses.remove("Warmup" + name);
                                                 target = null;
                                             }
                                             cancel();
@@ -759,7 +783,7 @@ public class RPGPlayer extends Leveleable {
                         return "NoMana";
                     }
                     return "Level" + s.getLevel();
-                }
+                //}
             }
         }
         return "Invalid";

@@ -298,7 +298,9 @@ public class ClassManager implements Listener {
         skillsNone.add(new Adrenaline());
         //skillsNone.add(new Rest());
         skillsNone.add(new Bulwark());
-        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 15.0, 100, 2, 3, 0.1, "SWORD", 10, 30, 0, 0.3, 0.1, 40, 32, 0.5, 0.25, skillsNone, 150));
+        List<Skill> superSkillsNone = new ArrayList<>();
+
+        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 15.0, 100, 2, 3, 0.1, "SWORD", 10, 30, 0, 0.3, 0.1, 40, 32, 0.5, 0.25, skillsNone, superSkillsNone, 150));
 
 
         List<Skill> skillsPyro = new ArrayList<>();
@@ -308,7 +310,9 @@ public class ClassManager implements Listener {
         skillsPyro.add(new Pyroclasm());
         skillsPyro.add(new Combust());
 
-        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 0.2, 2,20, 22, 0.41, 0.22, skillsPyro, 110));
+        List<Skill> superSkillsPyro = new ArrayList<>();
+
+        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 0.2, 2,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110));
     }
 
     public PlayerClass getPClassFromString(String s) {
