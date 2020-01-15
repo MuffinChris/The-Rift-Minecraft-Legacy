@@ -2,25 +2,13 @@ package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.skills.Pyromancer.PyroclasmProjectile;
+import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
-
-import net.minecraft.server.v1_15_R1.DataWatcherObject;
-import net.minecraft.server.v1_15_R1.DataWatcherRegistry;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -31,10 +19,17 @@ public class Avalanche extends Skill implements Listener {
     private Main main = Main.getInstance();
     private int damage = 20;
     private int duration = 2 * 20;
-    private int stun = 2;
+    private int stunD = 2;
     private int interval = 6;
     private int range = 6;
     private int rad = 2;
+    
+    private double APscale = 3;
+    private double ADscale = 7;
+    
+    public double getDmg(Player p) {
+        return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale ) / 5;
+    }
     
     public Avalanche() {
     	super("Avalanche", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
@@ -51,14 +46,14 @@ public class Avalanche extends Skill implements Listener {
     
     public void target(Player p, LivingEntity t) {
         super.target(p, t);
-        makeCircle(p, t, t.getLocation());
+        makeCircle(p, t);
     }
     
-    public void makeCircle(Player pl, LivingEntity t, Location Loc) {
+    public void makeCircle(Player pl, LivingEntity t) {
     	new BukkitRunnable() {
 	    	int times = 0;
 			public void run() {
-				for (LivingEntity ent : Loc.getNearbyLivingEntities(rad)) {
+				for (LivingEntity ent : t.getLocation().getNearbyLivingEntities(rad)) {
 		            if (ent instanceof ArmorStand) {
 		                continue;
 		            }
@@ -69,17 +64,39 @@ public class Avalanche extends Skill implements Listener {
 		                        continue;
 		                    }
 		                }
-		              /*  if (p.equals(pl) {
+		                if (p.equals(pl)) {
 		                    continue;
-		                }*/
+		                }
 		            }
-		            //spellDamage(p, ent, damage);
-		            //STUN 2 TICKS
+		            spellDamage(pl, ent, getDmg(pl));
+		            stun(pl, ent, stunD);
 		        }
 				times++;
 				if(times >= 5)
 					cancel();
 			}
     	}.runTaskTimer(Main.getInstance(), 0L, 8L);
+    }
+    
+    public void stun(Player player, LivingEntity e, int stunDur) {
+    	if (e instanceof ArmorStand) {
+        }
+        else if (e instanceof Player) {
+            Player pl = (Player) e;
+        	main.getRP(pl).getStun().getStatuses().add(new StatusValue("Stun:" + player.getName(), 1, duration, System.currentTimeMillis(), false));
+        } 
+		else {
+			e.setAI(false);
+	    	new BukkitRunnable() {
+	    		int times = 0;
+	    		public void run() {
+	    			if(times >= stunDur) {
+	    				e.setAI(true);
+	    				cancel();
+	    			}
+	    			times++;
+	    		}
+	    	}.runTaskTimer(Main.getInstance(), 0L, 1L);
+        }
     }
 }
