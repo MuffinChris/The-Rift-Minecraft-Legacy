@@ -60,6 +60,7 @@ public class AFKInvuln implements Listener {
                     if (hasMoved.containsKey(p.getUniqueId())) {
                         Location l = hasMoved.get(p.getUniqueId());
                         hasMoved.remove(p.getUniqueId());
+                        p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                         p.teleport(l);
                         p.setGameMode(GameMode.SURVIVAL);
                     }
@@ -70,24 +71,28 @@ public class AFKInvuln implements Listener {
     @EventHandler
     public void onClose (InventoryCloseEvent e) {
         if (e.getPlayer() instanceof Player) {
-            if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
-                new BukkitRunnable() {
-                    public void run() {
-                        if (e.getPlayer().getOpenInventory().getTitle() != null && e.getPlayer().getOpenInventory().getTitle().contains("§e§lJOIN MENU")) {
-
-                        } else {
-                            Player p = (Player) e.getPlayer();
-                            if (e.getPlayer().isDead()) {
+            if (e.getReason() != InventoryCloseEvent.Reason.PLUGIN) {
+                if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
+                    new BukkitRunnable() {
+                        public void run() {
+                            if (e.getPlayer().getOpenInventory().getTitle() != null && e.getPlayer().getOpenInventory().getTitle().contains("§e§lJOIN MENU")) {
 
                             } else {
-                                Location l = hasMoved.get(e.getPlayer().getUniqueId());
-                                p.teleport(l);
+                                Player p = (Player) e.getPlayer();
+                                if (e.getPlayer().isDead()) {
+
+                                } else {
+                                    Location l = hasMoved.get(e.getPlayer().getUniqueId());
+                                    e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                                    p.teleport(l);
+                                    Bukkit.broadcastMessage("X: " + l.getX() + " Z:" + l.getZ() + " but ur currently at " + p.getLocation().getX() + ", " + p.getLocation().getZ());
+                                }
+                                sendInv(p);
+                                p.setGameMode(GameMode.SPECTATOR);
                             }
-                            sendInv(p);
-                            p.setGameMode(GameMode.SPECTATOR);
                         }
-                    }
-                }.runTaskLater(Main.getInstance(), 1L);
+                    }.runTaskLater(Main.getInstance(), 1L);
+                }
             }
         }
     }
@@ -111,6 +116,7 @@ public class AFKInvuln implements Listener {
         if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
             Main.msg(e.getPlayer(), "&cYou cannot spectate while in the entry menu. If the GUI is not showing up, please reconnect!");
             e.setCancelled(true);
+            e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
         }
@@ -126,18 +132,18 @@ public class AFKInvuln implements Listener {
         new BukkitRunnable() {
             public void run() {
                 if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
+                    //e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                    //e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
                     e.getPlayer().setGameMode(GameMode.SPECTATOR);
-                    e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
                     //unsure why removed teleport, but it could cause errors!
                     //Main.msg(e.getPlayer(), "&a&lResource Pack loading...");
                     if (packAccepted.containsKey(e.getPlayer().getUniqueId())) {
-                        if (e.getPlayer().getOpenInventory() != null) {
                             if (e.getPlayer().getOpenInventory().getTitle().contains("§e§lJOIN MENU")) {
                                 return;
                             }
-                        }
                         sendInv(e.getPlayer());
                     } else {
+                        e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                         e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
                     }
                 } else {
@@ -150,18 +156,21 @@ public class AFKInvuln implements Listener {
     public void rp (PlayerResourcePackStatusEvent e) {
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED) {
             Main.msg(e.getPlayer(), "&c&lPlease use the resource pack! Select the Server and click Edit to enable resource packs.");
+            e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
             packAccepted.put(e.getPlayer().getUniqueId(), true);
         }
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
             Main.msg(e.getPlayer(), "&c&lFailed to download resource pack. We recommend retrying with a reconnect!");
+            e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
             packAccepted.put(e.getPlayer().getUniqueId(), true);
         }
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.ACCEPTED) {
             Main.msg(e.getPlayer(), "&a&lResource Pack Enabled!");
+            e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
             packAccepted.put(e.getPlayer().getUniqueId(), true);

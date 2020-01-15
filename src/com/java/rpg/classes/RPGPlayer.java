@@ -52,11 +52,19 @@ public class RPGPlayer extends Leveleable {
     private List<Damage> damages;
 
     public double getAD() {
-        return bonusad.getValue() + pclass.getCalcAD(getLevel());
+        if (player != null && pclass != null) {
+            return bonusad.getValue() + pclass.getCalcAD(getLevel());
+        } else {
+            return 0;
+        }
     }
 
     public double getAP() {
-        return bonusap.getValue() + pclass.getCalcAP(getLevel());
+        if (player != null && pclass != null) {
+            return bonusap.getValue() + pclass.getCalcAP(getLevel());
+        } else {
+            return 0;
+        }
     }
 
 

@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,10 +33,12 @@ public class Combust extends Skill implements Listener {
     private double apscale = 0.4;
     private double apscalePerEnt = 0.1;
 
-    private int range = 12;
+    private int range = 10;
+
+    private int travelRange = 8;
 
     public Combust() {
-        super("Combust", 200, 60 * 20, 30, 25, "%player% has shot a fireball!", "CAST");
+        super("Combust", 200, 60 * 20, 50, 25, "%player% has shot a fireball!", "CAST");
     }
 
     public List<String> getDescription(Player p) {
@@ -59,71 +62,28 @@ public class Combust extends Skill implements Listener {
 
     public void cast(Player p) {
         super.cast(p);
-        Location loc = new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY() - 0.1, p.getEyeLocation().getZ());
-        final Arrow arrow = (Arrow) p.getWorld().spawn(loc, Arrow.class);
-        arrow.setCustomName("Combust:" + getDmg(p));
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(arrow.getEntityId());
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-            arrow.setShooter(p);
-            arrow.setVelocity(p.getEyeLocation().getDirection().multiply(0.5));
-            arrow.setBounce(false);
-            arrow.setGravity(false);
-            arrow.setKnockbackStrength(0);
-            arrow.setSilent(true);
-            final BukkitScheduler scheduler = Bukkit.getScheduler();
-            final int task = scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
-                @Override
-                public void run() {
-                    if (!arrow.isDead()) {
-                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.25, 0.15, 0.25, 0.05, null, true);
-                        if (arrow.isOnGround() || arrow.isDead()) {
-                            explodeSingle(player, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Combust:", "")));
-                            arrow.remove();
-                        }
-                    }
-                }
-            }, 1, 1);
-            final int task2 = scheduler.scheduleSyncRepeatingTask(main, new Runnable(){
-                @Override
-                public void run() {
-                    if (!arrow.isDead()) {
-                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.25, 0.15, 0.25, 0.05,null, true);
-                        if (arrow.isOnGround() || arrow.isDead()) {
-                            explodeSingle(player, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Combust:", "")));
-                            arrow.remove();
-
-                        }
-                    }
-                }
-            }, 0, 1);
-
-            scheduler.scheduleSyncDelayedTask(main, new Runnable() {
-                @Override
-                public void run(){
-                    if (!(arrow.isOnGround() || arrow.isDead())) {
-                        explodeSingle(player, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Combust:", "")));
-                    }
-                    scheduler.cancelTask(task);
-                    scheduler.cancelTask(task2);
-                    arrow.remove();
-                }
-            }, 20 * range);
-        }
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0F, 1.0F);
+        CombustProjectile proj = new CombustProjectile(p, range, 5, getDmg(p), getDmgPerEntity(p), travelRange);
     }
+
+    public void warmup(Player p) {
+        super.warmup(p);
+        p.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, p.getLocation().clone().subtract(new Vector(0, 0.1, 0)), 1, 0.1, 0.01, 0.1, 0.1, null, true);
+    }
+
     @EventHandler
     public void projectileHe (ProjectileHitEvent e) {
         if (e.getEntity() instanceof Arrow) {
             Arrow a = (Arrow) e.getEntity();
             if (a.getCustomName() instanceof String && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
                 Player shooter = (Player) a.getShooter();
-                if (e.getHitEntity() instanceof Entity) {
+                /*if (e.getHitEntity() instanceof Entity) {
                     explodeSingle(shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
                     //e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
                 } else {
-                    explodeSingle(shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
+                    explodeSingle(shooter, e.getEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
                     //e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
-                }
+                }*/
                 a.remove();
             }
         }
@@ -161,49 +121,6 @@ public class Combust extends Skill implements Listener {
                 e.setCancelled(true);
             }
         }
-    }
-
-    public void explodeSingle(Player caster, Location loc, double damage) {
-        loc.getWorld().spawnParticle(Particle.LAVA, loc, 10, 0.1, 0.1, 0.1, 0.05,null, true);
-        loc.getWorld().playSound(loc, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1.0F, 1.0F);
-        loc.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, loc, 1, 0.12, 0.12, 0.12, 0.12,null, true);
-        for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
-            if (ent instanceof ArmorStand) {
-                continue;
-            }
-            if (ent instanceof Player) {
-                Player p = (Player) ent;
-                if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
-                    if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                        continue;
-                    }
-                }
-                if (p.equals(caster)) {
-                    continue;
-                }
-            }
-            new BukkitRunnable() {
-                public void run() {
-                    if (ent.getHealth() < damage && !(ent instanceof Player)) {
-                        ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-                    }
-                    spellDamage(caster, ent, damage);
-                    ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-                    ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
-                }
-            }.runTaskLater(Main.getInstance(), 1L);
-        }
-
-        loc.getWorld().playSound(loc, Sound.BLOCK_BEACON_AMBIENT, 1.0F, 1.0F);
-        new BukkitRunnable() {
-            public void run() {
-                explodeMulti(caster, loc, damage);
-            }
-        }.runTaskLater(Main.getInstance(), 20L);
-    }
-
-    public void explodeMulti(Player caster, Location loc, double damage) {
-        
     }
 
 }

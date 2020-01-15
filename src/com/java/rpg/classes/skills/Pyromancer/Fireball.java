@@ -78,12 +78,13 @@ public class Fireball extends Skill implements Listener {
             arrow.setGravity(false);
             arrow.setKnockbackStrength(0);
             arrow.setSilent(true);
+        }
             final BukkitScheduler scheduler = Bukkit.getScheduler();
             final int task = scheduler.scheduleSyncRepeatingTask(main, new Runnable(){
                 @Override
                 public void run() {
                     if (!arrow.isDead()) {
-                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
+                        p.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
                         if (arrow.isOnGround() || arrow.isDead()) {
                             lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
                             arrow.remove();
@@ -92,19 +93,6 @@ public class Fireball extends Skill implements Listener {
                     }
                 }
             }, 1, 1);
-            final int task2 = scheduler.scheduleSyncRepeatingTask(main, new Runnable(){
-                @Override
-                public void run() {
-                    if (!arrow.isDead()) {
-                        player.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
-                        if (arrow.isOnGround() || arrow.isDead()) {
-                            lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
-                            arrow.remove();
-                            arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.02,null, true);
-                        }
-                    }
-                }
-            }, 0, 1);
 
             scheduler.scheduleSyncDelayedTask(main, new Runnable() {
                 @Override
@@ -114,11 +102,9 @@ public class Fireball extends Skill implements Listener {
                         arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.04,null, true);
                     }
                     scheduler.cancelTask(task);
-                    scheduler.cancelTask(task2);
                     arrow.remove();
                 }
             }, 20 * range);
-        }
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0F, 1.0F);
     }
 
@@ -192,16 +178,16 @@ public class Fireball extends Skill implements Listener {
                     continue;
                 }
             }
-            new BukkitRunnable() {
-                public void run() {
+            /*new BukkitRunnable() {
+                public void run() {*/
                     if (ent.getHealth() < damage && !(ent instanceof Player)) {
                         ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
                     }
                     spellDamage(caster, ent, damage);
                     ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
                     ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
-                }
-            }.runTaskLater(Main.getInstance(), 1L);
+                /*}
+            }.runTaskLater(Main.getInstance(), 1L);*/
         }
     }
 

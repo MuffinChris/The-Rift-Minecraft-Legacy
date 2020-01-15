@@ -63,6 +63,8 @@ public class Main extends JavaPlugin {
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
 
+        -36. clear passives on change class, in general make it more standardized on stat obj sys
+
         -35. Player not teleported when close inventory afkinvuln.
 
         -34. weird error after stopping sometimes when someone online (file related rpolly)
@@ -505,7 +507,7 @@ public class Main extends JavaPlugin {
                     getRP(pl).pushFiles();
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 100L, 6000);
+        }.runTaskTimer(Main.getInstance(), 100L, 20 * 180);
     }
 
     public void passivesPeriodic() {

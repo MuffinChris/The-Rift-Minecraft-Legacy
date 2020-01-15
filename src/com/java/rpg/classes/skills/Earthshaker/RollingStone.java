@@ -1,19 +1,11 @@
+package com.java.rpg.classes.skills.Earthshaker;
+
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.skills.Pyromancer.PyroclasmProjectile;
 import com.java.rpg.party.Party;
 
-import Rift.src.com.java.rpg.classes.String;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.ArmorStand;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.LivingEntity;
-import Rift.src.com.java.rpg.classes.skills.Pyromancer.Player;
-import net.minecraft.server.v1_14_R1.DataWatcherObject;
-import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -120,9 +112,9 @@ public class RollingStone extends Skill implements Listener {
             if (ent instanceof Player) {
                 Player player = (Player) ent;
                 if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
-                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
+                    /*if (main.getPM().getParty(pl).getPlayers().contains(p)) {
                         continue;
-                    }
+                    }*/
                 }
                 if (player.equals(pl)) {
                     continue;
