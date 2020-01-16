@@ -973,8 +973,6 @@ public class RPGPlayer extends Leveleable {
         toggles = new ArrayList<>();
         player = null;
         pclass = null;
-<<<<<<< HEAD
-=======
         so.clear();
         stun.scrub();
         root.scrub();
@@ -1006,7 +1004,6 @@ public class RPGPlayer extends Leveleable {
         stoneskindr = null;
         stoneskins = null;
         stoneskincd = null;
->>>>>>> parent of e784be4... Revert "StoneSkin, bishop rename"
         super.scrub();
     }
 }
