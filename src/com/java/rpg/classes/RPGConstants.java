@@ -4,7 +4,7 @@ public class RPGConstants {
 
     public static double expMod = 25;
     public static double expOff = 500;
-    public static double expPow = 2.3;
+    public static double expPow = 2.7;
 
     public static double defaultHP = 1000;
     public static double baseDmg = 10;

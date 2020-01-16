@@ -23,14 +23,9 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.util.ArrayList;
 import java.util.List;
 
-//FIREBALLS ARE TREATED AS ATTACK - BECAUSE THE EVENTS! eSETDMG - fixed? (not rly doesnt make sense)
-//ALSO SPELLS ARE KNOCKING BACK, DISABLE THAT (set knockback resist whenever hitting spell) - fixed?
-//FLAMETORNADO TOO FAST.
 
 public class Fireball extends Skill implements Listener {
 
-
-    // FIREBALL ISSUE: Damage is inconsistent with event setup, perhaps lightEnts should do all damage;
 
     private Main main = Main.getInstance();
 

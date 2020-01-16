@@ -123,27 +123,27 @@ public class CombustProjectile {
     public void explodeMulti(Player caster, Location loc, double damage) {
         loc.getWorld().playSound(loc, Sound.BLOCK_BEACON_ACTIVATE, 3.0F, 1.0F);
         loc.getWorld().playSound(loc, Sound.ENTITY_ENDER_DRAGON_GROWL, 3.0F, 1.0F);
-        makeCircle(loc.clone().add(new Vector(0, 0, 0)), range, 16, 0);
+        makeCircle(loc.clone().add(new Vector(0, 0, 0)), range, 32, 0);
 
         new BukkitRunnable() {
             public void run() {
-                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 1, 8, 0);
+                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 1, 24, 0);
 
             }
         }.runTaskLater(Main.getInstance(), 5L);
         new BukkitRunnable() {
             public void run() {
-                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 2, 8, 0);
+                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 2, 16, 0);
             }
         }.runTaskLater(Main.getInstance(), 8L);
         new BukkitRunnable() {
             public void run() {
-                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 4, 8, 0);
+                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 4, 16, 0);
             }
         }.runTaskLater(Main.getInstance(), 11L);
         new BukkitRunnable() {
             public void run() {
-                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 6, 8, 0);
+                makeCircle(loc.clone().add(new Vector(0, 0, 0)), range - 6, 16, 0);
             }
         }.runTaskLater(Main.getInstance(), 14L);
         new BukkitRunnable() {

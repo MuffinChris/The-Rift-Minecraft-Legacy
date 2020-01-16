@@ -314,7 +314,7 @@ public class MobEXP implements Listener {
         if (getLevel(ent) == -1 || !(Integer.valueOf(getLevel(ent)) instanceof Integer)) {
             return 0;
         }
-        return (0.25 * Math.pow(getLevel(ent), 2.1) + 50) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
+        return (0.25 * Math.pow(getLevel(ent), 2.4) + 50) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
     }
 
 
