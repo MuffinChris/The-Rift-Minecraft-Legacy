@@ -6,7 +6,6 @@ import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.DataWatcherObject;
 import net.minecraft.server.v1_15_R1.DataWatcherRegistry;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
-
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
@@ -19,8 +18,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -60,10 +59,6 @@ public class Genesis extends Skill {
                         continue;
                     }
                 }
-                ent.setKiller(p);
-                ent.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(80,2));
-                
-                spellDamage(p, ent, damage);
             }
             ent.setKiller(p);
             ent.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(80,2));
@@ -75,13 +70,5 @@ public class Genesis extends Skill {
     	super.warmup(p);
     	p.addPotionEffect(PotionEffectType.LEVITATION.createEffect(30,2));
     	p.addPotionEffect(PotionEffectType.GLOWING.createEffect(30,2));
-    }
-    
-    public void summonBeam(Location loc) {
-    	Location location = loc;
-    	for(int i = 0; i < 50; i++) {
-    			location.add(new Vector(0,1,0));
-    			location.getWorld().spawnParticle(Particle.END_ROD, location, 10, 2, .5, 2);
-    	}
     }
 }

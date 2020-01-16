@@ -17,7 +17,7 @@ public class Quake extends Skill {
     private double ADscale = 2;
     
     public double getDmg(Player p) {
-        return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale);
+        return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale );
     }
 	
     public Quake() {
@@ -44,6 +44,4 @@ public class Quake extends Skill {
             spellDamage(p, ent, getDmg(p));
     	}
     }
-    
-    
 }

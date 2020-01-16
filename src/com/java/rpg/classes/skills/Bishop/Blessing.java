@@ -1,37 +1,55 @@
 package com.java.rpg.classes.skills.Bishop;
 
 import com.java.Main;
+import com.java.holograms.Hologram;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
-import com.java.rpg.*;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.bukkit.Particle;
-import org.bukkit.entity.*;
+import java.util.Map;
 
 public class Blessing extends Skill {
 	
-    private int duration = 600;
-    private int range = 8;
-    
-    private Main main = Main.getInstance();
-    
-    public Blessing() {
-        super("Blessing", 400, 160, 0, 0, "%player% has shot a fireball!", "CAST");
-        DecimalFormat df = new DecimalFormat("#");
-        List<String> desc = new ArrayList<>();
-        desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fBless your allies, increasing their"));
-        desc.add(Main.color("&fresistances and damage"));
-        setDescription(desc);
-    }
+	private Main main = Main.getInstance();
+	private double range = 6;
 	
-    public void cast(Player p) {
-    	super.cast(p);
+	public Blessing() {
+		super("Blessing", 0, 0, 0, 3, "%player% has shot a fireball!", "PASSIVE");
+		DecimalFormat df = new DecimalFormat("#");
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bPassive:"));
+        desc.add(Main.color("&fEvery 5 seconds restore mana, split amongst your party"));
+        desc.add(Main.color("&fThis mana is equal to 25% of your missing mana"));
+        setDescription(desc);
+		
+	}
+    public void passive(Player p) {
+        super.passive(p);
+        if (p.getWorld().getTime() % 100 == 0) {
+        	mRestore(p);
+        }
+    }
+
+    public void mRestore(Player p) {
+    	ArrayList<Player> party = new ArrayList<Player>();
     	for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(range)) {
             if (ent instanceof ArmorStand) {
                 continue;
@@ -40,11 +58,12 @@ public class Blessing extends Skill {
                 Player pl = (Player) ent;
                 if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
                     if (main.getPM().getParty(pl).getPlayers().contains(p)) {
-                    	pl.getWorld().spawnParticle(Particle.END_ROD, pl.getEyeLocation(), 10, .1, .1, .1);
-                        main.getRP(p).getBlessing().getStatuses().add(new StatusValue("Blessing:" + p.getName(), 1, duration, System.currentTimeMillis(), false));
+                        party.add(pl);
                     }
                 }
             }
+            //take 25% of the player's missing mana and divide it amongst all of the party, including the player
+            //How do you get the players max mana????
     	}
     }
 }
