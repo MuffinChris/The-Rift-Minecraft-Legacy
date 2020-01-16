@@ -96,7 +96,7 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
-            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 3)) {
                 continue;
             }
             if (ent.getHealth() < getDmg(caster) && !(ent instanceof Player)) {
@@ -134,7 +134,7 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
-            if (!(Math.abs(ent.getLocation().getY() - p.getLocation().getY()) < 2)) {
+            if (!(Math.abs(ent.getLocation().getY() - p.getLocation().getY()) < 3)) {
                 continue;
             }
             ent.setKiller(p);
@@ -224,7 +224,7 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
-            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 3)) {
                 continue;
             }
             ent.setKiller(caster);
@@ -269,7 +269,7 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
-            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 3)) {
                 continue;
             }
             ent.setKiller(caster);
@@ -297,7 +297,7 @@ public class WorldOnFire extends Skill implements Listener {
                     continue;
                 }
             }
-            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 2)) {
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 3)) {
                 continue;
             }
             if (ent.getFireTicks() > 0) {

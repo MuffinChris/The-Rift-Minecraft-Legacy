@@ -67,7 +67,7 @@ public class Environmental implements Listener {
                 }
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
-                e.setDamage(hp * 0.075);
+                e.setDamage(hp * 0.125);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.STARVATION) {
                 e.setDamage(hp * 0.1);
@@ -79,10 +79,10 @@ public class Environmental implements Listener {
                 e.setDamage(hp / 30.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
-                e.setDamage(hp * 0.025);
+                e.setDamage(Math.min(Math.max(hp * 0.025, 10), 500));
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE) {
-                e.setDamage(hp * 0.025);
+                e.setDamage(Math.min(Math.max(hp * 0.025, 20), 1000));
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
                 e.setDamage(hp * 0.1);

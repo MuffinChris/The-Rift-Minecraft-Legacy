@@ -129,6 +129,7 @@ public class RPGPlayer extends Leveleable {
     private StatusObject hpfreeze;
     private StatusObject pstrength2;
     private StatusObject walkspeed;
+    private StatusObject walkspeedS;
     private StatusObject bonusap;
     private StatusObject bonusad;
     private StatusObject bonusapS;
@@ -139,6 +140,10 @@ public class RPGPlayer extends Leveleable {
 
     public StatusObject getWalkspeed() {
         return walkspeed;
+    }
+
+    public StatusObject getWalkSpeedS() {
+        return walkspeedS;
     }
 
     public StatusObject getStun() {
@@ -191,7 +196,8 @@ public class RPGPlayer extends Leveleable {
         manafreeze = new StatusObject("ManaFreeze", "Mana Frozen", false);
         hpfreeze = new StatusObject("HPFreeze", "HP Frozen", false);
         pstrength2 = new StatusObject("PStrength", "Power Strength", false);
-        walkspeed = new StatusObject("Walkspeed", "Walkspeed", true);
+        walkspeed = new StatusObject("Walkspeed", "Movespeed", false);
+        walkspeedS = new StatusObject("Walkspeed", "Movespeed", true);
         bonusap = new StatusObject("AP", "AP", false);
         bonusapS = new StatusObject("AP", "AP", true);
         bonusad = new StatusObject("AD", "AD", false);
@@ -206,6 +212,7 @@ public class RPGPlayer extends Leveleable {
         so.add(hpfreeze);
         so.add(pstrength2);
         so.add(walkspeed);
+        so.add(walkspeedS);
         so.add(bonusap);
         so.add(bonusad);
         so.add(bonusapS);
@@ -228,7 +235,7 @@ public class RPGPlayer extends Leveleable {
 
         damages = new ArrayList<>();
 
-        walkspeed.getStatuses().add(new StatusValue("InitWalkspeed", 20, 0, 0, true));
+        walkspeedS.getStatuses().add(new StatusValue("Init:Walkspeed", 20, 0, 0, true));
     }
 
     public List<Damage> getDamages() {
@@ -453,6 +460,16 @@ public class RPGPlayer extends Leveleable {
     }
 
     public boolean changeClass(PlayerClass pc) {
+
+        for (StatusObject sz : so) {
+            for (Skill s : pclass.getSkills()) {
+                sz.clearTitleIndiscrim(s.getName(), player);
+            }
+            for (Skill s : pclass.getSuperSkills()) {
+                sz.clearTitleIndiscrim(s.getName(), player);
+            }
+        }
+
         double hp = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         pushFiles();
         if (pclass instanceof PlayerClass && pc.getName().equalsIgnoreCase(pclass.getName())) {
@@ -497,7 +514,7 @@ public class RPGPlayer extends Leveleable {
 
     public void updateWS() {
         float currentWs = Math.max(0, Float.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()))));
-        float actualWs = Math.max(0, Float.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0) / 100.0))));
+        float actualWs = Math.max(0, Float.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0 + getWalkSpeedS().getValue() * 1.0) / 100.0))));
         if (currentWs != actualWs) {
             player.setWalkSpeed(actualWs);
         }
@@ -874,6 +891,10 @@ public class RPGPlayer extends Leveleable {
     }
 
     public void scrub() {
+        for (StatusObject s : so) {
+            s.scrub();
+        }
+        so.clear();
         if (main.getCM().getFall().contains(player.getUniqueId())) {
             main.getCM().getFall().remove(player.getUniqueId());
         }
@@ -921,27 +942,6 @@ public class RPGPlayer extends Leveleable {
         toggles = new ArrayList<>();
         player = null;
         pclass = null;
-        so.clear();
-        stun.scrub();
-        root.scrub();
-        silence.scrub();
-        hpfreeze.scrub();
-        manafreeze.scrub();
-        pstrength2.scrub();
-        bonusap.scrub();
-        bonusad.scrub();
-        bonusapS.scrub();
-        bonusadS.scrub();
-        bonusad = null;
-        bonusap = null;
-        bonusapS = null;
-        bonusadS = null;
-        stun = null;
-        root = null;
-        silence = null;
-        hpfreeze = null;
-        manafreeze = null;
-        pstrength2 = null;
         super.scrub();
     }
 }

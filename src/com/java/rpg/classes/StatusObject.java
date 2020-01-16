@@ -61,6 +61,15 @@ public class StatusObject {
         return clearbasedtitle;
     }
 
+    public void clearTitleIndiscrim(String title, Player p) {
+        for (StatusValue s : statuses) {
+            if (s.getSource().equals(title + ":" + p.getName())) {
+                    //remove.add(s);
+                clearbasedtitle.add(s);
+            }
+        }
+    }
+
     public void clearBasedTitle(String title, Player p) {
         //List<StatusValue> remove = new ArrayList<>();
         for (StatusValue s : statuses) {
