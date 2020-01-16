@@ -63,7 +63,7 @@ public class Miracle extends Skill {
             }
             if (ent instanceof Player) {
                 Player pl = (Player) ent;
-                if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                     if (main.getPM().getParty(p).getPlayers().contains(p)) {
                     	main.getRP(p).getAutoLife().getStatuses().add(new StatusValue("AutoLife:" + p.getName(), 1, duration, System.currentTimeMillis(), false));
                     	p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);

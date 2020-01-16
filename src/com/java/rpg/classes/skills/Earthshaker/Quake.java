@@ -34,7 +34,7 @@ public class Quake extends Skill {
             }
             if (ent instanceof Player) {
                 Player pl = (Player) ent;
-                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
+                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
                     if (main.getPM().getParty(pl).getPlayers().contains(p)) {
                         continue;
                     }

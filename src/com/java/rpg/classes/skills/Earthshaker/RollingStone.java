@@ -44,7 +44,7 @@ public class RollingStone extends Skill implements Listener {
                     for (LivingEntity ent: p.getLocation().getNearbyLivingEntities(rad)) {
                     	if (ent instanceof Player) {
                             Player player = (Player) ent;
-                            if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                            if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                                 if (main.getPM().getParty(p).getPlayers().contains(player)) {
                                     continue;
                                 }
@@ -80,7 +80,7 @@ public class RollingStone extends Skill implements Listener {
             }
             if (ent instanceof Player) {
                 Player player = (Player) ent;
-                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
+                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
                     if (main.getPM().getParty(pl).getPlayers().contains(player)) {
                         continue;
                     }
@@ -102,7 +102,7 @@ public class RollingStone extends Skill implements Listener {
             }
             if (ent instanceof Player) {
                 Player player = (Player) ent;
-                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
+                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
                     if (main.getPM().getParty(pl).getPlayers().contains(player)) {
                         continue;
                     }

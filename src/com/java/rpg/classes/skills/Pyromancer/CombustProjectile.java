@@ -91,7 +91,7 @@ public class CombustProjectile {
             }
             if (ent instanceof Player) {
                 Player p = (Player) ent;
-                if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                     if (main.getPM().getParty(p).getPlayers().contains(caster)) {
                         continue;
                     }
@@ -157,7 +157,7 @@ public class CombustProjectile {
                     }
                     if (ent instanceof Player) {
                         Player p = (Player) ent;
-                        if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                        if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                             if (main.getPM().getParty(p).getPlayers().contains(caster)) {
                                 continue;
                             }
@@ -177,7 +177,7 @@ public class CombustProjectile {
                     }
                     if (ent instanceof Player) {
                         Player p = (Player) ent;
-                        if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                        if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                             if (main.getPM().getParty(p).getPlayers().contains(caster)) {
                                 continue;
                             }

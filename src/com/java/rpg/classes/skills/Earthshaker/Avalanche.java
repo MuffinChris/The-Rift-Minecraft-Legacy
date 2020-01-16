@@ -59,7 +59,7 @@ public class Avalanche extends Skill implements Listener {
 		            }
 		            if (ent instanceof Player) {
 		                Player p = (Player) ent;
-		                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+		                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(p).getPvp()) {
 		                    if (main.getPM().getParty(p).getPlayers().contains(p)) {
 		                        continue;
 		                    }

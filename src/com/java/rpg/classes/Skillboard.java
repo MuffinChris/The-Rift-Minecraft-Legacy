@@ -73,6 +73,8 @@ public class Skillboard {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "%&f, ";
                 } else if (so.getName().equals("AP")) {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "&f, ";
+                } else if (so.getName().equals("Walkspeed")) {
+                    statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "&f, ";
                 } else {
                     if (so.allDurationless()) {
                         statuses += "&e" + so.getFlavor() + "&f, ";

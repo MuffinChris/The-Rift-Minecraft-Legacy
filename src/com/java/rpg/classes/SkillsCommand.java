@@ -3,6 +3,7 @@ package com.java.rpg.classes;
 import com.java.Main;
 import com.java.rpg.party.Party;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -90,6 +91,26 @@ public class SkillsCommand implements CommandExecutor, Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lSkills")) {
+            if (e.getCurrentItem().hasItemMeta()) {
+                if (e.getCurrentItem().getItemMeta().getLore().contains("UNLOCKED")) {
+                    Player p = (Player) e.getWhoClicked();
+                    RPGPlayer rp = main.getRP(p);
+                    int total;
+                    if (rp.getLevel() >= 40 && rp.getLevel() < 50) {
+                        total = 1;
+                    } else if (rp.getLevel() >= 50) {
+                        total = 2;
+                    } else {
+                        total = 0;
+                    }
+                    for (int i : rp.getSkillLevels().values()) {
+                        total -= i;
+                    }
+                    if (total > 0) {
+                        rp.getSkillLevels().replace(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()), 1);
+                    }
+                }
+            }
             e.setCancelled(true);
         }
     }
