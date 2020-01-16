@@ -135,6 +135,10 @@ public class RPGPlayer extends Leveleable {
     private StatusObject bonusadS;
 
     private StatusObject autoLife;
+    private StatusObject blessing;
+    private StatusObject stoneskindr;
+    private StatusObject stoneskins;
+    private StatusObject stoneskincd;
 
 
     public StatusObject getWalkspeed() {
@@ -178,8 +182,25 @@ public class RPGPlayer extends Leveleable {
         return bonusadS;
     }
     
+    
     public StatusObject getAutoLife() {
     	return autoLife;
+    }
+    
+    public StatusObject getBlessing() {
+    	return blessing;
+    }
+    
+    public StatusObject getStoneSkinDR() {
+    	return stoneskindr;
+    }
+    
+    public StatusObject getStoneSkinS() {
+    	return stoneskins;
+    }
+    
+    public StatusObject getStoneSkinCD() {
+    	return stoneskincd;
     }
 
     public RPGPlayer(Player p) {
@@ -196,8 +217,13 @@ public class RPGPlayer extends Leveleable {
         bonusapS = new StatusObject("AP", "AP", true);
         bonusad = new StatusObject("AD", "AD", false);
         bonusadS = new StatusObject("AD", "AD", true);
-        autoLife = new StatusObject("AutoLife", "Protected", true);
-
+        
+        autoLife = new StatusObject("AutoLife", "Protected", false);
+        blessing = new StatusObject("Blessing", "Blessed", false);
+        stoneskindr = new StatusObject("Stone Skin", "", false);
+        stoneskins = new StatusObject("Stone Skin Stacks", "", false);
+        stoneskincd = new StatusObject("Stone Skin on Cooldown", "", false);
+        
         so = new ArrayList<>();
         so.add(stun);
         so.add(root);
@@ -210,7 +236,12 @@ public class RPGPlayer extends Leveleable {
         so.add(bonusad);
         so.add(bonusapS);
         so.add(bonusapS);
+        
         so.add(autoLife);
+        so.add(blessing);
+        so.add(stoneskindr);
+        so.add(stoneskins);
+        so.add(stoneskincd);
 
         player = p;
         currentMana = 0;
@@ -932,6 +963,11 @@ public class RPGPlayer extends Leveleable {
         bonusad.scrub();
         bonusapS.scrub();
         bonusadS.scrub();
+        autoLife.scrub();
+        blessing.scrub();
+        stoneskindr.scrub();
+        stoneskins.scrub();
+        stoneskincd.scrub();
         bonusad = null;
         bonusap = null;
         bonusapS = null;
@@ -942,6 +978,11 @@ public class RPGPlayer extends Leveleable {
         hpfreeze = null;
         manafreeze = null;
         pstrength2 = null;
+        autoLife = null;
+        blessing = null;
+        stoneskindr = null;
+        stoneskins = null;
+        stoneskincd = null;
         super.scrub();
     }
 }
