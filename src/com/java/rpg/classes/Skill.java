@@ -266,7 +266,7 @@ public class Skill {
     }
 
     public boolean toggleCont(Player p) {
-        if (Main.getInstance().getPC().get(p.getUniqueId()).getCMana() - getToggleMana() <= 0) {
+        if (Main.getInstance().getPC().get(p.getUniqueId()).getCMana() - getToggleMana() <= 0 || main.getRP(p).getStun().getValue() > 0) {
             toggleEnd(p);
             return false;
         }

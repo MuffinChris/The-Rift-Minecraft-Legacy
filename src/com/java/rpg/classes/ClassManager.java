@@ -368,7 +368,7 @@ public class ClassManager implements Listener {
         RPGPlayer rp = main.getPC().get(p.getUniqueId());
         if (rp instanceof RPGPlayer && rp.getPClass() instanceof PlayerClass) {
             List<Skill> skillsToAdd = new ArrayList<>();
-            for (Skill s : rp.getPClass().getSkills()) {
+            for (Skill s : rp.getSkillsAll()) {
                 if (s.getType().contains("PASSIVE") && s.getLevel() <= rp.getLevel()) {
                     if (!rp.getPassives().contains(s.getName())) {
                         skillsToAdd.add(s);
@@ -403,7 +403,7 @@ public class ClassManager implements Listener {
                     skillsToRemove.add(s);
                     continue;
                 }
-                if (rp.getPClass() == null || (!rp.getPClass().getSkills().contains(rp.getSkillFromName(s)) || rp.getSkillFromName(s).getLevel() > rp.getLevel())) {
+                if (rp.getPClass() == null || (!rp.getSkillsAll().contains(rp.getSkillFromName(s)) || rp.getSkillFromName(s).getLevel() > rp.getLevel())) {
                     skillsToRemove.add(s);
                 }
             }

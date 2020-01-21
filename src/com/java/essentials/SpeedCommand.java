@@ -16,15 +16,15 @@ public class SpeedCommand implements CommandExecutor {
 			Player p = (Player) sender;
 			if (p.isOp() || p.hasPermission("core.mod")) {
 				if (args.length <= 1) {
-					Main.msg(p, "Usage: /speed <fly/walk> <1-10> <player>");
+					Main.msg(p, "Usage: /speed <fly/walk> <1-100> <player>");
 				}
 				if (args.length == 2) {
 					if (args[0].equalsIgnoreCase("walk")) {
-						if (Float.parseFloat(args[1]) >= 1 && Float.parseFloat(args[1]) <= 10) {
-							p.setWalkSpeed(Float.parseFloat(args[1]) / 10);
+						if (Integer.parseInt(args[1]) >= 1 && Integer.parseInt(args[1]) <= 100) {
+							Main.getInstance().getRP(p).setBaseWS(Integer.parseInt(args[1]));
 							Main.msg(p, "&aSet your walk speed to " + args[1]);
 						} else {
-							Main.msg(p, "&fUsage: /speed walk <1-10>");
+							Main.msg(p, "&fUsage: /speed walk <1-100>");
 						}
 					}
 					if (args[0].equalsIgnoreCase("fly")) {
@@ -37,14 +37,14 @@ public class SpeedCommand implements CommandExecutor {
 					}
 				}
 				if (args.length >= 3) {
-					if (Bukkit.getPlayer(args[2]) instanceof Player) {
+					if (Bukkit.getPlayer(args[2]) != null) {
 						Player t = Bukkit.getPlayer(args[2]);
 						if (args[0].equalsIgnoreCase("walk")) {
-							if (Float.parseFloat(args[1]) >= 1 && Float.parseFloat(args[1]) <= 10) {
-								t.setWalkSpeed(Float.parseFloat(args[1]) / 10);
+							if (Integer.parseInt(args[1]) >= 1 && Integer.parseInt(args[1]) <= 100) {
+								Main.getInstance().getRP(t).setBaseWS(Integer.parseInt(args[1]));
 								Main.msg(p, "&aSet " + t.getName()  + "'s walk speed to " + args[1]);
 							} else {
-								Main.msg(p, "&fUsage: /speed walk <1-10> <player>");
+								Main.msg(p, "&fUsage: /speed walk <1-100> <player>");
 							}
 						}
 						if (args[0].equalsIgnoreCase("fly")) {
@@ -64,17 +64,17 @@ public class SpeedCommand implements CommandExecutor {
 			}
 		} else {
 			if (args.length <= 2) {
-				Main.so("Usage: /speed <fly/walk> <1-10> <player>");
+				Main.so("Usage: /speed <fly/walk> <1-100> <player>");
 			}
 			if (args.length >= 3) {
-				if (Bukkit.getPlayer(args[2]) instanceof Player) {
+				if (Bukkit.getPlayer(args[2]) != null) {
 					Player t = Bukkit.getPlayer(args[2]);
 					if (args[0].equalsIgnoreCase("walk")) {
-						if (Float.parseFloat(args[1]) >= 1 && Float.parseFloat(args[1]) <= 10) {
-							t.setWalkSpeed(Float.parseFloat(args[1]) / 10);
+						if (Integer.parseInt(args[1]) >= 1 && Integer.parseInt(args[1]) <= 100) {
+							Main.getInstance().getRP(t).setBaseWS(Integer.parseInt(args[1]));
 							Main.so("&aSet " + t.getName()  + "'s walk speed to " + args[1]);
 						} else {
-							Main.so("&fUsage: /speed walk <1-10> <player>");
+							Main.so("&fUsage: /speed walk <1-100> <player>");
 						}
 					}
 					if (args[0].equalsIgnoreCase("fly")) {

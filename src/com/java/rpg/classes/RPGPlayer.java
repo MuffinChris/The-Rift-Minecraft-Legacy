@@ -51,6 +51,21 @@ public class RPGPlayer extends Leveleable {
 
     private List<Damage> damages;
 
+    public List<Skill> getSkillsAll() {
+        Player p = player;
+        List<Skill> pSkills = new ArrayList<>();
+        int index = 0;
+        for (Skill s : main.getRP(p).getPClass().getSkills()) {
+            if (main.getRP(p).getSkillLevels().get(s.getName()) == 0) {
+                pSkills.add(s);
+            } else {
+                pSkills.add(main.getRP(p).getPClass().getSuperSkills().get(index));
+            }
+            index++;
+        }
+        return pSkills;
+    }
+
     public double getAD() {
         if (player != null && pclass != null) {
             return bonusad.getValue() + pclass.getCalcAD(getLevel());
@@ -208,6 +223,15 @@ public class RPGPlayer extends Leveleable {
     	return stoneskincd;
     }
 
+    private int baseWS = 20;
+    public void setBaseWS(int i) {
+        baseWS = i;
+    }
+
+    public int getBaseWS() {
+        return baseWS;
+    }
+
     public RPGPlayer(Player p) {
         super (0, 50, p);
 
@@ -266,7 +290,7 @@ public class RPGPlayer extends Leveleable {
 
         damages = new ArrayList<>();
 
-        walkspeedS.getStatuses().add(new StatusValue("Init:Walkspeed", 20, 0, 0, true));
+        walkspeedS.getStatuses().add(new StatusValue("Init:Walkspeed", baseWS, 0, 0, true));
     }
 
     public List<Damage> getDamages() {
@@ -544,6 +568,11 @@ public class RPGPlayer extends Leveleable {
     }
 
     public void updateWS() {
+        for (StatusValue sv : walkspeedS.getStatuses()) {
+            if (sv.getDurationless() && sv.getSource().equals("Init:Walkspeed")) {
+                sv.setValue(baseWS);
+            }
+        }
         float currentWs = Math.max(0, Float.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()))));
         float actualWs = Math.max(0, Float.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0 + getWalkSpeedS().getValue() * 1.0) / 100.0))));
         if (currentWs != actualWs) {
@@ -615,7 +644,6 @@ public class RPGPlayer extends Leveleable {
                     s = st;
                 }
             }
-            int indexx = 0;
             for (Skill st : pclass.getSuperSkills()) {
                 if (name.equalsIgnoreCase(st.getName())) {
                     if (skillLevels.get(pclass.getSkills().get(0).getName()) == 0) {
@@ -623,7 +651,6 @@ public class RPGPlayer extends Leveleable {
                     }
                     s = st;
                 }
-                indexx++;
             }
             if (s != null) {
             /*for (Skill s : pclass.getSkills()) {
@@ -847,7 +874,7 @@ public class RPGPlayer extends Leveleable {
 
     public String getCooldown(Skill s) {
         if (pclass instanceof PlayerClass) {
-            for (Skill sk : pclass.getSkills()) {
+            for (Skill sk : getSkillsAll()) {
                 if (sk.equals(s)) {
                     if (cooldowns.containsKey(s.getName())) {
                         long timeLeft = System.currentTimeMillis() - cooldowns.get(s.getName());
@@ -879,6 +906,11 @@ public class RPGPlayer extends Leveleable {
     public Skill getSkillFromName(String name) {
         if (pclass instanceof PlayerClass) {
             for (Skill s : pclass.getSkills()) {
+                if (name.equalsIgnoreCase(s.getName())) {
+                    return s;
+                }
+            }
+            for (Skill s : pclass.getSuperSkills()) {
                 if (name.equalsIgnoreCase(s.getName())) {
                     return s;
                 }

@@ -106,12 +106,13 @@ public class StatusObject {
 
     public void scrub() {
         name = null;
-        for (StatusValue s : statuses) {
-            s.scrub();
+        if (statuses != null) {
+            for (StatusValue s : statuses) {
+                s.scrub();
+            }
         }
-        statuses.clear();
         statuses = null;
-        clearbasedtitle.clear();
+        //clearbasedtitle.clear();
         clearbasedtitle = null;
     }
 

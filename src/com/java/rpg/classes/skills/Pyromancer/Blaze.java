@@ -21,7 +21,7 @@ public class Blaze extends Skill {
 
     private Main main = Main.getInstance();
 
-    int movespeed = 8;
+    int movespeed = 7;
     int duration = 8;
     int spotduration = 3;
     double damage = 80;

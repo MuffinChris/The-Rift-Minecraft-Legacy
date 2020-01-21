@@ -63,6 +63,10 @@ public class Main extends JavaPlugin {
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
 
+        -38. suspect movement speed in fthrower
+
+        -37. get skill level no work for super in skills cmd
+
         -36. clear passives on change class, in general make it more standardized on stat obj sys
 
         -35. Player not teleported when close inventory afkinvuln.
@@ -348,6 +352,15 @@ public class Main extends JavaPlugin {
     }
 
     public int getSkillLevel(Player p, String name) {
+        if (getRP(p).getPClass().getSuperSkills().contains(getRP(p).getSkillFromName(name))) {
+            int index = 0;
+            for (Skill sk : getRP(p).getPClass().getSuperSkills()) {
+                if (sk.getName().equalsIgnoreCase(name)) {
+                    return getRP(p).getSkillLevels().get(getRP(p).getPClass().getSkills().get(index).getName());
+                }
+                index++;
+            }
+        }
         if (getRP(p).getSkillLevels().containsKey(name)) {
             return getRP(p).getSkillLevels().get(name);
         }
