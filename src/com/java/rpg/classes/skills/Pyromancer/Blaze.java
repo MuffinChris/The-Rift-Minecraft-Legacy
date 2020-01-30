@@ -21,7 +21,7 @@ public class Blaze extends Skill {
 
     private Main main = Main.getInstance();
 
-    int movespeed = 8;
+    int movespeed = 7;
     int duration = 8;
     int spotduration = 3;
     double damage = 80;
@@ -129,7 +129,7 @@ public class Blaze extends Skill {
                             }
                             if (ent instanceof Player) {
                                 Player pl = (Player) ent;
-                                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
+                                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
                                     if (main.getPM().getParty(pl).getPlayers().contains(p)) {
                                         continue;
                                     }

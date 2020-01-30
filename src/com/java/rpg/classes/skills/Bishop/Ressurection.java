@@ -28,15 +28,15 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Miracle extends Skill {
+public class Ressurection extends Skill {
 	
     private Main main = Main.getInstance();
 
     private int range = 8;
     private int duration = 600;
 
-    public Miracle() {
-        super("Miracle", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST");
+    public Ressurection() {
+        super("Ressurection", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST");
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
@@ -47,23 +47,24 @@ public class Miracle extends Skill {
     }
 	
     public void cast(Player p) {
-    	Location bean  = p.getLocation();
+    	super.cast(p);
+    	Location loc  = p.getLocation();
     	Vector sightLine = p.getEyeLocation().getDirection();
     	for(int i = 0; i < 32; i++) {
-    		bean.add(sightLine.multiply(.25));
-    		if(AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH(p, bean))
+    		loc.add(sightLine.multiply(.25));
+    		if(buff(p, loc))
     			break;
     	}
     }
     
-    public boolean AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH(Player p, Location loc) {
+    public boolean buff(Player p, Location loc) {
     	for (LivingEntity ent : loc.getNearbyLivingEntities(0.5)) {
             if (ent instanceof ArmorStand) {
                 continue;
             }
             if (ent instanceof Player) {
                 Player pl = (Player) ent;
-                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
+                if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
                     if (main.getPM().getParty(p).getPlayers().contains(p)) {
                     	main.getRP(p).getAutoLife().getStatuses().add(new StatusValue("AutoLife:" + p.getName(), 1, duration, System.currentTimeMillis(), false));
                     	p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);

@@ -26,16 +26,18 @@ public class Flamethrower extends Skill {
 
     private Main main = Main.getInstance();
 
-    private double damage = 40;
+    private double damage = 150;
 
-    private double apscale = 0.25;
+    private double apscale = 0.5;
 
     private int range = 4;
 
+    private int tickrate = 2;
+
     public Flamethrower() {
-        super("Flamethrower", 0, 1 * 20, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST");
-        setToggleMana(25);
-        setToggleTicks(1);
+        super("Flamethrower", 0, 30, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST");
+        setToggleMana(5);
+        setToggleTicks(tickrate);
     }
 
     public List<String> getDescription(Player p) {
@@ -43,7 +45,7 @@ public class Flamethrower extends Skill {
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fSpew flame from your hand traveling &e" + range + "&f blocks."));
         desc.add(Main.color("&fIt deals &b" + getDmg(p) + " &fdamage per second"));
-        desc.add(Main.color("&fand ignites them for 5 seconds."));
+        desc.add(Main.color("&fand ignites them for 1 second."));
         return desc;
     }
 
@@ -53,68 +55,72 @@ public class Flamethrower extends Skill {
 
     public void cast(Player p) {
         super.cast(p);
-
     }
 
     public boolean toggleCont(Player p) {
         if (!super.toggleCont(p)) {
             return false;
         }
-
-
-
+        spewFlame(p, getDmg(p)/(1.0 * (20/tickrate)));
         return false;
     }
 
     public void toggleEnd(Player p) {
         super.toggleEnd(p);
-
+        main.getRP(p).getWalkspeed().clearBasedTitle(getName(), p);
+        main.getRP(p).updateWS();
+        p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
+        p.getLocation().getWorld().spawnParticle(Particle.SMOKE_LARGE, p.getLocation().add(new Vector(0, 0.25, 0)), 25, 0.01, 0.01, 0.01, 0.01, null, true);
     }
 
     public int toggleInit(Player p) {
-
+        p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_BLASTFURNACE_FIRE_CRACKLE, 1.0F, 1.0F);
+        main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), -10, 0, 0, true));
+        main.getRP(p).updateWS();
         return super.toggleInit(p);
     }
 
     public void spewFlame(Player caster, double damage) {
-        Location loc = caster.getLocation();
-        for (double d = 0; d<=range; d-=0.1) {
-            for (double i = -2.5; i <= 2.5; i+=0.1) {
-                for (double z = -0.5; z <= 0.5; z+=0.1) {
-                    Location far = loc.clone().getDirection().multiply(d).toLocation(loc.getWorld());
-                    far.clone().multiply(new Vector(0, 0, 0));
-                    loc.clone().add(new Vector()).getWorld().spawnParticle(Particle.FLAME, loc, 1, 0.01, 0.01, 0.01, 0.01, null, true);
+        caster.getLocation().getWorld().playSound(caster.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 0.25F, 1.0F);
+        Location origin = caster.getEyeLocation().clone().subtract(new Vector(0, 0.35, 0));
+        Vector direction = origin.getDirection();
+        List<LivingEntity> alreadyHit = new ArrayList<>();
+        for (double i = 0; i < (range* 1.0 )/3.0; i += 0.25) {
+            Location loc = origin.add(direction);
+            loc.getWorld().spawnParticle(Particle.FLAME, loc, 10 + (int) i * 5, 0.01 + i / 1.5, 0.01 + i / 2.0, 0.01 + i / 1.5, 0.0001, null, true);
+
+            for (LivingEntity ent : loc.getNearbyLivingEntities(i + 0.25)) {
+                if (ent instanceof ArmorStand) {
+                    continue;
                 }
-            }
-        }
-
-    }
-
-    public void lightEntities(Entity e, Player caster, Location loc, double damage) {
-        loc.getWorld().spawnParticle(Particle.LAVA, loc, 25, 0.12, 0.12, 0.12, 0.12,null, true);
-        for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
-            if (ent instanceof ArmorStand) {
-                continue;
-            }
-            if (ent instanceof Player) {
-                Player p = (Player) ent;
-                if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
-                    if (main.getPM().getParty(p).getPlayers().contains(caster)) {
+                if (alreadyHit.contains(ent)) {
+                    continue;
+                }
+                if (ent instanceof Player) {
+                    Player p = (Player) ent;
+                    if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
+                        if (main.getPM().getParty(p).getPlayers().contains(caster)) {
+                            continue;
+                        }
+                    }
+                    if (p.equals(caster)) {
                         continue;
                     }
                 }
-                if (p.equals(caster)) {
+                if (Math.abs(ent.getLocation().getY() - loc.getY()) > i / 1.5) {
                     continue;
                 }
-            }
-            if (ent.getHealth() < damage && !(ent instanceof Player)) {
-                ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-            }
-            spellDamage(caster, ent, damage);
-            ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-            ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
+                alreadyHit.add(ent);
+                if (ent.getHealth() < damage && !(ent instanceof Player)) {
+                    ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
+                }
+                spellDamage(caster, ent, damage);
+                ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
+                ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
 
+            }
         }
+
     }
 }
 

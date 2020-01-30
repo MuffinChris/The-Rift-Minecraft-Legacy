@@ -73,6 +73,8 @@ public class Skillboard {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "%&f, ";
                 } else if (so.getName().equals("AP")) {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "&f, ";
+                } else if (so.getName().equals("Walkspeed")) {
+                    statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "&f, ";
                 } else {
                     if (so.allDurationless()) {
                         statuses += "&e" + so.getFlavor() + "&f, ";
@@ -94,16 +96,7 @@ public class Skillboard {
             Player p = Bukkit.getPlayer(uuid);
             String output = "";
             int slot = 1;
-            List<Skill> pSkills = new ArrayList<>();
-            int index = 0;
-            for (Skill s : main.getRP(p).getPClass().getSkills()) {
-                if (main.getRP(p).getSkillLevels().get(s.getName()) == 0) {
-                    pSkills.add(s);
-                } else {
-                    pSkills.add(main.getRP(p).getPClass().getSuperSkills().get(index));
-                }
-                index++;
-            }
+            List<Skill> pSkills = main.getRP(p).getSkillsAll();
             for (Skill s : pSkills) {
                 if (slot == main.getRP(p).getIdleSlot() + 1) {
                     slot++;

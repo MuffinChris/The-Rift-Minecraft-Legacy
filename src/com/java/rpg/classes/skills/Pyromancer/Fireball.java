@@ -130,7 +130,7 @@ public class Fireball extends Skill implements Listener {
                 Player shooter = (Player) a.getShooter();
                 if (e.getEntity() instanceof Player) {
                     Player p = (Player) e.getEntity();
-                    if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                    if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                         if (main.getPM().getParty(p).getPlayers().contains(a.getShooter())) {
                             a.remove();
                             e.setCancelled(true);
@@ -164,7 +164,7 @@ public class Fireball extends Skill implements Listener {
             }
             if (ent instanceof Player) {
                 Player p = (Player) ent;
-                if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
+                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                     if (main.getPM().getParty(p).getPlayers().contains(caster)) {
                         continue;
                     }
@@ -192,7 +192,7 @@ public class Fireball extends Skill implements Listener {
             Main.so("pp");
             if (ent instanceof Player) {
                 Player p = (Player) ent;
-                if (main.getPM().getParty(p) instanceof Party) {
+                if (main.getPM().getParty(p) != null) {
                     if (main.getPM().getParty(p).getPlayers().contains(caster)) {
                         continue;
                     }

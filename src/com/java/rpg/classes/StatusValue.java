@@ -16,6 +16,10 @@ public class StatusValue {
         this.durationless = durationless;
     }
 
+    public void setValue(int i) {
+        value = i;
+    }
+
     public boolean getDurationless() {
         return durationless;
     }

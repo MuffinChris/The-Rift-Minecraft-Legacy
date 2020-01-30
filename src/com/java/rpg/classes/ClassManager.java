@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Pyromancer.*;
+import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.classes.skills.Wanderer.Rest;
@@ -311,6 +312,7 @@ public class ClassManager implements Listener {
         skillsPyro.add(new Combust());
 
         List<Skill> superSkillsPyro = new ArrayList<>();
+        superSkillsPyro.add(new Flamethrower());
 
         classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 0.4, 2,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110));
     }
@@ -366,7 +368,7 @@ public class ClassManager implements Listener {
         RPGPlayer rp = main.getPC().get(p.getUniqueId());
         if (rp instanceof RPGPlayer && rp.getPClass() instanceof PlayerClass) {
             List<Skill> skillsToAdd = new ArrayList<>();
-            for (Skill s : rp.getPClass().getSkills()) {
+            for (Skill s : rp.getSkillsAll()) {
                 if (s.getType().contains("PASSIVE") && s.getLevel() <= rp.getLevel()) {
                     if (!rp.getPassives().contains(s.getName())) {
                         skillsToAdd.add(s);
@@ -401,7 +403,7 @@ public class ClassManager implements Listener {
                     skillsToRemove.add(s);
                     continue;
                 }
-                if (rp.getPClass() == null || (!rp.getPClass().getSkills().contains(rp.getSkillFromName(s)) || rp.getSkillFromName(s).getLevel() > rp.getLevel())) {
+                if (rp.getPClass() == null || (!rp.getSkillsAll().contains(rp.getSkillFromName(s)) || rp.getSkillFromName(s).getLevel() > rp.getLevel())) {
                     skillsToRemove.add(s);
                 }
             }

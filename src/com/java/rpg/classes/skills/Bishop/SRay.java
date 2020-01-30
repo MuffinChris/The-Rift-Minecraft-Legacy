@@ -26,7 +26,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HolyArrow extends Skill implements Listener {
+public class SRay extends Skill implements Listener {
 	
     private Main main = Main.getInstance();
 
@@ -36,15 +36,15 @@ public class HolyArrow extends Skill implements Listener {
     private int arrowCount = 40;
     private int range = 10;
     
-    private double APscale = .4;
-    private double ADscale = 1;
+    private double APscale = 4;
+    private double ADscale = 10;
     
     public double getDmg(Player p) {
         return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale ) / arrowCount;
     }
 
-    public HolyArrow() {
-        super("HolyArrow", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST");
+    public SRay() {
+        super("Shining Ray", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST");
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
@@ -157,7 +157,7 @@ public class HolyArrow extends Skill implements Listener {
                 Player shooter = (Player) a.getShooter();
                 if (e.getEntity() instanceof Player) {
                     Player p = (Player) e.getEntity();
-                    if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
+                    if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
                         if (main.getPM().getParty(p).getPlayers().contains(a.getShooter())) {
                             a.remove();
                             e.setCancelled(true);
@@ -184,7 +184,7 @@ public class HolyArrow extends Skill implements Listener {
             }
             if (ent instanceof Player) {
                 Player p = (Player) ent;
-                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
+                if (main.getPM().getParty(p) instanceof Party && !main.getPM().getParty(p).getPvp()) {
                     if (main.getPM().getParty(p).getPlayers().contains(caster)) {
                         continue;
                     }

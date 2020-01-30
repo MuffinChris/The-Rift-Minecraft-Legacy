@@ -3,6 +3,7 @@ package com.java.rpg.classes;
 import com.java.Main;
 import com.java.rpg.party.Party;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -34,15 +35,18 @@ public class SkillsCommand implements CommandExecutor, Listener {
         return false;
     }
 
-    //need to set skill level to 1 at the right level (levelup check or something, and periodic, make a method)
-
     public void sendSkillsInv(Player p) {
         RPGPlayer rp = main.getRP(p);
         Inventory playerInv = Bukkit.createInventory(null, 27, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
         ArrayList<String> lore;//
         int i = 10;
-        for (Skill s : rp.getPClass().getSkills()) {
-            ItemStack sp = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        int index = 0;
+        for (Skill s : rp.getSkillsAll()) {
+            Material mat = Material.GREEN_STAINED_GLASS_PANE;
+            if (main.getSkillLevel(p, s.getName()) > 0){
+                mat = Material.LIGHT_BLUE_STAINED_GLASS_PANE;
+            }
+            ItemStack sp = new ItemStack(mat);
             ItemMeta spMeta = sp.getItemMeta();
             spMeta.setDisplayName(Main.color("&e&l" + s.getName()));
             lore = new ArrayList<>();
@@ -52,12 +56,23 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 if (main.getSkillLevel(p, s.getName()) > 0) {
                     lore.add(Main.color("&bSkill Upgraded"));
                     lore.add(Main.color(""));
+                } else {
+                    if (main.getRP(p).getPClass().getSuperSkills().size() > index) {
+                        lore.add(Main.color("&bUpgraded Form: &f" + main.getRP(p).getPClass().getSuperSkills().get(index)));
+                        lore.add("");
+                    } else {
+                        lore.add(Main.color("&bUpgrade not Implemented"));
+                        lore.add("");
+                    }
                 }
             } else {
                 sp.setType(Material.GRAY_STAINED_GLASS_PANE);
                 lore.add(Main.color("&cLOCKED &8(&cLVL " + s.getLevel() + "&8)"));
                 lore.add(Main.color(""));
             }
+
+            index++;
+
             DecimalFormat dF = new DecimalFormat("#.##");
             if (s.getManaCost() > 0) {
                 lore.add(Main.color("&bMana Cost: &f" + s.getManaCost()));
@@ -90,6 +105,34 @@ public class SkillsCommand implements CommandExecutor, Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lSkills")) {
+            if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
+                if (e.getCurrentItem().getItemMeta().getLore().contains("UNLOCKED") && !e.getCurrentItem().getItemMeta().getLore().contains("Upgraded")) {
+                    Player p = (Player) e.getWhoClicked();
+                    RPGPlayer rp = main.getRP(p);
+                    int total;
+                    if (rp.getLevel() >= 40 && rp.getLevel() < 50) {
+                        total = 1;
+                    } else if (rp.getLevel() >= 50) {
+                        total = 2;
+                    } else {
+                        total = 0;
+                    }
+                    for (int i : rp.getSkillLevels().values()) {
+                        total -= i;
+                    }
+                    if (total > 0) {
+                        Skill s = rp.getSkillFromName(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
+                        if (s != null) {
+                            rp.getSkillLevels().replace(s.getName(), 1);
+                            rp.pushFiles();
+                            p.closeInventory();
+                            sendSkillsInv(p);
+                        } else {
+                            Main.so("&cERROR: Failed to upgrade &4" + p.getName() + "&c's skill &4" + ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()) + "&c.");
+                        }
+                    }
+                }
+            }
             e.setCancelled(true);
         }
     }

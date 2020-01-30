@@ -30,7 +30,7 @@ public class Skillcast implements Listener {
 
     @EventHandler
     public void skillBar (PlayerSwapHandItemsEvent e) {
-        if (!e.getPlayer().isSneaking() && main.getRP(e.getPlayer()).getPClass().getSkills().size() > 0) {
+        if (!e.getPlayer().isSneaking() && main.getRP(e.getPlayer()).getSkillsAll().size() > 0) {
             e.setCancelled(true);
             main.getRP(e.getPlayer()).getBoard().toggleSkillbar();
             main.getRP(e.getPlayer()).getBoard().updateSkillbar();
@@ -50,7 +50,7 @@ public class Skillcast implements Listener {
             /*if (lastSlot.containsKey(e.getPlayer().getUniqueId()) && slot == (int) (lastSlot.get(e.getPlayer().getUniqueId()).toArray()[0])) {
                 return;
             }*/
-            if (slot > main.getRP(e.getPlayer()).getPClass().getSkills().size()) {
+            if (slot > main.getRP(e.getPlayer()).getSkillsAll().size()) {
                 return;
             }
             e.setCancelled(true);
