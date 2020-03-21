@@ -9,10 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,11 +38,11 @@ public class AFKInvuln implements Listener {
 
     @EventHandler
     public void leave (PlayerQuitEvent e) {
-        if (hasMoved.containsKey(e.getPlayer())) {
-            hasMoved.remove(e.getPlayer());
+        if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
+            hasMoved.remove(e.getPlayer().getUniqueId());
         }
-        if (packAccepted.containsKey(e.getPlayer())) {
-            packAccepted.remove(e.getPlayer());
+        if (packAccepted.containsKey(e.getPlayer().getUniqueId())) {
+            packAccepted.remove(e.getPlayer().getUniqueId());
         }
     }
 
@@ -53,7 +50,7 @@ public class AFKInvuln implements Listener {
     public void onClick (InventoryClickEvent e) {
         if (e.getWhoClicked() instanceof Player) {
             Player p = (Player) e.getWhoClicked();
-            if (e.getView().getTitle().contains("§e§lJOIN MENU")) {
+            if (e.getView().getTitle().contains("§5§lJOIN MENU")) {
                 e.setCancelled(true);
                 if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getDisplayName().contains("ENTER")) {
                     e.setCurrentItem(new ItemStack(Material.AIR));
@@ -75,21 +72,16 @@ public class AFKInvuln implements Listener {
                 if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
                     new BukkitRunnable() {
                         public void run() {
-                            if (e.getPlayer().getOpenInventory().getTitle() != null && e.getPlayer().getOpenInventory().getTitle().contains("§e§lJOIN MENU")) {
+                            Player p = (Player) e.getPlayer();
+                            if (e.getPlayer().isDead()) {
 
                             } else {
-                                Player p = (Player) e.getPlayer();
-                                if (e.getPlayer().isDead()) {
-
-                                } else {
-                                    Location l = hasMoved.get(e.getPlayer().getUniqueId());
-                                    e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
-                                    p.teleport(l);
-                                    Bukkit.broadcastMessage("X: " + l.getX() + " Z:" + l.getZ() + " but ur currently at " + p.getLocation().getX() + ", " + p.getLocation().getZ());
-                                }
-                                sendInv(p);
-                                p.setGameMode(GameMode.SPECTATOR);
+                                Location l = hasMoved.get(e.getPlayer().getUniqueId());
+                                e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                                p.teleport(l);
                             }
+                            sendInv(p);
+                            p.setGameMode(GameMode.SPECTATOR);
                         }
                     }.runTaskLater(Main.getInstance(), 1L);
                 }
@@ -98,13 +90,13 @@ public class AFKInvuln implements Listener {
     }
 
     public void sendInv(Player p) {
-        Inventory playerInv = Bukkit.createInventory(null, 27, Main.color("&e&lJOIN MENU"));
+        Inventory playerInv = Bukkit.createInventory(null, 27, Main.color("&5&lJOIN MENU"));
 
-        ItemStack i = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemStack i = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
         ItemMeta m = i.getItemMeta();
-        m.setDisplayName(Main.color("&aENTER THE RIFT"));
+        m.setDisplayName(Main.color("&5ENTER THE RIFT"));
         List<String> lore = new ArrayList<>();
-        lore.add(Main.color("&fClick to enter the rift."));
+        lore.add(Main.color("&fClick to enter &dThe Rift&f."));
         m.setLore(lore);
         i.setItemMeta(m);
         playerInv.setItem(13, i);
@@ -122,10 +114,22 @@ public class AFKInvuln implements Listener {
         }
     }
 
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onTP (PlayerTeleportEvent e) {
+        if (!packAccepted.containsKey(e.getPlayer().getUniqueId())) {
+            e.setCancelled(true);
+        }
+        if ((e.getPlayer().getOpenInventory() != null && e.getPlayer().getOpenInventory().getTitle().contains("§5§lJOIN MENU")) && hasMoved.containsKey(e.getPlayer().getUniqueId())) {
+            if (e.getTo().getX() != hasMoved.get(e.getPlayer().getUniqueId()).getX() && e.getTo().getY() != hasMoved.get(e.getPlayer().getUniqueId()).getY() && e.getTo().getZ() != hasMoved.get(e.getPlayer().getUniqueId()).getZ()) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
     @EventHandler
     public void onJoin (PlayerJoinEvent e) {
-        if (hasMoved.containsKey(e.getPlayer())) {
-            hasMoved.remove(e.getPlayer());
+        if (hasMoved.containsKey(e.getPlayer().getUniqueId())) {
+            hasMoved.remove(e.getPlayer().getUniqueId());
         }
         e.getPlayer().setGameMode(GameMode.SPECTATOR);
         hasMoved.put(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
@@ -138,13 +142,14 @@ public class AFKInvuln implements Listener {
                     //unsure why removed teleport, but it could cause errors!
                     //Main.msg(e.getPlayer(), "&a&lResource Pack loading...");
                     if (packAccepted.containsKey(e.getPlayer().getUniqueId())) {
-                            if (e.getPlayer().getOpenInventory().getTitle().contains("§e§lJOIN MENU")) {
+                            if (e.getPlayer().getOpenInventory().getTitle().contains("§5§lJOIN MENU")) {
                                 return;
                             }
                         sendInv(e.getPlayer());
                     } else {
-                        e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
-                        e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+                        //e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                        //e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+                        //e.getPlayer().setResourcePack("https://www.dropbox.com/sh/oimjke2c6b1gqwy/AADouxTRdS0RF49dmqPWtBaWa?dl\\=1", "");
                     }
                 } else {
                     cancel();
@@ -160,21 +165,27 @@ public class AFKInvuln implements Listener {
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
             packAccepted.put(e.getPlayer().getUniqueId(), true);
-        }
+        } else
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
             Main.msg(e.getPlayer(), "&c&lFailed to download resource pack. We recommend retrying with a reconnect!");
             e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
             packAccepted.put(e.getPlayer().getUniqueId(), true);
-        }
+        } else
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.ACCEPTED) {
             Main.msg(e.getPlayer(), "&a&lResource Pack Enabled!");
             e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());
             packAccepted.put(e.getPlayer().getUniqueId(), true);
-        }
+        } /*else {
+            Main.msg(e.getPlayer(), "&c&lPlease use the resource pack! Select the Server and click Edit to enable resource packs.");
+            e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+            e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
+            sendInv(e.getPlayer());
+            packAccepted.put(e.getPlayer().getUniqueId(), true);
+        }*/
     }
 
     /*

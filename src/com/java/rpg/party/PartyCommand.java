@@ -81,12 +81,16 @@ public class PartyCommand implements CommandExecutor, Listener {
             lore.add(Main.color("&8< &6Party Leader &8>"));
         }
         DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat dF = new DecimalFormat("#");
         RPGPlayer rp = main.getPC().get(p.getUniqueId());
+        lore.add(Main.color("&8» &eClass: &f" + rp.getPClass().getName()));
+        lore.add(Main.color("&8» &eLevel: &f" + rp.getLevel()));
+        lore.add(Main.color("&8» &aExp: &f" + rp.getPrettyExp() + " &8/ &f" + rp.getPrettyMaxExp() + " &8(&a" + rp.getPrettyPercent() + "%&8)"));
         lore.add("");
-        lore.add(Main.color("&8» &eCLASS: &f" + rp.getPClass().getName()));
         lore.add(Main.color("&8» &cHP: &f" + df.format(p.getHealth()) + "&8/" + "&c" + df.format(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue())));
-        lore.add(Main.color("&8» &eLVL: &f" + rp.getLevel()));
-        lore.add(Main.color("&8» &aXP: &f" + rp.getPrettyPercent() + "%"));
+        lore.add(Main.color("&8» &bMana: &f" + dF.format(rp.getCMana()) + "&8/&b" + dF.format(rp.getPClass().getCalcMana(rp.getLevel()))));
+        lore.add(Main.color("&8» &9Mana Regen: &f" + df.format(rp.getPClass().getCalcManaRegen(rp.getLevel())) + "/s"));
+        lore.add(Main.color("&8» &dWalkspeed: &f" + dF.format(rp.getWalkspeed().getValue() + rp.getWalkSpeedS().getValue())));
         spMeta.setLore(lore);
         sp.setItemMeta(spMeta);
         playerInv.setItem(0, sp);
@@ -128,10 +132,14 @@ public class PartyCommand implements CommandExecutor, Listener {
                 RPGPlayer tp = main.getPC().get(t.getUniqueId());
                 df = new DecimalFormat("#.##");
                 lore.add("");
-                lore.add(Main.color("&8» &eCLASS: &f" + tp.getPClass().getName()));
+                lore.add(Main.color("&8» &eClass: &f" + tp.getPClass().getName()));
+                lore.add(Main.color("&8» &eLevel: &f" + tp.getLevel()));
+                lore.add(Main.color("&8» &aExp: &f" + tp.getPrettyExp() + " &8/ &f" + tp.getPrettyMaxExp() + " &8(&a" + tp.getPrettyPercent() + "%&8)"));
+                lore.add("");
                 lore.add(Main.color("&8» &cHP: &f" + df.format(t.getHealth()) + "&8/" + "&c" + df.format(t.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue())));
-                lore.add(Main.color("&8» &eLVL: &f" + tp.getLevel()));
-                lore.add(Main.color("&8» &aXP: &f" + tp.getPrettyPercent() + "%"));
+                lore.add(Main.color("&8» &bMana: &f" + dF.format(tp.getCMana()) + "&8/&b" + dF.format(tp.getPClass().getCalcMana(tp.getLevel()))));
+                lore.add(Main.color("&8» &9Mana Regen: &f" + df.format(tp.getPClass().getCalcManaRegen(tp.getLevel())) + "/s"));
+                lore.add(Main.color("&8» &dWalkspeed: &f" + dF.format(tp.getWalkspeed().getValue() + tp.getWalkSpeedS().getValue())));
                 smeta.setLore(lore);
                 player.setItemMeta(smeta);
                 playerInv.setItem(i + mod, player);

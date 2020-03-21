@@ -24,7 +24,9 @@ import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.modifiers.Environmental;
 import com.java.rpg.player.CustomDeath;
+import com.java.rpg.player.Food;
 import com.java.rpg.player.PlayerListener;
+import com.java.rpg.player.SkillpointCommand;
 import de.slikey.effectlib.EffectManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -63,79 +65,42 @@ public class Main extends JavaPlugin {
         WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
         ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
 
-        -38. suspect movement speed in fthrower
+        0. ITEM STUFF:
+        - make classes use specific item type.
+        - TIERS: Mythical, Legendary, Epic, Rare, Uncommon, Common
+        - Mythical has unique shit, less randomization, and specific items. Rest are fully randomized.
+        - Randomize stats to each weapon that a class must wear (for balancing and better stat allocation)
+        - Armor is the more general random portion? (cause u can wear any armor. Perhaps balance based on weight, lower weight generally more magical stats)
 
-        -37. get skill level no work for super in skills cmd
+        1. Lore Durability or NBT Durability (NBT better ish)
 
-        -36. clear passives on change class, in general make it more standardized on stat obj sys
+        2. suspect movement speed in fthrower
 
-        -35. Player not teleported when close inventory afkinvuln.
+        3. clear passives on change class, in general make it more standardized on stat obj sys
 
-        -34. weird error after stopping sometimes when someone online (file related rpolly)
+        4. weird error after stopping sometimes when someone online (file related rpolly)
 
-        -33. xp metadata for dungeons?
+        5. xp metadata for dungeons?
 
-        -30. Iron golem healing is absolute dogshit
+        6. Iron golem healing is absolute dogshit
 
-        -28. Allow spells to be casted twice! (no errors lul)
+        7. Allow spells to be casted twice! (no errors lul)
 
-        -27. update spell description dmg with ap scale... in general add ap scales
+        8. Override restart and stop cmd to be restart in 3 seconds. (important so can file save bfore death)
 
-        -25. If you pyroclasm something that teleports it follows them?... (need to apply to all abilities)
+        9. Bulwark doesnt block projectiles (test this)
 
-        -24. On death RPG Player needs to scrub all things status related
+        10. Wanderer no skill levels (test this)
 
-        -23. Override restart and stop cmd to be restart in 3 seconds. (important so can file save bfore death)
+        11. allow players to set spawnpoint at their town maybe? (later)
 
-        -15. CHANGING CLASS INHERITS PAST XP (assumed completed but testable)
+        12. Perhaps redesign damage system to be attached to players. Rn potential issues. (test!)
 
-        -16. Bulwark doesnt block projectiles (test this)
+        13. Add toggle if shift-offhand even works
 
-        -17. Wanderer no skill levels (test this)
-
-        -18. custom death event (assumed completed)
-
-        -20. rework damage to obey cancels (Assumed Completed!)
-
-        -21. allow players to set spawnpoint at their town maybe? (later)
-
-        -22. Make blaze target listing global so less obnoxious (Completed!)
-
-        -14. WALKSPEED IN UPDATESTATS IS BROKEN! (false but true I forgot what the issue was)
-
-        -13. Perhaps redesign damage system to be attached to players. Rn potential issues. (test!)
-
-        -12. Party exp share (test!)
-
-        -11. Add toggle if shift-offhand even works
-
-        -10. AD and AP scaling
-
-        -7. Removing armor defense appears not to work on enchanted items (dropped specifically)
+        . Removing armor defense appears not to work on enchanted items (dropped specifically)
                ^^^ MUST DEBUG USING PRINTING NBT TAG INFO
-
-        -2. Meteor Shower blows shit up when entity dmg event only
-
-        -1. Create info cmd
-
-        0. Create a settings GUI
-            - Add a setting for close Skillmenu on cast, or persist, or disable!
-
-        1. Remedy particles for Pyromancer (less flame, more orange and red redstone). Maybe try flying items and blocks
-        2. Create 2 new skills:
-            - Blaze -> Gain Speed 3 + Leave a trail of fire + Leave a trail of flaming particles that deal magic damage
-            - Meteor -> Fire a flaming meteor (Particle Sphere of Redstone + Flame Particles)
-                        Meteor blasts targets away, deals damage, and ignites them.
-            - Pyroclasm -> Increased speed, damage, oopmh. Slightly less spammable because Meteor.
-        3. Create skillpoint system to level up skills
-        4. Create skillpoint GUI to level up skills
-        5. Add skill levels to Pyromancer
-        6. Create map of HP modifiers and XP modifiers for each mob, and determine a base HP and XP equation.
-        7. RPGPlayer improvement: Make all stats, pstrength, armor, mr, tied to a map that holds info on modifiers
-        8. Create Hunter and Ninja class
-        9. Improve skill castng, allow changing of skillbar slots and binding items
-        10. Determine armor system and profs system.
-        11. Account for SAML flags when making bosses
+        1. Account for SAML flags when making bosses
 
      RIFT THEME IDEAS:
         Players can open a personal rift using a Rift Key or Rift Gem or Rift Stone
@@ -195,7 +160,7 @@ public class Main extends JavaPlugin {
                     }
                     Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Restarting in &f&l" + seconds + "&a&l seconds!"));
                 } else {
-                    if (times % 20 == 0) {
+                    if (times % 4 == 0) {
                         Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Restarting in &f&l" + ((seconds * 4 - times) / 4) + "&a&l seconds!"));
                     }
                 }
@@ -556,7 +521,7 @@ public class Main extends JavaPlugin {
 
         setupPacketListeners();
         so("&dRIFT&7: &fProtocolLib Packet Listeners Enabled!");
-
+        getCommand("info").setExecutor(new InfoCommand());
         getCommand("party").setExecutor(new PartyCommand());
         getCommand("skill").setExecutor(new SkillCommand());
         getCommand("class").setExecutor(new ClassCommand());
@@ -581,6 +546,7 @@ public class Main extends JavaPlugin {
         getCommand("seen").setExecutor(new SeenCommand());
         getCommand("biome").setExecutor(new BiomeLevelCommand());
         getCommand("arestart").setExecutor(new TimedrestartCommand());
+        getCommand("arestartfast").setExecutor(new FastRestartCommand());
         getCommand("level").setExecutor(new LevelCommand());
         getCommand("setlevel").setExecutor(new ExpCommand());
         getCommand("addlevel").setExecutor(new ExpCommand());
@@ -595,12 +561,14 @@ public class Main extends JavaPlugin {
         getCommand("delwarp").setExecutor(new DelWarpCommand());
         getCommand("spawn").setExecutor(new SpawnCommand());
 
-
+        getCommand("sp").setExecutor(new SkillpointCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
         so("&dRIFT: &fEnabled commands!");
 
+        Bukkit.getPluginManager().registerEvents(new InfoCommand(), this);
         Bukkit.getPluginManager().registerEvents(new PartyCommand(), this);
         Bukkit.getPluginManager().registerEvents(new ClassManager(), this);
+        Bukkit.getPluginManager().registerEvents(new ClassCommand(), this);
         Bukkit.getPluginManager().registerEvents(new ChatFunctions(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerinfoListener(), this);
         Bukkit.getPluginManager().registerEvents(new Environmental(), this);
@@ -616,6 +584,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
         Bukkit.getPluginManager().registerEvents(new BetterRestart(), this);
         Bukkit.getPluginManager().registerEvents(new Stuns(), this);
+        Bukkit.getPluginManager().registerEvents(new Food(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);

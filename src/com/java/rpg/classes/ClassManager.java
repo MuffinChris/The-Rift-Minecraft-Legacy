@@ -4,12 +4,14 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Pyromancer.*;
+import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
 import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.classes.skills.Wanderer.Rest;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -84,6 +87,39 @@ public class ClassManager implements Listener {
 
     }
 
+    public int getWeight(ItemStack i) {
+        if (i != null && i.getItemMeta() != null && i.getItemMeta() != null) {
+            if (i.getItemMeta().hasLore()) {
+                for (String s : i.getItemMeta().getLore()) {
+                    if (s.contains("§eWeight: ")) {
+                        s = ChatColor.stripColor(s);
+                        return Integer.parseInt(s.substring(s.indexOf(": ") + 2));
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    @EventHandler
+    public void onCraft (CraftItemEvent e) {
+        if (e.getCurrentItem() != null && weight.containsKey(e.getCurrentItem().getType())) {
+            ItemMeta meta;
+            meta = e.getCurrentItem().getItemMeta();
+            meta.setDisplayName(Main.color("&7Primitive " + e.getCurrentItem().getType().name()));
+            List<String> lore;
+            if (meta.hasLore()) {
+                lore = meta.getLore();
+            } else {
+                lore = new ArrayList<>();
+            }
+            lore.add(Main.color("&eWeight: &f" + weight.get(e.getCurrentItem().getType())));
+            meta.setLore(lore);
+            e.getCurrentItem().setItemMeta(meta);
+        }
+    }
+
+
     @EventHandler
     public void onClick (PlayerInteractEvent e) {
         if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -111,8 +147,34 @@ public class ClassManager implements Listener {
     }
 
     public static ItemStack fixItem(ItemStack i) throws Exception {
-        if (i != null && i.getType() != null && isArmor(i.getType().toString())) {
+        ItemStack nItem = i;
+        if (i != null && isArmor(i.getType().toString())) {
+
+            ItemMeta meta;
+            meta = nItem.getItemMeta();
+            boolean hasWeight = false;
+            if (meta.hasLore() && meta.getLore() != null) {
+                for (String s : meta.getLore()) {
+                    if (s.contains("§eWeight: ")) {
+                        hasWeight = true;
+                    }
+                }
+            }
+            if (!hasWeight) {
+                meta.setDisplayName(Main.color("&7Primitive " + nItem.getType().name()));
+                List<String> lore;
+                if (meta.hasLore()) {
+                    lore = meta.getLore();
+                } else {
+                    lore = new ArrayList<>();
+                }
+                lore.add(Main.color("&eWeight: &f" + weight.get(nItem.getType())));
+                meta.setLore(lore);
+                nItem.setItemMeta(meta);
+            }
+
             net.minecraft.server.v1_15_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
+
             if (nmsStack.getTag() == null || (nmsStack.getTag().getList("AttributeModifiers", 0) == null)) {
                 NBTTagCompound itemTagC = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
                 NBTTagList modifiers = new NBTTagList();
@@ -162,9 +224,9 @@ public class ClassManager implements Listener {
                 modifiers.add(itemC);
                 itemTagC.set("AttributeModifiers", modifiers);
                 nmsStack.setTag(itemTagC);
-                ItemStack nItem = CraftItemStack.asBukkitCopy(nmsStack);
+                nItem = CraftItemStack.asBukkitCopy(nmsStack);
 
-                ItemMeta meta = nItem.getItemMeta();
+                /*ItemMeta meta = nItem.getItemMeta();
                 List<String> lore = new ArrayList<>();
                 if (meta.hasLore()) {
                     lore = meta.getLore();
@@ -175,11 +237,10 @@ public class ClassManager implements Listener {
                     }
                 }
                 meta.setLore(lore);
-                nItem.setItemMeta(meta);
-                return nItem;
+                nItem.setItemMeta(meta);*/
             }
         }
-        return i;
+        return nItem;
     }
 
     public void updateArmor(Player p) {
@@ -203,8 +264,11 @@ public class ClassManager implements Listener {
         double fullweight = 0;
         double maxweight = main.getRP(e.getPlayer()).getPClass().getWeight();
         for (ItemStack armor : e.getPlayer().getInventory().getArmorContents()) {
-            if (armor != null && weight.containsKey(armor.getType())) {
+            /*if (armor != null && weight.containsKey(armor.getType())) {
                 fullweight += weight.get(armor.getType());
+            }*/
+            if (armor != null) {
+                fullweight += getWeight(armor);
             }
         }
         if (e.getPlayer().getLastLogin() + 2000 < System.currentTimeMillis() &&  (((e.getOldItem() == null && e.getNewItem() != null)||(e.getOldItem() == null && e.getNewItem() != null))||(e.getOldItem() != null && e.getNewItem() != null && e.getOldItem().getType() != e.getNewItem().getType()))) {
@@ -313,6 +377,7 @@ public class ClassManager implements Listener {
 
         List<Skill> superSkillsPyro = new ArrayList<>();
         superSkillsPyro.add(new Flamethrower());
+        superSkillsPyro.add(new Conflagration());
 
         classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 0.4, 2,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110));
     }

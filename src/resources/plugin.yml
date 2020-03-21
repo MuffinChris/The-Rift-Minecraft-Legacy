@@ -13,7 +13,7 @@ commands:
     aliases: [cast, spell]
   class:
     description: Select a class!
-    aliases: [soul]
+    aliases: [soul, classes]
   heal:
     description: Heal a target.
     permission: core.mod
@@ -72,8 +72,11 @@ commands:
     description: Get the level range of your current location
     aliases: [locinfo, locationinfo, loclevel, biomelevel, biomelvl, nl, bl, ll]
   arestart:
-    description: Restart the server on a 60 second timer
+    description: Restart the server on a 30 second timer
     aliases: [autorestart, timedrestart, trestart]
+    permission: core.admin
+  arestartfast:
+    description: Restart the server on a 5 second timer
     permission: core.admin
   setexp:
     description: Set a player's EXP
@@ -105,4 +108,10 @@ commands:
   spawn:
     description: Warp to spawn
     aliases: [s]
+  info:
+    description: View info
+    aliases: [information, whois, who, rpg, character, char]
+  sp:
+    description: View skillpoints
+    aliases: [skillpoint, skillpoints, spoints]
 depend: [ProtocolLib, Vault]

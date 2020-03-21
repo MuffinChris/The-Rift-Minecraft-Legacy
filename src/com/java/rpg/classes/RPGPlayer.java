@@ -51,6 +51,21 @@ public class RPGPlayer extends Leveleable {
 
     private List<Damage> damages;
 
+    public int calculateSP() {
+        int total;
+        if (getLevel() >= 40 && getLevel() < 50) {
+            total = 1;
+        } else if (getLevel() >= 50) {
+            total = 2;
+        } else {
+            total = 0;
+        }
+        for (int i : getSkillLevels().values()) {
+            total -= i;
+        }
+        return total;
+    }
+
     public List<Skill> getSkillsAll() {
         Player p = player;
         List<Skill> pSkills = new ArrayList<>();
@@ -282,7 +297,7 @@ public class RPGPlayer extends Leveleable {
         passiveTasks = new ArrayList<>();
         toggleTasks = new ArrayList<>();
         toggles = new ArrayList<>();
-        skillLevels = new HashMap<>();
+        skillLevels = new LinkedHashMap<>();
         target = null;
         pullFiles();
         board = new Skillboard(p);
@@ -527,7 +542,7 @@ public class RPGPlayer extends Leveleable {
 
         double hp = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         pushFiles();
-        if (pclass instanceof PlayerClass && pc.getName().equalsIgnoreCase(pclass.getName())) {
+        if (pclass != null && pc.getName().equalsIgnoreCase(pclass.getName())) {
             return false;
         }
         setExp(0);
@@ -536,7 +551,7 @@ public class RPGPlayer extends Leveleable {
         File pFile = new File("plugins/Rift/data/classes/" + player.getUniqueId() + ".yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
         try {
-            if (pclass instanceof PlayerClass) {
+            if (pclass != null) {
                 pData.set("Current Class", pclass.getName());
             } else {
                 pData.set("Current Class", RPGConstants.defaultClassName);
@@ -573,7 +588,7 @@ public class RPGPlayer extends Leveleable {
                 sv.setValue(baseWS);
             }
         }
-        float currentWs = Math.max(0, Float.valueOf(String.valueOf(df.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()))));
+        float currentWs = Math.max(0, player.getWalkSpeed());
         float actualWs = Math.max(0, Float.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0 + getWalkSpeedS().getValue() * 1.0) / 100.0))));
         if (currentWs != actualWs) {
             player.setWalkSpeed(actualWs);
@@ -646,7 +661,7 @@ public class RPGPlayer extends Leveleable {
             }
             for (Skill st : pclass.getSuperSkills()) {
                 if (name.equalsIgnoreCase(st.getName())) {
-                    if (skillLevels.get(pclass.getSkills().get(0).getName()) == 0) {
+                    if (skillLevels.get(pclass.getSkills().get(pclass.getSuperSkills().indexOf(st)).getName()) == 0) {
                         return "NotSuper";
                     }
                     s = st;
@@ -703,35 +718,54 @@ public class RPGPlayer extends Leveleable {
                                 int manaCost = s.getManaCost();
                                 String type = s.getType();
                                 final Skill sk = s;
+                                Player p = player;
                                 final int task = scheduler.scheduleSyncDelayedTask(main, new Runnable() {
                                     public void run() {
-                                        if (cooldowns.containsKey(nameS)) {
-                                            cooldowns.replace(nameS, System.currentTimeMillis());
-                                        } else {
-                                            cooldowns.put(nameS, System.currentTimeMillis());
-                                        }
-                                        if (currentMana >= manaCost) {
-                                            if (type.contains("TARGET")) {
-                                                if (target == null || (target != null && target.isDead())) {
-                                                    statuses.remove("Warmup" + nameS);
-                                                    return;
-                                                }
-                                                sk.target(player, target);
+                                        if (!p.isOnline() || player.isDead()) {
+                                            if (p.isOnline() && p.isDead()) {
+                                                statuses.remove("Warmup" + nameS);
                                                 target = null;
-                                            } else {
-                                                sk.cast(player);
                                             }
-                                            currentMana -= manaCost;
                                         } else {
-                                            Main.msg(player, "&cOut of mana to cast " + nameS + "!");
+                                            if (cooldowns.containsKey(nameS)) {
+                                                cooldowns.replace(nameS, System.currentTimeMillis());
+                                            } else {
+                                                cooldowns.put(nameS, System.currentTimeMillis());
+                                            }
+                                            if (currentMana >= manaCost) {
+                                                if (type.contains("TARGET")) {
+                                                    if (target == null || (target != null && target.isDead())) {
+                                                        statuses.remove("Warmup" + nameS);
+                                                        return;
+                                                    }
+                                                    sk.target(player, target);
+                                                    target = null;
+                                                } else {
+                                                    sk.cast(player);
+                                                }
+                                                currentMana -= manaCost;
+                                            } else {
+                                                Main.msg(player, "&cOut of mana to cast " + nameS + "!");
+                                            }
+                                            statuses.remove("Warmup" + nameS);
                                         }
-                                        statuses.remove("Warmup" + nameS);
                                     }
                                 }, s.getWarmup());
 
                                 new BukkitRunnable() {
+                                    Player p = player;
                                     int time = 0;
                                     public void run() {
+                                        if (!p.isOnline()) {
+                                            cancel();
+                                            return;
+                                        }
+                                        if (player.isDead()) {
+                                            cancel();
+                                            target = null;
+                                            statuses.remove("Warmup" + name);
+                                            return;
+                                        }
                                         time++;
                                         if (time >= warmup) {
                                             cancel();
@@ -878,7 +912,7 @@ public class RPGPlayer extends Leveleable {
                 if (sk.equals(s)) {
                     if (cooldowns.containsKey(s.getName())) {
                         long timeLeft = System.currentTimeMillis() - cooldowns.get(s.getName());
-                        if (TimeUnit.MILLISECONDS.toSeconds(timeLeft) * 20 >= s.getCooldown()) {
+                        if (timeLeft * 0.001 * 20 >= s.getCooldown()) {
                             if (s.getWarmup() != 0) {
                                 return "Warmup";
                             }
@@ -903,8 +937,19 @@ public class RPGPlayer extends Leveleable {
         return "Invalid";
     }
 
+    public Skill getSkillFromSuper(String name) {
+        if (pclass != null) {
+            for (Skill s : pclass.getSuperSkills()) {
+                if (name.equalsIgnoreCase(s.getName())) {
+                    return pclass.getSkills().get(pclass.getSuperSkills().indexOf(s));
+                }
+            }
+        }
+        return null;
+    }
+
     public Skill getSkillFromName(String name) {
-        if (pclass instanceof PlayerClass) {
+        if (pclass != null) {
             for (Skill s : pclass.getSkills()) {
                 if (name.equalsIgnoreCase(s.getName())) {
                     return s;
@@ -920,12 +965,12 @@ public class RPGPlayer extends Leveleable {
     }
 
     public void refreshCooldowns() {
-        if (pclass instanceof PlayerClass) {
+        if (pclass != null) {
             for (int i = cooldowns.keySet().size() - 1; i >= 0; i--) {
                 String name = cooldowns.keySet().toArray()[i].toString();
                 long timeLeft = System.currentTimeMillis() - cooldowns.get(name);
-                if (getSkillFromName(name) instanceof Skill) {
-                    if (TimeUnit.MILLISECONDS.toSeconds(timeLeft) * 20 >= getSkillFromName(name).getCooldown()) {
+                if (getSkillFromName(name) != null) {
+                    if (timeLeft * 0.001 * 20 >= getSkillFromName(name).getCooldown()) {
                         cooldowns.remove(name);
                     }
                 }
@@ -954,6 +999,9 @@ public class RPGPlayer extends Leveleable {
     }
 
     public void scrub() {
+        if (player.hasPotionEffect(PotionEffectType.SLOW) && player.getPotionEffect(PotionEffectType.SLOW).getAmplifier() == 2 && player.getPotionEffect(PotionEffectType.SLOW).getDuration() > 999) {
+            player.removePotionEffect(PotionEffectType.SLOW);
+        }
         for (StatusObject s : so) {
             s.scrub();
         }
@@ -1005,37 +1053,6 @@ public class RPGPlayer extends Leveleable {
         toggles = new ArrayList<>();
         player = null;
         pclass = null;
-        so.clear();
-        stun.scrub();
-        root.scrub();
-        silence.scrub();
-        hpfreeze.scrub();
-        manafreeze.scrub();
-        pstrength2.scrub();
-        bonusap.scrub();
-        bonusad.scrub();
-        bonusapS.scrub();
-        bonusadS.scrub();
-        autoLife.scrub();
-        blessing.scrub();
-        stoneskindr.scrub();
-        stoneskins.scrub();
-        stoneskincd.scrub();
-        bonusad = null;
-        bonusap = null;
-        bonusapS = null;
-        bonusadS = null;
-        stun = null;
-        root = null;
-        silence = null;
-        hpfreeze = null;
-        manafreeze = null;
-        pstrength2 = null;
-        autoLife = null;
-        blessing = null;
-        stoneskindr = null;
-        stoneskins = null;
-        stoneskincd = null;
         super.scrub();
     }
 }

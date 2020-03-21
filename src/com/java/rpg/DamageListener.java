@@ -4,6 +4,7 @@ import com.java.Main;
 import com.java.holograms.Hologram;
 import com.java.rpg.classes.RPGConstants;
 import com.java.rpg.classes.RPGPlayer;
+import net.minecraft.server.v1_15_R1.Explosion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -127,7 +128,7 @@ public class DamageListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onDamage (EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player) && !e.isCancelled() && !(e.getEntity() instanceof ArmorStand)) {
+        if (!(e.getDamager() instanceof Player) && !e.isCancelled() && !(e.getEntity() instanceof ArmorStand) && (e.getEntity() instanceof LivingEntity)) {
             if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof Player) {
 
             } else {

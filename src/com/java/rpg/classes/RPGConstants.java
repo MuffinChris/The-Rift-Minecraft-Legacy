@@ -2,7 +2,7 @@ package com.java.rpg.classes;
 
 public class RPGConstants {
 
-    public static double expMod = 25;
+    public static double expMod = 60;
     public static double expOff = 500;
     public static double expPow = 2.7;
 

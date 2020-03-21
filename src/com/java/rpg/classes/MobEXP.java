@@ -17,10 +17,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MobEXP implements Listener {
 
@@ -37,7 +34,7 @@ public class MobEXP implements Listener {
     private static Map<EntityType, Double> xpmods;
 
     public MobEXP() {
-        biomeLevels = new HashMap<>();
+        biomeLevels = new LinkedHashMap<>();
 
         biomeLevels.clear();
         biomeLevels.put(Biome.BADLANDS, new LevelRange(40, 50));
@@ -119,6 +116,7 @@ public class MobEXP implements Listener {
         xpmods = new HashMap<>();
         xpmods.clear();
         xpmods.put(EntityType.DONKEY, 0.1);
+        xpmods.put(EntityType.BEE, 0.1);
         xpmods.put(EntityType.BAT , 0.05);
         xpmods.put(EntityType.BLAZE , 1.2);
         xpmods.put(EntityType.CAT , 0.1);
@@ -210,6 +208,7 @@ public class MobEXP implements Listener {
         peaceful.add(EntityType.DOLPHIN);
         peaceful.add(EntityType.CHICKEN);
         peaceful.add(EntityType.FOX);
+        peaceful.add(EntityType.BEE);
 
 
         new BukkitRunnable() {
