@@ -5,7 +5,8 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.java.Main;
 import com.java.rpg.classes.LevelRange;
 import com.java.rpg.classes.StatusValue;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTItem;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,6 +29,11 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class Items implements Listener {
+
+    What to test (Sunday)
+        - Does ArmorToughness get Removed?
+        - Repeating ArmorWeight bug?
+        - (cause u removed the check for if attributes have been tampered, so fixitem will change item NBT regardless...) [reverted cause u think smarter to just keep the check?]
 
     private Main main = Main.getInstance();
 
@@ -322,18 +328,43 @@ public class Items implements Listener {
         }
     }
 
+    public static ItemStack removeArmor (ItemStack i) {
+        NBTItem nbtItem = new NBTItem(i);
+        NBTCompound atr = nbtItem.getCompoundList("AttributeModifiers").addCompound();
+        atr.setDouble("Amount", 0.0);
+        atr.setString("AttributeName", "generic.armor");
+        atr.setString("Name", "generic.armor");
+        atr.setInteger("Operation", 0);
+        atr.setInteger("UUIDLeast", 59764);
+        atr.setInteger("UUIDMost", 31483);
+
+        NBTCompound atrT = nbtItem.getCompoundList("AttributeModifiers").addCompound();
+        atrT.setDouble("Amount", 0.0);
+        atrT.setString("AttributeName", "generic.armorToughness");
+        atrT.setString("Name", "generic.armorToughness");
+        atrT.setInteger("Operation", 0);
+        atrT.setInteger("UUIDLeast", 58764);
+        atrT.setInteger("UUIDMost", 32483);
+        return nbtItem.getItem();
+    }
+
     public static ItemStack fixItem(ItemStack i) throws Exception {
         ItemStack nItem = i;
         if (i != null && isArmor(i.getType().toString())) {
 
-            NBTItem nbtItem = new NBTItem(i);
-
-            net.minecraft.server.v1_15_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
+            //net.minecraft.server.v1_15_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
 
             nItem = primitize(nItem);
 
+            //nItem = removeArmor(nItem);
 
-            if (nmsStack.getTag() == null || (nmsStack.getTag().getList("AttributeModifiers", 0) == null)) {
+            NBTItem nbtItem = new NBTItem(nItem);
+            if (nbtItem.getCompoundList("AttributeModifiers").size() == 0) {
+                nItem = removeArmor(nItem);
+            }
+            //nbtItem.setInteger("generic.armor", 0);
+
+            /*if (nmsStack.getTag() == null || (nmsStack.getTag().getList("AttributeModifiers", 0) == null)) {
                 Bukkit.broadcastMessage("Got past the if statement");
                 NBTTagCompound itemTagC = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
                 NBTTagList modifiers = new NBTTagList();
@@ -384,20 +415,7 @@ public class Items implements Listener {
                 itemTagC.set("AttributeModifiers", modifiers);
                 nmsStack.setTag(itemTagC);
                 nItem = CraftItemStack.asBukkitCopy(nmsStack);
-
-                /*ItemMeta meta = nItem.getItemMeta();
-                List<String> lore = new ArrayList<>();
-                if (meta.hasLore()) {
-                    lore = meta.getLore();
-                }
-                if (weight.containsKey(nItem.getType())) {
-                    if (lore.isEmpty() || !lore.contains(Main.color("&eWeight: &f" + weight.get(nItem.getType())))) {
-                        lore.add(Main.color("&eWeight: &f" + weight.get(nItem.getType())));
-                    }
-                }
-                meta.setLore(lore);
-                nItem.setItemMeta(meta);*/
-            }
+            }*/
         }
         return nItem;
     }
@@ -430,7 +448,7 @@ public class Items implements Listener {
                 fullweight += getWeight(armor);
             }
         }
-        if (recievedWeight.get(e.getPlayer().getUniqueId()) + 50 < System.currentTimeMillis() && e.getPlayer().getLastLogin() + 2000  < System.currentTimeMillis() &&  (((e.getOldItem() == null && e.getNewItem() != null)||(e.getOldItem() == null && e.getNewItem() != null))||(e.getOldItem() != null && e.getNewItem() != null && e.getOldItem().getType() != e.getNewItem().getType()))) {
+        if (recievedWeight.get(e.getPlayer().getUniqueId()) + 50 < System.currentTimeMillis() && e.getPlayer().getLastLogin() + 2000  < System.currentTimeMillis()) {
             Main.msg(e.getPlayer(), "&e&lArmor Weight: &f" + fullweight + " &8/ &f" + maxweight);
             recievedWeight.replace(e.getPlayer().getUniqueId(), System.currentTimeMillis());
         }
@@ -453,6 +471,7 @@ public class Items implements Listener {
                 main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -50, 0, 0, true));
             }
         } else {
+            clearArmorWS(e.getPlayer());
             main.getRP(e.getPlayer()).updateWS();
         }
     }
@@ -486,7 +505,7 @@ public class Items implements Listener {
     @EventHandler
     public void prepCraft (PrepareItemCraftEvent e) {
         if (e.getRecipe() != null && durability.containsKey(e.getRecipe().getResult().getType())) {
-            e.getInventory().setResult(primitize(e.getRecipe().getResult()));
+            e.getInventory().setResult(removeArmor(primitize(e.getRecipe().getResult())));
         }
     }
 

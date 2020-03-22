@@ -287,8 +287,8 @@ public class DamageListener implements Listener {
                                 if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
                                     Player p = (Player) e.getEntity();
                                     RPGPlayer rp = main.getPC().get(p.getUniqueId());
-                                    double am = rp.getArmor();
-                                    damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
+                                    double mr = rp.getMR();
+                                    damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + mr));
                                 }
                                 Hologram magic = new Hologram(ent, ent.getLocation(), "&9&l⚡" + df.format(damage), Hologram.HologramType.DAMAGE);
                                 magic.rise();
