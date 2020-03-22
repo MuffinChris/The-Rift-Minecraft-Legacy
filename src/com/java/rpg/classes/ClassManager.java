@@ -37,11 +37,11 @@ public class ClassManager implements Listener {
 
     private Main main = Main.getInstance();
 
-    private static Map<org.bukkit.Material, Integer> weight;
 
     private List<UUID> fall;
 
     private Map<UUID, Integer> fallMap;
+
 
     public List<UUID> getFall() {
         return fall;
@@ -51,72 +51,12 @@ public class ClassManager implements Listener {
         return fallMap;
     }
 
+
     public ClassManager() {
         fall = new ArrayList<>();
         fallMap = new HashMap<>();
         createClasses();
 
-        weight = new HashMap<>();
-        weight.put(org.bukkit.Material.ELYTRA, 5);
-        weight.put(org.bukkit.Material.TURTLE_HELMET, 5);
-
-        weight.put(org.bukkit.Material.DIAMOND_HELMET, 30);
-        weight.put(org.bukkit.Material.DIAMOND_CHESTPLATE, 50);
-        weight.put(org.bukkit.Material.DIAMOND_LEGGINGS, 45);
-        weight.put(org.bukkit.Material.DIAMOND_BOOTS, 25);
-
-        weight.put(org.bukkit.Material.IRON_HELMET, 25);
-        weight.put(org.bukkit.Material.IRON_CHESTPLATE, 50);
-        weight.put(org.bukkit.Material.IRON_LEGGINGS, 40);
-        weight.put(org.bukkit.Material.IRON_BOOTS, 20);
-
-        weight.put(org.bukkit.Material.CHAINMAIL_HELMET, 20);
-        weight.put(org.bukkit.Material.CHAINMAIL_CHESTPLATE, 40);
-        weight.put(org.bukkit.Material.CHAINMAIL_LEGGINGS, 35);
-        weight.put(org.bukkit.Material.CHAINMAIL_BOOTS, 15);
-
-        weight.put(org.bukkit.Material.GOLDEN_HELMET, 15);
-        weight.put(org.bukkit.Material.GOLDEN_CHESTPLATE, 35);
-        weight.put(org.bukkit.Material.GOLDEN_LEGGINGS, 30);
-        weight.put(org.bukkit.Material.GOLDEN_BOOTS, 10);
-
-        weight.put(org.bukkit.Material.LEATHER_HELMET, 10);
-        weight.put(org.bukkit.Material.LEATHER_CHESTPLATE, 25);
-        weight.put(org.bukkit.Material.LEATHER_LEGGINGS, 20);
-        weight.put(org.bukkit.Material.LEATHER_BOOTS, 5);
-
-    }
-
-    public int getWeight(ItemStack i) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§eWeight: ")) {
-                        s = ChatColor.stripColor(s);
-                        return Integer.parseInt(s.substring(s.indexOf(": ") + 2));
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    @EventHandler
-    public void onCraft (CraftItemEvent e) {
-        if (e.getCurrentItem() != null && weight.containsKey(e.getCurrentItem().getType())) {
-            ItemMeta meta;
-            meta = e.getCurrentItem().getItemMeta();
-            meta.setDisplayName(Main.color("&7Primitive " + e.getCurrentItem().getType().name()));
-            List<String> lore;
-            if (meta.hasLore()) {
-                lore = meta.getLore();
-            } else {
-                lore = new ArrayList<>();
-            }
-            lore.add(Main.color("&eWeight: &f" + weight.get(e.getCurrentItem().getType())));
-            meta.setLore(lore);
-            e.getCurrentItem().setItemMeta(meta);
-        }
     }
 
 
@@ -139,180 +79,6 @@ public class ClassManager implements Listener {
                     }
                 }
             }
-        }
-    }
-
-    public static boolean isArmor(String s) {
-        return (s.contains("HELMET") || s.contains("CHESTPLATE") || s.contains("LEGGINGS") || s.contains("BOOTS") || s.contains("ELYTRA"));
-    }
-
-    public static ItemStack fixItem(ItemStack i) throws Exception {
-        ItemStack nItem = i;
-        if (i != null && isArmor(i.getType().toString())) {
-
-            ItemMeta meta;
-            meta = nItem.getItemMeta();
-            boolean hasWeight = false;
-            if (meta.hasLore() && meta.getLore() != null) {
-                for (String s : meta.getLore()) {
-                    if (s.contains("§eWeight: ")) {
-                        hasWeight = true;
-                    }
-                }
-            }
-            if (!hasWeight) {
-                meta.setDisplayName(Main.color("&7Primitive " + nItem.getType().name()));
-                List<String> lore;
-                if (meta.hasLore()) {
-                    lore = meta.getLore();
-                } else {
-                    lore = new ArrayList<>();
-                }
-                lore.add(Main.color("&eWeight: &f" + weight.get(nItem.getType())));
-                meta.setLore(lore);
-                nItem.setItemMeta(meta);
-            }
-
-            net.minecraft.server.v1_15_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
-
-            if (nmsStack.getTag() == null || (nmsStack.getTag().getList("AttributeModifiers", 0) == null)) {
-                NBTTagCompound itemTagC = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-                NBTTagList modifiers = new NBTTagList();
-                NBTTagCompound itemC = new NBTTagCompound();
-
-                Constructor<NBTTagString> constructorS = NBTTagString.class.getDeclaredConstructor(String.class);
-                constructorS.setAccessible(true);
-                NBTTagString nbts = constructorS.newInstance("generic.armor");
-
-                Constructor<NBTTagDouble> constructorD = NBTTagDouble.class.getDeclaredConstructor(double.class);
-                constructorD.setAccessible(true);
-                NBTTagDouble nbtd = constructorD.newInstance(0);
-
-                Constructor<NBTTagInt> constructorI = NBTTagInt.class.getDeclaredConstructor(int.class);
-                constructorI.setAccessible(true);
-                NBTTagInt nbti = constructorI.newInstance(0);
-                NBTTagInt nbtiL = constructorI.newInstance(894654);
-                NBTTagInt nbtiM = constructorI.newInstance(2827);
-
-                itemC.set("AttributeName", nbts);
-                itemC.set("Name", nbts);
-                itemC.set("Amount", nbtd);
-                itemC.set("Operation", nbti);
-                itemC.set("UUIDLeast", nbtiL);
-                itemC.set("UUIDMost", nbtiM);
-
-                String item = i.toString().toLowerCase();
-
-                NBTTagString nbthe = constructorS.newInstance("head");
-                NBTTagString nbtch = constructorS.newInstance("chest");
-                NBTTagString nbtle = constructorS.newInstance("legs");
-                NBTTagString nbtbo = constructorS.newInstance("feet");
-
-                if (item.contains("helmet") || item.contains("cap")) {
-                    itemC.set("Slot", nbthe);
-                }
-                if (item.contains("chestplate") || item.contains("tunic") || item.contains("elytra")) {
-                    itemC.set("Slot", nbtch);
-                }
-                if (item.contains("leggings") || item.contains("pants")) {
-                    itemC.set("Slot", nbtle);
-                }
-                if (item.contains("boots")) {
-                    itemC.set("Slot", nbtbo);
-                }
-
-                modifiers.add(itemC);
-                itemTagC.set("AttributeModifiers", modifiers);
-                nmsStack.setTag(itemTagC);
-                nItem = CraftItemStack.asBukkitCopy(nmsStack);
-
-                /*ItemMeta meta = nItem.getItemMeta();
-                List<String> lore = new ArrayList<>();
-                if (meta.hasLore()) {
-                    lore = meta.getLore();
-                }
-                if (weight.containsKey(nItem.getType())) {
-                    if (lore.isEmpty() || !lore.contains(Main.color("&eWeight: &f" + weight.get(nItem.getType())))) {
-                        lore.add(Main.color("&eWeight: &f" + weight.get(nItem.getType())));
-                    }
-                }
-                meta.setLore(lore);
-                nItem.setItemMeta(meta);*/
-            }
-        }
-        return nItem;
-    }
-
-    public void updateArmor(Player p) {
-        for (int i = 0; i < p.getInventory().getContents().length; i++) {
-            if (p.getInventory().getItem(i) instanceof ItemStack) {
-                ItemStack it = p.getInventory().getItem(i);
-                if (it != null && it.getType() != null && isArmor(it.getType().toString())) {
-                    try {
-                        p.getInventory().setItem(i, fixItem(it));
-                    } catch (Exception e) {
-
-                    }
-                 }
-            }
-        }
-    }
-
-    @EventHandler
-    public void newArmor (PlayerArmorChangeEvent e) {
-        updateArmor(e.getPlayer());
-        double fullweight = 0;
-        double maxweight = main.getRP(e.getPlayer()).getPClass().getWeight();
-        for (ItemStack armor : e.getPlayer().getInventory().getArmorContents()) {
-            /*if (armor != null && weight.containsKey(armor.getType())) {
-                fullweight += weight.get(armor.getType());
-            }*/
-            if (armor != null) {
-                fullweight += getWeight(armor);
-            }
-        }
-        if (e.getPlayer().getLastLogin() + 2000 < System.currentTimeMillis() &&  (((e.getOldItem() == null && e.getNewItem() != null)||(e.getOldItem() == null && e.getNewItem() != null))||(e.getOldItem() != null && e.getNewItem() != null && e.getOldItem().getType() != e.getNewItem().getType()))) {
-            Main.msg(e.getPlayer(), "&e&lArmor Weight: &f" + fullweight + " &8/ &f" + maxweight);
-        }
-        if (fullweight > maxweight) {
-            if (fullweight < maxweight * 1.5) {
-                clearArmorWS(e.getPlayer());
-                Main.msg(e.getPlayer(), "&cYour armor is too heavy, you're afflicted with slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -10, 0, 0, true));
-            } else if (fullweight < maxweight * 2) {
-                clearArmorWS(e.getPlayer());
-                Main.msg(e.getPlayer(), "&cYour armor is far too heavy, you're afflicted with slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -15, 0, 0, true));
-            } else if (fullweight < maxweight * 2.5) {
-                clearArmorWS(e.getPlayer());
-                Main.msg(e.getPlayer(), "&cYour armor is extremely heavy, you're afflicted with high slowness.");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -19, 0, 0, true));
-            } else {
-                clearArmorWS(e.getPlayer());
-                Main.msg(e.getPlayer(), "&cYour armor is impossibly heavy, you can't move!");
-                main.getRP(e.getPlayer()).getWalkspeed().getStatuses().add(new StatusValue("ARMOR:" + e.getPlayer().getName(), -50, 0, 0, true));
-            }
-        } else {
-            main.getRP(e.getPlayer()).updateWS();
-        }
-    }
-
-    public void clearArmorWS(Player p) {
-        main.getRP(p).getWalkspeed().clearBasedTitle("ARMOR", p);
-    }
-
-    @EventHandler
-    public void jump (PlayerJumpEvent e) {
-        double fullweight = 0;
-        double maxweight = main.getRP(e.getPlayer()).getPClass().getWeight();
-        for (ItemStack armor : e.getPlayer().getInventory().getArmorContents()) {
-            if (armor != null && weight.containsKey(armor.getType())) {
-                fullweight+=weight.get(armor.getType());
-            }
-        }
-        if (fullweight > maxweight) {
-            Main.msg(e.getPlayer(), "&cYour armor is too heavy to jump in!");
-            e.setCancelled(true);
         }
     }
 

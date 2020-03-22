@@ -128,15 +128,6 @@ public class DamageListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onDamage (EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player) && !e.isCancelled() && !(e.getEntity() instanceof ArmorStand) && (e.getEntity() instanceof LivingEntity)) {
-            if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof Player) {
-
-            } else {
-                DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), "&c&l❤" + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
-                magic.rise();
-            }
-        }
         if ((e.getDamager() instanceof Player || e.getDamager() instanceof Projectile) && e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !e.isCancelled()) {
             LivingEntity ent = (LivingEntity) e.getEntity();
             /*if (e.getEntity() instanceof Player) {
@@ -223,7 +214,7 @@ public class DamageListener implements Listener {
                                 if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
                                     Player p = (Player) e.getEntity();
                                     RPGPlayer rp = main.getPC().get(p.getUniqueId());
-                                    double mr = rp.getPClass().getCalcMR(rp.getLevel());
+                                    double mr = rp.getMR();
                                     damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv  + mr));
                                 }
                                 Hologram magic = new Hologram(ent, ent.getLocation(), "&b&l⚡" + df.format(damage), Hologram.HologramType.DAMAGE);
@@ -239,7 +230,7 @@ public class DamageListener implements Listener {
                                 if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
                                     Player p = (Player) e.getEntity();
                                     RPGPlayer rp = main.getPC().get(p.getUniqueId());
-                                    double am = rp.getPClass().getCalcArmor(rp.getLevel());
+                                    double am = rp.getArmor();
                                     damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
                                 }
                                 Hologram magic = new Hologram(ent, ent.getLocation(), "&b&l⚔" + df.format(damage), Hologram.HologramType.DAMAGE);
@@ -273,7 +264,7 @@ public class DamageListener implements Listener {
                                 if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
                                     Player p = (Player) e.getEntity();
                                     RPGPlayer rp = main.getPC().get(p.getUniqueId());
-                                    double am = rp.getPClass().getCalcArmor(rp.getLevel());
+                                    double am = rp.getArmor();
                                     damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
                                 }
                                 Hologram magic = new Hologram(ent, ent.getLocation(), "&c&l❤" + df.format(damage), Hologram.HologramType.DAMAGE);
@@ -296,7 +287,7 @@ public class DamageListener implements Listener {
                                 if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
                                     Player p = (Player) e.getEntity();
                                     RPGPlayer rp = main.getPC().get(p.getUniqueId());
-                                    double am = rp.getPClass().getCalcArmor(rp.getLevel());
+                                    double am = rp.getArmor();
                                     damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
                                 }
                                 Hologram magic = new Hologram(ent, ent.getLocation(), "&9&l⚡" + df.format(damage), Hologram.HologramType.DAMAGE);
@@ -486,10 +477,19 @@ public class DamageListener implements Listener {
             if (!(e.getDamager() instanceof Projectile) || (e.getDamager() instanceof Projectile && !(((Projectile)e.getDamager()).getShooter() instanceof Player))) {
                 Player p = (Player) e.getEntity();
                 RPGPlayer rp = main.getRP(p);
-                double am = rp.getPClass().getCalcArmor(rp.getLevel());
+                double am = rp.getArmor();
                 double damage = e.getDamage();
                 damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
                 e.setDamage(damage);
+            }
+        }
+        if (!(e.getDamager() instanceof Player) && !e.isCancelled() && !(e.getEntity() instanceof ArmorStand) && (e.getEntity() instanceof LivingEntity)) {
+            if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof Player) {
+
+            } else {
+                DecimalFormat df = new DecimalFormat("#.##");
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), "&c&l❤" + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                magic.rise();
             }
         }
     }

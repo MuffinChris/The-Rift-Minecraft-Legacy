@@ -4,6 +4,7 @@ import com.java.Main;
 import com.java.holograms.Hologram;
 import com.java.rpg.Damage;
 import com.java.rpg.party.Party;
+import com.java.rpg.player.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import com.java.rpg.Leveleable;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -50,6 +52,26 @@ public class RPGPlayer extends Leveleable {
     private Skillboard board;
 
     private List<Damage> damages;
+
+    public double getArmor() {
+        double armor = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (i != null) {
+                armor+=Items.getArmor(i);
+            }
+        }
+        return getPClass().getCalcArmor(getLevel()) + armor;
+    }
+
+    public double getMR() {
+        double mr = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (i != null) {
+                mr+=Items.getMR(i);
+            }
+        }
+        return getPClass().getCalcMR(getLevel()) + mr;
+    }
 
     public int calculateSP() {
         int total;

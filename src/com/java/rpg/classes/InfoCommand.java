@@ -125,8 +125,8 @@ public class InfoCommand implements CommandExecutor, Listener {
         lore = new ArrayList<>();
 
         double hp = t.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-        double armor = rp.getPClass().getCalcArmor(rp.getLevel()); // + bonus armor etc
-        double mr = rp.getPClass().getCalcMR(rp.getLevel()); // + bonus mr etc
+        double armor = rp.getArmor(); // + bonus armor etc
+        double mr = rp.getMR(); // + bonus mr etc
 
         String mrper = Main.color("&b" + df.format(100.0 * (1-(300.0/(300.0+mr)))) + "%");
         String amper = Main.color("&c" + df.format(100.0 * (1-(300.0/(300.0+armor)))) + "%");

@@ -23,10 +23,7 @@ import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.modifiers.Environmental;
-import com.java.rpg.player.CustomDeath;
-import com.java.rpg.player.Food;
-import com.java.rpg.player.PlayerListener;
-import com.java.rpg.player.SkillpointCommand;
+import com.java.rpg.player.*;
 import de.slikey.effectlib.EffectManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -55,15 +52,7 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
-        The Bananamancer
-        Potassium Rush (Passive) - Every attack gives you K stacks. If you have 8 K stacks have potassium surges speeding up the nerve signals in your body causing an attack to send out 3.
-        Banana Beam (Active 1) - Shoot a laser giving yourself a K stack for every unit hit
-        Banana Eat (Active 2) - Give yourself a strength buff for 5s and 2 K stacks
-        Banana Bomb (Active 3) - Cause a banana explosion in a radius around you. Consumes K stacks for additional damage
-        Banana Gas (Active 4) - Release banana gas around you for 12s weakening and damaging enemies while healing yourself and giving yourself 4 K stacks over the period
-
-        WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
-        ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
+        -1. Dungeon encounters should scale with party size. Bosses too.
 
         0. ITEM STUFF:
         - make classes use specific item type.
@@ -71,6 +60,13 @@ public class Main extends JavaPlugin {
         - Mythical has unique shit, less randomization, and specific items. Rest are fully randomized.
         - Randomize stats to each weapon that a class must wear (for balancing and better stat allocation)
         - Armor is the more general random portion? (cause u can wear any armor. Perhaps balance based on weight, lower weight generally more magical stats)
+        - RANDOMIZE FISHING LOOT AND CHEST LOOT (NATHANWOLF MADE POST ON SPIGOT ABOUT BLOCKPOPULATOR AND TILE ENTITIES)
+
+        - PROTECTION ENCHANTMENTS SHOULD*** TEST HAVE NO EFFECT ON DAMAGE RIGHT NOW. MAKE PROTECTION >!
+        - DAMAGE DISPLAY IS INACCURATE. FIX ARMOR ATTRIBUTES FIRST THEN TEST.
+        - Test if curse of binding (and even vanishing) breaks shit
+
+
 
         1. Lore Durability or NBT Durability (NBT better ish)
 
@@ -125,16 +121,6 @@ public class Main extends JavaPlugin {
     * Alternate Resource Systems, like Rage, Shadow, etc, thematic!
     *
     */
-
-    //ANOTHER ISSUE: FIREBALL AND METEORSHOWER AOE DAMAGE STYLE DOES NOT TRIGGER ENT DMG BY ENT. MUST CHECK ENTDMGEVENT
-
-    //In general with all skills, the way they trigger damage does not trigger EntDmgByEnt. Change to EntDmg. All skills
-    //       occasionally leave a buffer where another attack triggers an empty event
-
-    //ANOTHER ISSUE: Warming up a skill and losing mana will not check mana after casting after warmup. Perpetually check mana
-    //on warmup.
-
-    //PERHAPS ENABLE NO DAMAGE COOLDOWN FROM CUSTOM SOURCES AND ENTITY ATTACKS
 
     public String noperm = "&cNo permission!";
 
@@ -585,6 +571,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BetterRestart(), this);
         Bukkit.getPluginManager().registerEvents(new Stuns(), this);
         Bukkit.getPluginManager().registerEvents(new Food(), this);
+        Bukkit.getPluginManager().registerEvents(new Items(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
