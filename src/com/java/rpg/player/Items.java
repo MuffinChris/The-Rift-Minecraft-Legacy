@@ -17,8 +17,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerItemMendEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -160,7 +162,7 @@ public class Items implements Listener {
         if (i != null) {
             NBTItem nbtItem = new NBTItem(i);
             if (nbtItem.hasKey("Durability")) {
-                nbtItem.setInteger("Durability", d);
+                nbtItem.setInteger("Durability", Math.min(d, getDurabilityMax(i)));
                 nbtItem.getItem().setItemMeta(updateDurability(nbtItem.getItem()).getItemMeta());
                 return nbtItem.getItem();
             }
@@ -273,6 +275,11 @@ public class Items implements Listener {
         }
 
         return nbtItem.getItem();
+    }
+
+    public boolean hasDurability(ItemStack i) {
+        NBTItem nbtItem = new NBTItem(i);
+        return nbtItem.hasKey("Durability");
     }
 
     public ItemStack primitizeRange(ItemStack i) {
@@ -420,7 +427,7 @@ public class Items implements Listener {
     }
 
     public void updateArmor(Player p) {
-        for (int i = 0; i < p.getInventory().getContents().length; i++) {
+        for (int i = 100; i < 104; i++) {
             if (p.getInventory().getItem(i) instanceof ItemStack) {
                 ItemStack it = p.getInventory().getItem(i);
                 if (it != null && it.getType() != null && isArmor(it.getType().toString())) {
@@ -504,6 +511,11 @@ public class Items implements Listener {
 
     @EventHandler
     public void prepCraft (PrepareItemCraftEvent e) {
+        for (ItemStack i : e.getInventory().getMatrix()) {
+            if (i != null) {
+                Bukkit.broadcastMessage(i.getType().toString());
+            }
+        }
         if (e.isRepair()) {
             Bukkit.broadcastMessage("Repair!");
             e.getInventory().setResult(null);
@@ -516,9 +528,55 @@ public class Items implements Listener {
     }
 
     @EventHandler
+    public void prepAnvil (PrepareAnvilEvent e) {
+        if (e.getResult() != null && e.getInventory().getRenameText() != null) {
+            Bukkit.broadcastMessage(e.getInventory().getRenameText());
+            if (e.getInventory().getRenameText().isEmpty()) {
+                ItemMeta meta = e.getResult().getItemMeta();
+                meta.setDisplayName(Main.color(e.getResult().getItemMeta().getDisplayName().replace("§", "&")));
+                ItemStack i = e.getResult();
+                i.setItemMeta(meta);
+                e.setResult(i);
+            } else {
+                ItemMeta meta = e.getResult().getItemMeta();
+                meta.setDisplayName(Main.color(e.getInventory().getRenameText()));
+                ItemStack i = e.getResult();
+                i.setItemMeta(meta);
+                e.setResult(i);
+            }
+        }
+    }
+
+    @EventHandler
     public void onCraft (CraftItemEvent e) {
         if (e.getCurrentItem() != null && durability.containsKey(e.getCurrentItem().getType()) && (new NBTItem(e.getCurrentItem()).hasKey("Armor"))) {
             e.getCurrentItem().setItemMeta(unrange(e.getCurrentItem()).getItemMeta());
+        }
+    }
+
+    /*
+
+        ENCHANTMENTS SECTION!
+
+     */
+
+    @EventHandler
+    public void mend (PlayerItemMendEvent e) {
+        if (hasDurability(e.getItem())) {
+            if (getDurability(e.getItem()) != getDurabilityMax(e.getItem())) {
+                e.getExperienceOrb().setExperience(0);
+                if (e.getPlayer().getInventory().getItemInMainHand().isSimilar(e.getItem())) {
+                    e.getPlayer().getInventory().setItemInMainHand(setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
+                } else if (e.getPlayer().getInventory().getItemInOffHand().isSimilar(e.getItem())) {
+                    e.getPlayer().getInventory().setItemInOffHand(setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
+                } else {
+                    for (int i = 100; i < 104; i++) {
+                        if (e.getPlayer().getInventory().getItem(i) != null && e.getPlayer().getInventory().getItem(i).isSimilar(e.getItem())) {
+                            e.getPlayer().getInventory().setItem(i, setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
+                        }
+                    }
+                }
+            }
         }
     }
 

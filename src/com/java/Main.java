@@ -66,6 +66,7 @@ public class Main extends JavaPlugin {
         - PROTECTION ENCHANTMENTS SHOULD*** TEST HAVE NO EFFECT ON DAMAGE RIGHT NOW. MAKE PROTECTION >!
         - Test if curse of binding (and even vanishing) breaks shit
         - Need to allow anvil repairing of items. Disable combine recipes.
+        - Need to make mending relevant or rework it (in general enchantments)
 
 
 
