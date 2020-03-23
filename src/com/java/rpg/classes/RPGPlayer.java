@@ -57,7 +57,11 @@ public class RPGPlayer extends Leveleable {
         double armor = 0;
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (i != null) {
-                armor+=Items.getArmor(i);
+                if (Items.getDurability(i) <= 0) {
+
+                } else {
+                    armor += Items.getArmor(i);
+                }
             }
         }
         return getPClass().getCalcArmor(getLevel()) + armor;

@@ -60,11 +60,12 @@ public class Main extends JavaPlugin {
         - Mythical has unique shit, less randomization, and specific items. Rest are fully randomized.
         - Randomize stats to each weapon that a class must wear (for balancing and better stat allocation)
         - Armor is the more general random portion? (cause u can wear any armor. Perhaps balance based on weight, lower weight generally more magical stats)
-        - RANDOMIZE FISHING LOOT AND CHEST LOOT (NATHANWOLF MADE POST ON SPIGOT ABOUT BLOCKPOPULATOR AND TILE ENTITIES)
 
+        (stuff to do / fix)
+        - RANDOMIZE FISHING LOOT AND CHEST LOOT (NATHANWOLF MADE POST ON SPIGOT ABOUT BLOCKPOPULATOR AND TILE ENTITIES)
         - PROTECTION ENCHANTMENTS SHOULD*** TEST HAVE NO EFFECT ON DAMAGE RIGHT NOW. MAKE PROTECTION >!
-        - DAMAGE DISPLAY IS INACCURATE. FIX ARMOR ATTRIBUTES FIRST THEN TEST.
         - Test if curse of binding (and even vanishing) breaks shit
+        - Need to allow anvil repairing of items. Disable combine recipes.
 
 
 

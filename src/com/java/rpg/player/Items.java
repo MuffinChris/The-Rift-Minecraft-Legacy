@@ -30,11 +30,6 @@ import java.util.*;
 
 public class Items implements Listener {
 
-    What to test (Sunday)
-        - Does ArmorToughness get Removed?
-        - Repeating ArmorWeight bug?
-        - (cause u removed the check for if attributes have been tampered, so fixitem will change item NBT regardless...) [reverted cause u think smarter to just keep the check?]
-
     private Main main = Main.getInstance();
 
     private static Map<Material, Integer> weight;
@@ -162,18 +157,12 @@ public class Items implements Listener {
     }
 
     public ItemStack setDurability(ItemStack i, int d) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§7Durability: ")) {
-                        ItemMeta meta = i.getItemMeta();
-                        List<String> lore = meta.getLore();
-                        lore.set(i.getItemMeta().getLore().indexOf(s), s.substring(0, s.indexOf(": ") + 5) + ChatColor.stripColor(s.substring(s.indexOf(": " + 4))).replaceFirst(String.valueOf(getDurability(i)), String.valueOf(d)));
-                        meta.setLore(lore);
-                        i.setItemMeta(meta);
-                        return i;
-                    }
-                }
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("Durability")) {
+                nbtItem.setInteger("Durability", d);
+                nbtItem.getItem().setItemMeta(updateDurability(nbtItem.getItem()).getItemMeta());
+                return nbtItem.getItem();
             }
         }
 
@@ -185,99 +174,78 @@ public class Items implements Listener {
     }
 
     public static int getDurabilityMax(ItemStack i) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta().getLore() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§7Durability: ")) {
-                        s = ChatColor.stripColor(s);
-                        return Integer.parseInt(s.substring(s.indexOf("/") + 1));
-                    }
-                }
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("MaxDurability")) {
+                return nbtItem.getInteger("MaxDurability");
             }
         }
         return -1;
     }
 
     public static int getDurability(ItemStack i) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta().getLore() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§7Durability: ")) {
-                        s = ChatColor.stripColor(s);
-                        return Integer.parseInt(s.substring(s.indexOf(": ") + 2, s.indexOf("/")));
-                    }
-                }
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("Durability")) {
+                return nbtItem.getInteger("Durability");
             }
         }
         return -1;
     }
 
     public static int getLevelReq(ItemStack i) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta().getLore() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§7Level Req: ")) {
-                        s = ChatColor.stripColor(s);
-                        return Integer.parseInt(s.substring(s.indexOf(": ") + 2));
-                    }
-                }
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("LevelReq")) {
+                return nbtItem.getInteger("LevelReq");
             }
         }
         return 0;
     }
 
     public static int getArmor(ItemStack i) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta().getLore() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§7Armor: ")) {
-                        s = ChatColor.stripColor(s);
-                        return Integer.parseInt(s.substring(s.indexOf(": ") + 2));
-                    }
-                }
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("Armor")) {
+                return nbtItem.getInteger("Armor");
             }
         }
         return 0;
     }
 
     public static int getMR(ItemStack i) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta().getLore() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§7Magic Resist: ")) {
-                        s = ChatColor.stripColor(s);
-                        return Integer.parseInt(s.substring(s.indexOf(": ") + 2));
-                    }
-                }
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("MagicResist")) {
+                return nbtItem.getInteger("MagicResist");
             }
         }
         return 0;
     }
 
     public static int getWeight(ItemStack i) {
-        if (i != null && i.getItemMeta() != null && i.getItemMeta().getLore() != null) {
-            if (i.getItemMeta().hasLore()) {
-                for (String s : i.getItemMeta().getLore()) {
-                    if (s.contains("§7Weight: ")) {
-                        s = ChatColor.stripColor(s);
-                        return Integer.parseInt(s.substring(s.indexOf(": ") + 2));
-                    }
-                }
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("Weight")) {
+                return nbtItem.getInteger("Weight");
             }
         }
         return 0;
     }
 
+    public static String durabilityString = "&8[&a✦&8] &7Durability: &f";
+    public static String levelReqString = "&8[&e⚔&8] &7Level Req: &f";
+    public static String armorString = "&8[&6⛨&8] &7Armor: &f";
+
     public static ItemStack primitize(ItemStack i) {
+        i.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         ItemMeta meta = i.getItemMeta();
         boolean hasDura = false;
-        if (meta.hasLore() && meta.getLore() != null) {
-            for (String s : meta.getLore()) {
-                if (s.contains("§7Durability: ")) {
-                    hasDura = true;
-                }
-            }
+        NBTItem nbtItem = new NBTItem(i);
+        if (nbtItem.hasKey("Durability")) {
+            hasDura = true;
         }
+
         meta.setDisplayName(Main.color("&7Primitive " + getNiceName(i)));
         List<String> lore;
         if (meta.hasLore()) {
@@ -288,16 +256,23 @@ public class Items implements Listener {
         if (!hasDura) {
             lore.add(Main.color("&8[ &7Basic Armor &8]"));
             lore.add(Main.color(""));
-            lore.add(Main.color("&8[&a♢&8] &7Durability: &f" + durability.get(i.getType()) + "&8/&f" + durability.get(i.getType())));
-            lore.add(Main.color("&8[&d★&8] &7Level Req: &f0"));
+            lore.add(Main.color(levelReqString + "0"));
+            lore.add(Main.color(durabilityString + durability.get(i.getType()) + "&8/&f" + durability.get(i.getType())));
             lore.add(Main.color(""));
-            lore.add(Main.color("&8[&6⛛&8] &7Armor: &f" + armor.get(i.getType()).getRandomLevel()));
-            lore.add(Main.color("&8[&e♖&8] &7Weight: &f" + weight.get(i.getType())));
+            int am = armor.get(i.getType()).getRandomLevel();
+            lore.add(Main.color(armorString + am));
+            //lore.add(Main.color("&8[&e♖&8] &7Weight: &f" + weight.get(i.getType())));
             meta.setLore(lore);
-            i.setItemMeta(meta);
+            nbtItem.getItem().setItemMeta(meta);
+            nbtItem.setInteger("Durability", durability.get(i.getType()));
+            nbtItem.setInteger("MaxDurability", durability.get(i.getType()));
+            nbtItem.setInteger("LevelReq", 0);
+            nbtItem.setInteger("Armor", am);
+            nbtItem.setInteger("Weight", weight.get(i.getType()));
+
         }
-        i.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        return i;
+
+        return nbtItem.getItem();
     }
 
     public ItemStack primitizeRange(ItemStack i) {
@@ -305,7 +280,33 @@ public class Items implements Listener {
         for (String s : i.getLore()) {
             if (s.contains("§7Armor: ")) {
                 List<String> lore = i.getLore();
-                lore.set(i.getLore().indexOf(s), Main.color(s.replaceFirst(String.valueOf(getArmor(i)), armor.get(i.getType()).getMin() + "&7-&f" + armor.get(i.getType()).getMax())));
+                lore.set(i.getLore().indexOf(s), Main.color(armorString + armor.get(i.getType()).getMin() + "&7-&f" + armor.get(i.getType()).getMax()));
+                ItemMeta meta = i.getItemMeta();
+                meta.setLore(lore);
+                i.setItemMeta(meta);
+            }
+        }
+        return i;
+    }
+
+    public ItemStack unrange(ItemStack i) {
+        for (String s : i.getLore()) {
+            if (s.contains("§7Armor: ")) {
+                List<String> lore = i.getLore();
+                lore.set(i.getLore().indexOf(s), Main.color(armorString + getArmor(i)));
+                ItemMeta meta = i.getItemMeta();
+                meta.setLore(lore);
+                i.setItemMeta(meta);
+            }
+        }
+        return i;
+    }
+
+    public ItemStack updateDurability(ItemStack i) {
+        for (String s : i.getLore()) {
+            if (s.contains("§7Durability: ")) {
+                List<String> lore = i.getLore();
+                lore.set(i.getLore().indexOf(s), Main.color(durabilityString + getDurability(i) + "&8/&f" + getDurabilityMax(i)));
                 ItemMeta meta = i.getItemMeta();
                 meta.setLore(lore);
                 i.setItemMeta(meta);
@@ -353,14 +354,12 @@ public class Items implements Listener {
         if (i != null && isArmor(i.getType().toString())) {
 
             //net.minecraft.server.v1_15_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
-
-            nItem = primitize(nItem);
-
-            //nItem = removeArmor(nItem);
-
-            NBTItem nbtItem = new NBTItem(nItem);
-            if (nbtItem.getCompoundList("AttributeModifiers").size() == 0) {
-                nItem = removeArmor(nItem);
+            if (!(new NBTItem(nItem).hasKey("Durability"))) {
+                nItem = primitize(nItem);
+                NBTItem nbtItem = new NBTItem(nItem);
+                if (nbtItem.getCompoundList("AttributeModifiers").size() == 0) {
+                    nItem = removeArmor(nItem);
+                }
             }
             //nbtItem.setInteger("generic.armor", 0);
 
@@ -426,7 +425,9 @@ public class Items implements Listener {
                 ItemStack it = p.getInventory().getItem(i);
                 if (it != null && it.getType() != null && isArmor(it.getType().toString())) {
                     try {
-                        p.getInventory().setItem(i, fixItem(it));
+                        if (!fixItem(it).isSimilar(it)) {
+                            p.getInventory().setItem(i, fixItem(it));
+                        }
                     } catch (Exception e) {
 
                     }
@@ -438,17 +439,16 @@ public class Items implements Listener {
     @EventHandler
     public void newArmor (PlayerArmorChangeEvent e) {
         updateArmor(e.getPlayer());
+        main.getRP(e.getPlayer()).updateWS();
+        /*
         double fullweight = 0;
         double maxweight = main.getRP(e.getPlayer()).getPClass().getWeight();
         for (ItemStack armor : e.getPlayer().getInventory().getArmorContents()) {
-            /*if (armor != null && weight.containsKey(armor.getType())) {
-                fullweight += weight.get(armor.getType());
-            }*/
             if (armor != null) {
                 fullweight += getWeight(armor);
             }
-        }
-        if (recievedWeight.get(e.getPlayer().getUniqueId()) + 50 < System.currentTimeMillis() && e.getPlayer().getLastLogin() + 2000  < System.currentTimeMillis()) {
+        }*/
+        /*if (recievedWeight.get(e.getPlayer().getUniqueId()) + 50 < System.currentTimeMillis() && e.getPlayer().getLastLogin() + 2000  < System.currentTimeMillis()) {
             Main.msg(e.getPlayer(), "&e&lArmor Weight: &f" + fullweight + " &8/ &f" + maxweight);
             recievedWeight.replace(e.getPlayer().getUniqueId(), System.currentTimeMillis());
         }
@@ -473,14 +473,14 @@ public class Items implements Listener {
         } else {
             clearArmorWS(e.getPlayer());
             main.getRP(e.getPlayer()).updateWS();
-        }
+        }*/
     }
 
     public void clearArmorWS(Player p) {
         main.getRP(p).getWalkspeed().clearBasedTitle("ARMOR", p);
     }
 
-    @EventHandler
+    /*@EventHandler
     public void jump (PlayerJumpEvent e) {
         double fullweight = 0;
         double maxweight = main.getRP(e.getPlayer()).getPClass().getWeight();
@@ -493,7 +493,7 @@ public class Items implements Listener {
             Main.msg(e.getPlayer(), "&cYour armor is too heavy to jump in!");
             e.setCancelled(true);
         }
-    }
+    }*/
 
     /*@EventHandler
     public void onCraft (CraftItemEvent e) {
@@ -504,8 +504,21 @@ public class Items implements Listener {
 
     @EventHandler
     public void prepCraft (PrepareItemCraftEvent e) {
-        if (e.getRecipe() != null && durability.containsKey(e.getRecipe().getResult().getType())) {
-            e.getInventory().setResult(removeArmor(primitize(e.getRecipe().getResult())));
+        if (e.isRepair()) {
+            Bukkit.broadcastMessage("Repair!");
+            e.getInventory().setResult(null);
+        }
+        if (e.getRecipe() != null && !e.isRepair()) {
+            if (durability.containsKey(e.getRecipe().getResult().getType())) {
+                e.getInventory().setResult(removeArmor(primitizeRange(e.getRecipe().getResult())));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onCraft (CraftItemEvent e) {
+        if (e.getCurrentItem() != null && durability.containsKey(e.getCurrentItem().getType()) && (new NBTItem(e.getCurrentItem()).hasKey("Armor"))) {
+            e.getCurrentItem().setItemMeta(unrange(e.getCurrentItem()).getItemMeta());
         }
     }
 
