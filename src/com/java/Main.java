@@ -54,7 +54,7 @@ public class Main extends JavaPlugin {
 
         -1. Dungeon encounters should scale with party size. Bosses too.
 
-        0. ITEM STUFF:
+        0. ITEM STUFF / IDEAS:
         - make classes use specific item type.
         - TIERS: Mythical, Legendary, Epic, Rare, Uncommon, Common
         - Mythical has unique shit, less randomization, and specific items. Rest are fully randomized.
@@ -63,20 +63,40 @@ public class Main extends JavaPlugin {
 
         (stuff to do / fix)
         - RANDOMIZE FISHING LOOT AND CHEST LOOT (NATHANWOLF MADE POST ON SPIGOT ABOUT BLOCKPOPULATOR AND TILE ENTITIES)
-        - PROTECTION ENCHANTMENTS SHOULD*** TEST HAVE NO EFFECT ON DAMAGE RIGHT NOW. MAKE PROTECTION >!
+        - Protection can give bonus armor points? Perhaps percentage armor increase.
         - Test if curse of binding (and even vanishing) breaks shit
-        - Need to allow anvil repairing of items. Disable combine recipes.
-        - Need to make mending relevant or rework it (in general enchantments)
+        - Put enchantments in specific lore section (hide enchs with itemflag, then place in lore)
+        - To make enchantments vanilla irrelevant need to check Ench Table Ench, and Anvil Ench
+        - Note to self: Combining Enchantments seems fine. Takes the lore of the first item. So just need to make sure lore will contain the new enchantment. USE NBT!
+
+        - Add all durability items to custom durability (Fishing Rods n Stuff)
+        - Make Custom Anvil and Enchantment Table
+        - In general custom enchantments. Allow unbreaking up to 10, etc, essentially remove Vanilla enchants, everything custom. That means removing Proj Prot etc.
+        - Need to make drops and loot not have vanilla enchantments. If the enchantment is not supported (like proj prot), remove it!
+
+        Professions:
+        Blacksmith:
+            - Do not damage Anvils when using it
+            - Can make repair kits
+            - Can combine enchantments past big levels (custom define this stuff)
+        Enchanter:
+            - Can pick any enchantment from Enchantment table (at a large cost of course)
+            - Regular players have similar to Vanilla randomized enchantments
+        Alchemist:
+            - Everybody can make Vanilla pots
+            - Alchemists can make special pots that signif buff stats for short time
+        Chef:
+            - Can cook custom food with bonuses (more hunger regen, health regen, stat buffs minor for long duration etc)
+        Farmer:
+            - Can rightclick crops to harvest, seed remains placed.
+            - Gets many drops from the farm.
+
+        In general, solo players should use the market or publicly available vendors.
 
 
-
-        1. Lore Durability or NBT Durability (NBT better ish)
-
-        2. suspect movement speed in fthrower
+        2. Disallow Shield usage for non shield classes
 
         3. clear passives on change class, in general make it more standardized on stat obj sys
-
-        4. weird error after stopping sometimes when someone online (file related rpolly)
 
         5. xp metadata for dungeons?
 

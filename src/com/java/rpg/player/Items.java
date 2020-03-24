@@ -2,6 +2,7 @@ package com.java.rpg.player;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
 import com.java.rpg.classes.LevelRange;
 import com.java.rpg.classes.StatusValue;
@@ -13,16 +14,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerItemMendEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -241,6 +241,7 @@ public class Items implements Listener {
 
     public static ItemStack primitize(ItemStack i) {
         i.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        i.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         ItemMeta meta = i.getItemMeta();
         boolean hasDura = false;
         NBTItem nbtItem = new NBTItem(i);
@@ -427,10 +428,10 @@ public class Items implements Listener {
     }
 
     public void updateArmor(Player p) {
-        for (int i = 100; i < 104; i++) {
+        for (int i = 36; i < 40; i++) {
             if (p.getInventory().getItem(i) instanceof ItemStack) {
                 ItemStack it = p.getInventory().getItem(i);
-                if (it != null && it.getType() != null && isArmor(it.getType().toString())) {
+                if (it != null && isArmor(it.getType().toString())) {
                     try {
                         if (!fixItem(it).isSimilar(it)) {
                             p.getInventory().setItem(i, fixItem(it));
@@ -502,22 +503,21 @@ public class Items implements Listener {
         }
     }*/
 
-    /*@EventHandler
-    public void onCraft (CraftItemEvent e) {
-        if (e.getCurrentItem() != null && durability.containsKey(e.getCurrentItem().getType())) {
-            e.getCurrentItem().setItemMeta(primitize(e.getCurrentItem()).getItemMeta());
-        }
-    }*/
-
     @EventHandler
     public void prepCraft (PrepareItemCraftEvent e) {
+        Material type = null;
+        int a = 0;
         for (ItemStack i : e.getInventory().getMatrix()) {
             if (i != null) {
-                Bukkit.broadcastMessage(i.getType().toString());
+                if (type == null) {
+                    type = i.getType();
+                }
+                if (i.getType() == type && durability.containsKey(i.getType())) {
+                    a++;
+                }
             }
         }
-        if (e.isRepair()) {
-            Bukkit.broadcastMessage("Repair!");
+        if (a==2) {
             e.getInventory().setResult(null);
         }
         if (e.getRecipe() != null && !e.isRepair()) {
@@ -529,20 +529,22 @@ public class Items implements Listener {
 
     @EventHandler
     public void prepAnvil (PrepareAnvilEvent e) {
-        if (e.getResult() != null && e.getInventory().getRenameText() != null) {
-            Bukkit.broadcastMessage(e.getInventory().getRenameText());
-            if (e.getInventory().getRenameText().isEmpty()) {
-                ItemMeta meta = e.getResult().getItemMeta();
-                meta.setDisplayName(Main.color(e.getResult().getItemMeta().getDisplayName().replace("§", "&")));
-                ItemStack i = e.getResult();
-                i.setItemMeta(meta);
-                e.setResult(i);
-            } else {
-                ItemMeta meta = e.getResult().getItemMeta();
-                meta.setDisplayName(Main.color(e.getInventory().getRenameText()));
-                ItemStack i = e.getResult();
-                i.setItemMeta(meta);
-                e.setResult(i);
+        AnvilInventory inv = e.getInventory();
+        if (inv.getItem(0) != null && inv.getItem(0).getItemMeta() != null) {
+            if (e.getResult() != null && e.getResult().hasItemMeta() && !e.getResult().getItemMeta().getDisplayName().isEmpty()) {
+                if (inv.getRenameText().equalsIgnoreCase(inv.getItem(0).getItemMeta().getDisplayName().replace("§", ""))) {
+                    ItemMeta meta = e.getResult().getItemMeta();
+                    meta.setDisplayName(Main.color(meta.getDisplayName().replace("§", "&")));
+                    ItemStack i = e.getResult();
+                    i.setItemMeta(meta);
+                    e.setResult(i);
+                } else {
+                    ItemMeta meta = e.getResult().getItemMeta();
+                    meta.setDisplayName(Main.color(inv.getRenameText().replace("§", "&")));
+                    ItemStack i = e.getResult();
+                    i.setItemMeta(meta);
+                    e.setResult(i);
+                }
             }
         }
     }
@@ -560,21 +562,62 @@ public class Items implements Listener {
 
      */
 
-    @EventHandler
+    /*@EventHandler
     public void mend (PlayerItemMendEvent e) {
+        Bukkit.broadcastMessage(e.getItem().getItemMeta().getDisplayName());
         if (hasDurability(e.getItem())) {
             if (getDurability(e.getItem()) != getDurabilityMax(e.getItem())) {
-                e.getExperienceOrb().setExperience(0);
+                Bukkit.broadcastMessage(e.getRepairAmount() + "");
                 if (e.getPlayer().getInventory().getItemInMainHand().isSimilar(e.getItem())) {
                     e.getPlayer().getInventory().setItemInMainHand(setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
                 } else if (e.getPlayer().getInventory().getItemInOffHand().isSimilar(e.getItem())) {
                     e.getPlayer().getInventory().setItemInOffHand(setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
                 } else {
-                    for (int i = 100; i < 104; i++) {
+                    for (int i = 36; i < 40; i++) {
                         if (e.getPlayer().getInventory().getItem(i) != null && e.getPlayer().getInventory().getItem(i).isSimilar(e.getItem())) {
                             e.getPlayer().getInventory().setItem(i, setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
                         }
                     }
+                }
+                e.getExperienceOrb().setExperience(0);
+            }
+        }
+    }*/
+
+    @EventHandler
+    public void cancelMend (PlayerItemMendEvent e) {
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void fakeMend (PlayerPickupExperienceEvent e) {
+        int amount = e.getExperienceOrb().getExperience()/2;
+        List<ItemStack> mItems = new ArrayList<>();
+        if (e.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.MENDING)) {
+            mItems.add(e.getPlayer().getInventory().getItemInMainHand());
+        }
+        if (e.getPlayer().getInventory().getItemInOffHand().containsEnchantment(Enchantment.MENDING)) {
+            mItems.add(e.getPlayer().getInventory().getItemInOffHand());
+        }
+        if (e.getPlayer().getInventory().getItem(36) != null && e.getPlayer().getInventory().getItem(36).containsEnchantment(Enchantment.MENDING)) {
+            mItems.add(e.getPlayer().getInventory().getItem(36));
+        }
+        if (e.getPlayer().getInventory().getItem(37) != null && e.getPlayer().getInventory().getItem(37).containsEnchantment(Enchantment.MENDING)) {
+            mItems.add(e.getPlayer().getInventory().getItem(37));
+        }
+        if (e.getPlayer().getInventory().getItem(38) != null && e.getPlayer().getInventory().getItem(38).containsEnchantment(Enchantment.MENDING)) {
+            mItems.add(e.getPlayer().getInventory().getItem(38));
+        }
+        if (e.getPlayer().getInventory().getItem(39) != null && e.getPlayer().getInventory().getItem(39).containsEnchantment(Enchantment.MENDING)) {
+            mItems.add(e.getPlayer().getInventory().getItem(39));
+        }
+        if (!mItems.isEmpty()) {
+            int rand = (int) (Math.random() * mItems.size());
+            ItemStack item = mItems.get(rand);
+            if (item != null && hasDurability(item) && item.containsEnchantment(Enchantment.MENDING)) {
+                if (getDurability(item) != getDurabilityMax(item)) {
+                    e.getExperienceOrb().setExperience(0);
+                    e.getPlayer().getInventory().setItem(Arrays.asList(e.getPlayer().getInventory().getContents()).indexOf(item), setDurability(item, getDurability(item) + amount));
                 }
             }
         }

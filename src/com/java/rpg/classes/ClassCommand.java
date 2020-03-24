@@ -4,6 +4,7 @@ import com.java.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -143,9 +144,11 @@ public class ClassCommand implements CommandExecutor, Listener {
                     if (main.getCM().getPClassFromString(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName())) != null) {
                         if (!main.getPC().get(e.getWhoClicked().getUniqueId()).changeClass(main.getCM().getPClassFromString(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName())))) {
                             Main.msg((Player) e.getWhoClicked(), "&cYou are already that class!");
+                            ((Player)e.getWhoClicked()).playSound(((Player)e.getWhoClicked()).getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.5F);
                             return;
                         }
                         Main.msg((Player) e.getWhoClicked(), "&aYou have selected the " + e.getCurrentItem().getItemMeta().getDisplayName() + " &aclass!");
+                        ((Player)e.getWhoClicked()).playSound(((Player)e.getWhoClicked()).getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
                     } else {
                         Main.msg((Player) e.getWhoClicked(), "&cClass does not exist.");
                     }
