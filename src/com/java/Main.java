@@ -14,10 +14,7 @@ import com.java.communication.playerinfoManager;
 import com.java.essentials.*;
 import com.java.holograms.EntityHealthBars;
 import com.java.holograms.Hologram;
-import com.java.rpg.Damage;
-import com.java.rpg.DamageListener;
-import com.java.rpg.DamageTypes;
-import com.java.rpg.Stuns;
+import com.java.rpg.*;
 import com.java.rpg.classes.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
@@ -25,6 +22,7 @@ import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.modifiers.Environmental;
 import com.java.rpg.player.*;
 import de.slikey.effectlib.EffectManager;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
@@ -52,6 +50,14 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -5. NBT Food system for future expansion
+
+        -4. Increase EXP discrepancy for low tier wild mobs. Attach NBT EXP and Level instead of string parse.
+
+        -3. Mobs being stunned needs to be standardized. If a boss is stunned, it needs to stop using abilities and whatnot
+
+        -2. Put NPC Tag underneath NPC's using Citizens API and Holograms (testing for bugs)
+
         -1. Dungeon encounters should scale with party size. Bosses too.
 
         0. ITEM STUFF / IDEAS:
@@ -68,6 +74,12 @@ public class Main extends JavaPlugin {
         - Put enchantments in specific lore section (hide enchs with itemflag, then place in lore)
         - To make enchantments vanilla irrelevant need to check Ench Table Ench, and Anvil Ench
         - Note to self: Combining Enchantments seems fine. Takes the lore of the first item. So just need to make sure lore will contain the new enchantment. USE NBT!
+        - Need to make Villager traded items custom! (perhaps make villagers trade high end random items)
+        - Elytra durability (ALL DURABILITY) needs to have affects other than removal of stats (elytra is an active)
+        Links for Info:
+            https://minecraft.gamepedia.com/Item_repair
+            https://minecraft.gamepedia.com/Enchanting
+            https://minecraft.gamepedia.com/Item_durability
 
         - Add all durability items to custom durability (Fishing Rods n Stuff)
         - Make Custom Anvil and Enchantment Table
@@ -219,6 +231,8 @@ public class Main extends JavaPlugin {
     public Map<Entity, Hologram> getHpBars() {
         return hpBars;
     }
+    public Map<Entity, Hologram> npcTags = new HashMap<>();
+    public Map<Entity, Hologram> getNpcTags() {return npcTags;}
 
     public void remHpBar() {
         new BukkitRunnable() {
@@ -267,7 +281,12 @@ public class Main extends JavaPlugin {
                     } else if (h.getType() == Hologram.HologramType.HOLOGRAM) {
                         h.center();
                         if (h.shouldRemove()) {
-                            hpBars.remove(h.getEntity());
+                            if (hpBars.containsKey(h.getEntity())) {
+                                hpBars.remove(h.getEntity());
+                            }
+                            if (npcTags.containsKey(h.getEntity())) {
+                                npcTags.remove(h.getEntity());
+                            }
                             h.destroy();
                         }
                     }
@@ -594,6 +613,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Stuns(), this);
         Bukkit.getPluginManager().registerEvents(new Food(), this);
         Bukkit.getPluginManager().registerEvents(new Items(), this);
+        Bukkit.getPluginManager().registerEvents(new NPCTag(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);

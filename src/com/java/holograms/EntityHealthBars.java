@@ -77,12 +77,12 @@ public class EntityHealthBars implements Listener {
         }*/
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onMove (PlayerMoveEvent e) {
         if (main.getHpBars().containsKey((LivingEntity) e.getPlayer())) {
             main.getHpBars().get(e.getPlayer()).center();
         }
-    }
+    }*/
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onDamage (EntityDamageEvent e) {

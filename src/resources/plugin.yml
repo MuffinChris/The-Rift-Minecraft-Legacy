@@ -114,4 +114,4 @@ commands:
   sp:
     description: View skillpoints
     aliases: [skillpoint, skillpoints, spoints]
-depend: [ProtocolLib, Vault, NBTAPI]
+depend: [ProtocolLib, Vault, NBTAPI, Citizens]

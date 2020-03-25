@@ -18,6 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -91,28 +92,28 @@ public class Items implements Listener {
         weight.put(org.bukkit.Material.LEATHER_BOOTS, 5);
 
         armor = new HashMap<>();
-        armor.put(org.bukkit.Material.ELYTRA, new LevelRange(20, 25));
-        armor.put(org.bukkit.Material.TURTLE_HELMET, new LevelRange(20, 25));
+        armor.put(org.bukkit.Material.ELYTRA, new LevelRange(100, 250));
+        armor.put(org.bukkit.Material.TURTLE_HELMET, new LevelRange(40, 50));
 
-        armor.put(org.bukkit.Material.DIAMOND_HELMET, new LevelRange(30, 35));
-        armor.put(org.bukkit.Material.DIAMOND_CHESTPLATE, new LevelRange(40, 45));
-        armor.put(org.bukkit.Material.DIAMOND_LEGGINGS, new LevelRange(35, 40));
-        armor.put(org.bukkit.Material.DIAMOND_BOOTS, new LevelRange(25, 30));
+        armor.put(org.bukkit.Material.DIAMOND_HELMET, new LevelRange(50, 55));
+        armor.put(org.bukkit.Material.DIAMOND_CHESTPLATE, new LevelRange(70, 75));
+        armor.put(org.bukkit.Material.DIAMOND_LEGGINGS, new LevelRange(65, 70));
+        armor.put(org.bukkit.Material.DIAMOND_BOOTS, new LevelRange(55, 60));
 
-        armor.put(org.bukkit.Material.IRON_HELMET, new LevelRange(25, 30));
-        armor.put(org.bukkit.Material.IRON_CHESTPLATE, new LevelRange(35, 40));
-        armor.put(org.bukkit.Material.IRON_LEGGINGS, new LevelRange(30, 35));
-        armor.put(org.bukkit.Material.IRON_BOOTS, new LevelRange(20, 25));
+        armor.put(org.bukkit.Material.IRON_HELMET, new LevelRange(40, 45));
+        armor.put(org.bukkit.Material.IRON_CHESTPLATE, new LevelRange(55, 60));
+        armor.put(org.bukkit.Material.IRON_LEGGINGS, new LevelRange(55, 60));
+        armor.put(org.bukkit.Material.IRON_BOOTS, new LevelRange(45, 50));
 
-        armor.put(org.bukkit.Material.CHAINMAIL_HELMET, new LevelRange(20, 25));
-        armor.put(org.bukkit.Material.CHAINMAIL_CHESTPLATE, new LevelRange(30, 35));
-        armor.put(org.bukkit.Material.CHAINMAIL_LEGGINGS, new LevelRange(25, 35));
-        armor.put(org.bukkit.Material.CHAINMAIL_BOOTS, new LevelRange(15, 20));
+        armor.put(org.bukkit.Material.CHAINMAIL_HELMET, new LevelRange(35, 40));
+        armor.put(org.bukkit.Material.CHAINMAIL_CHESTPLATE, new LevelRange(50, 55));
+        armor.put(org.bukkit.Material.CHAINMAIL_LEGGINGS, new LevelRange(45, 50));
+        armor.put(org.bukkit.Material.CHAINMAIL_BOOTS, new LevelRange(40, 45));
 
-        armor.put(org.bukkit.Material.GOLDEN_HELMET, new LevelRange(15, 20));
-        armor.put(org.bukkit.Material.GOLDEN_CHESTPLATE, new LevelRange(25, 30));
-        armor.put(org.bukkit.Material.GOLDEN_LEGGINGS, new LevelRange(20, 25));
-        armor.put(org.bukkit.Material.GOLDEN_BOOTS, new LevelRange(10, 15));
+        armor.put(org.bukkit.Material.GOLDEN_HELMET, new LevelRange(25, 30));
+        armor.put(org.bukkit.Material.GOLDEN_CHESTPLATE, new LevelRange(35, 40));
+        armor.put(org.bukkit.Material.GOLDEN_LEGGINGS, new LevelRange(35, 40));
+        armor.put(org.bukkit.Material.GOLDEN_BOOTS, new LevelRange(20, 25));
 
         armor.put(org.bukkit.Material.LEATHER_HELMET, new LevelRange(10, 15));
         armor.put(org.bukkit.Material.LEATHER_CHESTPLATE, new LevelRange(20, 25));
@@ -120,7 +121,7 @@ public class Items implements Listener {
         armor.put(org.bukkit.Material.LEATHER_BOOTS, new LevelRange(5, 10));
 
         durability = new HashMap<>();
-        durability.put(org.bukkit.Material.ELYTRA, 3000);
+        durability.put(org.bukkit.Material.ELYTRA, 4000);
         durability.put(org.bukkit.Material.TURTLE_HELMET, 800);
 
         durability.put(org.bukkit.Material.DIAMOND_HELMET, 1600);
@@ -167,7 +168,6 @@ public class Items implements Listener {
                 return nbtItem.getItem();
             }
         }
-
         return i;
     }
 
@@ -503,6 +503,12 @@ public class Items implements Listener {
         }
     }*/
 
+    /*
+
+    Custom Crafting
+
+     */
+
     @EventHandler
     public void prepCraft (PrepareItemCraftEvent e) {
         Material type = null;
@@ -528,28 +534,6 @@ public class Items implements Listener {
     }
 
     @EventHandler
-    public void prepAnvil (PrepareAnvilEvent e) {
-        AnvilInventory inv = e.getInventory();
-        if (inv.getItem(0) != null && inv.getItem(0).getItemMeta() != null) {
-            if (e.getResult() != null && e.getResult().hasItemMeta() && !e.getResult().getItemMeta().getDisplayName().isEmpty()) {
-                if (inv.getRenameText().equalsIgnoreCase(inv.getItem(0).getItemMeta().getDisplayName().replace("§", ""))) {
-                    ItemMeta meta = e.getResult().getItemMeta();
-                    meta.setDisplayName(Main.color(meta.getDisplayName().replace("§", "&")));
-                    ItemStack i = e.getResult();
-                    i.setItemMeta(meta);
-                    e.setResult(i);
-                } else {
-                    ItemMeta meta = e.getResult().getItemMeta();
-                    meta.setDisplayName(Main.color(inv.getRenameText().replace("§", "&")));
-                    ItemStack i = e.getResult();
-                    i.setItemMeta(meta);
-                    e.setResult(i);
-                }
-            }
-        }
-    }
-
-    @EventHandler
     public void onCraft (CraftItemEvent e) {
         if (e.getCurrentItem() != null && durability.containsKey(e.getCurrentItem().getType()) && (new NBTItem(e.getCurrentItem()).hasKey("Armor"))) {
             e.getCurrentItem().setItemMeta(unrange(e.getCurrentItem()).getItemMeta());
@@ -558,31 +542,23 @@ public class Items implements Listener {
 
     /*
 
+    ANVILS
+
+     */
+    @EventHandler
+    public void onAnvil (PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null) {
+            if (e.getClickedBlock().getType() == Material.ANVIL) {
+
+            }
+        }
+    }
+
+    /*
+
         ENCHANTMENTS SECTION!
 
      */
-
-    /*@EventHandler
-    public void mend (PlayerItemMendEvent e) {
-        Bukkit.broadcastMessage(e.getItem().getItemMeta().getDisplayName());
-        if (hasDurability(e.getItem())) {
-            if (getDurability(e.getItem()) != getDurabilityMax(e.getItem())) {
-                Bukkit.broadcastMessage(e.getRepairAmount() + "");
-                if (e.getPlayer().getInventory().getItemInMainHand().isSimilar(e.getItem())) {
-                    e.getPlayer().getInventory().setItemInMainHand(setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
-                } else if (e.getPlayer().getInventory().getItemInOffHand().isSimilar(e.getItem())) {
-                    e.getPlayer().getInventory().setItemInOffHand(setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
-                } else {
-                    for (int i = 36; i < 40; i++) {
-                        if (e.getPlayer().getInventory().getItem(i) != null && e.getPlayer().getInventory().getItem(i).isSimilar(e.getItem())) {
-                            e.getPlayer().getInventory().setItem(i, setDurability(e.getItem(), getDurability(e.getItem()) + e.getRepairAmount()));
-                        }
-                    }
-                }
-                e.getExperienceOrb().setExperience(0);
-            }
-        }
-    }*/
 
     @EventHandler
     public void cancelMend (PlayerItemMendEvent e) {
