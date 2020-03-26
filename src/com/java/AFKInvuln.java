@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
@@ -86,6 +87,13 @@ public class AFKInvuln implements Listener {
                     }.runTaskLater(Main.getInstance(), 1L);
                 }
             }
+        }
+    }
+
+    @EventHandler (priority = EventPriority.LOW)
+    public void death(PlayerDeathEvent e) {
+        if (hasMoved.containsKey(e.getEntity().getUniqueId())) {
+            e.setCancelled(true);
         }
     }
 

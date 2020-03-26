@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Leveleable {
@@ -63,7 +64,8 @@ public class Leveleable {
     }
 
     public void calcMaxExp() {
-        maxexp = Math.pow(level, expPow) * expMod + expOff;
+        //maxexp = Math.pow(level, expPow) * expMod + expOff;
+        maxexp = RPGConstants.levelsExp.get(level);
     }
 
     public double getPercent() {

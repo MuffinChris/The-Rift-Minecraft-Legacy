@@ -2,9 +2,11 @@ package com.java.rpg.classes;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.java.Main;
+import com.java.rpg.mobs.BiomeSettings;
 import com.java.rpg.player.XPList;
 import net.minecraft.server.v1_15_R1.EntityIronGolem;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -41,6 +43,8 @@ public class MobEXP implements Listener {
     private static List<EntityType> peaceful;
 
     private static Map<EntityType, Double> xpmods;
+
+    private static BiomeSettings settings = new BiomeSettings();
 
     public MobEXP() {
         biomeLevels = new LinkedHashMap<>();
@@ -251,9 +255,9 @@ public class MobEXP implements Listener {
 
     }
 
-    public void setExp(LivingEntity ent, double exp) {
+    public static void setExp(LivingEntity ent, double exp) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.DOUBLE, exp);
+        data.set(new NamespacedKey(Main.getInstance(), "Exp"), PersistentDataType.DOUBLE, exp);
 
         /*
         if (ent.getMetadata("EXP") != null && ent.hasMetadata("EXP")) {
@@ -262,7 +266,7 @@ public class MobEXP implements Listener {
         ent.setMetadata("EXP", new FixedMetadataValue(Main.getInstance(), exp));*/
     }
 
-    public double getExp(LivingEntity ent) {
+    public static double getExp(LivingEntity ent) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         if (data.has(new NamespacedKey(Main.getInstance(), "Exp"), PersistentDataType.DOUBLE)) {
             return data.get(new NamespacedKey(Main.getInstance(), "Exp"), PersistentDataType.DOUBLE);
@@ -276,15 +280,13 @@ public class MobEXP implements Listener {
         return (RPGConstants.mobXpScalar * Math.pow(getLevel(ent), RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());*/
     }
 
-    public double calcExp(LivingEntity ent) {
+    public static double calcExp(LivingEntity ent) {
         int level = getLevel(ent);
-        if (level == -1) {
-            return 0;
-        }
-        return (RPGConstants.mobXpScalar * Math.pow(level, RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
+        return RPGConstants.mobExp.get(level) * (Math.random() * 0.06 + 1);
+        //return (RPGConstants.mobXpScalar * Math.pow(level, RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
     }
 
-    public int getLevel(LivingEntity ent) {
+    public static int getLevel(LivingEntity ent) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         if (data.has(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER)) {
             return data.get(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER);
@@ -299,12 +301,12 @@ public class MobEXP implements Listener {
         return -1;
     }
 
-    public boolean hasLevel(LivingEntity ent) {
+    public static boolean hasLevel(LivingEntity ent) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         return (data.has(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER));
     }
 
-    public void setLevel(LivingEntity ent, int level) {
+    public static void setLevel(LivingEntity ent, int level) {
 
         PersistentDataContainer data = ent.getPersistentDataContainer();
         data.set(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER, level);
@@ -323,23 +325,74 @@ public class MobEXP implements Listener {
         }*/
     }
 
-    public void setLevelVisual(LivingEntity ent, int level) {
+    public static void setLevelVisual(LivingEntity ent, int level) {
         ent.setCustomName(Main.color("&f" + getNiceName(ent) + " &6Lv. " + level));
     }
 
-    public String getNiceName(LivingEntity ent) {
+    public static String getNiceName(LivingEntity ent) {
         //net.minecraft.server.v1_15_R1.Entity nmsEnt = CraftLivingEntity.getEntity((CraftServer) Bukkit.getServer(), ((CraftEntity) ent).getHandle()).getHandle();
         net.minecraft.server.v1_15_R1.Entity nmsEnt = ((CraftEntity) ent).getHandle();
-        return StringUtils.capitalize(nmsEnt.getMinecraftKeyString()).replace("_", " ");
+        return WordUtils.capitalize((nmsEnt.getMinecraftKeyString().replace("minecraft:", "")).replace("_", " "));
+    }
+
+    public static double getArmor(LivingEntity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "Armor"), PersistentDataType.DOUBLE)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "Armor"), PersistentDataType.DOUBLE);
+        }
+        return 0;
+    }
+
+    public static void setArmor(LivingEntity ent, double armor) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "Armor"), PersistentDataType.DOUBLE, armor);
+    }
+
+    public static void setMagicResist(LivingEntity ent, double mr) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "MagicResist"), PersistentDataType.DOUBLE, mr);
+    }
+
+    public static double getMagicResist(LivingEntity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "MagicResist"), PersistentDataType.DOUBLE)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "MagicResist"), PersistentDataType.DOUBLE);
+        }
+        return 0;
+    }
+
+    public static double getDamageThreshold(LivingEntity ent){
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "DamageThreshold"), PersistentDataType.DOUBLE)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "DamageThreshold"), PersistentDataType.DOUBLE);
+        }
+        return 0;
+    }
+    public static void setDamageThreshold(LivingEntity ent, double dt) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "DamageThreshold"), PersistentDataType.DOUBLE, dt);
+    }
+
+    public static double getHPRegen(LivingEntity ent){
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE);
+        }
+        return 0;
+    }
+    public static void setHPRegen(LivingEntity ent, double r) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE, r);
     }
 
     public void scaleHealth(LivingEntity ent, int level, double modifier) {
 
         double hp = RPGConstants.mobHpBase + Math.pow(level, RPGConstants.mobHpLevelPow) * RPGConstants.mobHpLevelScalar * Math.pow(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/20.0, RPGConstants.mobHpBasePow);
-        if (peaceful.contains(ent)) {
-            hp-=300;
-            if (hp <= 75) {
-                hp = 75;
+        if (peaceful.contains(ent.getType())) {
+            if (ent instanceof Horse) {
+                hp = Math.max(hp, 10000);
+            } else {
+                hp = Math.max(Math.min(hp, 2000), 750);
             }
         }
         hp*=modifier;
@@ -393,23 +446,38 @@ public class MobEXP implements Listener {
         }
 
         if (peaceful.contains(ent.getType())) {
-            level = Math.max(0, Math.min(level, 20));
+            level = Math.max(0, Math.min(level, 5));
         }
 
         if (hasLevel(ent)) {
-            setLevel(ent, level);
             level = getLevel(ent);
-        } else {
-            if (ent.getType() == EntityType.IRON_GOLEM) {
-                scaleHealth(ent, level, 3);
-            } else {
-                scaleHealth(ent, level, 1);
-                scaleDamage(ent, level, 1);
+            if (ent instanceof Slime) {
+                if (!(peaceful.contains(ent.getType()))) {
+                    double damage = Math.pow(level, RPGConstants.mobDmgLevelPow) * RPGConstants.mobDmgLevelScalar * 0.1 + 5;
+                    setDamageThreshold(ent, damage);
+                    setArmor(ent, level * 3);
+                    setMagicResist(ent, level * 2);
+                }
+                setHPRegen(ent, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.005);
             }
-        }
-
-        if (ent instanceof Slime || ent instanceof MagmaCube) {
-            scaleHealth(ent, level, 0.5);
+        } else {
+            if (ent instanceof Slime) {
+                scaleHealth(ent, level, 0.4);
+            } else {
+                if (ent.getType() == EntityType.IRON_GOLEM) {
+                    scaleHealth(ent, level, 3);
+                } else {
+                    scaleHealth(ent, level, 1);
+                    scaleDamage(ent, level, 1);
+                }
+                if (!(peaceful.contains(ent.getType()))) {
+                    double damage = Math.pow(level, RPGConstants.mobDmgLevelPow) * RPGConstants.mobDmgLevelScalar * 0.1 + 5;
+                    setDamageThreshold(ent, damage);
+                    setArmor(ent, level * 3);
+                    setMagicResist(ent, level * 2);
+                }
+                setHPRegen(ent, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.005);
+            }
         }
 
         setLevel(ent, level);
@@ -501,11 +569,15 @@ public class MobEXP implements Listener {
 
     @EventHandler
     public void onSpawn (EntityAddToWorldEvent e) {
-        if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) { //&& !(e.getEntity() instanceof Slime) && !(e.getEntity() instanceof MagmaCube)) {
+        if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
             new BukkitRunnable() {
                 public void run() {
                     LivingEntity ent = (LivingEntity) e.getEntity();
-                    setupEnt(ent, -1);
+                    if (hasLevel(ent)) {
+                        setupEnt(ent, getLevel(ent));
+                    } else {
+                        setupEnt(ent, -1);
+                    }
                     if (ent instanceof Phantom) {
                         double random = Math.random();
                         if (random >= 0.05) {
@@ -515,18 +587,31 @@ public class MobEXP implements Listener {
                 }
             }.runTaskLater(Main.getInstance(), 1);
         }
-        /*if (e.getEntity() instanceof Slime || e.getEntity() instanceof MagmaCube) {
-            new BukkitRunnable() {
-                public void run() {
-                    int level = getLevel((LivingEntity) e.getEntity());
-                    if (level == -1) {
-                        setupEnt((LivingEntity) e.getEntity(), -1);
-                    } else {
-                        setupEnt((LivingEntity) e.getEntity(), level);
-                    }
-                }
-            }.runTaskLater(Main.getInstance(), 1);
-        }*/
+    }
+
+    @EventHandler
+    public void slimeSplit (SlimeSplitEvent e) {
+        e.setCancelled(true);
+        int size = e.getEntity().getSize();
+        if (size == 1) {
+            return;
+        } else if (size == 2) {
+            size = 1;
+        } else if (size == 4) {
+            size = 2;
+        } else {
+            size = 4;
+        }
+        int level = getLevel(e.getEntity());
+        EntityType type = EntityType.SLIME;
+        if (e.getEntity() instanceof MagmaCube) {
+            type = EntityType.MAGMA_CUBE;
+        }
+        for (int i = 0; i <= e.getCount(); i++) {
+            LivingEntity ent = (LivingEntity) e.getEntity().getWorld().spawnEntity(e.getEntity().getLocation(), type);
+            ((Slime) ent).setSize(size);
+            setupEnt(ent, level);
+        }
     }
 
     @EventHandler

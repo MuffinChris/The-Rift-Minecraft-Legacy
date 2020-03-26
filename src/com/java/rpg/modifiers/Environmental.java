@@ -79,19 +79,19 @@ public class Environmental implements Listener {
                 e.setDamage(hp / 30.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
-                e.setDamage(Math.min(Math.max(hp * 0.025, 10), 500));
+                e.setDamage(Math.min(Math.max(hp * 0.025, 10), (1 + (Math.random() * 0.1)) * 2500));
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE) {
-                e.setDamage(Math.min(Math.max(hp * 0.025, 20), 1000));
+                e.setDamage(Math.min(Math.max(hp * 0.025, 10), (1 + (Math.random() * 0.1)) * 2500));
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
-                e.setDamage(hp * 0.1);
+                e.setDamage(Math.min(Math.max(hp * 0.05, 50), (1 + (Math.random() * 0.1)) * 5000));
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                e.setDamage((e.getDamage() / 20.0) * hp * 0.6);
+                e.setDamage((e.getDamage() / 20.0) * hp * 0.8);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
-                e.setDamage(0.5 * (e.getDamage() / 20.0) * hp);
+                e.setDamage((e.getDamage() / 20.0) * hp * 0.8);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LIGHTNING) {
                 e.setDamage((e.getDamage() / 20) * hp);
@@ -119,6 +119,7 @@ public class Environmental implements Listener {
             if (e.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL) {
                 e.setDamage((e.getDamage() / 30.0) * hp);
             }
+
             if (!(e.getEntity() instanceof ArmorStand) && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) {
                 DecimalFormat df = new DecimalFormat("#.##");
                 Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), "&c&l❤" + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
@@ -169,19 +170,19 @@ public class Environmental implements Listener {
                 LivingEntity ent = (LivingEntity) e.getEntity();
                 double hp = ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
                 if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN || e.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED) {
-                    e.setAmount(hp * 0.015);
+                    e.setAmount(hp * 0.025);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.MAGIC_REGEN) {
                     e.setAmount((e.getAmount() * (hp/40)));
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.MAGIC) {
                     e.setAmount((e.getAmount() / 30) * hp);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.EATING) {
-                    e.setAmount(hp * 0.01);
+                    e.setAmount(hp * 0.015);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.ENDER_CRYSTAL) {
                     e.setAmount(hp * 0.005);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.WITHER) {
                     e.setAmount(hp * 0.005);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.WITHER_SPAWN) {
-                    e.setAmount(2);
+                    e.setAmount(25);
                 }
                 DecimalFormat df = new DecimalFormat("#.##");
                 Hologram magic = new Hologram(ent, ent.getLocation(), "&a&l❤" + df.format(e.getAmount()), Hologram.HologramType.DAMAGE);

@@ -44,7 +44,7 @@ public class CustomDeath implements Listener {
         } else {
             e.setCancelled(true);
         }*/
-        if (e.getEntity().isOnline()) {
+        if (e.getEntity().isOnline() && !e.isCancelled()) {
             doDeath(e.getEntity());
         }
     }
@@ -84,7 +84,7 @@ public class CustomDeath implements Listener {
                     s.getStatuses().remove(rem);
                 }
             }
-            rp.giveExpFromSource(p, p.getLocation(), rp.getMaxExp() * -0.2, "");
+            rp.giveExpFromSource(p, p.getLocation(), rp.getMaxExp() * -0.1 * (Math.random() * 0.1 + 1), "");
         /*new BukkitRunnable() {
             public void run() {
                 p.setVelocity(new Vector(0, 0, 0));

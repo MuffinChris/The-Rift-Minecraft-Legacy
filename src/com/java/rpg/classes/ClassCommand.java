@@ -36,6 +36,14 @@ public class ClassCommand implements CommandExecutor, Listener {
         return false;
     }
 
+    public static String hpString = "&8[&c♥&8] &7HP: &f";
+    public static String manaString = "&8[&b☀&8] &7Mana: &f";
+    public static String manaRegenString = "&8[&b⚙&8] &7Mana Regen: &f";
+    public static String apString = "&8[&b⚡&8] &7Ability Power: &f";
+    public static String adString = "&8[&c⚔&8] &7Attack Damage: &f";
+    public static String armorString = "&8[&4⛨&8] &7Armor: &f";
+    public static String mrString = "&8[&9⚶&8] &7Magic Resist: &f";
+
     public void sendClassInv(Player p) {
         DecimalFormat df = new DecimalFormat("#.##");
         DecimalFormat dF = new DecimalFormat("#");
@@ -62,6 +70,10 @@ public class ClassCommand implements CommandExecutor, Listener {
         double armorPerLvl = pc.getArmorPerLevel();
         double mr = pc.getCalcMR(0);
         double mrPerLvl = pc.getMagicResistPerLevel();
+        double ap = pc.getBaseAP();
+        double ad = pc.getBaseAD();
+        double apPerLvl = pc.getAPPerLevel();
+        double adPerLvl = pc.getADPerLevel();
 
         spMeta.setDisplayName(Main.color("&6Wanderer"));
         sp.setType(Material.LEATHER_HELMET);
@@ -70,11 +82,15 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color("&fThe Wanderer has no true path or focus."));
         lore.add(Main.color("&fAll wanderers eventually find a new Class."));
         lore.add(Main.color(""));
-        lore.add(Main.color("&7■ &cHP: &f" + df.format(baseHp) + " &8(&c+" + df.format(hpPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &bMana: &f" + dF.format(mana) + " &8(&b+" + df.format(manaPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &bMana Regen: &f" + df.format(mreg) + " &8(&b+" + df.format(mregPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &4Armor: &f" + dF.format(armor) + " &8(&4+" + df.format(armorPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &9Magic Resist: &f" + dF.format(mr) + " &8(&9+" + df.format(mrPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(hpString + df.format(baseHp) + " &8(&7+" + df.format(hpPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(manaRegenString + df.format(mreg) + " &8(&7+" + df.format(mregPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(""));
+        lore.add(Main.color(adString + dF.format(ad) + " &8(&7+" + df.format(adPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(apString + df.format(ap) + " &8(&7+" + df.format(apPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(""));
+        lore.add(Main.color(armorString + dF.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(mrString + dF.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
         lore.add(Main.color(""));
         lore.add(Main.color("&fView its Skills with &e/skills Wanderer&f."));
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -104,6 +120,10 @@ public class ClassCommand implements CommandExecutor, Listener {
         armorPerLvl = pc.getArmorPerLevel();
         mr = pc.getCalcMR(0);
         mrPerLvl = pc.getMagicResistPerLevel();
+        ap = pc.getBaseAP();
+        ad = pc.getBaseAD();
+        apPerLvl = pc.getAPPerLevel();
+        adPerLvl = pc.getADPerLevel();
 
 
         spMeta.setDisplayName(Main.color("&6Pyromancer"));
@@ -113,11 +133,15 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color("&fPyromancer's have powerful short range skills"));
         lore.add(Main.color("&fthat decimate nearby enemies by igniting them."));
         lore.add(Main.color(""));
-        lore.add(Main.color("&7■ &cHP: &f" + df.format(baseHp) + " &8(&c+" + df.format(hpPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &bMana: &f" + dF.format(mana) + " &8(&b+" + df.format(manaPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &bMana Regen: &f" + df.format(mreg) + " &8(&b+" + df.format(mregPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &4Armor: &f" + dF.format(armor) + " &8(&4+" + df.format(armorPerLvl) + "/lvl&8)"));
-        lore.add(Main.color("&7■ &9Magic Resist: &f" + dF.format(mr) + " &8(&9+" + df.format(mrPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(hpString + df.format(baseHp) + " &8(&7+" + df.format(hpPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(manaRegenString + df.format(mreg) + " &8(&7+" + df.format(mregPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(""));
+        lore.add(Main.color(adString + dF.format(ad) + " &8(&7+" + df.format(adPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(apString + df.format(ap) + " &8(&7+" + df.format(apPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(""));
+        lore.add(Main.color(armorString + dF.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(mrString + dF.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
         lore.add(Main.color(""));
         lore.add(Main.color("&fView its Skills with &e/skills Pyromancer&f."));
         if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {

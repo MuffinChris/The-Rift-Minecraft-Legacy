@@ -236,7 +236,7 @@ public class Items implements Listener {
     }
 
     public static String durabilityString = "&8[&a✦&8] &7Durability: &f";
-    public static String levelReqString = "&8[&e⚔&8] &7Level Req: &f";
+    public static String levelReqString = "&8[&e⚒&8] &7Level Req: &f";
     public static String armorString = "&8[&6⛨&8] &7Armor: &f";
 
     public static ItemStack primitize(ItemStack i) {

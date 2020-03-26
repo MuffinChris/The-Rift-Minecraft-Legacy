@@ -1,6 +1,7 @@
 package com.java.essentials;
 
 import com.java.Main;
+import com.java.rpg.classes.MobEXP;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +16,7 @@ public class DummyCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void dummy(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Villager && e.getEntity() instanceof LivingEntity) {
+        /*if (e.getEntity() instanceof Villager && e.getEntity() instanceof LivingEntity) {
             if (e.getEntity() instanceof Entity && e.getEntity().isCustomNameVisible() && e.getEntity().getCustomName().contains("HP:")) {
                 LivingEntity ent = (LivingEntity) e.getEntity();
                 new BukkitRunnable() {
@@ -26,7 +27,7 @@ public class DummyCommand implements CommandExecutor, Listener {
                     }
                 }.runTaskLater(Main.getInstance(), 5L);
             }
-        }
+        }*/
     }
 
     @Override
@@ -38,10 +39,9 @@ public class DummyCommand implements CommandExecutor, Listener {
                 LivingEntity ent = (LivingEntity) e;
                 ent.setAI(false);
                 ent.setCanPickupItems(false);
-                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10000);
-                ent.setHealth(10000);
-                ent.setCustomNameVisible(true);
-                ent.setCustomName(Main.color("&cHP: &f" + ent.getHealth()));
+                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(1000000);
+                ent.setHealth(1000000);
+                MobEXP.setLevel(ent, 50);
             } else {
                 Main.msg(p, Main.getInstance().noperm);
             }

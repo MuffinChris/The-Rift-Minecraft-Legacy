@@ -27,6 +27,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -50,13 +51,17 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -13. Correctly balance mobs that are wearing armor.
+
+        -12. Design all custom mobs, step away from formulas. Make sure to use Name PData tag incase mob has dif name than type.
+
+        -11. Lava and fire need to do reduced damage to big boy mobs
+
+        -7. Terraria style mobs (mobs have a level range, they only spawn in specific biomes? is this possible monkaS)
+
         -5. NBT Food system for future expansion
 
-        -4. Increase EXP discrepancy for low tier wild mobs. Attach NBT EXP and Level instead of string parse.
-
         -3. Mobs being stunned needs to be standardized. If a boss is stunned, it needs to stop using abilities and whatnot
-
-        -2. Put NPC Tag underneath NPC's using Citizens API and Holograms (testing for bugs)
 
         -1. Dungeon encounters should scale with party size. Bosses too.
 
@@ -226,6 +231,32 @@ public class Main extends JavaPlugin {
     Damage Variables
 
      */
+
+    // MOB HP REGEN
+    public void hpRegen() {
+        new BukkitRunnable() {
+            public void run() {
+                for (World w : Bukkit.getWorlds()) {
+                    for (LivingEntity e : w.getLivingEntities()) {
+                        if (!(e instanceof Player)) {
+                            if (e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() > MobEXP.getHPRegen(e) + e.getHealth()) {
+                                LivingEntity ent = e;
+                                DecimalFormat df = new DecimalFormat("#.##");
+                                Hologram magic = new Hologram(ent, ent.getLocation(), "&a&l❤" + df.format(MobEXP.getHPRegen(e)), Hologram.HologramType.DAMAGE);
+                                magic.rise();
+                                DecimalFormat dF = new DecimalFormat("#.##");
+                                if (getHpBars().containsKey(ent)) {
+                                    getHpBars().get(ent).setText("&f" + dF.format(ent.getHealth()) + "&c❤");
+                                }
+                            }
+                            e.setHealth(Math.min(e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue(), MobEXP.getHPRegen(e) + e.getHealth()));
+
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(this, 1L, 60L);
+    }
 
     public Map<Entity, Hologram> hpBars = new HashMap<>();
     public Map<Entity, Hologram> getHpBars() {
@@ -627,6 +658,9 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Pyroclasm(), this);
         Bukkit.getPluginManager().registerEvents(new Combust(), this);
         so("&dRIFT: &fRegistered events!");
+
+        RPGConstants loadLevels = new RPGConstants();
+        hpRegen();
 
         pm = new PartyManager();
         cm = new ClassManager();
