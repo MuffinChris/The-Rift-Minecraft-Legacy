@@ -1,9 +1,9 @@
 name: Rift
 main: com.java.Main
 author: eChris
-version: 0.0.1
-description: Command and Feature Suite
-api-version: 1.14
+version: 0.0.2
+description: Core Plugin for The Rift
+api-version: 1.15
 commands:
   party:
     description: Group up with friends!

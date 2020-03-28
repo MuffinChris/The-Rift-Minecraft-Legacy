@@ -19,18 +19,27 @@ import com.java.rpg.classes.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
+import com.java.rpg.mobs.CustomEntityType;
+import com.java.rpg.mobs.grassy.WarriorZombie;
 import com.java.rpg.modifiers.Environmental;
 import com.java.rpg.player.*;
+import com.java.rpg.player.Items;
+import com.mojang.datafixers.DataFixUtils;
+import com.mojang.datafixers.types.Type;
 import de.slikey.effectlib.EffectManager;
+import de.tr7zw.nbtinjector.NBTInjector;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.*;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -50,6 +59,12 @@ public class Main extends JavaPlugin {
     /*
 
     DIRECT LINE TODO LIST:
+
+        -16. All biomes capped 1-20 (some a bit higher, but never extremes) Dungeons forced to level
+
+        -15. More vanilla exp drop from better mobs
+
+        -14. Balance totems of undying
 
         -13. Correctly balance mobs that are wearing armor.
 
@@ -90,6 +105,7 @@ public class Main extends JavaPlugin {
         - Make Custom Anvil and Enchantment Table
         - In general custom enchantments. Allow unbreaking up to 10, etc, essentially remove Vanilla enchants, everything custom. That means removing Proj Prot etc.
         - Need to make drops and loot not have vanilla enchantments. If the enchantment is not supported (like proj prot), remove it!
+        - Make sure to change existing ench changes (ie. mending)
 
         Professions:
         Blacksmith:
@@ -567,6 +583,26 @@ public class Main extends JavaPlugin {
         }.runTaskTimer(this, 10L, 5L);
     }
 
+    /*
+
+    Custom Mob Section
+
+     */
+
+    public CustomEntityType warriorZombie;
+
+    @Override
+    public void onLoad() {
+        NBTInjector.inject();
+        so("&dRIFT: &fNBTAPI Injected");
+
+        warriorZombie = new CustomEntityType<WarriorZombie>("warrior_zombie", WarriorZombie.class, EntityTypes.ZOMBIE, WarriorZombie::new);
+        warriorZombie.register();
+
+        so("&dRIFT: &fCustom Mobs registered");
+    }
+
+    @Override
     public void onEnable() {
 
         so("&dRIFT: &fEnabling Plugin!");
@@ -659,6 +695,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Combust(), this);
         so("&dRIFT: &fRegistered events!");
 
+
         RPGConstants loadLevels = new RPGConstants();
         hpRegen();
 
@@ -697,6 +734,7 @@ public class Main extends JavaPlugin {
 
     }
 
+    @Override
     public void onDisable() {
 
         final BukkitScheduler scheduler = Bukkit.getScheduler();

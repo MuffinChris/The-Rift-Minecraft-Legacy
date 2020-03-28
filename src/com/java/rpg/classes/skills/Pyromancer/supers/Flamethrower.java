@@ -89,11 +89,18 @@ public class Flamethrower extends Skill {
             Location loc = origin.add(direction);
             loc.getWorld().spawnParticle(Particle.FLAME, loc, 10 + (int) i * 5, 0.01 + i / 1.5, 0.01 + i / 2.0, 0.01 + i / 1.5, 0.0001, null, true);
 
-            for (LivingEntity ent : loc.getNearbyLivingEntities(i + 0.25)) {
+            for (LivingEntity ent : loc.getNearbyLivingEntities(i + 2)) {
                 if (ent instanceof ArmorStand) {
                     continue;
                 }
                 if (alreadyHit.contains(ent)) {
+                    continue;
+                }
+                double dist = Math.sqrt(Math.pow(loc.getX() - ent.getLocation().getX(), 2) + Math.pow(loc.getZ() - ent.getLocation().getZ(), 2));
+                if (!(dist < 0.6)) {
+                    continue;
+                }
+                if (!(Math.abs(ent.getLocation().add(new Vector(0, ent.getHeight()/2.0, 0)).getY() - loc.getY()) < ent.getHeight()/1.9)) {
                     continue;
                 }
                 if (ent instanceof Player) {

@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent;
 import com.destroystokyo.paper.event.entity.EnderDragonFlameEvent;
 import com.java.Main;
 import com.java.holograms.Hologram;
+import com.java.rpg.classes.MobEXP;
 import net.minecraft.server.v1_15_R1.EntityIronGolem;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -79,13 +80,13 @@ public class Environmental implements Listener {
                 e.setDamage(hp / 30.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
-                e.setDamage(Math.min(Math.max(hp * 0.025, 10), (1 + (Math.random() * 0.1)) * 2500));
+                e.setDamage(hp * 0.025);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE) {
-                e.setDamage(Math.min(Math.max(hp * 0.025, 10), (1 + (Math.random() * 0.1)) * 2500));
+                e.setDamage(hp * 0.025);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
-                e.setDamage(Math.min(Math.max(hp * 0.05, 50), (1 + (Math.random() * 0.1)) * 5000));
+                e.setDamage(hp * 0.05);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
                 e.setDamage((e.getDamage() / 20.0) * hp * 0.8);

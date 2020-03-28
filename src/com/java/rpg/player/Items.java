@@ -357,6 +357,26 @@ public class Items implements Listener {
         return nbtItem.getItem();
     }
 
+    public static ItemStack removeDamage (ItemStack i) {
+        NBTItem nbtItem = new NBTItem(i);
+        NBTCompound atr = nbtItem.getCompoundList("AttributeModifiers").addCompound();
+        atr.setDouble("Amount", 0.0);
+        atr.setString("AttributeName", "generic.attackDamage");
+        atr.setString("Name", "generic.attackDamage");
+        atr.setInteger("Operation", 0);
+        atr.setInteger("UUIDLeast", 53764);
+        atr.setInteger("UUIDMost", 29483);
+
+        NBTCompound atrT = nbtItem.getCompoundList("AttributeModifiers").addCompound();
+        atrT.setDouble("Amount", 16.0);
+        atrT.setString("AttributeName", "generic.attackSpeed");
+        atrT.setString("Name", "generic.attackSpeed");
+        atrT.setInteger("Operation", 0);
+        atrT.setInteger("UUIDLeast", 54764);
+        atrT.setInteger("UUIDMost", 30483);
+        return nbtItem.getItem();
+    }
+
     public static ItemStack fixItem(ItemStack i) throws Exception {
         ItemStack nItem = i;
         if (i != null && isArmor(i.getType().toString())) {

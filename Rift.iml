@@ -23,23 +23,25 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.citizensnpcs:citizens-v1_13_R2:2.0.26-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.citizensnpcs:citizens-v1_14_R1:2.0.26-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.citizensnpcs:citizens-v1_15_R1:2.0.26-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: de.tr7zw:item-nbt-api-plugin:2.2.0" level="project" />
-    <orderEntry type="library" name="Maven: de.tr7zw:item-nbt-api:2.2.0" level="project" />
-    <orderEntry type="library" name="Maven: de.tr7zw:nbt-injector:2.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.javassist:javassist:3.26.0-GA" level="project" />
+    <orderEntry type="library" name="Maven: de.tr7zw:item-nbt-api-plugin:2.3.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: de.tr7zw:item-nbt-api:2.3.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: de.tr7zw:functional-annotations:0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: de.tr7zw:nbt-injector:2.3.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.javassist:javassist:3.27.0-GA" level="project" />
+    <orderEntry type="library" name="Maven: de.tr7zw:nbt-data-api:2.3.0-SNAPSHOT" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: com.destroystokyo.paper.server:paper-server:1.15.1-R0.1-SNAPSHOT">
+      <library name="Maven: com.destroystokyo.paper.server:paper-server:1.15.2-R0.1-SNAPSHOT">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/apiresources/paper-api-1.15.1-R0.1-SNAPSHOT.jar!/" />
+          <root url="jar://$MODULE_DIR$/apiresources/paper-api-1.15.2-R0.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: com.destroystokyo.paper:paper-api:1.15.1">
+      <library name="Maven: com.destroystokyo.paper:paper-api:1.15.2">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/apiresources/paper-1.15.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/apiresources/paper-1.15.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -90,5 +92,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:19.0.0" level="project" />
   </component>
 </module>

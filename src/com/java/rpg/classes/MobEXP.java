@@ -3,17 +3,20 @@ package com.java.rpg.classes;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.java.Main;
 import com.java.rpg.mobs.BiomeSettings;
+import com.java.rpg.mobs.grassy.WarriorZombie;
+import com.java.rpg.player.Items;
 import com.java.rpg.player.XPList;
+import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTEntity;
+import de.tr7zw.nbtapi.NBTList;
 import net.minecraft.server.v1_15_R1.EntityIronGolem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
@@ -45,6 +48,92 @@ public class MobEXP implements Listener {
     private static Map<EntityType, Double> xpmods;
 
     private static BiomeSettings settings = new BiomeSettings();
+
+    /*@EventHandler (just change drop tables 4head)
+    public void mobNoArmorDrop(EntityDeathEvent e) {
+        if (e.getEntityType() != EntityType.PLAYER) {
+            List<ItemStack> remove = new ArrayList<>();
+            for (ItemStack i : e.getDrops()) {
+                if (Items.isArmor(i.getType().toString())) {
+                    remove.add(i);
+                }
+            }
+            for (ItemStack i : remove) {
+                e.getDrops().remove(i);
+            }
+        }
+    }*/
+
+    @EventHandler
+    public void mobSpawnEvent (CreatureSpawnEvent e) {
+        LivingEntity ent = e.getEntity();
+        if (ent instanceof Phantom) {
+            double random = Math.random();
+            if (random >= 0.05) {
+                ent.remove();
+            }
+        }
+        if (getSetup(ent) == 0) {
+            if (hasLevel(ent)) {
+                setupEnt(ent, getLevel(ent));
+            } else {
+                setupEnt(ent, -1);
+            }
+        }
+
+        /*if (ent instanceof Zombie && !(ent instanceof WarriorZombie)) {
+            e.setCancelled(true);
+
+            main.warriorZombie.spawn(ent.getLocation());
+        }*/
+
+        /*NBTEntity nent = new NBTEntity(e.getEntity());
+        if (nent.hasKey("ArmorItems")) {
+            NBTList list = nent.getCompoundList("ArmorItems");
+            for (int i = 0; i < list.size(); i++) {
+                NBTCompound n = (NBTCompound) list.get(i);
+                if (n.hasKey("Count")) {
+                    NBTCompound tag;
+                    if (n.hasKey("tag")) {
+                        tag = n.getCompound("tag");
+                    } else {
+                        tag = n.addCompound("tag");
+                    }
+                    NBTCompound atr = tag.addCompound("AttributesModifiers");
+                    atr.setDouble("Amount", 0.0);
+                    atr.setString("AttributeName", "generic.armor");
+                    atr.setString("Name", "generic.armor");
+                    atr.setInteger("Operation", 0);
+                    atr.setInteger("UUIDLeast", 59764);
+                    atr.setInteger("UUIDMost", 31483);
+
+                    NBTCompound atrT = tag.getCompoundList("AttributeModifiers").addCompound();
+                    atrT.setDouble("Amount", 0.0);
+                    atrT.setString("AttributeName", "generic.armorToughness");
+                    atrT.setString("Name", "generic.armorToughness");
+                    atrT.setInteger("Operation", 0);
+                    atrT.setInteger("UUIDLeast", 58764);
+                    atrT.setInteger("UUIDMost", 32483);
+                }
+            }
+        }*/
+    }
+
+    public static void removeDropChances(Entity ent) {
+        NBTEntity nent = new NBTEntity(ent);
+        if (nent.hasKey("ArmorDropChances")) {
+            NBTList list = nent.getFloatList("ArmorDropChances");
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, 0.0f);
+            }
+        }
+        if (nent.hasKey("HandDropChances")) {
+            NBTList list = nent.getFloatList("HandDropChances");
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, 0.0f);
+            }
+        }
+    }
 
     public MobEXP() {
         biomeLevels = new LinkedHashMap<>();
@@ -331,6 +420,9 @@ public class MobEXP implements Listener {
 
     public static String getNiceName(LivingEntity ent) {
         //net.minecraft.server.v1_15_R1.Entity nmsEnt = CraftLivingEntity.getEntity((CraftServer) Bukkit.getServer(), ((CraftEntity) ent).getHandle()).getHandle();
+        if (getCustomName(ent) != null) {
+            return getCustomName(ent);
+        }
         net.minecraft.server.v1_15_R1.Entity nmsEnt = ((CraftEntity) ent).getHandle();
         return WordUtils.capitalize((nmsEnt.getMinecraftKeyString().replace("minecraft:", "")).replace("_", " "));
     }
@@ -385,6 +477,32 @@ public class MobEXP implements Listener {
         data.set(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE, r);
     }
 
+    public static String getCustomName(LivingEntity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING);
+        }
+        return null;
+    }
+
+    public static void setCustomName(LivingEntity ent, String s) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING, s);
+    }
+
+    public static int getSetup(LivingEntity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "Setup"), PersistentDataType.INTEGER)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "Setup"), PersistentDataType.INTEGER);
+        }
+        return 0;
+    }
+
+    public static void setSetup(LivingEntity ent, int i) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "Setup"), PersistentDataType.INTEGER, i);
+    }
+
     public void scaleHealth(LivingEntity ent, int level, double modifier) {
 
         double hp = RPGConstants.mobHpBase + Math.pow(level, RPGConstants.mobHpLevelPow) * RPGConstants.mobHpLevelScalar * Math.pow(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/20.0, RPGConstants.mobHpBasePow);
@@ -433,7 +551,7 @@ public class MobEXP implements Listener {
     }
 
 
-    private static Map<LivingEntity, XPList> xp;
+    public static Map<LivingEntity, XPList> xp;
 
     public Map<LivingEntity, XPList> getXP() {
         return xp;
@@ -447,6 +565,10 @@ public class MobEXP implements Listener {
 
         if (peaceful.contains(ent.getType())) {
             level = Math.max(0, Math.min(level, 5));
+        }
+
+        if (ent.getAttribute(Attribute.GENERIC_ARMOR) != null) {
+            ent.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
         }
 
         if (hasLevel(ent)) {
@@ -482,9 +604,6 @@ public class MobEXP implements Listener {
 
         setLevel(ent, level);
         setExp(ent, calcExp(ent));
-        if (!xp.containsKey(ent)) {
-            xp.put(ent, new XPList());
-        }
     }
 
     @EventHandler (priority = EventPriority.LOWEST)
@@ -570,6 +689,10 @@ public class MobEXP implements Listener {
     @EventHandler
     public void onSpawn (EntityAddToWorldEvent e) {
         if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
+            if (!xp.containsKey((LivingEntity) e.getEntity())) {
+                xp.put((LivingEntity) e.getEntity(), new XPList());
+            }
+            /*
             new BukkitRunnable() {
                 public void run() {
                     LivingEntity ent = (LivingEntity) e.getEntity();
@@ -585,7 +708,7 @@ public class MobEXP implements Listener {
                         }
                     }
                 }
-            }.runTaskLater(Main.getInstance(), 1);
+            }.runTaskLater(Main.getInstance(), 1);*/
         }
     }
 
@@ -680,6 +803,20 @@ public class MobEXP implements Listener {
     }
 
     @EventHandler (priority = EventPriority.MONITOR)
+    public void onEnvDmg (EntityDamageEvent e) {
+        if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE && e.getCause() != EntityDamageEvent.DamageCause.DRAGON_BREATH && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK)
+        if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
+            LivingEntity ent = (LivingEntity) e.getEntity();
+            if (xp.containsKey(ent)) {
+                xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
+            } else {
+                xp.put(ent, new XPList());
+                xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
+            }
+        }
+    }
+
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onDamage (EntityDamageByEntityEvent e) {
         if (!e.isCancelled()) {
             Player p = null;
@@ -698,6 +835,15 @@ public class MobEXP implements Listener {
                     xp.get(ent).addDamage(p, e.getDamage());
                 } else {
                     xp.put(ent, new XPList());
+                    xp.get(ent).addDamage(p, e.getDamage());
+                }
+            } else if (p == null && e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)){
+                LivingEntity ent = (LivingEntity) e.getEntity();
+                if (xp.containsKey(ent)) {
+                    xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
+                } else {
+                    xp.put(ent, new XPList());
+                    xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
                 }
             }
         }
