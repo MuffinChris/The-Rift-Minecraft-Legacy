@@ -20,6 +20,7 @@ public class BiomesCommand implements CommandExecutor {
             Map<Biome, LevelRange> bl = MobEXP.getBL();
             if (args.length == 0) {
                 int i = 0;
+                Main.msg(p, "&7>>----- &eBiomes Page 1 &7-----<<");
                 for (Biome b : bl.keySet()) {
                     i++;
                     if (i > 5) {
@@ -33,6 +34,7 @@ public class BiomesCommand implements CommandExecutor {
                     int page = Integer.valueOf(args[0]);
                     page--;
                     int i = 0;
+                    Main.msg(p, "&7>>----- &eBiomes Page " + (page + 1) + " &7-----<<");
                     for (Biome b : bl.keySet()) {
                         i++;
                         if (i > 5 * page + 5) {

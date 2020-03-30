@@ -30,7 +30,7 @@ public class SettingsCommand implements CommandExecutor, Listener {
     public void cancelClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lSETTINGS")) {
             e.setCancelled(true);
-            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Skill Cast Slot")) {
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Skill Cast Slot")) {
                 Player p = (Player) e.getWhoClicked();
                 sendSkillcastInv(p);
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
@@ -39,9 +39,13 @@ public class SettingsCommand implements CommandExecutor, Listener {
 
         if (e.getView().getTitle().contains("§e§lSKILLCAST SLOT")) {
             e.setCancelled(true);
-            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Slot ")) {
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Slot ")) {
                 Player p = (Player) e.getWhoClicked();
-                int slot = Integer.valueOf(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).replace("Slot ", "")) - 1;
+                String name = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+                if (name.contains("(SELECTED)")) {
+                    name = name.substring(0, name.indexOf(" ("));
+                }
+                int slot = Integer.valueOf(name.replace("Slot ", "")) - 1;
 
                 if (slot == main.getRP(p).getIdleSlot()) {
                     Main.msg(p, "&cYou have already selected this slot.");

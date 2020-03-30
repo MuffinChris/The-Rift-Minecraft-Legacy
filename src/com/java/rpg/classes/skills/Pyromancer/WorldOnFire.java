@@ -192,7 +192,7 @@ public class WorldOnFire extends Skill implements Listener {
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fActively ignite nearby enemies."));
         desc.add(Main.color("&fGrant yourself &a" + initRamp + " &fAP."));
-        desc.add(Main.color("&fGain &a" + ramp + " &fAP every tick for each nearby."));
+        desc.add(Main.color("&fGain &a" + ramp + " &fAP every tick for each nearby"));
         desc.add(Main.color("&fentity on fire. Max AP is &a" + maxramp + "&f."));
         desc.add(Main.color("&fWhen ended, nearby enemies take &b" + getDmg(p) + " &fdamage!"));
         return desc;

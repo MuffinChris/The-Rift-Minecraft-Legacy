@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class BetterRestart implements Listener {
 
-    @EventHandler
+    /*@EventHandler
     public void restart (PlayerCommandPreprocessEvent e) {
         if (e.getMessage().equalsIgnoreCase("restart")) {
             if (e.getPlayer().hasPermission("core.admin")) {
@@ -27,6 +27,6 @@ public class BetterRestart implements Listener {
                 Bukkit.getServer().shutdown();
             }
         }
-    }
+    }*/
 
 }

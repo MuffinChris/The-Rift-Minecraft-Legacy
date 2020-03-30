@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Leveleable {
@@ -63,7 +64,8 @@ public class Leveleable {
     }
 
     public void calcMaxExp() {
-        maxexp = Math.pow(level, expPow) * expMod + expOff;
+        //maxexp = Math.pow(level, expPow) * expMod + expOff;
+        maxexp = RPGConstants.levelsExp.get(level);
     }
 
     public double getPercent() {
@@ -160,47 +162,49 @@ public class Leveleable {
     }
 
     public void giveExpFromSource(Player p, Location t, double xp, String s) {
-        String flavor = " &7(" + s + "&7)";
-        String sign = "+";
-        if (xp < 0) {
-            sign = "";
-        }
-        if (s.length() == 0) {
-            flavor = "";
-        } else {
-            if (s.equals("SELF")) {
-                flavor = "";
+        if (!Double.isNaN(xp) && Double.isFinite(xp)) {
+            String flavor = " &7(" + s + "&7)";
+            String sign = "+";
+            if (xp < 0) {
+                sign = "";
             }
-            if (main.getPM().hasParty(p) && xp >= 0) {
-                Party pa = main.getPM().getParty(p);
-                int amnt = pa.getNearbyPlayersSize(p);
-                if (pa.getShare() && amnt > 0) {
-                    xp*=RPGConstants.partyXpMod;
-                    xp/=(amnt + 1);
-                    for (Player pp : pa.getNearbyPlayers(p)) {
-                        RPGPlayer rp = main.getRP(pp);
-                        rp.setExp(rp.getExp() + xp);
-                        DecimalFormat dF = new DecimalFormat("#");
-                        if (pp.equals(p)) {
-                            Main.msg(pp, "   &7[+" + dF.format(xp) + "&7 XP]");
-                            rp.getBoard().setBossbar4("&7[+" + dF.format(xp) + "&7 XP]");
-                        } else {
-                            Main.msg(pp, "   &7[+" + dF.format(xp) + "&7 XP]" + " &7(" + p.getName() + "&7)");
-                            rp.getBoard().setBossbar4("&7[+" + dF.format(xp) + "&7 XP]" + " &7(" + p.getName() + "&7)");
+            if (s.length() == 0) {
+                flavor = "";
+            } else {
+                if (s.equals("SELF")) {
+                    flavor = "";
+                }
+                if (main.getPM().hasParty(p) && xp >= 0) {
+                    Party pa = main.getPM().getParty(p);
+                    int amnt = pa.getNearbyPlayersSize(p);
+                    if (pa.getShare() && amnt > 0) {
+                        xp *= RPGConstants.partyXpMod;
+                        xp /= (amnt + 1);
+                        for (Player pp : pa.getNearbyPlayers(p)) {
+                            RPGPlayer rp = main.getRP(pp);
+                            rp.setExp(rp.getExp() + xp);
+                            DecimalFormat dF = new DecimalFormat("#");
+                            if (pp.equals(p)) {
+                                Main.msg(pp, "   &7[+" + dF.format(xp) + "&7 XP]");
+                                rp.getBoard().setBossbar4("&7[+" + dF.format(xp) + "&7 XP]");
+                            } else {
+                                Main.msg(pp, "   &7[+" + dF.format(xp) + "&7 XP]" + " &7(" + p.getName() + "&7)");
+                                rp.getBoard().setBossbar4("&7[+" + dF.format(xp) + "&7 XP]" + " &7(" + p.getName() + "&7)");
+                            }
                         }
+                        return;
                     }
-                    return;
                 }
             }
+            exp += xp;
+            exp = Math.max(exp, 0);
+            DecimalFormat dF = new DecimalFormat("#");
+            Main.msg(p, "   &7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
+            main.getRP(p).getBoard().setBossbar4("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
+            Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(" + p.getName() + "&7)", Hologram.HologramType.DAMAGE);
+            magic.rise();
+            levelup();
         }
-        exp+=xp;
-        exp = Math.max(exp, 0);
-        DecimalFormat dF = new DecimalFormat("#");
-        Main.msg(p, "   &7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
-        main.getRP(p).getBoard().setBossbar4("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
-        Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(" + p.getName() + "&7)", Hologram.HologramType.DAMAGE);
-        magic.rise();
-        levelup();
     }
 
 }

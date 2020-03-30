@@ -12,9 +12,19 @@ import java.util.Map;
 public class XPList {
 
     private Map<String, Double> dmg;
+    private double envdmg;
+
+    public double getEnvDmg() {
+        return envdmg;
+    }
+
+    public void setEnvDmg(double d) {
+        envdmg = d;
+    }
 
     public XPList() {
         dmg = new HashMap<>();
+        envdmg = 0;
     }
 
     public void removeDc() {
@@ -42,6 +52,15 @@ public class XPList {
         }
     }
 
+    public boolean getAloneAndLowEnv(Player p) {
+        if (getPercentages().containsKey(p) && getPercentages().size() == 1) {
+            if (getPercentages().get(p) > 0.75) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Map<Player, Double> getPercentages() {
         removeDc();
         Map<Player, Double> per = new HashMap<>();
@@ -49,6 +68,7 @@ public class XPList {
         for (Double d : dmg.values()) {
             total+=d;
         }
+        total+=envdmg;
         for (String s : dmg.keySet()) {
             if (per.containsKey(Bukkit.getPlayer(s))) {
                 per.replace(Bukkit.getPlayer(s), per.get(Bukkit.getPlayer(s)) + dmg.get(s));

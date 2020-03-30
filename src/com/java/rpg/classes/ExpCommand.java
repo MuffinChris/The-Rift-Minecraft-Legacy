@@ -33,6 +33,18 @@ public class ExpCommand implements CommandExecutor {
                                 val = Math.min(tl.getMaxLevel(), val);
                                 if (val > tl.getLevel()) {
                                     tl.levelupRewards(target, tl.getPClass(), tl.getLevel(), val);
+                                } else {
+                                    if (tl.getLevel() >= 50 && val < 50) {
+                                        for (String s : tl.getSkillLevels().keySet()) {
+                                            tl.getSkillLevels().replace(s, 0);
+                                        }
+                                        tl.pushFiles();
+                                    } else if (tl.getLevel() >= 40 && val < 40) {
+                                        for (String s : tl.getSkillLevels().keySet()) {
+                                            tl.getSkillLevels().replace(s, 0);
+                                        }
+                                        tl.pushFiles();
+                                    }
                                 }
                                 tl.setLevel(val);
                                 Main.msg(p, "&eSet &6" + target.getName() + "'s &elevel to " + val + ".");
@@ -120,6 +132,18 @@ public class ExpCommand implements CommandExecutor {
                                 val = Math.min(tl.getMaxLevel(), val);
                                 if (val > tl.getLevel()) {
                                     tl.levelupRewards(target, tl.getPClass(), tl.getLevel(), val);
+                                } else {
+                                    if (tl.getLevel() >= 50 && val < 50) {
+                                        for (String s : tl.getSkillLevels().keySet()) {
+                                            tl.getSkillLevels().replace(s, 0);
+                                        }
+                                        tl.pushFiles();
+                                    } else if (tl.getLevel() >= 40 && val < 40) {
+                                        for (String s : tl.getSkillLevels().keySet()) {
+                                            tl.getSkillLevels().replace(s, 0);
+                                        }
+                                        tl.pushFiles();
+                                    }
                                 }
                                 tl.setLevel(val);
                                 tl.levelup();

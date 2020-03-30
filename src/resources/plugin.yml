@@ -1,9 +1,9 @@
 name: Rift
 main: com.java.Main
 author: eChris
-version: 0.0.1
-description: Command and Feature Suite
-api-version: 1.14
+version: 0.0.2
+description: Core Plugin for The Rift
+api-version: 1.15
 commands:
   party:
     description: Group up with friends!
@@ -13,7 +13,7 @@ commands:
     aliases: [cast, spell]
   class:
     description: Select a class!
-    aliases: [soul]
+    aliases: [soul, classes]
   heal:
     description: Heal a target.
     permission: core.mod
@@ -72,8 +72,11 @@ commands:
     description: Get the level range of your current location
     aliases: [locinfo, locationinfo, loclevel, biomelevel, biomelvl, nl, bl, ll]
   arestart:
-    description: Restart the server on a 60 second timer
+    description: Restart the server on a 30 second timer
     aliases: [autorestart, timedrestart, trestart]
+    permission: core.admin
+  arestartfast:
+    description: Restart the server on a 5 second timer
     permission: core.admin
   setexp:
     description: Set a player's EXP
@@ -105,4 +108,10 @@ commands:
   spawn:
     description: Warp to spawn
     aliases: [s]
-depend: [ProtocolLib, Vault]
+  info:
+    description: View info
+    aliases: [information, whois, who, rpg, character, char]
+  sp:
+    description: View skillpoints
+    aliases: [skillpoint, skillpoints, spoints]
+depend: [ProtocolLib, Vault, NBTAPI, Citizens]

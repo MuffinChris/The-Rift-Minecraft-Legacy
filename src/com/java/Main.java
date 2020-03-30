@@ -14,25 +14,32 @@ import com.java.communication.playerinfoManager;
 import com.java.essentials.*;
 import com.java.holograms.EntityHealthBars;
 import com.java.holograms.Hologram;
-import com.java.rpg.Damage;
-import com.java.rpg.DamageListener;
-import com.java.rpg.DamageTypes;
-import com.java.rpg.Stuns;
+import com.java.rpg.*;
 import com.java.rpg.classes.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
+import com.java.rpg.mobs.CustomEntityType;
+import com.java.rpg.mobs.grassy.WarriorZombie;
 import com.java.rpg.modifiers.Environmental;
-import com.java.rpg.player.CustomDeath;
-import com.java.rpg.player.PlayerListener;
+import com.java.rpg.player.*;
+import com.java.rpg.player.Items;
+import com.mojang.datafixers.DataFixUtils;
+import com.mojang.datafixers.types.Type;
 import de.slikey.effectlib.EffectManager;
+import de.tr7zw.nbtinjector.NBTInjector;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.*;
+import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -53,89 +60,134 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
-        The Bananamancer
-        Potassium Rush (Passive) - Every attack gives you K stacks. If you have 8 K stacks have potassium surges speeding up the nerve signals in your body causing an attack to send out 3.
-        Banana Beam (Active 1) - Shoot a laser giving yourself a K stack for every unit hit
-        Banana Eat (Active 2) - Give yourself a strength buff for 5s and 2 K stacks
-        Banana Bomb (Active 3) - Cause a banana explosion in a radius around you. Consumes K stacks for additional damage
-        Banana Gas (Active 4) - Release banana gas around you for 12s weakening and damaging enemies while healing yourself and giving yourself 4 K stacks over the period
+        -21. TODOLIST FOR 3/29/20 - 3/31/20:
+            Damage System Thinking:
+                Items will have damage values (any of the types)
+                Spells will have base damage (of any damage type)
+                Spells will have scaling for all damage types
+                For example.
 
-        WHEN THE TIME COMES, DO RELIABLESITE. SYS SETUP FEES MAKE FIRST MONTH MORE EXPENSIVE, MAY AS WELL BLOW IT ALL
-        ON SOMETHING BETTER AND HOPE FOR DONOS. UPGRADE INEVITABLE (HOPEFULLY)
+                Fireball:
+                - 50 base fire damage
+                - (40 % AP, 0% Ice, 0% Earth, 50% Air, 100% Fire, 0% Water)
 
-        -38. suspect movement speed in fthrower
+                All damage goes through said scaling. Thus fireballs will never do ice dmg etc
+                As a result of these changes, CLEAN UP SKILLS GUI AND SKILL DESCRIPTIONS TO HAVE MORE UPFRONT INFORMATION ABOUT DAMAGE. TICKRATE N SHIT IS LOW IMPORTANCE
 
-        -37. get skill level no work for super in skills cmd
+                Base Chance to trigger status effect (like 10% or smthn), then chance is divided based on how much dmg element did. (ie. 500 fire, 50 ice) will give fire x percentage over ice
+                AP AD not counted in above calculation
 
-        -36. clear passives on change class, in general make it more standardized on stat obj sys
 
-        -35. Player not teleported when close inventory afkinvuln.
+                Item that gives elemental damage will be multiplied by 0.4 and deal that elemental damage.
 
-        -34. weird error after stopping sometimes when someone online (file related rpolly)
+                For defense UTF8 Symbols, re-use Armor just dif color
 
-        -33. xp metadata for dungeons?
+            Add elemental defense here, add Elemental Defense to RPG Classes, and to Mobs!
+            Elemental Damage needs a split setup of damage. Can all come through in one hologram
+            Update Player Info and Class Info Screens. Can condense defense and attack info into one line!
+            Make Skills GUI less aids to look at.
+            zombie warrior has enchanted item!!!?!??!?! Look into it
 
-        -30. Iron golem healing is absolute dogshit
+        -20. Make experience bottles give class exp
 
-        -28. Allow spells to be casted twice! (no errors lul)
+        -19. Make wither always lvl 50
 
-        -27. update spell description dmg with ap scale... in general add ap scales
+        -18. Raids are broken (Bossbar)
 
-        -25. If you pyroclasm something that teleports it follows them?... (need to apply to all abilities)
+        -17. Claude has issue on first join. Wither is op af
 
-        -24. On death RPG Player needs to scrub all things status related
+        -16. All biomes capped 1-20 (some a bit higher, but never extremes) Dungeons forced to level
 
-        -23. Override restart and stop cmd to be restart in 3 seconds. (important so can file save bfore death)
+        -15. More vanilla exp drop from better mobs
 
-        -15. CHANGING CLASS INHERITS PAST XP (assumed completed but testable)
+        -14. Balance totems of undying
 
-        -16. Bulwark doesnt block projectiles (test this)
+        -13. Correctly balance mobs that are wearing armor.
 
-        -17. Wanderer no skill levels (test this)
+        -12. Design all custom mobs, step away from formulas. Make sure to use Name PData tag incase mob has dif name than type.
 
-        -18. custom death event (assumed completed)
+        -11. Lava and fire need to do reduced damage to big boy mobs
 
-        -20. rework damage to obey cancels (Assumed Completed!)
+        -7. Terraria style mobs (mobs have a level range, they only spawn in specific biomes? is this possible monkaS)
 
-        -21. allow players to set spawnpoint at their town maybe? (later)
+        -5. NBT Food system for future expansion
 
-        -22. Make blaze target listing global so less obnoxious (Completed!)
+        -3. Mobs being stunned needs to be standardized. If a boss is stunned, it needs to stop using abilities and whatnot
 
-        -14. WALKSPEED IN UPDATESTATS IS BROKEN! (false but true I forgot what the issue was)
+        -1. Dungeon encounters should scale with party size. Bosses too.
 
-        -13. Perhaps redesign damage system to be attached to players. Rn potential issues. (test!)
+        0. ITEM STUFF / IDEAS:
+        - make classes use specific item type.
+        - TIERS: Mythical, Legendary, Epic, Rare, Uncommon, Common
+        - Mythical has unique shit, less randomization, and specific items. Rest are fully randomized.
+        - Randomize stats to each weapon that a class must wear (for balancing and better stat allocation)
+        - Armor is the more general random portion? (cause u can wear any armor. Perhaps balance based on weight, lower weight generally more magical stats)
 
-        -12. Party exp share (test!)
+        (stuff to do / fix)
+        - RANDOMIZE FISHING LOOT AND CHEST LOOT (NATHANWOLF MADE POST ON SPIGOT ABOUT BLOCKPOPULATOR AND TILE ENTITIES)
+        - Protection can give bonus armor points? Perhaps percentage armor increase.
+        - Test if curse of binding (and even vanishing) breaks shit
+        - Put enchantments in specific lore section (hide enchs with itemflag, then place in lore)
+        - To make enchantments vanilla irrelevant need to check Ench Table Ench, and Anvil Ench
+        - Note to self: Combining Enchantments seems fine. Takes the lore of the first item. So just need to make sure lore will contain the new enchantment. USE NBT!
+        - Need to make Villager traded items custom! (perhaps make villagers trade high end random items)
+        - Elytra durability (ALL DURABILITY) needs to have affects other than removal of stats (elytra is an active)
+        Links for Info:
+            https://minecraft.gamepedia.com/Item_repair
+            https://minecraft.gamepedia.com/Enchanting
+            https://minecraft.gamepedia.com/Item_durability
 
-        -11. Add toggle if shift-offhand even works
+        - Add all durability items to custom durability (Fishing Rods n Stuff)
+        - Make Custom Anvil and Enchantment Table
+        - In general custom enchantments. Allow unbreaking up to 10, etc, essentially remove Vanilla enchants, everything custom. That means removing Proj Prot etc.
+        - Need to make drops and loot not have vanilla enchantments. If the enchantment is not supported (like proj prot), remove it!
+        - Make sure to change existing ench changes (ie. mending)
 
-        -10. AD and AP scaling
+        Professions:
+        Blacksmith:
+            - Do not damage Anvils when using it
+            - Can make repair kits
+            - Can combine enchantments past big levels (custom define this stuff)
+        Enchanter:
+            - Can pick any enchantment from Enchantment table (at a large cost of course)
+            - Regular players have similar to Vanilla randomized enchantments
+        Alchemist:
+            - Everybody can make Vanilla pots
+            - Alchemists can make special pots that signif buff stats for short time
+        Chef:
+            - Can cook custom food with bonuses (more hunger regen, health regen, stat buffs minor for long duration etc)
+        Farmer:
+            - Can rightclick crops to harvest, seed remains placed.
+            - Gets many drops from the farm.
 
-        -7. Removing armor defense appears not to work on enchanted items (dropped specifically)
+        In general, solo players should use the market or publicly available vendors.
+
+
+        2. Disallow Shield usage for non shield classes
+
+        3. clear passives on change class, in general make it more standardized on stat obj sys
+
+        5. xp metadata for dungeons?
+
+        6. Iron golem healing is absolute dogshit
+
+        7. Allow spells to be casted twice! (no errors lul)
+
+        8. Override restart and stop cmd to be restart in 3 seconds. (important so can file save bfore death)
+
+        9. Bulwark doesnt block projectiles (test this)
+
+        10. Wanderer no skill levels (test this)
+
+        11. allow players to set spawnpoint at their town maybe? (later)
+
+        12. Perhaps redesign damage system to be attached to players. Rn potential issues. (test!)
+
+        13. Add toggle if shift-offhand even works
+
+        . Removing armor defense appears not to work on enchanted items (dropped specifically)
                ^^^ MUST DEBUG USING PRINTING NBT TAG INFO
-
-        -2. Meteor Shower blows shit up when entity dmg event only
-
-        -1. Create info cmd
-
-        0. Create a settings GUI
-            - Add a setting for close Skillmenu on cast, or persist, or disable!
-
-        1. Remedy particles for Pyromancer (less flame, more orange and red redstone). Maybe try flying items and blocks
-        2. Create 2 new skills:
-            - Blaze -> Gain Speed 3 + Leave a trail of fire + Leave a trail of flaming particles that deal magic damage
-            - Meteor -> Fire a flaming meteor (Particle Sphere of Redstone + Flame Particles)
-                        Meteor blasts targets away, deals damage, and ignites them.
-            - Pyroclasm -> Increased speed, damage, oopmh. Slightly less spammable because Meteor.
-        3. Create skillpoint system to level up skills
-        4. Create skillpoint GUI to level up skills
-        5. Add skill levels to Pyromancer
-        6. Create map of HP modifiers and XP modifiers for each mob, and determine a base HP and XP equation.
-        7. RPGPlayer improvement: Make all stats, pstrength, armor, mr, tied to a map that holds info on modifiers
-        8. Create Hunter and Ninja class
-        9. Improve skill castng, allow changing of skillbar slots and binding items
-        10. Determine armor system and profs system.
-        11. Account for SAML flags when making bosses
+        1. Account for SAML flags when making bosses
 
      RIFT THEME IDEAS:
         Players can open a personal rift using a Rift Key or Rift Gem or Rift Stone
@@ -161,16 +213,6 @@ public class Main extends JavaPlugin {
     *
     */
 
-    //ANOTHER ISSUE: FIREBALL AND METEORSHOWER AOE DAMAGE STYLE DOES NOT TRIGGER ENT DMG BY ENT. MUST CHECK ENTDMGEVENT
-
-    //In general with all skills, the way they trigger damage does not trigger EntDmgByEnt. Change to EntDmg. All skills
-    //       occasionally leave a buffer where another attack triggers an empty event
-
-    //ANOTHER ISSUE: Warming up a skill and losing mana will not check mana after casting after warmup. Perpetually check mana
-    //on warmup.
-
-    //PERHAPS ENABLE NO DAMAGE COOLDOWN FROM CUSTOM SOURCES AND ENTITY ATTACKS
-
     public String noperm = "&cNo permission!";
 
     public static Main getInstance() {
@@ -195,7 +237,7 @@ public class Main extends JavaPlugin {
                     }
                     Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Restarting in &f&l" + seconds + "&a&l seconds!"));
                 } else {
-                    if (times % 20 == 0) {
+                    if (times % 4 == 0) {
                         Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Restarting in &f&l" + ((seconds * 4 - times) / 4) + "&a&l seconds!"));
                     }
                 }
@@ -242,10 +284,37 @@ public class Main extends JavaPlugin {
 
      */
 
+    // MOB HP REGEN
+    public void hpRegen() {
+        new BukkitRunnable() {
+            public void run() {
+                for (World w : Bukkit.getWorlds()) {
+                    for (LivingEntity e : w.getLivingEntities()) {
+                        if (!(e instanceof Player) && !(e instanceof ArmorStand) && !(e.isDead())) {
+                            if (e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() > e.getHealth() && MobEXP.getHPRegen(e) > 0) {
+                                LivingEntity ent = e;
+                                DecimalFormat df = new DecimalFormat("#.##");
+                                Hologram magic = new Hologram(ent, ent.getLocation(), "&a&l❤" + df.format(MobEXP.getHPRegen(e)), Hologram.HologramType.DAMAGE);
+                                magic.rise();
+                                DecimalFormat dF = new DecimalFormat("#.##");
+                                if (getHpBars().containsKey(ent)) {
+                                    getHpBars().get(ent).setText("&f" + dF.format(ent.getHealth()) + "&c❤");
+                                }
+                            }
+                            e.setHealth(Math.max(0, Math.min(e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue(), MobEXP.getHPRegen(e) + e.getHealth())));
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(this, 1L, 60L);
+    }
+
     public Map<Entity, Hologram> hpBars = new HashMap<>();
     public Map<Entity, Hologram> getHpBars() {
         return hpBars;
     }
+    public Map<Entity, Hologram> npcTags = new HashMap<>();
+    public Map<Entity, Hologram> getNpcTags() {return npcTags;}
 
     public void remHpBar() {
         new BukkitRunnable() {
@@ -294,7 +363,12 @@ public class Main extends JavaPlugin {
                     } else if (h.getType() == Hologram.HologramType.HOLOGRAM) {
                         h.center();
                         if (h.shouldRemove()) {
-                            hpBars.remove(h.getEntity());
+                            if (hpBars.containsKey(h.getEntity())) {
+                                hpBars.remove(h.getEntity());
+                            }
+                            if (npcTags.containsKey(h.getEntity())) {
+                                npcTags.remove(h.getEntity());
+                            }
                             h.destroy();
                         }
                     }
@@ -397,19 +471,20 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public static void sendHp(Player pl) {
-        UUID p = pl.getUniqueId();
-        if (getInstance().getPC().get(p) != null) {
-            RPGPlayer player = getInstance().getPC().get(p);
+    public static void sendHp(Player p) {
+        if (getInstance().getRP(p) != null) {
+            RPGPlayer rp = getInstance().getRP(p);
             DecimalFormat dF = new DecimalFormat("#.##");
             DecimalFormat df = new DecimalFormat("#");
             //double mr = player.getPClass().getCalcMR(player.getLevel());
             //double armor = player.getPClass().getCalcArmor(player.getLevel());
             //String mrper = Main.color("&b" + dF.format(100.0 * (1-(300.0/(300.0+mr)))) + "% MR");
             //String amper = Main.color("&c" + dF.format(100.0 * (1-(300.0/(300.0+armor)))) + "% AM");
-            String ad = Main.color("&c" + dF.format(Main.getInstance().getRP(pl).getAD()) + " AD");
-            String ap = Main.color("&b" + dF.format(Main.getInstance().getRP(pl).getAP()) + " AP");
-            pl.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c" + dF.format(pl.getHealth()) + " HP   &b" + player.getPrettyCMana() + " M   &a" + player.getPrettyPercent() + "% XP   &e" + player.getLevel() + " LVL   " + ad + "   " + ap)));
+            String ad = Main.color("&c" + dF.format(rp.getAD()) + " AD");
+            String ap = Main.color("&b" + dF.format(rp.getAP()) + " AP");
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c❤ " + dF.format(p.getHealth()) + "     &b✦ " + rp.getPrettyCMana())));
+            p.setLevel(rp.getLevel());
+            p.setExp(Math.min(Math.max((float) rp.getPercent(), 0.0f), 1.0F));
         }
     }
 
@@ -544,6 +619,26 @@ public class Main extends JavaPlugin {
         }.runTaskTimer(this, 10L, 5L);
     }
 
+    /*
+
+    Custom Mob Section
+
+     */
+
+    public CustomEntityType warriorZombie;
+
+    @Override
+    public void onLoad() {
+        NBTInjector.inject();
+        so("&dRIFT: &fNBTAPI Injected");
+
+        warriorZombie = new CustomEntityType<WarriorZombie>("warrior_zombie", WarriorZombie.class, EntityTypes.ZOMBIE, WarriorZombie::new);
+        warriorZombie.register();
+
+        so("&dRIFT: &fCustom Mobs registered");
+    }
+
+    @Override
     public void onEnable() {
 
         so("&dRIFT: &fEnabling Plugin!");
@@ -556,7 +651,7 @@ public class Main extends JavaPlugin {
 
         setupPacketListeners();
         so("&dRIFT&7: &fProtocolLib Packet Listeners Enabled!");
-
+        getCommand("info").setExecutor(new InfoCommand());
         getCommand("party").setExecutor(new PartyCommand());
         getCommand("skill").setExecutor(new SkillCommand());
         getCommand("class").setExecutor(new ClassCommand());
@@ -581,6 +676,7 @@ public class Main extends JavaPlugin {
         getCommand("seen").setExecutor(new SeenCommand());
         getCommand("biome").setExecutor(new BiomeLevelCommand());
         getCommand("arestart").setExecutor(new TimedrestartCommand());
+        getCommand("arestartfast").setExecutor(new FastRestartCommand());
         getCommand("level").setExecutor(new LevelCommand());
         getCommand("setlevel").setExecutor(new ExpCommand());
         getCommand("addlevel").setExecutor(new ExpCommand());
@@ -595,12 +691,14 @@ public class Main extends JavaPlugin {
         getCommand("delwarp").setExecutor(new DelWarpCommand());
         getCommand("spawn").setExecutor(new SpawnCommand());
 
-
+        getCommand("sp").setExecutor(new SkillpointCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
         so("&dRIFT: &fEnabled commands!");
 
+        Bukkit.getPluginManager().registerEvents(new InfoCommand(), this);
         Bukkit.getPluginManager().registerEvents(new PartyCommand(), this);
         Bukkit.getPluginManager().registerEvents(new ClassManager(), this);
+        Bukkit.getPluginManager().registerEvents(new ClassCommand(), this);
         Bukkit.getPluginManager().registerEvents(new ChatFunctions(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerinfoListener(), this);
         Bukkit.getPluginManager().registerEvents(new Environmental(), this);
@@ -616,6 +714,9 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
         Bukkit.getPluginManager().registerEvents(new BetterRestart(), this);
         Bukkit.getPluginManager().registerEvents(new Stuns(), this);
+        Bukkit.getPluginManager().registerEvents(new Food(), this);
+        Bukkit.getPluginManager().registerEvents(new Items(), this);
+        Bukkit.getPluginManager().registerEvents(new NPCTag(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
@@ -629,6 +730,10 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Pyroclasm(), this);
         Bukkit.getPluginManager().registerEvents(new Combust(), this);
         so("&dRIFT: &fRegistered events!");
+
+
+        RPGConstants loadLevels = new RPGConstants();
+        hpRegen();
 
         pm = new PartyManager();
         cm = new ClassManager();
@@ -665,6 +770,7 @@ public class Main extends JavaPlugin {
 
     }
 
+    @Override
     public void onDisable() {
 
         final BukkitScheduler scheduler = Bukkit.getScheduler();

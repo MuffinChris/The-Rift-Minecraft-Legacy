@@ -16,7 +16,7 @@ public class HelpCommand implements CommandExecutor {
             Main.msg(p, "");
             Main.msg(p, "&8» &e/class &7- &fPick a Class");
             Main.msg(p, "&8» &e/skills &7- &fView your Class's Skills");
-            Main.msg(p, "&8» &e/skill &7- &fCast a skill");
+            Main.msg(p, "&8» &e/info &7- &fView your Player Info");
             Main.msg(p, "&8» &ePress F &8(&eOffhand Key&8) &7- &fOpen Skill UI");
             Main.msg(p, "");
         } else {

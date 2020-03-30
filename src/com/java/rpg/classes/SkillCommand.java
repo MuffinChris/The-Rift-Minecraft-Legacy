@@ -38,6 +38,21 @@ public class SkillCommand implements CommandExecutor {
                 } else if (flavor.contains("Warmup")) {
                     new BukkitRunnable() {
                         public void run() {
+
+                            if (!p.isOnline()) {
+                                cancel();
+                                return;
+                            }
+
+                            if (p.isDead()) {
+                                Skill skill = main.getPC().get(p.getUniqueId()).getSkillFromName(args[0]);
+                                p.removePotionEffect(PotionEffectType.SLOW);
+                                main.getRP(p).getBoard().clearChannel();
+                                main.getRP(p).getStatuses().remove("Warmup" + skill.getName());
+                                cancel();
+                                return;
+                            }
+
                             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,999999, 2));
                             if (!main.getPC().get(p.getUniqueId()).getStatuses().contains("Warmup" + main.getPC().get(p.getUniqueId()).getSkillFromName(args[0]).getName())) {
                                 p.removePotionEffect(PotionEffectType.SLOW);

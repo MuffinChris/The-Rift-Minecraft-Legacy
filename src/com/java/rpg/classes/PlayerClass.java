@@ -24,6 +24,11 @@ public class PlayerClass {
 
     private double armor;
     private double magicresist;
+    private double airdefense;
+    private double earthdefense;
+    private double firedefense;
+    private double icedefense;
+    private double electricdefense;
 
     private double armorPerLevel;
     private double magicResistPerLevel;
