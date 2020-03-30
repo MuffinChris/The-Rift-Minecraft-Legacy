@@ -40,7 +40,7 @@ public class DummyCommand implements CommandExecutor, Listener {
                 ent.setAI(false);
                 ent.setCanPickupItems(false);
                 ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(1000000);
-                ent.setHealth(1000000);
+                ent.setHealth(100000);
                 MobEXP.setLevel(ent, 50);
             } else {
                 Main.msg(p, Main.getInstance().noperm);

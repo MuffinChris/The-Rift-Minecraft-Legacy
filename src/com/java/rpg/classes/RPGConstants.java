@@ -9,7 +9,7 @@ public class RPGConstants {
     public static double expPow = 2.7;
 
     public static double mobHpBase = 200;
-    public static double mobHpLevelPow = 2.7;
+    public static double mobHpLevelPow = 2;
     public static double mobHpLevelScalar = 5;
     public static double mobHpBasePow = 0.8;
 
@@ -17,7 +17,7 @@ public class RPGConstants {
     public static double mobXpPow =2.4;
     public static double mobXpScalar=0.25;
 
-    public static double mobDmgLevelPow = 2.65;
+    public static double mobDmgLevelPow = 2;
     public static double mobDmgLevelScalar = 1.5;
 
     public static double defaultHP = 1000;
@@ -138,10 +138,10 @@ public class RPGConstants {
         mobExp.put(40, 17000.0);
 
         levelsExp.put(41, 7000000.0);
-        levelsExp.put(42, 12000000.0);
-        levelsExp.put(43, 15000000.0);
-        levelsExp.put(44, 25000000.0);
-        levelsExp.put(45, 40000000.0);
+        levelsExp.put(42, 9500000.0);
+        levelsExp.put(43, 12000000.0);
+        levelsExp.put(44, 18000000.0);
+        levelsExp.put(45, 25000000.0);
 
         mobExp.put(41, 19000.0);
         mobExp.put(42, 21000.0);
@@ -149,11 +149,11 @@ public class RPGConstants {
         mobExp.put(44, 26000.0);
         mobExp.put(45, 29000.0);
 
-        levelsExp.put(46, 50000000.0);
-        levelsExp.put(47, 70000000.0);
-        levelsExp.put(48, 80000000.0);
-        levelsExp.put(49, 90000000.0);
-        levelsExp.put(50, 100000000.0);
+        levelsExp.put(46, 35000000.0);
+        levelsExp.put(47, 50000000.0);
+        levelsExp.put(48, 75000000.0);
+        levelsExp.put(49, 100000000.0);
+        levelsExp.put(50, 500000000.0);
 
         mobExp.put(46, 35000.0);
         mobExp.put(47, 42000.0);

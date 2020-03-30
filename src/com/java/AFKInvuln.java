@@ -175,7 +175,7 @@ public class AFKInvuln implements Listener {
             packAccepted.put(e.getPlayer().getUniqueId(), true);
         } else
         if (e.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
-            Main.msg(e.getPlayer(), "&c&lFailed to download resource pack. We recommend retrying with a reconnect!");
+            Main.msg(e.getPlayer(), "&c&lResource Pack not fully loaded, please wait. If it does not load within a few minutes, reconnect or contact an Admin.");
             e.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             e.getPlayer().teleport(hasMoved.get(e.getPlayer().getUniqueId()));
             sendInv(e.getPlayer());

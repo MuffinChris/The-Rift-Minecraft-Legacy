@@ -37,7 +37,7 @@ public class ClassCommand implements CommandExecutor, Listener {
     }
 
     public static String hpString = "&8[&c♥&8] &7HP: &f";
-    public static String manaString = "&8[&b☀&8] &7Mana: &f";
+    public static String manaString = "&8[&b✦&8] &7Mana: &f";
     public static String manaRegenString = "&8[&b⚙&8] &7Mana Regen: &f";
     public static String apString = "&8[&b⚡&8] &7Ability Power: &f";
     public static String adString = "&8[&c⚔&8] &7Attack Damage: &f";

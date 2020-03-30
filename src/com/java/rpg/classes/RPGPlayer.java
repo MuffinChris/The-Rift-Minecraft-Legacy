@@ -56,13 +56,14 @@ public class RPGPlayer extends Leveleable {
     public double getArmor() {
         double armor = 0;
         for (ItemStack i : player.getInventory().getArmorContents()) {
-            if (i != null) {
-                if (Items.getDurability(i) <= 0) {
+            if (Items.getDurability(i) <= 0) {
 
-                } else {
-                    armor += Items.getArmor(i);
-                }
+            } else {
+                armor += Items.getArmor(i);
             }
+        }
+        if (getPClass() == null) {
+            return armor;
         }
         return getPClass().getCalcArmor(getLevel()) + armor;
     }
@@ -70,8 +71,10 @@ public class RPGPlayer extends Leveleable {
     public double getMR() {
         double mr = 0;
         for (ItemStack i : player.getInventory().getArmorContents()) {
-            if (i != null) {
-                mr+=Items.getMR(i);
+            if (Items.getDurability(i) <= 0) {
+
+            } else {
+                mr += Items.getMR(i);
             }
         }
         return getPClass().getCalcMR(getLevel()) + mr;

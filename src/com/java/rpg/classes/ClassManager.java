@@ -2,6 +2,7 @@ package com.java.rpg.classes;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import org.bukkit.inventory.ItemStack;
@@ -57,6 +59,20 @@ public class ClassManager implements Listener {
         fallMap = new HashMap<>();
         createClasses();
 
+    }
+
+    @EventHandler
+    public void expGain (PlayerPickupExperienceEvent e) {
+        e.setCancelled(true);
+        e.getExperienceOrb().setExperience(0);
+        e.getExperienceOrb().remove();
+    }
+
+    @EventHandler
+    public void expChange (PlayerLevelChangeEvent e) {
+        if (e.getNewLevel() != main.getRP(e.getPlayer()).getLevel()) {
+            e.getPlayer().setLevel(main.getRP(e.getPlayer()).getLevel());
+        }
     }
 
 

@@ -6,6 +6,7 @@ import com.java.Main;
 import com.java.holograms.Hologram;
 import com.java.rpg.classes.MobEXP;
 import net.minecraft.server.v1_15_R1.EntityIronGolem;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftIronGolem;
@@ -52,10 +53,8 @@ public class Environmental implements Listener {
         if (e.getEntity() instanceof LivingEntity && !e.isCancelled()) {
             LivingEntity p = (LivingEntity) e.getEntity();
             double hp = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-            boolean event = false;
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setDamage(e.getDamage() * (hp / 30.0));
-                event = true;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.MAGIC) {
                 e.setDamage(e.getDamage() / 4.0 * hp / 20.0);
@@ -77,7 +76,7 @@ public class Environmental implements Listener {
                 e.setDamage(hp * 0.1);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.WITHER) {
-                e.setDamage(hp / 30.0);
+                e.setDamage(hp / 40.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
                 e.setDamage(hp * 0.025);
@@ -89,10 +88,10 @@ public class Environmental implements Listener {
                 e.setDamage(hp * 0.05);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                e.setDamage((e.getDamage() / 20.0) * hp * 0.8);
+                e.setDamage((e.getDamage() / 20.0) * hp * 0.75);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
-                e.setDamage((e.getDamage() / 20.0) * hp * 0.8);
+                e.setDamage((e.getDamage() / 20.0) * hp * 0.5);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LIGHTNING) {
                 e.setDamage((e.getDamage() / 20) * hp);
@@ -115,6 +114,8 @@ public class Environmental implements Listener {
             if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 if (e.getDamage() < 1000000) {
                     e.setDamage(hp * 0.1);
+                } else {
+                    e.setDamage(1000000000);
                 }
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL) {

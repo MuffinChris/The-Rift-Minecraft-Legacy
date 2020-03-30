@@ -46,7 +46,7 @@ public class WarriorZombie extends EntityZombie {
     public void createEquipment() {
         ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
         LeatherArmorMeta bootsMeta = (LeatherArmorMeta) boots.getItemMeta();
-        bootsMeta.setColor(Color.RED);
+        bootsMeta.setColor(Color.fromRGB(100, 0, 0));
         bootsMeta.setUnbreakable(true);
         boots.setItemMeta(bootsMeta);
         boots = Items.removeArmor(boots);
@@ -54,7 +54,7 @@ public class WarriorZombie extends EntityZombie {
 
         ItemStack legs = new ItemStack(Material.LEATHER_LEGGINGS);
         LeatherArmorMeta legsMeta = (LeatherArmorMeta) boots.getItemMeta();
-        legsMeta.setColor(Color.fromRGB(170, 0, 0));
+        legsMeta.setColor(Color.fromRGB(100, 0, 0));
         legsMeta.setUnbreakable(true);
         legs.setItemMeta(legsMeta);
         legs = Items.removeArmor(legs);
@@ -62,7 +62,7 @@ public class WarriorZombie extends EntityZombie {
 
         ItemStack chest = new ItemStack(Material.LEATHER_CHESTPLATE);
         LeatherArmorMeta chestMeta = (LeatherArmorMeta) boots.getItemMeta();
-        chestMeta.setColor(Color.RED);
+        chestMeta.setColor(Color.fromRGB(100, 0, 0));
         chestMeta.setUnbreakable(true);
         chest.setItemMeta(chestMeta);
         chest = Items.removeArmor(chest);
@@ -94,7 +94,7 @@ public class WarriorZombie extends EntityZombie {
     public void setupStats() {
         LivingEntity ent = getBukkitLivingEntity();
 
-        MobEXP.setCustomName(ent, "&cWarrior Zombie");
+        MobEXP.setCustomName(ent, "&cZombie Warrior");
         MobEXP.setLevel(ent, new LevelRange(5, 10).getRandomLevel());
         int level = MobEXP.getLevel(ent);
         MobEXP.setExp(ent, RPGConstants.mobExp.get(level) * 1.2);
@@ -106,6 +106,13 @@ public class WarriorZombie extends EntityZombie {
         ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(100 + level * 10);
         ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(1500 + level * 50);
         ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+        ent.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        ent.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3);
+
+        ent.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(0.0);
+
+        NBTEntity nent = new NBTEntity(ent);
+        nent.setByte("CanPickUpLoot", (byte) 0);
 
         MobEXP.setSetup(ent, 1);
     }

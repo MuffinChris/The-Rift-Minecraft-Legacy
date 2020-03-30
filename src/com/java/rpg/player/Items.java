@@ -17,6 +17,7 @@ import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -585,7 +586,7 @@ public class Items implements Listener {
         e.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.LOWEST)
     public void fakeMend (PlayerPickupExperienceEvent e) {
         int amount = e.getExperienceOrb().getExperience()/2;
         List<ItemStack> mItems = new ArrayList<>();

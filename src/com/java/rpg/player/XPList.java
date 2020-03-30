@@ -52,6 +52,15 @@ public class XPList {
         }
     }
 
+    public boolean getAloneAndLowEnv(Player p) {
+        if (getPercentages().containsKey(p) && getPercentages().size() == 1) {
+            if (getPercentages().get(p) > 0.75) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Map<Player, Double> getPercentages() {
         removeDc();
         Map<Player, Double> per = new HashMap<>();

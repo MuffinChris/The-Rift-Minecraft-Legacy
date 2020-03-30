@@ -60,6 +60,42 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -21. TODOLIST FOR 3/29/20 - 3/31/20:
+            Damage System Thinking:
+                Items will have damage values (any of the types)
+                Spells will have base damage (of any damage type)
+                Spells will have scaling for all damage types
+                For example.
+
+                Fireball:
+                - 50 base fire damage
+                - (40 % AP, 0% Ice, 0% Earth, 50% Air, 100% Fire, 0% Water)
+
+                All damage goes through said scaling. Thus fireballs will never do ice dmg etc
+                As a result of these changes, CLEAN UP SKILLS GUI AND SKILL DESCRIPTIONS TO HAVE MORE UPFRONT INFORMATION ABOUT DAMAGE. TICKRATE N SHIT IS LOW IMPORTANCE
+
+                Base Chance to trigger status effect (like 10% or smthn), then chance is divided based on how much dmg element did. (ie. 500 fire, 50 ice) will give fire x percentage over ice
+                AP AD not counted in above calculation
+
+
+                Item that gives elemental damage will be multiplied by 0.4 and deal that elemental damage.
+
+                For defense UTF8 Symbols, re-use Armor just dif color
+
+            Add elemental defense here, add Elemental Defense to RPG Classes, and to Mobs!
+            Elemental Damage needs a split setup of damage. Can all come through in one hologram
+            Update Player Info and Class Info Screens. Can condense defense and attack info into one line!
+            Make Skills GUI less aids to look at.
+            zombie warrior has enchanted item!!!?!??!?! Look into it
+
+        -20. Make experience bottles give class exp
+
+        -19. Make wither always lvl 50
+
+        -18. Raids are broken (Bossbar)
+
+        -17. Claude has issue on first join. Wither is op af
+
         -16. All biomes capped 1-20 (some a bit higher, but never extremes) Dungeons forced to level
 
         -15. More vanilla exp drop from better mobs
@@ -254,8 +290,8 @@ public class Main extends JavaPlugin {
             public void run() {
                 for (World w : Bukkit.getWorlds()) {
                     for (LivingEntity e : w.getLivingEntities()) {
-                        if (!(e instanceof Player)) {
-                            if (e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() > MobEXP.getHPRegen(e) + e.getHealth()) {
+                        if (!(e instanceof Player) && !(e instanceof ArmorStand) && !(e.isDead())) {
+                            if (e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() > e.getHealth() && MobEXP.getHPRegen(e) > 0) {
                                 LivingEntity ent = e;
                                 DecimalFormat df = new DecimalFormat("#.##");
                                 Hologram magic = new Hologram(ent, ent.getLocation(), "&a&l❤" + df.format(MobEXP.getHPRegen(e)), Hologram.HologramType.DAMAGE);
@@ -265,8 +301,7 @@ public class Main extends JavaPlugin {
                                     getHpBars().get(ent).setText("&f" + dF.format(ent.getHealth()) + "&c❤");
                                 }
                             }
-                            e.setHealth(Math.min(e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue(), MobEXP.getHPRegen(e) + e.getHealth()));
-
+                            e.setHealth(Math.max(0, Math.min(e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue(), MobEXP.getHPRegen(e) + e.getHealth())));
                         }
                     }
                 }
@@ -436,19 +471,20 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public static void sendHp(Player pl) {
-        UUID p = pl.getUniqueId();
-        if (getInstance().getPC().get(p) != null) {
-            RPGPlayer player = getInstance().getPC().get(p);
+    public static void sendHp(Player p) {
+        if (getInstance().getRP(p) != null) {
+            RPGPlayer rp = getInstance().getRP(p);
             DecimalFormat dF = new DecimalFormat("#.##");
             DecimalFormat df = new DecimalFormat("#");
             //double mr = player.getPClass().getCalcMR(player.getLevel());
             //double armor = player.getPClass().getCalcArmor(player.getLevel());
             //String mrper = Main.color("&b" + dF.format(100.0 * (1-(300.0/(300.0+mr)))) + "% MR");
             //String amper = Main.color("&c" + dF.format(100.0 * (1-(300.0/(300.0+armor)))) + "% AM");
-            String ad = Main.color("&c" + dF.format(Main.getInstance().getRP(pl).getAD()) + " AD");
-            String ap = Main.color("&b" + dF.format(Main.getInstance().getRP(pl).getAP()) + " AP");
-            pl.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c" + dF.format(pl.getHealth()) + " HP   &b" + player.getPrettyCMana() + " M   &a" + player.getPrettyPercent() + "% XP   &e" + player.getLevel() + " LVL   " + ad + "   " + ap)));
+            String ad = Main.color("&c" + dF.format(rp.getAD()) + " AD");
+            String ap = Main.color("&b" + dF.format(rp.getAP()) + " AP");
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c❤ " + dF.format(p.getHealth()) + "     &b✦ " + rp.getPrettyCMana())));
+            p.setLevel(rp.getLevel());
+            p.setExp(Math.min(Math.max((float) rp.getPercent(), 0.0f), 1.0F));
         }
     }
 

@@ -67,17 +67,19 @@ public class MobEXP implements Listener {
     @EventHandler
     public void mobSpawnEvent (CreatureSpawnEvent e) {
         LivingEntity ent = e.getEntity();
-        if (ent instanceof Phantom) {
-            double random = Math.random();
-            if (random >= 0.05) {
-                ent.remove();
+        if (!(ent instanceof ArmorStand) && !(ent instanceof Player)) {
+            if (ent instanceof Phantom) {
+                double random = Math.random();
+                if (random >= 0.05) {
+                    ent.remove();
+                }
             }
-        }
-        if (getSetup(ent) == 0) {
-            if (hasLevel(ent)) {
-                setupEnt(ent, getLevel(ent));
-            } else {
-                setupEnt(ent, -1);
+            if (getSetup(ent) == 0) {
+                if (hasLevel(ent)) {
+                    setupEnt(ent, getLevel(ent));
+                } else {
+                    setupEnt(ent, 0);
+                }
             }
         }
 
@@ -245,7 +247,7 @@ public class MobEXP implements Listener {
         xpmods.put(EntityType.LLAMA , 0.2);
         xpmods.put(EntityType.MULE , 0.1);
         xpmods.put(EntityType.OCELOT , 0.1);
-        xpmods.put(EntityType.MAGMA_CUBE , 0.25);
+        xpmods.put(EntityType.MAGMA_CUBE , 0.2);
         xpmods.put(EntityType.PANDA , 0.2);
         xpmods.put(EntityType.PARROT , 0.15);
         xpmods.put(EntityType.PHANTOM , 1.25);
@@ -262,7 +264,7 @@ public class MobEXP implements Listener {
         xpmods.put(EntityType.SHULKER , 0.9);
         xpmods.put(EntityType.SILVERFISH , 1.1);
         xpmods.put(EntityType.SKELETON , 1.0);
-        xpmods.put(EntityType.SLIME , 0.25);
+        xpmods.put(EntityType.SLIME , 0.2);
         xpmods.put(EntityType.SNOWMAN , 0.3);
         xpmods.put(EntityType.SPIDER , 0.9);
         xpmods.put(EntityType.SQUID , 0.2);
@@ -371,7 +373,11 @@ public class MobEXP implements Listener {
 
     public static double calcExp(LivingEntity ent) {
         int level = getLevel(ent);
-        return RPGConstants.mobExp.get(level) * (Math.random() * 0.06 + 1);
+        if (xpmods.containsKey(ent.getType())) {
+            return RPGConstants.mobExp.get(level) * (Math.random() * 0.06 + 1) * xpmods.get(ent.getType());
+        } else {
+            return RPGConstants.mobExp.get(level) * (Math.random() * 0.06 + 1);
+        }
         //return (RPGConstants.mobXpScalar * Math.pow(level, RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
     }
 
@@ -611,7 +617,7 @@ public class MobEXP implements Listener {
         if (e.getDamager() instanceof LivingEntity && !(e.getDamager() instanceof ArmorStand) && !(e.getDamager() instanceof Player)) {
             if (e.getDamager() instanceof IronGolem) {
                 int level = getLevel((IronGolem) e.getDamager());
-                double damage = 50 + Math.pow(level, RPGConstants.mobDmgLevelPow) * 3 * RPGConstants.mobDmgLevelScalar * Math.sqrt(4/4.0);
+                double damage = 50 + Math.pow(level, RPGConstants.mobDmgLevelPow) * 2 * RPGConstants.mobDmgLevelScalar * Math.sqrt(4/4.0);
                 e.setDamage(damage);
             }
             if (e.getDamager() instanceof Slime) {
@@ -629,7 +635,7 @@ public class MobEXP implements Listener {
             if (e.getDamager() instanceof EnderDragon) {
                 if (e.getEntity() instanceof LivingEntity) {
                     int level = getLevel((EnderDragon) e.getDamager());
-                    double damage = 100 + Math.pow(level, RPGConstants.mobDmgLevelPow) * 3 * RPGConstants.mobDmgLevelScalar * Math.sqrt(8/4.0);
+                    double damage = 100 + Math.pow(level, RPGConstants.mobDmgLevelPow) * 4 * RPGConstants.mobDmgLevelScalar * Math.sqrt(8/4.0);
                     e.setDamage(damage);
                 } else {
                     int level = getLevel((EnderDragon) e.getDamager());
@@ -648,34 +654,34 @@ public class MobEXP implements Listener {
                 LivingEntity ent = (LivingEntity) ((Projectile) e.getDamager()).getShooter();
                 if (!(ent instanceof Player) && !(ent instanceof ArmorStand)) {
                     if (ent instanceof Skeleton) {
-                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 2.5 + 50);
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 1.5 + 50);
                     }
                     if (ent instanceof Snowman) {
                         e.setDamage(10);
                     }
                     if (ent instanceof Llama) {
-                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 0.5 + 20);
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 0.25 + 20);
                     }
                     if (ent instanceof Stray) {
-                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 2.1 + 35);
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 1.25 + 35);
                     }
                     if (ent instanceof Blaze) {
-                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 0.5 + 5);
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 0.25 + 5);
                     }
                     if (ent instanceof Shulker) {
                         e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 0.1 + 5);
                     }
                     if (ent instanceof Evoker) {
-                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 2.5 + 25);
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 1.25 + 25);
                     }
                     if (ent instanceof Illusioner) {
                         e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 2.5 + 25);
                     }
                     if (ent instanceof Pillager) {
-                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 2.5 + 30);
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 1.25 + 30);
                     }
                     if (ent instanceof Wither) {
-                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 4 + 50);
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 2.5 + 50);
                     }
                     if (ent instanceof EnderDragon) {
                         e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 5 + 100);
@@ -857,7 +863,7 @@ public class MobEXP implements Listener {
             if (xp.containsKey(ent) && exp > 0) {//e.getEntity().hasMetadata("EXP")) {
                 //double exp = (double) e.getEntity().getMetadata("EXP").get(0).value();
                 for (Player pl : xp.get(ent).getPercentages().keySet()) {
-                    if (xp.get(ent).getIndivPer(pl).contains("100%")) {
+                    if (xp.get(ent).getIndivPer(pl).contains("100%") || xp.get(ent).getAloneAndLowEnv(pl)) {
                         main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), "SELF");
                     } else {
                         main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));

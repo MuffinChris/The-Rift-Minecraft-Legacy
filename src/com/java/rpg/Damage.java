@@ -17,7 +17,7 @@ public class Damage {
     private int lifetime;
     public enum DamageType
     {
-        ATTACK, ATTACK_MAGIC, ATTACK_TRUE, SPELL_MAGIC, SPELL_PHYSICAL, SPELL_TRUE
+        PHYSICAL, MAGIC, TRUE, ICE, FIRE, EARTH, ELECTRIC, AIR, WATER
     }
     private int task;
 

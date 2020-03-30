@@ -71,7 +71,7 @@ public class DamageListener implements Listener {
                     }
                 }
 
-                main.getRP(damager).getDamages().add(new Damage(damager, (LivingEntity) e.getEntity(), Damage.DamageType.ATTACK, e.getDamage(), 5));
+                main.getRP(damager).getDamages().add(new Damage(damager, (LivingEntity) e.getEntity(), Damage.DamageType.PHYSICAL, e.getDamage(), 5));
                 if (main.getPC().get(damager.getUniqueId()) != null) {
                     if (main.getPC().get(damager.getUniqueId()).getStatuses() != null) {
                         List<String> statuses = main.getPC().get(damager.getUniqueId()).getStatuses();
@@ -179,10 +179,10 @@ public class DamageListener implements Listener {
                         if (!party) {
                             double damage = d.getDamage();
                             if (disableDamage) {
-                                damage = 1;
+                                damage = 0.1;
                             }
                             DecimalFormat df = new DecimalFormat("#.##");
-                            if (d.getDamageType() == Damage.DamageType.SPELL_MAGIC) {
+                            if (d.getDamageType() == Damage.DamageType.MAGIC) {
                                 if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
                                     Player p = (Player) e.getEntity();
                                     RPGPlayer rp = main.getPC().get(p.getUniqueId());
@@ -193,7 +193,7 @@ public class DamageListener implements Listener {
                                     damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getMagicResist((LivingEntity) e.getEntity())));
                                     e.setDamage(damage);
                                 }
-                                Hologram magic = new Hologram(ent, ent.getLocation(), "&b&l⚡" + df.format(damage), Hologram.HologramType.DAMAGE);
+                                Hologram magic = new Hologram(ent, ent.getLocation(), "&9&l❖" + df.format(damage), Hologram.HologramType.DAMAGE);
                                 magic.rise();
                                 ent.setKiller(damager);
                                 //ent.damage(damage);
@@ -201,28 +201,9 @@ public class DamageListener implements Listener {
                                 e.setDamage(damage);
                                 break;
                             }
-                            if (d.getDamageType() == Damage.DamageType.SPELL_PHYSICAL) {
-                                if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
-                                    Player p = (Player) e.getEntity();
-                                    RPGPlayer rp = main.getPC().get(p.getUniqueId());
-                                    double am = rp.getArmor();
-                                    damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
-                                }
-                                if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                    damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getArmor((LivingEntity) e.getEntity())));
-                                    e.setDamage(damage);
-                                }
-                                Hologram magic = new Hologram(ent, ent.getLocation(), "&b&l⚔" + df.format(damage), Hologram.HologramType.DAMAGE);
-                                magic.rise();
-                                ent.setKiller(damager);
-                                //ent.damage(damage);
-                                //e.setCancelled(true);
-                                e.setDamage(damage);
-                                break;
-                            }
-                            if (d.getDamageType() == Damage.DamageType.SPELL_TRUE) {
+                            if (d.getDamageType() == Damage.DamageType.TRUE) {
                                 damage = d.getDamage();
-                                Hologram magic = new Hologram(ent, ent.getLocation(), "&d&l♦" + df.format(damage), Hologram.HologramType.DAMAGE);
+                                Hologram magic = new Hologram(ent, ent.getLocation(), "&f&l♦" + df.format(damage), Hologram.HologramType.DAMAGE);
                                 magic.rise();
                                 ent.setKiller(damager);
                                 //ent.damage(damage);
@@ -230,7 +211,7 @@ public class DamageListener implements Listener {
                                 e.setDamage(damage);
                                 break;
                             }
-                            if (d.getDamageType() == Damage.DamageType.ATTACK) {
+                            if (d.getDamageType() == Damage.DamageType.PHYSICAL) {
                                 BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
                                 e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 100, 0.5, 1, 0.5, blood);
                                 double crit = Math.random();
@@ -250,49 +231,6 @@ public class DamageListener implements Listener {
                                     e.setDamage(damage);
                                 }
                                 Hologram magic = new Hologram(ent, ent.getLocation(), "&c&l❤" + df.format(damage), Hologram.HologramType.DAMAGE);
-                                magic.rise();
-                                ent.setKiller(damager);
-                                //ent.damage(damage);
-                                //e.setCancelled(true);
-                                e.setDamage(damage);
-                                break;
-                            }
-                            if (d.getDamageType() == Damage.DamageType.ATTACK_MAGIC) {
-                                BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
-                                e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 100, 0.5, 1, 0.5, blood);
-                                double crit = Math.random();
-                                if (crit < RPGConstants.baseCritChance) {
-                                    e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_GRASS_BREAK, 0.5F, 0.5F);
-                                    damage *= RPGConstants.baseCritModifier;
-                                }
-                                if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
-                                    Player p = (Player) e.getEntity();
-                                    RPGPlayer rp = main.getPC().get(p.getUniqueId());
-                                    double mr = rp.getMR();
-                                    damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + mr));
-                                }
-                                if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                    damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getMagicResist((LivingEntity) e.getEntity())));
-                                    e.setDamage(damage);
-                                }
-                                Hologram magic = new Hologram(ent, ent.getLocation(), "&9&l⚡" + df.format(damage), Hologram.HologramType.DAMAGE);
-                                magic.rise();
-                                ent.setKiller(damager);
-                                //ent.damage(damage);
-                                //e.setCancelled(true);
-                                e.setDamage(damage);
-                                break;
-                            }
-                            if (d.getDamageType() == Damage.DamageType.ATTACK_TRUE) {
-                                damage = d.getDamage();
-                                BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
-                                e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 100, 0.5, 1, 0.5, blood);
-                                double crit = Math.random();
-                                if (crit < RPGConstants.baseCritChance) {
-                                    e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_GRASS_BREAK, 0.5F, 0.5F);
-                                    damage *= RPGConstants.baseCritModifier;
-                                }
-                                Hologram magic = new Hologram(ent, ent.getLocation(), "&5&l♦" + df.format(damage), Hologram.HologramType.DAMAGE);
                                 magic.rise();
                                 ent.setKiller(damager);
                                 //ent.damage(damage);

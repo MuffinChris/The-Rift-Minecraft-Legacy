@@ -31,7 +31,7 @@ public class Party {
     public int getNearbyPlayersSize(Player p) {
         int total = 0;
         for (Player pp : getPlayers()) {
-            if (p.getLocation().distance(pp.getLocation()) <= shareradius) {
+            if (p.getWorld().getName().equals(pp.getWorld().getName()) && p.getLocation().distance(pp.getLocation()) <= shareradius) {
                 if (!pp.equals(p)) {
                     total++;
                 }
