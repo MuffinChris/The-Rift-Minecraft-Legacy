@@ -60,16 +60,28 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -23. Iron Golems and Villagers need to have a base level that is higher than 0.
+
+        -22. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
+
         -21. TODOLIST FOR 3/29/20 - 3/31/20:
             Damage System Thinking:
                 Items will have damage values (any of the types)
                 Spells will have base damage (of any damage type)
                 Spells will have scaling for all damage types
                 For example.
-
+                https://www.youtube.com/watch?v=Ygob253LEs0
                 Fireball:
                 - 50 base fire damage
                 - (40 % AP, 0% Ice, 0% Earth, 50% Air, 100% Fire, 0% Water)
+
+                Fire: &c✸
+                Ice: &b❆
+                Water: &3
+                Earth: &2❈
+                Air: &f✵
+                Electric: &e⚡
+
 
                 All damage goes through said scaling. Thus fireballs will never do ice dmg etc
                 As a result of these changes, CLEAN UP SKILLS GUI AND SKILL DESCRIPTIONS TO HAVE MORE UPFRONT INFORMATION ABOUT DAMAGE. TICKRATE N SHIT IS LOW IMPORTANCE

@@ -8,7 +8,7 @@ public class RPGConstants {
     public static double expOff = 500;
     public static double expPow = 2.7;
 
-    public static double mobHpBase = 200;
+    public static double mobHpBase = 750;
     public static double mobHpLevelPow = 2;
     public static double mobHpLevelScalar = 5;
     public static double mobHpBasePow = 0.8;
@@ -18,7 +18,7 @@ public class RPGConstants {
     public static double mobXpScalar=0.25;
 
     public static double mobDmgLevelPow = 2;
-    public static double mobDmgLevelScalar = 1.5;
+    public static double mobDmgLevelScalar = 4;
 
     public static double defaultHP = 1000;
     public static double baseDmg = 10;

@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
+import com.java.rpg.classes.ElementDefenseStack;
 import com.java.rpg.classes.LevelRange;
 import com.java.rpg.classes.StatusValue;
 import de.tr7zw.nbtapi.NBTCompound;
@@ -167,9 +168,14 @@ public class Items implements Listener {
                 nbtItem.setInteger("Durability", Math.min(d, getDurabilityMax(i)));
                 nbtItem.getItem().setItemMeta(updateDurability(nbtItem.getItem()).getItemMeta());
                 return nbtItem.getItem();
+            } else {
+                nbtItem.setInteger("Durability", d);
+                nbtItem.setInteger("MaxDurability", d);
+                nbtItem.getItem().setItemMeta(updateDurability(nbtItem.getItem()).getItemMeta());
+                return nbtItem.getItem();
             }
         }
-        return i;
+        return null;
     }
 
     public ItemStack decrementDurability(ItemStack i) {
@@ -184,6 +190,15 @@ public class Items implements Listener {
             }
         }
         return -1;
+    }
+
+    public static ItemStack setDurabilityMax(ItemStack i, int d) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            nbtItem.setInteger("MaxDurability", d);
+            return nbtItem.getItem();
+        }
+        return null;
     }
 
     public static int getDurability(ItemStack i) {
@@ -226,6 +241,80 @@ public class Items implements Listener {
         return 0;
     }
 
+    public static double getAirDefense(ItemStack i) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("AirDefense")) {
+                return nbtItem.getDouble("AirDefense");
+            }
+        }
+        return 0;
+    }
+
+    public static double getEarthDefense(ItemStack i) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("EarthDefense")) {
+                return nbtItem.getDouble("EarthDefense");
+            }
+        }
+        return 0;
+    }
+
+    public static double getElectricDefense(ItemStack i) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("ElectricDefense")) {
+                return nbtItem.getDouble("ElectricDefense");
+            }
+        }
+        return 0;
+    }
+
+    public static double getFireDefense(ItemStack i) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("FireDefense")) {
+                return nbtItem.getDouble("FireDefense");
+            }
+        }
+        return 0;
+    }
+
+    public static double getIceDefense(ItemStack i) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("IceDefense")) {
+                return nbtItem.getDouble("IceDefense");
+            }
+        }
+        return 0;
+    }
+
+    public static double getWaterDefense(ItemStack i) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            if (nbtItem.hasKey("WaterDefense")) {
+                return nbtItem.getDouble("WaterDefense");
+            }
+        }
+        return 0;
+    }
+
+    public static ItemStack setElementalDefense (ItemStack i, ElementDefenseStack eDef) {
+        if (i != null) {
+            NBTItem nbtItem = new NBTItem(i);
+            nbtItem.setDouble("AirDefense", eDef.getAirDefense());
+            nbtItem.setDouble("EarthDefense", eDef.getEarthDefense());
+            nbtItem.setDouble("ElectricDefense", eDef.getElectricDefense());
+            nbtItem.setDouble("FireDefense", eDef.getFireDefense());
+            nbtItem.setDouble("IceDefense", eDef.getIceDefense());
+            nbtItem.setDouble("WaterDefense", eDef.getWaterDefense());
+            return nbtItem.getItem();
+        }
+        return null;
+    }
+
     public static int getWeight(ItemStack i) {
         if (i != null) {
             NBTItem nbtItem = new NBTItem(i);
@@ -239,6 +328,7 @@ public class Items implements Listener {
     public static String durabilityString = "&8[&a✦&8] &7Durability: &f";
     public static String levelReqString = "&8[&e⚒&8] &7Level Req: &f";
     public static String armorString = "&8[&6⛨&8] &7Armor: &f";
+    public static String elementalDefString = "&8[&d⛨&8] &7Elemental Defense: &f";
 
     public static ItemStack primitize(ItemStack i) {
         i.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -257,7 +347,10 @@ public class Items implements Listener {
         } else {
             lore = new ArrayList<>();
         }
+        ItemStack ret = nbtItem.getItem();
         if (!hasDura) {
+            ret = setElementalDefense(ret, new ElementDefenseStack(0, 0, 0, 0, 0, 0));
+            nbtItem = new NBTItem(ret);
             lore.add(Main.color("&8[ &7Basic Armor &8]"));
             lore.add(Main.color(""));
             lore.add(Main.color(levelReqString + "0"));
@@ -265,6 +358,7 @@ public class Items implements Listener {
             lore.add(Main.color(""));
             int am = armor.get(i.getType()).getRandomLevel();
             lore.add(Main.color(armorString + am));
+            lore.add(Main.color(elementalDefString + "&8(&f" + getAirDefense(ret) + "&8|&2" + getEarthDefense(ret) + "&8|&e" + getElectricDefense(ret) + "&8|&c" + getFireDefense(ret) + "&8|&b" + getIceDefense(ret) + "&8|&3" + getWaterDefense(ret) + "&8)"));
             //lore.add(Main.color("&8[&e♖&8] &7Weight: &f" + weight.get(i.getType())));
             meta.setLore(lore);
             nbtItem.getItem().setItemMeta(meta);
@@ -276,7 +370,7 @@ public class Items implements Listener {
 
         }
 
-        return nbtItem.getItem();
+        return ret;
     }
 
     public boolean hasDurability(ItemStack i) {

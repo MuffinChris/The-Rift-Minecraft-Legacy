@@ -433,6 +433,27 @@ public class MobEXP implements Listener {
         return WordUtils.capitalize((nmsEnt.getMinecraftKeyString().replace("minecraft:", "")).replace("_", " "));
     }
 
+    public static void setElementalDefense (LivingEntity ent, ElementDefenseStack eDef) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING, eDef.getCommaDelim());
+    }
+
+    public static ElementDefenseStack getElementalDefense (LivingEntity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING)) {
+            String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING);
+            String[] ar = delim.split(",");
+            double[] ard = new double[5];
+            int index = 0;
+            for (String s : ar) {
+                ard[index] = Double.valueOf(s);
+                index++;
+            }
+            return new ElementDefenseStack(ard[0], ard[1], ard[2], ard[3], ard[4], ard[5]);
+        }
+        return new ElementDefenseStack(0, 0, 0, 0, 0, 0);
+    }
+
     public static double getArmor(LivingEntity ent) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         if (data.has(new NamespacedKey(Main.getInstance(), "Armor"), PersistentDataType.DOUBLE)) {
@@ -866,7 +887,11 @@ public class MobEXP implements Listener {
                     if (xp.get(ent).getIndivPer(pl).contains("100%") || xp.get(ent).getAloneAndLowEnv(pl)) {
                         main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), "SELF");
                     } else {
-                        main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
+                        if (xp.get(ent).getAloneAndHighEnv(pl)) {
+                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * (xp.get(ent).getPercentages().get(pl) + 0.25), xp.get(ent).getIndivPer(pl));
+                        } else {
+                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
+                        }
                     }
                 }
                 xp.get(ent).scrub();

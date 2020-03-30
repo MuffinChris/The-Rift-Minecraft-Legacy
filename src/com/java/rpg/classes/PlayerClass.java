@@ -24,11 +24,17 @@ public class PlayerClass {
 
     private double armor;
     private double magicresist;
-    private double airdefense;
-    private double earthdefense;
-    private double firedefense;
-    private double icedefense;
-    private double electricdefense;
+
+    private ElementDefenseStack eDefense;
+
+    public ElementDefenseStack getEDefense() {
+        return eDefense;
+    }
+
+    private ElementDefenseStack eDefenseScaling;
+    public ElementDefenseStack getEDefenseScaling() {
+        return eDefenseScaling;
+    }
 
     private double armorPerLevel;
     private double magicResistPerLevel;
@@ -71,7 +77,7 @@ public class PlayerClass {
     private List<Skill> skills;
     private List<Skill> superSkills;
 
-    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, List<Skill> superSkills, int weight) {
+    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, List<Skill> superSkills, int weight, ElementDefenseStack eDef, ElementDefenseStack eDefScale) {
         this.name = name;
         this.fancyname = fancyname;
         this.basehp = basehp;
@@ -93,6 +99,8 @@ public class PlayerClass {
         adPerLevel = adperlevel;
         apPerLevel = apperlevel;
         this.superSkills = superSkills;
+        eDefense = eDef;
+        eDefenseScaling = eDefScale;
     }
 
     public double getCalcAD(int level) {
