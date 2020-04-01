@@ -1,4 +1,4 @@
-package com.java.rpg.classes.skills.Earthshaker;
+package com.java.rpg.classes.skills.Earthshaker.supers;
 
 import com.java.Main;
 import com.java.rpg.classes.ElementalStack;
@@ -21,7 +21,6 @@ public class Avalanche extends Skill implements Listener {
     private int damage = 20;
     private int duration = 2 * 20;
     private int stunD = 2;
-    private int interval = 6;
     private int range = 6;
     private int rad = 2;
     
@@ -60,7 +59,7 @@ public class Avalanche extends Skill implements Listener {
 		            }
 		            if (ent instanceof Player) {
 		                Player p = (Player) ent;
-		                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(p).getPvp()) {
+		                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(p).getPvp()) {
 		                    if (main.getPM().getParty(p).getPlayers().contains(p)) {
 		                        continue;
 		                    }
