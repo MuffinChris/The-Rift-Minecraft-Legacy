@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 
@@ -65,7 +66,7 @@ public class Shatterstrike extends Skill implements Listener {
                     }
                 }
                 ent.setKiller(p);
-                spellDamage(p, ent, getDmg(p));
+                spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0, 0));
                 ent.getWorld().spawnParticle(Particle.BLOCK_DUST, ent.getLocation(), 5, .1, .1, .1);
         	}
     	}

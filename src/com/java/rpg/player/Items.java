@@ -1,17 +1,13 @@
 package com.java.rpg.player;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
-import com.java.rpg.classes.ElementDefenseStack;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.LevelRange;
-import com.java.rpg.classes.StatusValue;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
-import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
@@ -22,15 +18,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class Items implements Listener {
@@ -168,11 +161,6 @@ public class Items implements Listener {
                 nbtItem.setInteger("Durability", Math.min(d, getDurabilityMax(i)));
                 nbtItem.getItem().setItemMeta(updateDurability(nbtItem.getItem()).getItemMeta());
                 return nbtItem.getItem();
-            } else {
-                nbtItem.setInteger("Durability", d);
-                nbtItem.setInteger("MaxDurability", d);
-                nbtItem.getItem().setItemMeta(updateDurability(nbtItem.getItem()).getItemMeta());
-                return nbtItem.getItem();
             }
         }
         return null;
@@ -301,15 +289,15 @@ public class Items implements Listener {
         return 0;
     }
 
-    public static ItemStack setElementalDefense (ItemStack i, ElementDefenseStack eDef) {
+    public static ItemStack setElementalDefense (ItemStack i, ElementalStack eDef) {
         if (i != null) {
             NBTItem nbtItem = new NBTItem(i);
-            nbtItem.setDouble("AirDefense", eDef.getAirDefense());
-            nbtItem.setDouble("EarthDefense", eDef.getEarthDefense());
-            nbtItem.setDouble("ElectricDefense", eDef.getElectricDefense());
-            nbtItem.setDouble("FireDefense", eDef.getFireDefense());
-            nbtItem.setDouble("IceDefense", eDef.getIceDefense());
-            nbtItem.setDouble("WaterDefense", eDef.getWaterDefense());
+            nbtItem.setDouble("AirDefense", eDef.getAir());
+            nbtItem.setDouble("EarthDefense", eDef.getEarth());
+            nbtItem.setDouble("ElectricDefense", eDef.getElectric());
+            nbtItem.setDouble("FireDefense", eDef.getFire());
+            nbtItem.setDouble("IceDefense", eDef.getIce());
+            nbtItem.setDouble("WaterDefense", eDef.getWater());
             return nbtItem.getItem();
         }
         return null;
@@ -347,30 +335,32 @@ public class Items implements Listener {
         } else {
             lore = new ArrayList<>();
         }
-        ItemStack ret = nbtItem.getItem();
+        i = nbtItem.getItem();
         if (!hasDura) {
-            ret = setElementalDefense(ret, new ElementDefenseStack(0, 0, 0, 0, 0, 0));
-            nbtItem = new NBTItem(ret);
+            i = setElementalDefense(i, new ElementalStack(0, 0, 0, 0, 0, 0));
+            int am = armor.get(i.getType()).getRandomLevel();
             lore.add(Main.color("&8[ &7Basic Armor &8]"));
             lore.add(Main.color(""));
             lore.add(Main.color(levelReqString + "0"));
             lore.add(Main.color(durabilityString + durability.get(i.getType()) + "&8/&f" + durability.get(i.getType())));
             lore.add(Main.color(""));
-            int am = armor.get(i.getType()).getRandomLevel();
             lore.add(Main.color(armorString + am));
-            lore.add(Main.color(elementalDefString + "&8(&f" + getAirDefense(ret) + "&8|&2" + getEarthDefense(ret) + "&8|&e" + getElectricDefense(ret) + "&8|&c" + getFireDefense(ret) + "&8|&b" + getIceDefense(ret) + "&8|&3" + getWaterDefense(ret) + "&8)"));
+            lore.add(Main.color(elementalDefString + "&8(&f" + getAirDefense(i) + "&8|&2" + getEarthDefense(i) + "&8|&e" + getElectricDefense(i) + "&8|&c" + getFireDefense(i) + "&8|&b" + getIceDefense(i) + "&8|&3" + getWaterDefense(i) + "&8)"));
             //lore.add(Main.color("&8[&e♖&8] &7Weight: &f" + weight.get(i.getType())));
             meta.setLore(lore);
-            nbtItem.getItem().setItemMeta(meta);
+            i.setItemMeta(meta);
+
+            nbtItem = new NBTItem(i);
             nbtItem.setInteger("Durability", durability.get(i.getType()));
             nbtItem.setInteger("MaxDurability", durability.get(i.getType()));
             nbtItem.setInteger("LevelReq", 0);
             nbtItem.setInteger("Armor", am);
             nbtItem.setInteger("Weight", weight.get(i.getType()));
+            i = nbtItem.getItem();
 
         }
 
-        return ret;
+        return i;
     }
 
     public boolean hasDurability(ItemStack i) {
@@ -473,15 +463,14 @@ public class Items implements Listener {
     }
 
     public static ItemStack fixItem(ItemStack i) throws Exception {
-        ItemStack nItem = i;
         if (i != null && isArmor(i.getType().toString())) {
 
             //net.minecraft.server.v1_15_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(i);
-            if (!(new NBTItem(nItem).hasKey("Durability"))) {
-                nItem = primitize(nItem);
-                NBTItem nbtItem = new NBTItem(nItem);
+            if (!(new NBTItem(i).hasKey("Durability"))) {
+                i = primitize(i);
+                NBTItem nbtItem = new NBTItem(i);
                 if (nbtItem.getCompoundList("AttributeModifiers").size() == 0) {
-                    nItem = removeArmor(nItem);
+                    i = removeArmor(i);
                 }
             }
             //nbtItem.setInteger("generic.armor", 0);
@@ -539,7 +528,7 @@ public class Items implements Listener {
                 nItem = CraftItemStack.asBukkitCopy(nmsStack);
             }*/
         }
-        return nItem;
+        return i;
     }
 
     public void updateArmor(Player p) {

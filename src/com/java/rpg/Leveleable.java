@@ -201,7 +201,7 @@ public class Leveleable {
             DecimalFormat dF = new DecimalFormat("#");
             Main.msg(p, "   &7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
             main.getRP(p).getBoard().setBossbar4("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
-            Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(" + p.getName() + "&7)", Hologram.HologramType.DAMAGE);
+            Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(" + p.getName() + "&7)", Hologram.HologramType.EXP);
             magic.rise();
             levelup();
         }

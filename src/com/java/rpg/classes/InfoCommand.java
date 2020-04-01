@@ -67,8 +67,8 @@ public class InfoCommand implements CommandExecutor, Listener {
             lore.add(Main.color("&8» &cHP: &f" + df.format(t.getHealth()) + "&8/" + "&c" + df.format(t.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue())));
             lore.add(Main.color("&8» &bMana: &f" + dF.format(rp.getCMana()) + "&8/&b" + dF.format(rp.getPClass().getCalcMana(rp.getLevel()))));
             lore.add(Main.color("&8» &9Mana Regen: &f" + df.format(rp.getPClass().getCalcManaRegen(rp.getLevel())) + "/s"));
-            lore.add(Main.color("&8» &dWalkspeed: &f" + dF.format(rp.getWalkspeed().getValue() + rp.getWalkSpeedS().getValue())));
-            lore.add(Main.color("&8» &eMax Armor Weight: &f" + rp.getPClass().getWeight()));
+            //lore.add(Main.color("&8» &dWalkspeed: &f" + dF.format(rp.getWalkspeed().getValue() + rp.getWalkSpeedS().getValue())));
+            //lore.add(Main.color("&8» &eMax Armor Weight: &f" + rp.getPClass().getWeight()));
             int total = rp.calculateSP();
             lore.add(Main.color("&8» &6Skillpoints: &f" + (total) + " &8(&6" + (2 - total) + " Used&8)"));
         }
@@ -127,16 +127,37 @@ public class InfoCommand implements CommandExecutor, Listener {
         double hp = t.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         double armor = rp.getArmor(); // + bonus armor etc
         double mr = rp.getMR(); // + bonus mr etc
+        double air = rp.getAirDefense();
+        double earth = rp.getEarthDefense();
+        double electric = rp.getElectricDefense();
+        double fire = rp.getFireDefense();
+        double ice = rp.getIceDefense();
+        double water = rp.getWaterDefense();
 
-        String mrper = Main.color("&b" + df.format(100.0 * (1-(300.0/(300.0+mr)))) + "%");
-        String amper = Main.color("&c" + df.format(100.0 * (1-(300.0/(300.0+armor)))) + "%");
+        String mrper = Main.color("&9" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+mr)))) + "%");
+        String amper = Main.color("&6" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+armor)))) + "%");
+
+        String airPer = Main.color("&f" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+air)))) + "%");
+        String earthPer = Main.color("&2" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+earth)))) + "%");
+        String electricPer = Main.color("&e" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+electric)))) + "%");
+        String firePer = Main.color("&c" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+fire)))) + "%");
+        String icePer = Main.color("&b" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+ice)))) + "%");
+        String waterPer = Main.color("&3" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+water)))) + "%");
 
         spMeta.setDisplayName(Main.color("&eDefense Stats"));
         sp.setType(Material.IRON_CHESTPLATE);
         lore.add(Main.color(""));
-        lore.add(Main.color("&8» &4Hitpoints: &f" + df.format(hp)));
-        lore.add(Main.color("&8» &cArmor: &f" + df.format(armor) + " &8(" + amper + "&8)"));
-        lore.add(Main.color("&8» &bMagic Resist: &f" + df.format(mr) + " &8(" + mrper + "&8)"));
+        lore.add(Main.color("&8[" + RPGConstants.physical + "&8] &7Hitpoints: &f" + df.format(hp)));
+        lore.add(Main.color("&8[&6" + RPGConstants.armor + "&8] &7Armor: &f" + df.format(armor) + " &8(" + amper + "&8)"));
+        lore.add(Main.color("&8[&9" + RPGConstants.armor + "&8] &7Magic Resist: &f" + df.format(mr) + " &8(" + mrper + "&8)"));
+        lore.add("");
+        lore.add(Main.color("&8[" + RPGConstants.air + "&8] &7Air Defense: &f" + df.format(air) + " &8(" + airPer + "&8)"));
+        lore.add(Main.color("&8[" + RPGConstants.earth +  "&8] &7Earth Defense: &f" + df.format(earth) + " &8(" + earthPer + "&8)"));
+        lore.add(Main.color("&8[" + RPGConstants.electric +  "&8] &7Electric Defense: &f" + df.format(electric) + " &8(" + electricPer + "&8)"));
+        lore.add(Main.color("&8["  + RPGConstants.fire + "&8] &7Fire Defense: &f" + df.format(fire) + " &8(" + firePer + "&8)"));
+        lore.add(Main.color("&8[" + RPGConstants.ice +  "&8] &7Ice Defense: &f" + df.format(ice) + " &8(" + icePer + "&8)"));
+        lore.add(Main.color("&8[" + RPGConstants.water +  "&8] &7Water Defense: &f" + df.format(water) + " &8(" + waterPer + "&8)"));
+
 
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 

@@ -2,6 +2,7 @@ package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
 import com.java.holograms.Hologram;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 import org.bukkit.Bukkit;
@@ -162,7 +163,7 @@ public class FlameTornado extends Skill {
                                 break;
                             }
                         }
-                        spellDamage(caster, e, dps / 2.0);
+                        spellDamage(caster, e, dps / 2.0, new ElementalStack(0, 0, 0, 50, 0, 0));
                         Map h = damage.get(caster.getUniqueId());
                         h.put(e, e.getWorld().getTime());
                         damage.replace(caster.getUniqueId(), h);

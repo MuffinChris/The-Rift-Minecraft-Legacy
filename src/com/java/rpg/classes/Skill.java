@@ -20,7 +20,7 @@ public class Skill {
 
     private Main main = Main.getInstance();
 
-    public void spellDamage(Player caster, LivingEntity target, double damage) {
+    public void spellDamage(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
         if (target.isDead() || target.isInvulnerable()) {
             return;
         }
@@ -29,22 +29,23 @@ public class Skill {
             if (t.getGameMode() == GameMode.CREATIVE) {
                 return;
             }
-            if (main.getPM().getParty(t) instanceof Party && !main.getPM().getParty(t).getPvp()) {
+            if (main.getPM().getParty(t) != null && !main.getPM().getParty(t).getPvp()) {
                 if (main.getPM().getParty(t).getPlayers().contains(caster)) {
                     return;
                 }
             }
         }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire") && target.getFireTicks() > 0) {
-            damage*= WorldOnFire.getEmp();
+        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
+            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
         }
-        main.getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.MAGIC, damage, 5));
+        main.getRP(caster).getDamages().add(new Damage(caster, target, 0, damage, 0, edmg, 1));
+        double kbr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue();
         target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         target.setNoDamageTicks(0);
         target.damage(damage, caster);
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0);
+        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(kbr);
     }
-    public static void spellDamageStatic(Player caster, LivingEntity target, double damage) {
+    public static void spellDamageStatic(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
         if (target.isDead() || target.isInvulnerable()) {
             return;
         }
@@ -53,78 +54,29 @@ public class Skill {
             if (t.getGameMode() == GameMode.CREATIVE) {
                 return;
             }
-            if (Main.getInstance().getPM().getParty(t) instanceof Party && !Main.getInstance().getPM().getParty(t).getPvp()) {
+            if (Main.getInstance().getPM().getParty(t) != null && !Main.getInstance().getPM().getParty(t).getPvp()) {
                 if (Main.getInstance().getPM().getParty(t).getPlayers().contains(caster)) {
                     return;
                 }
             }
         }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire") && target.getFireTicks() > 0) {
-            damage*= WorldOnFire.getEmp();
+        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
+            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
         }
-        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.MAGIC, damage, 5));
+        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, 0, damage, 0, edmg, 1));
+        double kbr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue();
         target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         target.setNoDamageTicks(0);
         target.damage(damage, caster);
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0);
+        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(kbr);
 
-    }
-
-    public void trueDamageSpell(Player caster, LivingEntity target, double damage) {
-        if (target.isDead() || target.isInvulnerable()) {
-            return;
-        }
-        if (target instanceof Player) {
-            Player t = (Player) target;
-            if (t.getGameMode() == GameMode.CREATIVE) {
-                return;
-            }
-            if (main.getPM().getParty(t) instanceof Party && !main.getPM().getParty(t).getPvp()) {
-                if (main.getPM().getParty(t).getPlayers().contains(caster)) {
-                    return;
-                }
-            }
-        }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire") && target.getFireTicks() > 0) {
-            damage*= WorldOnFire.getEmp();
-        }
-        main.getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.TRUE, damage, 5));
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        target.setNoDamageTicks(0);
-        target.damage(damage, caster);
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0);
-    }
-
-    public static void trueDamageSpellStatic(Player caster, LivingEntity target, double damage) {
-        if (target.isDead() || target.isInvulnerable()) {
-            return;
-        }
-        if (target instanceof Player) {
-            Player t = (Player) target;
-            if (t.getGameMode() == GameMode.CREATIVE) {
-                return;
-            }
-            if (Main.getInstance().getPM().getParty(t) instanceof Party && !Main.getInstance().getPM().getParty(t).getPvp()) {
-                if (Main.getInstance().getPM().getParty(t).getPlayers().contains(caster)) {
-                    return;
-                }
-            }
-        }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire") && target.getFireTicks() > 0) {
-            damage*= WorldOnFire.getEmp();
-        }
-        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, Damage.DamageType.TRUE, damage, 5));
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        target.setNoDamageTicks(0);
-        target.damage(damage, caster);
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0);
     }
 
     public static void healTarget(Player target, double hp) {
         if (target.getHealth() + hp <= target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
             target.setHealth(target.getHealth() + hp);
             DecimalFormat df = new DecimalFormat("#.##");
-            Hologram magic = new Hologram(target, target.getLocation(), "&a&l❤" + df.format(hp), Hologram.HologramType.DAMAGE);
+            Hologram magic = new Hologram(target, target.getLocation(), "&a❤" + df.format(hp), Hologram.HologramType.DAMAGE);
             magic.rise();
         } else {
             target.setHealth(target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());

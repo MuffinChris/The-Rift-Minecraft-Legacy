@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Bishop;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.DataWatcherObject;
@@ -66,7 +67,7 @@ public class Heal extends Skill {
 					|| ent instanceof WitherSkeleton || ent instanceof Wither || ent instanceof Drowned
 					|| ent instanceof Husk || ent instanceof PigZombie || ent instanceof ZombieVillager
 					|| ent instanceof Phantom) {
-				spellDamage(p, ent, getDmg(p));
+				spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0, 0));
 				p.spawnParticle(Particle.VILLAGER_ANGRY, p.getEyeLocation(), 5, 0.5, 0.5, 0.5);
 			}
 			if (ent instanceof Player) {

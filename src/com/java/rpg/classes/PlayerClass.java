@@ -25,14 +25,14 @@ public class PlayerClass {
     private double armor;
     private double magicresist;
 
-    private ElementDefenseStack eDefense;
+    private ElementalStack eDefense;
 
-    public ElementDefenseStack getEDefense() {
+    public ElementalStack getEDefense() {
         return eDefense;
     }
 
-    private ElementDefenseStack eDefenseScaling;
-    public ElementDefenseStack getEDefenseScaling() {
+    private ElementalStack eDefenseScaling;
+    public ElementalStack getEDefenseScaling() {
         return eDefenseScaling;
     }
 
@@ -77,7 +77,7 @@ public class PlayerClass {
     private List<Skill> skills;
     private List<Skill> superSkills;
 
-    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, List<Skill> superSkills, int weight, ElementDefenseStack eDef, ElementDefenseStack eDefScale) {
+    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, List<Skill> superSkills, int weight, ElementalStack eDef, ElementalStack eDefScale) {
         this.name = name;
         this.fancyname = fancyname;
         this.basehp = basehp;

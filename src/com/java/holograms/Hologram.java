@@ -48,7 +48,7 @@ public class Hologram implements Listener {
     }
 
     public enum HologramType {
-        DAMAGE, HOLOGRAM
+        DAMAGE, HOLOGRAM, EXP, STATUS
     }
 
     public void resetLifetime() {
@@ -63,20 +63,32 @@ public class Hologram implements Listener {
         stand = (ArmorStand) loc.getWorld().spawnEntity(new Location(loc.getWorld(), 0, 0, 0), EntityType.ARMOR_STAND);
         stand.setVisible(false);
         stand.setMarker(true);
-        double neg = Math.random();
-        double neg2 = Math.random();
-        if (type == HologramType.DAMAGE) {
-            if (neg < 0.5) {
-                neg = -0.7;
+        if (type == HologramType.DAMAGE || type == HologramType.EXP || type == HologramType.STATUS) {
+            if (type == HologramType.EXP) {
+                stand.teleport(loc.clone().add(new Vector(0, e.getHeight()/2.0, 0)));
             } else {
-                neg = 0.7;
+                double neg = Math.random();
+                double neg2 = Math.random();
+                double mod = 0.4;
+                double mod2 = 0.4;
+                if (neg < 0.5) {
+                    neg = -0.4;
+                    mod*=-1;
+                } else {
+                    neg = 0.4;
+                }
+                if (neg2 < 0.5) {
+                    neg2 = -0.4;
+                    mod2*=-1;
+                } else {
+                    neg2 = 0.4;
+                }
+                if (type == HologramType.STATUS) {
+                    stand.teleport(loc.clone().add(new Vector(Math.random() * neg + mod, e.getHeight() + 0.3, Math.random() * neg2 + mod2)));
+                } else {
+                    stand.teleport(loc.clone().add(new Vector(Math.random() * neg + mod, e.getHeight() + (Math.random() * 0.3) - 0.05, Math.random() * neg2 + mod2)));
+                }
             }
-            if (neg2 < 0.5) {
-                neg2 = -0.7;
-            } else {
-                neg2 = 0.7;
-            }
-            stand.teleport(loc.add(new Vector(Math.random() * neg, e.getHeight(), Math.random() * neg2)));
         } else {
             stand.teleport(loc);
         }

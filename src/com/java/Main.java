@@ -60,41 +60,61 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -30 (RELEVANT RN): Add elemental damage from non player sources (mobs)
+
+        -29. Setting to hide dmg holograms and EXP
+
+        -28. Days, seasons, and weather (hypixel style). Useful for economy etc. Also make weather matter (Winter will fuck you up!)
+
+        -27. Add Dynamic Town Mechanics (resources from nearby resource locations, biome benefits, penalize traveling far [for example, making resource gens need to be close if u want more u need to optimize])
+
+        -26. Fix pyromancer health check for ignition. Make a method to check, and incorporate defense calculations
+
+        -25. Make guardan lasers and spikes do damage
+
+        -24. Make legacy projectiles like fireballs hold a PersistentDataContainer instead of customname (will need to hold Elemental Dmg). Same with Enderdragon damage
+
         -23. Iron Golems and Villagers need to have a base level that is higher than 0.
 
         -22. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
 
-        -21. TODOLIST FOR 3/29/20 - 3/31/20:
-            Damage System Thinking:
-                Items will have damage values (any of the types)
-                Spells will have base damage (of any damage type)
-                Spells will have scaling for all damage types
-                For example.
-                https://www.youtube.com/watch?v=Ygob253LEs0
-                Fireball:
-                - 50 base fire damage
-                - (40 % AP, 0% Ice, 0% Earth, 50% Air, 100% Fire, 0% Water)
-
-                Fire: &c✸
+        -21.
+                Fire: &c✴
                 Ice: &b❆
-                Water: &3
+                Water: &3✾
                 Earth: &2❈
-                Air: &f✵
+                Air: &f✸
                 Electric: &e⚡
 
+                Fire > Ice
+                Fire < Water
+                Fire < Earth
 
-                All damage goes through said scaling. Thus fireballs will never do ice dmg etc
-                As a result of these changes, CLEAN UP SKILLS GUI AND SKILL DESCRIPTIONS TO HAVE MORE UPFRONT INFORMATION ABOUT DAMAGE. TICKRATE N SHIT IS LOW IMPORTANCE
+                Ice > Earth
+                Ice > Air
+                Ice < Fire
 
-                Base Chance to trigger status effect (like 10% or smthn), then chance is divided based on how much dmg element did. (ie. 500 fire, 50 ice) will give fire x percentage over ice
-                AP AD not counted in above calculation
+                Water > Fire
+                Water > Earth
+                Water < Electric
+                Water < Ice
+
+                Earth > Fire
+                Earth > Electric
+                Earth < Ice
+                Earth < Water
+
+                Electric < Earth
+                Electric > Water
+                Electric > Air
+
+                Air < Ice
+                Air < Electric
+                Air > Earth
 
 
-                Item that gives elemental damage will be multiplied by 0.4 and deal that elemental damage.
+            Make fire damage actually be fire. Poison damage be true. Wither damage be true.
 
-                For defense UTF8 Symbols, re-use Armor just dif color
-
-            Add elemental defense here, add Elemental Defense to RPG Classes, and to Mobs!
             Elemental Damage needs a split setup of damage. Can all come through in one hologram
             Update Player Info and Class Info Screens. Can condense defense and attack info into one line!
             Make Skills GUI less aids to look at.
@@ -231,6 +251,23 @@ public class Main extends JavaPlugin {
         return JavaPlugin.getPlugin(Main.class);
     }
 
+    public boolean isValidTarget(Entity e) {
+        if (e instanceof LivingEntity) {
+            if (!(e instanceof ArmorStand) && e.isInvulnerable()) {
+                if (e instanceof Player) {
+                    Player p = (Player) e;
+                    if (p.getGameMode() == GameMode.SURVIVAL) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
 
     Auto restart
@@ -306,8 +343,8 @@ public class Main extends JavaPlugin {
                             if (e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() > e.getHealth() && MobEXP.getHPRegen(e) > 0) {
                                 LivingEntity ent = e;
                                 DecimalFormat df = new DecimalFormat("#.##");
-                                Hologram magic = new Hologram(ent, ent.getLocation(), "&a&l❤" + df.format(MobEXP.getHPRegen(e)), Hologram.HologramType.DAMAGE);
-                                magic.rise();
+                                //Hologram magic = new Hologram(ent, ent.getLocation(), "&a❤" + df.format(MobEXP.getHPRegen(e)), Hologram.HologramType.DAMAGE);
+                                //magic.rise();
                                 DecimalFormat dF = new DecimalFormat("#.##");
                                 if (getHpBars().containsKey(ent)) {
                                     getHpBars().get(ent).setText("&f" + dF.format(ent.getHealth()) + "&c❤");
@@ -365,12 +402,18 @@ public class Main extends JavaPlugin {
         new BukkitRunnable() {
             public void run() {
                 for (Hologram h : getHolos()) {
-                    if (h.getType() == Hologram.HologramType.DAMAGE) {
+                    if (h.getType() == Hologram.HologramType.DAMAGE || h.getType() == Hologram.HologramType.EXP || h.getType() == Hologram.HologramType.STATUS) {
                         ArmorStand stand = h.getStand();
                         stand.teleport(stand.getLocation().add(new Vector(0, 0.025, 0)));
                         h.incrementLifetime();
-                        if (h.getLifetime() * 0.025 >= 1) {
-                            h.destroy();
+                        if (h.getType() == Hologram.HologramType.EXP || h.getType() == Hologram.HologramType.STATUS) {
+                            if (h.getLifetime() * 0.02 >= 1) {
+                                h.destroy();
+                            }
+                        } else {
+                            if (h.getLifetime() * 0.025 >= 1) {
+                                h.destroy();
+                            }
                         }
                     } else if (h.getType() == Hologram.HologramType.HOLOGRAM) {
                         h.center();
@@ -641,10 +684,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        NBTInjector.inject();
-        so("&dRIFT: &fNBTAPI Injected");
+        /*NBTInjector.inject();
+        so("&dRIFT: &fNBTAPI Injected");*/
 
-        warriorZombie = new CustomEntityType<WarriorZombie>("warrior_zombie", WarriorZombie.class, EntityTypes.ZOMBIE, WarriorZombie::new);
+        warriorZombie = new CustomEntityType<WarriorZombie>("zombie_warrior", WarriorZombie.class, EntityTypes.ZOMBIE, WarriorZombie::new);
         warriorZombie.register();
 
         so("&dRIFT: &fCustom Mobs registered");

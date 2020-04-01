@@ -31,6 +31,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class MobEXP implements Listener {
@@ -433,25 +434,25 @@ public class MobEXP implements Listener {
         return WordUtils.capitalize((nmsEnt.getMinecraftKeyString().replace("minecraft:", "")).replace("_", " "));
     }
 
-    public static void setElementalDefense (LivingEntity ent, ElementDefenseStack eDef) {
+    public static void setElementalDefense (LivingEntity ent, ElementalStack eDef) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         data.set(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING, eDef.getCommaDelim());
     }
 
-    public static ElementDefenseStack getElementalDefense (LivingEntity ent) {
+    public static ElementalStack getElementalDefense (LivingEntity ent) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING)) {
             String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING);
             String[] ar = delim.split(",");
-            double[] ard = new double[5];
+            double[] ard = new double[6];
             int index = 0;
             for (String s : ar) {
                 ard[index] = Double.valueOf(s);
                 index++;
             }
-            return new ElementDefenseStack(ard[0], ard[1], ard[2], ard[3], ard[4], ard[5]);
+            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4], ard[5]);
         }
-        return new ElementDefenseStack(0, 0, 0, 0, 0, 0);
+        return new ElementalStack(0, 0, 0, 0, 0, 0);
     }
 
     public static double getArmor(LivingEntity ent) {
@@ -548,7 +549,7 @@ public class MobEXP implements Listener {
     public void scaleDamage(LivingEntity ent, int level, double modifier) {
         if (ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null) {
             double damage = Math.pow(level, RPGConstants.mobDmgLevelPow) * RPGConstants.mobDmgLevelScalar * Math.sqrt(ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue()/4.0);
-            damage += ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue() * 3;
+            damage += ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue() * 3 + 25;
             damage *= modifier;
             ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(damage);
         }
@@ -607,7 +608,7 @@ public class MobEXP implements Listener {
                     setArmor(ent, level * 3);
                     setMagicResist(ent, level * 2);
                 }
-                setHPRegen(ent, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.005);
+                setHPRegen(ent, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.01);
             }
         } else {
             if (ent instanceof Slime) {
@@ -625,7 +626,7 @@ public class MobEXP implements Listener {
                     setArmor(ent, level * 3);
                     setMagicResist(ent, level * 2);
                 }
-                setHPRegen(ent, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.005);
+                setHPRegen(ent, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.01);
             }
         }
 
@@ -674,6 +675,9 @@ public class MobEXP implements Listener {
             if (((Projectile) e.getDamager()).getShooter() instanceof LivingEntity) {
                 LivingEntity ent = (LivingEntity) ((Projectile) e.getDamager()).getShooter();
                 if (!(ent instanceof Player) && !(ent instanceof ArmorStand)) {
+                    if (ent instanceof Guardian) {
+                        e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 2.5 + 75);
+                    }
                     if (ent instanceof Skeleton) {
                         e.setDamage(Math.pow(getLevel(ent), RPGConstants.mobDmgLevelPow) * 1.5 + 50);
                     }
@@ -888,7 +892,8 @@ public class MobEXP implements Listener {
                         main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), "SELF");
                     } else {
                         if (xp.get(ent).getAloneAndHighEnv(pl)) {
-                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * (xp.get(ent).getPercentages().get(pl) + 0.25), xp.get(ent).getIndivPer(pl));
+                            DecimalFormat dF = new DecimalFormat("#.##");
+                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.25), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.25) * 100.0) + "%");
                         } else {
                             main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
                         }

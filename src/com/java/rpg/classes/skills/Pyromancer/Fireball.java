@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.DataWatcherObject;
@@ -74,47 +75,47 @@ public class Fireball extends Skill implements Listener {
             arrow.setKnockbackStrength(0);
             arrow.setSilent(true);
         }
-            final BukkitScheduler scheduler = Bukkit.getScheduler();
-            final int task = scheduler.scheduleSyncRepeatingTask(main, new Runnable(){
-                @Override
-                public void run() {
-                    if (!arrow.isDead()) {
-                        p.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04,null, true);
-                        if (arrow.isOnGround() || arrow.isDead()) {
-                            lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
-                            arrow.remove();
-                            arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04,null, true);
-                        }
-                    }
-                }
-            }, 1, 1);
-
-            scheduler.scheduleSyncDelayedTask(main, new Runnable() {
-                @Override
-                public void run(){
-                    if (!(arrow.isOnGround() || arrow.isDead())) {
+        final BukkitScheduler scheduler = Bukkit.getScheduler();
+        final int task = scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
+            @Override
+            public void run() {
+                if (!arrow.isDead()) {
+                    p.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04, null, true);
+                    if (arrow.isOnGround() || arrow.isDead()) {
                         lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
-                        arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.04,null, true);
+                        arrow.remove();
+                        arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04, null, true);
                     }
-                    scheduler.cancelTask(task);
-                    arrow.remove();
                 }
-            }, 20 * range);
+            }
+        }, 1, 1);
+
+        scheduler.scheduleSyncDelayedTask(main, new Runnable() {
+            @Override
+            public void run() {
+                if (!(arrow.isOnGround() || arrow.isDead())) {
+                    lightEntities(arrow, p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Fireball:", "")));
+                    arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.04, null, true);
+                }
+                scheduler.cancelTask(task);
+                arrow.remove();
+            }
+        }, 20 * range);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0F, 1.0F);
     }
 
     @EventHandler
-    public void projectileHe (ProjectileHitEvent e) {
+    public void projectileHe(ProjectileHitEvent e) {
         if (e.getEntity() instanceof Arrow) {
             Arrow a = (Arrow) e.getEntity();
             if (a.getCustomName() instanceof String && a.getCustomName().contains("Fireball:") && a.getShooter() instanceof Player) {
                 Player shooter = (Player) a.getShooter();
                 if (e.getHitEntity() instanceof Entity) {
                     lightEntities(e.getHitEntity(), shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Fireball:", "")));
-                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
+                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08, null, true);
                 } else {
                     lightEntities(e.getEntity(), shooter, e.getEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Fireball:", "")));
-                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
+                    e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08, null, true);
 
                 }
                 a.remove();
@@ -122,8 +123,8 @@ public class Fireball extends Skill implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
-    public void onHit (EntityDamageByEntityEvent e) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onHit(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Arrow && !(e.getEntity() instanceof ArmorStand)) {
             Arrow a = (Arrow) e.getDamager();
             if (a.getCustomName() instanceof String && a.getCustomName().contains("Fireball:") && a.getShooter() instanceof Player) {
@@ -157,7 +158,7 @@ public class Fireball extends Skill implements Listener {
     }
 
     public void lightEntities(Entity e, Player caster, Location loc, double damage) {
-        loc.getWorld().spawnParticle(Particle.LAVA, loc, 25, 0.12, 0.12, 0.12, 0.12,null, true);
+        loc.getWorld().spawnParticle(Particle.LAVA, loc, 25, 0.12, 0.12, 0.12, 0.12, null, true);
         for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
             if (ent instanceof ArmorStand) {
                 continue;
@@ -175,12 +176,9 @@ public class Fireball extends Skill implements Listener {
             }
             /*new BukkitRunnable() {
                 public void run() {*/
-                    if (ent.getHealth() < damage && !(ent instanceof Player)) {
-                        ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-                    }
-                    spellDamage(caster, ent, damage);
-                    ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-                    ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
+            ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
+            spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 200, 0, 0));
+            ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
                 /*}
             }.runTaskLater(Main.getInstance(), 1L);*/
         }

@@ -3,10 +3,7 @@ package com.java.rpg.classes.skills.Pyromancer;
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -51,7 +48,10 @@ public class BlazeSpot {
                     return;
                 }
                 //l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, 1);
-                l.getWorld().spawnParticle(Particle.FLAME, l, 2, 0.35, 0.25, 0.35, 0.03, null, true);
+                //l.getWorld().spawnParticle(Particle.FLAME, l, 2, 0.35, 0.25, 0.35, 0.03, null, true);
+                Particle.DustOptions dust = new Particle.DustOptions(Color.fromRGB(255, 100, 0), 1);
+                l.getWorld().spawnParticle(Particle.REDSTONE, l, 2, 0.35, 0.6, 0.35, 0.03, dust, true);
+                l.getWorld().spawnParticle(Particle.FLAME, l, 1, 0.35, 0.25, 0.35, 0.03,  null, true);
                 //l.clone().add(new Vector(0, 0.5, 0)).getWorld().spawnParticle(Particle.FLAME, l, 2, 0, 0.05, 0.01, 0.05);
                 /*makePowderCircle(caster, duration, 0, radius, 16);
                 makePowderCircle(caster, duration, 1, 0.2, 4);

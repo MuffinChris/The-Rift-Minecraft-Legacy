@@ -144,8 +144,7 @@ public class ChatFunctions implements Listener {
             prefix+=" ";
         }
         if (!partychat) {
-            String format = e.getFormat();
-            format = Main.color(prefix + "%s " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f %s");
+            String format = Main.color(prefix + "%s " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f %s");
             e.setFormat(format);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (e.getMessage().toLowerCase().contains(p.getName().toLowerCase()) || e.getMessage().toLowerCase().contains(p.getDisplayName().toLowerCase())) {

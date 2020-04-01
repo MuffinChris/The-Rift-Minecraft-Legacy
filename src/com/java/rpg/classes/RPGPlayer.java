@@ -80,6 +80,78 @@ public class RPGPlayer extends Leveleable {
         return getPClass().getCalcMR(getLevel()) + mr;
     }
 
+    public double getAirDefense() {
+        double val = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (Items.getDurability(i) <= 0) {
+
+            } else {
+                val += Items.getAirDefense(i);
+            }
+        }
+        return val + getPClass().getEDefense().getAir() + getPClass().getEDefenseScaling().getAir() * getLevel();
+    }
+
+    public double getEarthDefense() {
+        double val = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (Items.getDurability(i) <= 0) {
+
+            } else {
+                val += Items.getEarthDefense(i);
+            }
+        }
+        return val + getPClass().getEDefense().getEarth() + getPClass().getEDefenseScaling().getEarth() * getLevel();
+    }
+
+    public double getElectricDefense() {
+        double val = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (Items.getDurability(i) <= 0) {
+
+            } else {
+                val += Items.getElectricDefense(i);
+            }
+        }
+        return val + getPClass().getEDefense().getElectric() + getPClass().getEDefenseScaling().getElectric() * getLevel();
+    }
+
+    public double getFireDefense() {
+        double val = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (Items.getDurability(i) <= 0) {
+
+            } else {
+                val += Items.getFireDefense(i);
+            }
+        }
+        return val + getPClass().getEDefense().getFire() + getPClass().getEDefenseScaling().getFire() * getLevel();
+    }
+
+    public double getIceDefense() {
+        double val = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (Items.getDurability(i) <= 0) {
+
+            } else {
+                val += Items.getIceDefense(i);
+            }
+        }
+        return val + getPClass().getEDefense().getIce() + getPClass().getEDefenseScaling().getIce() * getLevel();
+    }
+
+    public double getWaterDefense() {
+        double val = 0;
+        for (ItemStack i : player.getInventory().getArmorContents()) {
+            if (Items.getDurability(i) <= 0) {
+
+            } else {
+                val += Items.getWaterDefense(i);
+            }
+        }
+        return val + getPClass().getEDefense().getWater() + getPClass().getEDefenseScaling().getWater() * getLevel();
+    }
+
     public int calculateSP() {
         int total;
         if (getLevel() >= 40 && getLevel() < 50) {

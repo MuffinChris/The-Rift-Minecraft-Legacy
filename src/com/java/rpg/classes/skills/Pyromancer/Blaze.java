@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
@@ -142,11 +143,8 @@ public class Blaze extends Skill {
                             if (ticks.containsKey(p) && ticks.get(p).containsKey(ent)) {
                             } else {
                                 ticks.get(p).put(ent, 10);
-                                if (ent.getHealth() < getDmg(p) && !(ent instanceof Player)) {
-                                    ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 60));
-                                }
-                                Skill.spellDamageStatic(p, ent, getDmg(p));
                                 ent.setFireTicks(Math.min(ent.getFireTicks() + 20, 60));
+                                Skill.spellDamageStatic(p, ent, getDmg(p), new ElementalStack(10, 0, 0, 10, 0, 0));
                             }
                             alreadyLooped.add(ent);
                         }

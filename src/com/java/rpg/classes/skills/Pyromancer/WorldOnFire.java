@@ -2,6 +2,7 @@ package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
 import com.java.holograms.Hologram;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
@@ -99,11 +100,8 @@ public class WorldOnFire extends Skill implements Listener {
             if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 3)) {
                 continue;
             }
-            if (ent.getHealth() < getDmg(caster) && !(ent instanceof Player)) {
-                ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-            }
-            spellDamage(caster, ent, getDmg(caster));
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
+            spellDamage(caster, ent, getDmg(caster), new ElementalStack(0, 0, 25, 100, 0, 0));
             caster.getWorld().spawnParticle(Particle.LAVA, ent.getEyeLocation(), 15, 0.2, 0.2, 0.2, 0.2,null, true);
         }
     }
@@ -186,7 +184,7 @@ public class WorldOnFire extends Skill implements Listener {
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&aPassive:"));
-        desc.add(Main.color("&fSpell damage dealt to enemies on fire"));
+        desc.add(Main.color("&fFire damage you deal"));
         desc.add(Main.color("&fis amplified by &b" + empowered + "&fx damage."));
         desc.add(Main.color(""));
         desc.add(Main.color("&bActive:"));

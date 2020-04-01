@@ -4,11 +4,24 @@ import java.util.LinkedHashMap;
 
 public class RPGConstants {
 
+    public static String physical = "&c❤";
+    public static String armor = "⛨";
+    public static String trued = "&d♦";
+    public static String magic = "&b✦";
+    public static String air = "&f✸";
+    public static String earth = "&2❈";
+    public static String electric = "&e⚡";
+    public static String fire = "&c✴";
+    public static String ice = "&b❆";
+    public static String water = "&3✾";
+    public static String weak = "&6⚶";
+    public static String strong = "&6⛨";
+
     public static double expMod = 60;
     public static double expOff = 500;
     public static double expPow = 2.7;
 
-    public static double mobHpBase = 750;
+    public static double mobHpBase = 1250;
     public static double mobHpLevelPow = 2;
     public static double mobHpLevelScalar = 5;
     public static double mobHpBasePow = 0.8;
@@ -29,6 +42,8 @@ public class RPGConstants {
 
     public static double baseCritModifier = 2.0;
     public static double baseCritChance = 0.05;
+
+    public static double baseStatusChance = 0.10;
 
     public static String defaultClassName = "Wanderer";
 

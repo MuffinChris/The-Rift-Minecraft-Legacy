@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
@@ -131,7 +132,7 @@ public class InfernoVault extends Skill implements Listener {
             if (ent.getHealth() < landdamage && !(ent instanceof Player)) {
                 ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
             }
-            spellDamage(caster, ent, landdamage);
+            spellDamage(caster, ent, landdamage, new ElementalStack(0, 0, 0, 50, 0, 0));
             ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
         }
     }
@@ -155,7 +156,7 @@ public class InfernoVault extends Skill implements Listener {
             if (ent.getHealth() < vaultdamage && !(ent instanceof Player)) {
                 ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
             }
-            spellDamage(caster, ent, vaultdamage);
+            spellDamage(caster, ent, vaultdamage, new ElementalStack(0, 0, 0, 50, 0, 0));
             ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
         }
     }

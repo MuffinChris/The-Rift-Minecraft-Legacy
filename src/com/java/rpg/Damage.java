@@ -1,6 +1,7 @@
 package com.java.rpg;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -11,7 +12,11 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class Damage {
 
     private LivingEntity target;
-    private Double damage;
+    private double physicalDamage;
+    private double magicDamage;
+    private double trueDamage;
+    private ElementalStack elementalDamage;
+
     private DamageType dt;
     private Player caster;
     private int lifetime;
@@ -21,10 +26,12 @@ public class Damage {
     }
     private int task;
 
-    public Damage(Player caster, LivingEntity p, DamageType dt, Double damage, int lifetime) {
+    public Damage(Player caster, LivingEntity p, double physicalDamage, double magicDamage, double trueDamage, ElementalStack ed, int lifetime) {
         target = p;
-        this.dt = dt;
-        this.damage = damage;
+        this.physicalDamage = physicalDamage;
+        this.magicDamage = magicDamage;
+        this.trueDamage = trueDamage;
+        elementalDamage = ed;
         this.caster = caster;
         this.lifetime = lifetime;
         /*
@@ -60,8 +67,17 @@ public class Damage {
         return dt;
     }
 
-    public double getDamage() {
-        return damage;
+    public double getPhysicalDamage() {
+        return physicalDamage;
+    }
+    public double getMagicDamage() {
+        return magicDamage;
+    }
+    public double getTrueDamage() {
+        return trueDamage;
+    }
+    public ElementalStack getElementalDamage() {
+        return elementalDamage;
     }
 
     public Player getCaster() {
@@ -76,11 +92,10 @@ public class Damage {
         target = null;
         dt = null;
         caster = null;
-        damage = null;
     }
 
     public String toString() {
-        return "Caster: "  + caster.getName() + ", Target: " + target.getType() + ", DT: " + dt.toString() + ", Damage: " + damage;
+        return "Caster: "  + caster.getName() + ", Target: " + target.getType() + ", DT: " + dt.toString();
     }
 
 }

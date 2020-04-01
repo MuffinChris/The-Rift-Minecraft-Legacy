@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
@@ -65,7 +66,7 @@ public class Overwhelm extends Skill {
                     continue;
                 }
             } 
-            spellDamage(p, ent, damage);
+            spellDamage(p, ent, damage, new ElementalStack(0, 0, 0, 50, 0, 0));
             stun(p, ent, duration);
             dust(p, ent);
             return true;

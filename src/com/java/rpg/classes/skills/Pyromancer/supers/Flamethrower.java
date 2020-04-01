@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer.supers;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
@@ -121,7 +122,7 @@ public class Flamethrower extends Skill {
                 if (ent.getHealth() < damage && !(ent instanceof Player)) {
                     ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
                 }
-                spellDamage(caster, ent, damage);
+                spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 5, 0, 0));
                 ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
                 ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
 

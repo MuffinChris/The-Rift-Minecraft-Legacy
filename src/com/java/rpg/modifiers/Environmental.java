@@ -5,6 +5,7 @@ import com.destroystokyo.paper.event.entity.EnderDragonFlameEvent;
 import com.java.Main;
 import com.java.holograms.Hologram;
 import com.java.rpg.classes.MobEXP;
+import com.java.rpg.classes.RPGConstants;
 import net.minecraft.server.v1_15_R1.EntityIronGolem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -53,6 +54,10 @@ public class Environmental implements Listener {
         if (e.getEntity() instanceof LivingEntity && !e.isCancelled()) {
             LivingEntity p = (LivingEntity) e.getEntity();
             double hp = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+            boolean fire = false;
+            boolean poison = false;
+            boolean wither = false;
+            boolean lightning = false;
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setDamage(e.getDamage() * (hp / 30.0));
             }
@@ -61,6 +66,7 @@ public class Environmental implements Listener {
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.POISON) {
                 if (p.getHealth() > (hp * 0.025)) {
+                    poison = true;
                     e.setDamage(hp * 0.025);
                 } else {
                     e.setCancelled(true);
@@ -76,16 +82,44 @@ public class Environmental implements Listener {
                 e.setDamage(hp * 0.1);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.WITHER) {
+                wither = true;
                 e.setDamage(hp / 40.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
                 e.setDamage(hp * 0.025);
+                if (p instanceof Player) {
+                    Player pl = (Player) p;
+                    double fd = main.getRP(pl).getFireDefense();
+                    e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
+                } else {
+                    double fd = MobEXP.getElementalDefense(p).getFire();
+                    e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
+                }
+                fire = true;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE) {
                 e.setDamage(hp * 0.025);
+                if (p instanceof Player) {
+                    Player pl = (Player) p;
+                    double fd = main.getRP(pl).getFireDefense();
+                    e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
+                } else {
+                    double fd = MobEXP.getElementalDefense(p).getFire();
+                    e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
+                }
+                fire = true;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
                 e.setDamage(hp * 0.05);
+                if (p instanceof Player) {
+                    Player pl = (Player) p;
+                    double fd = main.getRP(pl).getFireDefense();
+                    e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
+                } else {
+                    double fd = MobEXP.getElementalDefense(p).getFire();
+                    e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
+                }
+                fire = true;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
                 e.setDamage((e.getDamage() / 20.0) * hp * 0.75);
@@ -95,6 +129,7 @@ public class Environmental implements Listener {
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LIGHTNING) {
                 e.setDamage((e.getDamage() / 20) * hp);
+                lightning = true;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.CONTACT) {
                 e.setDamage(e.getDamage() * (hp / 40.0));
@@ -122,9 +157,25 @@ public class Environmental implements Listener {
                 e.setDamage((e.getDamage() / 30.0) * hp);
             }
 
-            if (!(e.getEntity() instanceof ArmorStand) && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) {
+            if (!(e.getEntity() instanceof ArmorStand) && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE && !fire && !poison && !wither) {
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), "&c&l❤" + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                magic.rise();
+            }
+            if (fire) {
+                DecimalFormat df = new DecimalFormat("#.##");
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.fire + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                magic.rise();
+            }
+
+            if (poison || wither) {
+                DecimalFormat df = new DecimalFormat("#.##");
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.trued + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                magic.rise();
+            }
+            if (lightning) {
+                DecimalFormat df = new DecimalFormat("#.##");
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.electric + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
                 magic.rise();
             }
         }
@@ -187,7 +238,7 @@ public class Environmental implements Listener {
                     e.setAmount(25);
                 }
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(ent, ent.getLocation(), "&a&l❤" + df.format(e.getAmount()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(ent, ent.getLocation(), "&a❤" + df.format(e.getAmount()), Hologram.HologramType.DAMAGE);
                 magic.rise();
                 if (e.getEntity() instanceof Player) {
                     Main.sendHp((Player) e.getEntity());

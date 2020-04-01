@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
@@ -68,7 +69,7 @@ public class Avalanche extends Skill implements Listener {
 		                    continue;
 		                }
 		            }
-		            spellDamage(pl, ent, getDmg(pl));
+		            spellDamage(pl, ent, getDmg(pl), new ElementalStack(0, 0, 0, 50, 0, 0));
 		            stun(pl, ent, stunD);
 		        }
 				times++;
