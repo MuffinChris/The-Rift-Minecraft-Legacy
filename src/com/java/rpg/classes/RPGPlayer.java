@@ -55,6 +55,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getArmor() {
         double armor = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -70,6 +73,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getMR() {
         double mr = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -82,6 +88,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getAirDefense() {
         double val = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -94,6 +103,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getEarthDefense() {
         double val = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -106,6 +118,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getElectricDefense() {
         double val = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -118,6 +133,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getFireDefense() {
         double val = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -130,6 +148,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getIceDefense() {
         double val = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -142,6 +163,9 @@ public class RPGPlayer extends Leveleable {
 
     public double getWaterDefense() {
         double val = 0;
+        if (player.isDead()) {
+            return 0;
+        }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
 
@@ -175,7 +199,9 @@ public class RPGPlayer extends Leveleable {
             if (main.getRP(p).getSkillLevels().get(s.getName()) == 0) {
                 pSkills.add(s);
             } else {
-                pSkills.add(main.getRP(p).getPClass().getSuperSkills().get(index));
+                if (!main.getRP(p).getPClass().getSuperSkills().isEmpty() && main.getRP(p).getPClass().getSuperSkills().get(index) != null) {
+                    pSkills.add(main.getRP(p).getPClass().getSuperSkills().get(index));
+                }
             }
             index++;
         }
@@ -348,6 +374,10 @@ public class RPGPlayer extends Leveleable {
         return baseWS;
     }
 
+    public RPGPlayer() {
+        pclass = Main.getInstance().getCM().getPClassFromString("Wanderer");
+    }
+
     public RPGPlayer(Player p) {
         super (0, 50, p);
 
@@ -400,6 +430,8 @@ public class RPGPlayer extends Leveleable {
         toggles = new ArrayList<>();
         skillLevels = new LinkedHashMap<>();
         target = null;
+        pullFiles();
+        pushFiles();
         pullFiles();
         board = new Skillboard(p);
         pstrength = 100;
@@ -461,7 +493,7 @@ public class RPGPlayer extends Leveleable {
             }
             pData.set("LastSeen", System.currentTimeMillis());
             String name = RPGConstants.defaultClassName;
-            if (pclass instanceof PlayerClass) {
+            if (pclass != null) {
                 name = pclass.getName();
                 pData.set("Current Class", name);
             } else {

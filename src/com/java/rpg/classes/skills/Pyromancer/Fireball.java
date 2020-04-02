@@ -68,13 +68,13 @@ public class Fireball extends Skill implements Listener {
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(arrow.getEntityId());
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-            arrow.setShooter(p);
-            arrow.setVelocity(p.getEyeLocation().getDirection().multiply(2));
-            arrow.setBounce(false);
-            arrow.setGravity(false);
-            arrow.setKnockbackStrength(0);
-            arrow.setSilent(true);
         }
+        arrow.setShooter(p);
+        arrow.setVelocity(p.getEyeLocation().getDirection().multiply(2));
+        arrow.setBounce(false);
+        arrow.setGravity(false);
+        arrow.setKnockbackStrength(0);
+        arrow.setSilent(true);
         final BukkitScheduler scheduler = Bukkit.getScheduler();
         final int task = scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
             @Override

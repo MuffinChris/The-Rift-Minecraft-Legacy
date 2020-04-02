@@ -58,15 +58,67 @@ public class Main extends JavaPlugin {
 
     /*
 
+    Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
+        Rift Theme:
+            - The dungeons are all portal to nother dimension style.
+            - idk use pink and purple and incorporate portals.
+        Dynamics and Environment:
+            - Weather
+             -. Days, seasons, and weather (hypixel style). Useful for economy etc. Also make weather matter (Winter will fuck you up! Winter can also cause Mob faction of winter to spawn and kill u)
+             -. Add Dynamic Town Mechanics (resources from nearby resource locations, biome benefits, penalize traveling far [for example, making resource gens need to be close if u want more u need to optimize])
+        Farmer Profession:
+            - Breed crops to become resistant to weather, provide more resources, etc
+        Towns and Professions Interactions:
+            - Make it cost lots of resources to build Town machines. Any sort of automation, spawn portals, NPC housing etc needs to follow strict schematic like nether portal and conduit but also gives big buffs
+            - NPC Housing could just count as a bed with a door lmao
+            - Said buildings that protect and empower town (for example town not protected form start, u need to build a shield gen or smthn) cost resources to maintain
+            - Make repairing items cost a lot of mixed ingots and resources so you really need to get more resources which means traveling or optimizing.
+            - Resource gens differ based on biome! Exploration! Conquest. New mobs to find and see
+            - World Border should be something smaller, idk like 15k by 15k to encourage fights and land management
+        Dungeons:
+            - Dungeons should also give resource rewards to supplement town resource costs
+            - Dungeons can have resource zones that give superb resources that regenerate but ofc u get fukin ganked
+
+        Professions:
+        Blacksmith:
+            - Do not damage Anvils when using it
+            - Can make repair kits
+            - Can combine enchantments past big levels (custom define this stuff)
+        Enchanter:
+            - Can pick any enchantment from Enchantment table (at a large cost of course)
+            - Regular players have similar to Vanilla randomized enchantments
+        Alchemist:
+            - Custom Alchemy Menu that uses many ingredients to craft potions
+            - Potions have charges (ie 5/5), and my own custom effects
+            - Potions have a max uses (until they must be crafted again). Until then, it requires minor amounts of
+                refilling reagents (ie, water + small amnt of initial crafting ingredients) to refill the charges.
+                However they break after max uses is gone over.
+        Chef:
+            - Can cook custom food with bonuses (more hunger regen, health regen, stat buffs minor for long duration etc)
+        Farmer:
+            - Can rightclick crops to harvest, seed remains placed.
+            - Gets many drops from the farm.
+            - Can breed crops together
+
+        In general, solo players should use the market or publicly available vendors.
+
     DIRECT LINE TODO LIST:
+
+        -36. Make abilities not able to target or damage tamed mobs!
+
+        -35. Potion Effects need to be reworked, and Attributes need to be updated! (Strength is +3 atk etc)
+
+        -34. Find a better solution for mob burning. Perhaps XP cap gain if Environmental but only if the XP is very high!
+
+        -33. Projectiles are not showing damage holograms
+
+        -32. Disable Drowned Conversion (have own ocean mobs). Make sure to update DmgThreshold and EDefense when a mob transforms.
+
+        -31. List command works by permissions (ranks)
 
         -30 (RELEVANT RN): Add elemental damage from non player sources (mobs)
 
-        -29. Setting to hide dmg holograms and EXP
-
-        -28. Days, seasons, and weather (hypixel style). Useful for economy etc. Also make weather matter (Winter will fuck you up!)
-
-        -27. Add Dynamic Town Mechanics (resources from nearby resource locations, biome benefits, penalize traveling far [for example, making resource gens need to be close if u want more u need to optimize])
+        -29. Setting to hide dmg holograms and EXP and TOGGLE OFFHAND!!!
 
         -26. Fix pyromancer health check for ignition. Make a method to check, and incorporate defense calculations
 
@@ -132,7 +184,7 @@ public class Main extends JavaPlugin {
 
         -15. More vanilla exp drop from better mobs
 
-        -14. Balance totems of undying
+        -14. Balance totems of undying (make them good, perhaps have durability or charges!)
 
         -13. Correctly balance mobs that are wearing armor.
 
@@ -175,47 +227,17 @@ public class Main extends JavaPlugin {
         - Need to make drops and loot not have vanilla enchantments. If the enchantment is not supported (like proj prot), remove it!
         - Make sure to change existing ench changes (ie. mending)
 
-        Professions:
-        Blacksmith:
-            - Do not damage Anvils when using it
-            - Can make repair kits
-            - Can combine enchantments past big levels (custom define this stuff)
-        Enchanter:
-            - Can pick any enchantment from Enchantment table (at a large cost of course)
-            - Regular players have similar to Vanilla randomized enchantments
-        Alchemist:
-            - Everybody can make Vanilla pots
-            - Alchemists can make special pots that signif buff stats for short time
-        Chef:
-            - Can cook custom food with bonuses (more hunger regen, health regen, stat buffs minor for long duration etc)
-        Farmer:
-            - Can rightclick crops to harvest, seed remains placed.
-            - Gets many drops from the farm.
-
-        In general, solo players should use the market or publicly available vendors.
 
 
         2. Disallow Shield usage for non shield classes
-
-        3. clear passives on change class, in general make it more standardized on stat obj sys
-
-        5. xp metadata for dungeons?
 
         6. Iron golem healing is absolute dogshit
 
         7. Allow spells to be casted twice! (no errors lul)
 
-        8. Override restart and stop cmd to be restart in 3 seconds. (important so can file save bfore death)
-
-        9. Bulwark doesnt block projectiles (test this)
-
         10. Wanderer no skill levels (test this)
 
         11. allow players to set spawnpoint at their town maybe? (later)
-
-        12. Perhaps redesign damage system to be attached to players. Rn potential issues. (test!)
-
-        13. Add toggle if shift-offhand even works
 
         . Removing armor defense appears not to work on enchanted items (dropped specifically)
                ^^^ MUST DEBUG USING PRINTING NBT TAG INFO
@@ -805,8 +827,13 @@ public class Main extends JavaPlugin {
         for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {
                 if (e.getType() == EntityType.ARMOR_STAND) {
-                    if (e.isCustomNameVisible() && (e.getCustomName().contains("❤") || e.getCustomName().contains("⚡") || e.getCustomName().contains("♦") || e.getCustomName().contains("⚔"))) {
-                        e.remove();
+                    if (e.isCustomNameVisible()) {
+                        for (String s : RPGConstants.damages) {
+                            if (e.getCustomName().replace("§","&").contains(s)) {
+                                e.remove();
+                                break;
+                            }
+                        }
                     }
                     continue;
                 }

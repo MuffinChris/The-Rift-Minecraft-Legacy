@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 public class RPGConstants {
 
     public static String physical = "&c❤";
-    public static String armor = "⛨";
     public static String trued = "&d♦";
     public static String magic = "&b✦";
     public static String air = "&f✸";
@@ -14,6 +13,10 @@ public class RPGConstants {
     public static String fire = "&c✴";
     public static String ice = "&b❆";
     public static String water = "&3✾";
+
+    public static String[] damages = new String[]{physical, trued, magic, air, earth, electric, fire, ice, water};
+
+    public static String armor = "⛨";
     public static String weak = "&6⚶";
     public static String strong = "&6⛨";
 

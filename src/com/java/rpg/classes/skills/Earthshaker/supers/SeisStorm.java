@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker.supers;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
@@ -37,7 +38,7 @@ public class SeisStorm extends Skill implements Listener {
     
     public void cast(Player p) {
     	super.cast(p);
-        main.getRP(p).getDmgReduction().getStatuses().add(new StatusValue("Damage Reduction" + p.getName(), 50, duration, System.currentTimeMillis(), false));
+        //main.getRP(p).getDmgReduction().getStatuses().add(new StatusValue("Damage Reduction" + p.getName(), 50, duration, System.currentTimeMillis(), false));
     	new BukkitRunnable() {
     		int times = 0;
     		double random;
@@ -59,7 +60,7 @@ public class SeisStorm extends Skill implements Listener {
     	            }
     	            if (random < 1) {
 	    	            ent.setKiller(p);
-	    	            spellDamage(p, ent, getDmg(p));
+	    	            spellDamage(p, ent, getDmg(p), new ElementalStack());
     	            }
     			}
     			

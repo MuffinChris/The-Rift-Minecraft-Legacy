@@ -43,6 +43,15 @@ public class Leveleable {
         expPow = RPGConstants.expPow;
     }
 
+    public Leveleable() {
+        this.level = 0;
+        this.maxlevel = 50;
+        this.rp = null;
+        expMod = RPGConstants.expMod;
+        expOff = RPGConstants.expOff;
+        expPow = RPGConstants.expPow;
+    }
+
     public void scrub() {
         rp = null;
     }

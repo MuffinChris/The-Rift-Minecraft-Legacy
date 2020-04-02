@@ -213,28 +213,31 @@ public class ClassManager implements Listener {
 
     public void passives(Player p) {
         RPGPlayer rp = main.getPC().get(p.getUniqueId());
-        if (rp instanceof RPGPlayer && rp.getPClass() instanceof PlayerClass) {
+        if (rp != null && rp.getPClass() != null) {
             List<Skill> skillsToAdd = new ArrayList<>();
-            for (Skill s : rp.getSkillsAll()) {
-                if (s.getType().contains("PASSIVE") && s.getLevel() <= rp.getLevel()) {
-                    if (!rp.getPassives().contains(s.getName())) {
-                        skillsToAdd.add(s);
+            if (!rp.getSkillsAll().isEmpty()) {
+                for (Skill s : rp.getSkillsAll()) {
+                    if (s.getType().contains("PASSIVE") && s.getLevel() <= rp.getLevel()) {
+                        if (!rp.getPassives().contains(s.getName())) {
+                            skillsToAdd.add(s);
+                        }
                     }
                 }
             }
-            for (Skill s : skillsToAdd) {
-                rp.getPassives().add(s.getName());
-                int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
-                    public void run() {
-                        s.passive(p);
-                    }
-                }, 0L, s.getPassiveTicks());
-                Map<Integer, String> taskSkill = new HashMap<>();
-                taskSkill.put(task, s.getName());
-                rp.getPassiveTasks().add(taskSkill);
+            if (skillsToAdd.isEmpty()) {
+                for (Skill s : skillsToAdd) {
+                    rp.getPassives().add(s.getName());
+                    int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
+                        public void run() {
+                            s.passive(p);
+                        }
+                    }, 0L, s.getPassiveTicks());
+                    Map<Integer, String> taskSkill = new HashMap<>();
+                    taskSkill.put(task, s.getName());
+                    rp.getPassiveTasks().add(taskSkill);
+                }
             }
             cleanPassives(p);
-            skillsToAdd = new ArrayList<>();
         } else {
             cleanPassives(p);
         }

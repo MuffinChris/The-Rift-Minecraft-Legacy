@@ -54,7 +54,7 @@ public class XPList {
 
     public boolean getAloneAndHighEnv(Player p) {
         if (getPercentages().containsKey(p) && getPercentages().size() == 1) {
-            if (getPercentages().get(p) < 0.75) {
+            if (getPercentages().get(p) < 0.25) {
                 return true;
             }
         }
@@ -63,7 +63,7 @@ public class XPList {
 
     public boolean getAloneAndLowEnv(Player p) {
         if (getPercentages().containsKey(p) && getPercentages().size() == 1) {
-            if (getPercentages().get(p) >= 0.75) {
+            if (getPercentages().get(p) >= 0.25) {
                 return true;
             }
         }

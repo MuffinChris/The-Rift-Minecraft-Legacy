@@ -65,7 +65,23 @@ public class Hologram implements Listener {
         stand.setMarker(true);
         if (type == HologramType.DAMAGE || type == HologramType.EXP || type == HologramType.STATUS) {
             if (type == HologramType.EXP) {
-                stand.teleport(loc.clone().add(new Vector(0, e.getHeight()/2.0, 0)));
+                double neg = Math.random();
+                double neg2 = Math.random();
+                double mod = 0.1;
+                double mod2 = 0.1;
+                if (neg < 0.5) {
+                    neg = -0.3;
+                    mod*=-1;
+                } else {
+                    neg = 0.3;
+                }
+                if (neg2 < 0.5) {
+                    neg2 = -0.3;
+                    mod2*=-1;
+                } else {
+                    neg2 = 0.3;
+                }
+                stand.teleport(loc.clone().add(new Vector(Math.random() * neg + mod, e.getHeight()/2.0, Math.random() * neg2 + mod2)));
             } else {
                 double neg = Math.random();
                 double neg2 = Math.random();

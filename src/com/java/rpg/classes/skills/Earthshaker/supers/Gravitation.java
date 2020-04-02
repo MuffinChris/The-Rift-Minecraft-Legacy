@@ -62,7 +62,7 @@ public class Gravitation extends Skill implements Listener {
     	                }
     	            }
     	            ent.setKiller(p);
-    	            spellDamage(p, ent, getDmg(p));
+    	            //spellDamage(p, ent, getDmg(p));
    
     				times++;
     				if(times >= duration) {

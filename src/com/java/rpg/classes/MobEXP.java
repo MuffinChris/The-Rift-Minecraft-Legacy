@@ -835,14 +835,15 @@ public class MobEXP implements Listener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onEnvDmg (EntityDamageEvent e) {
-        if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE && e.getCause() != EntityDamageEvent.DamageCause.DRAGON_BREATH && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK)
-        if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
-            LivingEntity ent = (LivingEntity) e.getEntity();
-            if (xp.containsKey(ent)) {
-                xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
-            } else {
-                xp.put(ent, new XPList());
-                xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
+        if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE && e.getCause() != EntityDamageEvent.DamageCause.MAGIC && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+            if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
+                LivingEntity ent = (LivingEntity) e.getEntity();
+                if (xp.containsKey(ent)) {
+                    xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
+                } else {
+                    xp.put(ent, new XPList());
+                    xp.get(ent).setEnvDmg(xp.get(ent).getEnvDmg() + e.getDamage());
+                }
             }
         }
     }
@@ -893,7 +894,7 @@ public class MobEXP implements Listener {
                     } else {
                         if (xp.get(ent).getAloneAndHighEnv(pl)) {
                             DecimalFormat dF = new DecimalFormat("#.##");
-                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.25), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.25) * 100.0) + "%");
+                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.25), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.75) * 100.0) + "%");
                         } else {
                             main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
                         }

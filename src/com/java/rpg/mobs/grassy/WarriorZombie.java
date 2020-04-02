@@ -118,7 +118,7 @@ public class WarriorZombie extends EntityZombie {
         ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(1250 + level * 50);
         ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         ent.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        ent.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.35);
+        ent.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3);
 
         ent.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(0.0);
 

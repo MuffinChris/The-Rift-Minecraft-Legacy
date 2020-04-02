@@ -21,9 +21,11 @@ public class UnstopForce extends Skill implements Listener {
     
     private double APscale = .5;
     private double ADscale = 1;
-    
+
+    double damage = 0;
+    double detectRadius = 0;
     public double getDmg(Player p) {
-        return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale );
+        return (damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale );
     }
     
     public UnstopForce() {
@@ -51,10 +53,10 @@ public class UnstopForce extends Skill implements Listener {
     	p.teleport(start.add(face).multiply(speed));
     }
     
-    public void collide(Player p) {
+    /*public void collide(Player p) {
     	for(LivingEntity ent: p.getNearbyLivingEntities(hitRad)) {
     		ent.setVelocity(new Vector(0,launchVelocity,0));
     		spellDamage(p,ent,getDmg(p));
     	}
-    }
+    }*/
 }

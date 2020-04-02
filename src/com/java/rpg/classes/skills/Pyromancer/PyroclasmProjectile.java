@@ -118,15 +118,14 @@ public class PyroclasmProjectile {
                     }
                     locOf = locOf.add(target.get(p.getUniqueId()).getEyeLocation().subtract(new Vector(0, target.get(p.getUniqueId()).getHeight() * 0.5, 0)).toVector().subtract(locOf.toVector()).normalize().multiply((travelspeed * 1.0)));
                     if (locOf.distance(target.get(p.getUniqueId()).getEyeLocation().subtract(new Vector(0, target.get(p.getUniqueId()).getHeight() * 0.5, 0))) <= 0.5) {
+                        double dmg = damage * (Math.pow(ratio, bounces));
                         if (target.get(p.getUniqueId()).getFireTicks() > 0) {
-                            target.get(p.getUniqueId()).setFireTicks(Math.min(80 + target.get(p.getUniqueId()).getFireTicks(), 100));
-                            Skill.spellDamageStatic(p, target.get(p.getUniqueId()), damage * empowered * (Math.pow(ratio, bounces)), new ElementalStack(10, 10, 100, 50, 10, 10));
-                            target.get(p.getUniqueId()).getWorld().playSound(target.get(p.getUniqueId()).getEyeLocation(), Sound.ITEM_BUCKET_FILL_LAVA, 1.0F, 1.0F);
-                        } else {
-                            target.get(p.getUniqueId()).getWorld().playSound(target.get(p.getUniqueId()).getEyeLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0F, 1.0F);
-                            target.get(p.getUniqueId()).setFireTicks(Math.min(80 + target.get(p.getUniqueId()).getFireTicks(), 100));
-                            Skill.spellDamageStatic(p, target.get(p.getUniqueId()), damage * (Math.pow(ratio, bounces)), new ElementalStack(10, 0, 100, 50, 0, 0));
+                            dmg*=empowered;
                         }
+                        target.get(p.getUniqueId()).setFireTicks(Math.min(80 + target.get(p.getUniqueId()).getFireTicks(), 100));
+                        Skill.spellDamageStatic(p, target.get(p.getUniqueId()), dmg, new ElementalStack(0, 0, 0, 50, 0, 0));
+                        target.get(p.getUniqueId()).getWorld().playSound(target.get(p.getUniqueId()).getEyeLocation(), Sound.ITEM_BUCKET_FILL_LAVA, 1.0F, 1.0F);
+
                         if (lastTarget.containsKey(p.getUniqueId())) {
                             lastTarget.remove(p.getUniqueId());
                         }

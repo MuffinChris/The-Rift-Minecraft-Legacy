@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.StatusValue;
 import com.java.rpg.party.Party;
@@ -54,7 +55,7 @@ public class RockToss extends Skill implements Listener {
                 }
             }
             ent.setKiller(p);
-            spellDamage(p, ent, getDmg(p));
+            spellDamage(p, ent, getDmg(p), new ElementalStack());
             stun(p, ent, stunD);
     	}
     }
