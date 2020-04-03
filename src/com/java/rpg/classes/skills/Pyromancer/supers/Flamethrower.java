@@ -1,25 +1,15 @@
 package com.java.rpg.classes.skills.Pyromancer.supers;
 
 import com.java.Main;
-import com.java.rpg.classes.ElementalStack;
+import com.java.rpg.classes.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.StatusValue;
-import com.java.rpg.party.Party;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
-import org.bukkit.Bukkit;
+import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,40 +80,24 @@ public class Flamethrower extends Skill {
             Location loc = origin.add(direction);
             loc.getWorld().spawnParticle(Particle.FLAME, loc, 10 + (int) i * 5, 0.01 + i / 1.5, 0.01 + i / 2.0, 0.01 + i / 1.5, 0.0001, null, true);
 
-            for (LivingEntity ent : loc.getNearbyLivingEntities(i + 2)) {
-                if (ent instanceof ArmorStand) {
-                    continue;
-                }
+            for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(loc, caster, i + 2)) {
                 if (alreadyHit.contains(ent)) {
                     continue;
                 }
                 double dist = Math.sqrt(Math.pow(loc.getX() - ent.getLocation().getX(), 2) + Math.pow(loc.getZ() - ent.getLocation().getZ(), 2));
-                if (!(dist < 0.6)) {
+                if (!(dist < 1 + i)) {
                     continue;
                 }
                 if (!(Math.abs(ent.getLocation().add(new Vector(0, ent.getHeight()/2.0, 0)).getY() - loc.getY()) < ent.getHeight()/1.9)) {
                     continue;
                 }
-                if (ent instanceof Player) {
-                    Player p = (Player) ent;
-                    if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
-                        if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                            continue;
-                        }
-                    }
-                    if (p.equals(caster)) {
-                        continue;
-                    }
-                }
                 if (Math.abs(ent.getLocation().getY() - loc.getY()) > i / 1.5) {
                     continue;
                 }
                 alreadyHit.add(ent);
-                if (ent.getHealth() < damage && !(ent instanceof Player)) {
-                    ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
-                }
-                spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 5, 0, 0));
+
                 ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
+                spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 5, 0, 0));
                 ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
 
             }

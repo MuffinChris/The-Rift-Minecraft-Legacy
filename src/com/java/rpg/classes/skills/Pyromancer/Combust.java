@@ -75,7 +75,7 @@ public class Combust extends Skill implements Listener {
     public void projectileHe (ProjectileHitEvent e) {
         if (e.getEntity() instanceof Arrow) {
             Arrow a = (Arrow) e.getEntity();
-            if (a.getCustomName() instanceof String && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
+            if (a.getCustomName() != null && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
                 Player shooter = (Player) a.getShooter();
                 /*if (e.getHitEntity() instanceof Entity) {
                     explodeSingle(shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
@@ -93,22 +93,13 @@ public class Combust extends Skill implements Listener {
     public void onHit (EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Arrow && !(e.getEntity() instanceof ArmorStand)) {
             Arrow a = (Arrow) e.getDamager();
-            if (a.getCustomName() instanceof String && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
+            if (a.getCustomName() != null && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
                 Player shooter = (Player) a.getShooter();
-                if (e.getEntity() instanceof Player) {
-                    Player p = (Player) e.getEntity();
-                    if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
-                        if (main.getPM().getParty(p).getPlayers().contains(a.getShooter())) {
-                            a.remove();
-                            e.setCancelled(true);
-                            return;
-                        }
-                    }
-                    if (p.equals(shooter)) {
-                        a.remove();
-                        e.setCancelled(true);
-                        return;
-                    }
+                if (!main.isValidTarget(e.getEntity(), shooter)) {
+                    a.remove();
+                    e.setDamage(0);
+                    e.setCancelled(true);
+                    return;
                     //((CraftPlayer)p).getHandle().getDataWatcher().set(new DataWatcherObject<>(10, DataWatcherRegistry.b),0);
                 }
                 /*if (e.getEntity() instanceof LivingEntity) {

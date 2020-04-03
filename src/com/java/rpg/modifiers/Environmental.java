@@ -4,13 +4,10 @@ import com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent;
 import com.destroystokyo.paper.event.entity.EnderDragonFlameEvent;
 import com.java.Main;
 import com.java.holograms.Hologram;
-import com.java.rpg.classes.MobEXP;
+import com.java.rpg.mobs.MobEXP;
 import com.java.rpg.classes.RPGConstants;
-import net.minecraft.server.v1_15_R1.EntityIronGolem;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftIronGolem;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,8 +17,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 
@@ -176,10 +171,11 @@ public class Environmental implements Listener {
                 e.setDamage(hp / 10.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
-                if (e.getDamage() < 1000000) {
+                double dmg = 1000000000;
+                if (e.getDamage() < dmg) {
                     e.setDamage(hp * 0.1);
                 } else {
-                    e.setDamage(1000000000);
+                    e.setDamage(dmg);
                 }
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL) {
@@ -223,23 +219,25 @@ public class Environmental implements Listener {
         }
     }
 
+    public static String dragonBreath = "EnderDragonFlame";
+
     @EventHandler
     public void dragonBreath (EnderDragonFlameEvent e) {
-        e.getAreaEffectCloud().setCustomName("EdragFlame");
+        e.getAreaEffectCloud().setCustomName(dragonBreath);
     }
 
     @EventHandler
     public void dragonFireball (EnderDragonFireballHitEvent e) {
-        e.getAreaEffectCloud().setCustomName("EdragFlame");
+        e.getAreaEffectCloud().setCustomName(dragonBreath);
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void lingeringPotion(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof AreaEffectCloud) {
             AreaEffectCloud cloud = (AreaEffectCloud) e.getDamager();
-            if (cloud.getBasePotionData().getType() == PotionType.INSTANT_DAMAGE || (cloud.getCustomName() != null && cloud.getCustomName().equals("EdragFlame"))) {
+            if (cloud.getBasePotionData().getType() == PotionType.INSTANT_DAMAGE || (cloud.getCustomName() != null && cloud.getCustomName().equals(dragonBreath))) {
                 if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand)) {
-                    if ((cloud.getCustomName() != null && cloud.getCustomName().equals("EdragFlame"))) {
+                    if ((cloud.getCustomName() != null && cloud.getCustomName().equals(dragonBreath))) {
                         double dmg = (e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.15);
 
                         DecimalFormat df = new DecimalFormat("#.##");
@@ -277,9 +275,9 @@ public class Environmental implements Listener {
                 if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN || e.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED) {
                     e.setAmount(hp * 0.025);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.MAGIC_REGEN) {
-                    e.setAmount((e.getAmount() * (hp/40)));
+                    e.setAmount((e.getAmount() * (hp/40.0)));
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.MAGIC) {
-                    e.setAmount((e.getAmount() / 30) * hp);
+                    e.setAmount((e.getAmount() / 30.0) * hp);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.EATING) {
                     e.setAmount(hp * 0.015);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.ENDER_CRYSTAL) {

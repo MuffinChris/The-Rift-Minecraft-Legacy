@@ -1,23 +1,16 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.holograms.Hologram;
-import com.java.rpg.classes.ElementalStack;
+import com.java.rpg.classes.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.StatusValue;
-import com.java.rpg.party.Party;
-import org.bukkit.Effect;
+import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
@@ -82,22 +75,8 @@ public class WorldOnFire extends Skill implements Listener {
         //caster.getWorld().spawnParticle(Particle.LAVA, caster.getEyeLocation(), 45, 0, 0.2, 0.2, 0.2);
         caster.getWorld().playSound(caster.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
         caster.getWorld().playSound(caster.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
-        for (LivingEntity ent : caster.getLocation().getNearbyLivingEntities(range)) {
-            if (ent instanceof ArmorStand) {
-                continue;
-            }
-            if (ent instanceof Player) {
-                Player p = (Player) ent;
-                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
-                    if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                        continue;
-                    }
-                }
-                if (p.equals(caster)) {
-                    continue;
-                }
-            }
-            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 3)) {
+        for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(caster.getLocation(), caster, range)) {
+            if (!(Math.abs(ent.getLocation().getY() - caster.getLocation().getY()) < 3.5)) {
                 continue;
             }
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
@@ -117,22 +96,8 @@ public class WorldOnFire extends Skill implements Listener {
                 main.getPC().get(p.getUniqueId()).setPStrength(main.getPC().get(p.getUniqueId()).getPStrength() + ramp);
             }
         }*/
-        for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(range)) {
-            if (ent instanceof ArmorStand) {
-                continue;
-            }
-            if (ent instanceof Player) {
-                Player pl = (Player) ent;
-                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
-                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
-                        continue;
-                    }
-                }
-                if (p.equals(pl)) {
-                    continue;
-                }
-            }
-            if (!(Math.abs(ent.getLocation().getY() - p.getLocation().getY()) < 3)) {
+        for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(p.getLocation(), p, range)) {
+            if (!(Math.abs(ent.getLocation().getY() - p.getLocation().getY()) < 3.5)) {
                 continue;
             }
             ent.setKiller(p);

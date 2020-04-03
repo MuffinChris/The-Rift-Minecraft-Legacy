@@ -1,11 +1,9 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.ElementalStack;
+import com.java.rpg.classes.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.party.Party;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -87,7 +85,7 @@ public class PyroclasmProjectile {
                 }
                 if (!target.containsKey(p.getUniqueId())) {
                     DecimalFormat dF = new DecimalFormat("#");
-                    List<LivingEntity> nearbyEnts = getNearbyEnts(locOf, p);
+                    List<LivingEntity> nearbyEnts = main.getNearbyLivingEntitiesTargetValid(locOf, p, range);
                     boolean found = false;
                     if (nearbyEnts.size() > 0) {
                         LivingEntity randomEnt = (LivingEntity) nearbyEnts.toArray()[Integer.valueOf(dF.format(Math.floor(Math.random() * nearbyEnts.size())))];
@@ -222,7 +220,7 @@ public class PyroclasmProjectile {
         }
         //loc.getWorld().spawnParticle(Particle.LAVA, loc, 1, 0.0, 0.001, 0.001, 0.001);
     }
-
+/*
     public List<LivingEntity> getNearbyEnts(Location loc, Player p) {
         List<LivingEntity> list = new ArrayList<>();
         for (LivingEntity ent : loc.getNearbyLivingEntities(range)) {
@@ -244,5 +242,5 @@ public class PyroclasmProjectile {
         }
         return list;
     }
-
+*/
 }

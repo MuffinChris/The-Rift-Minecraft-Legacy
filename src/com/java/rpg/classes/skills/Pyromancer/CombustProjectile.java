@@ -1,16 +1,14 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.ElementalStack;
+import com.java.rpg.classes.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -86,21 +84,7 @@ public class CombustProjectile {
         loc.getWorld().spawnParticle(Particle.LAVA, loc, 10, 0.1, 0.1, 0.1, 0.05,null, true);
         loc.getWorld().playSound(loc, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1.0F, 1.0F);
         loc.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, loc, 1, 0.12, 0.12, 0.12, 0.12,null, true);
-        for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
-            if (ent instanceof ArmorStand) {
-                continue;
-            }
-            if (ent instanceof Player) {
-                Player p = (Player) ent;
-                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
-                    if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                        continue;
-                    }
-                }
-                if (p.equals(caster)) {
-                    continue;
-                }
-            }
+        for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(loc, caster, 1.1)) {
             /*new BukkitRunnable() {
                 public void run() {*/
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
@@ -149,41 +133,13 @@ public class CombustProjectile {
                 loc.getWorld().playSound(loc, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 3.0F, 1.0F);
                 loc.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, loc, 10, 3.0, 3.0, 3.0, 0.2,null, true);
                 int numEnts = 0;
-                for (LivingEntity ent : loc.getNearbyLivingEntities(range)) {
-                    if (ent instanceof ArmorStand) {
-                        continue;
-                    }
-                    if (ent instanceof Player) {
-                        Player p = (Player) ent;
-                        if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
-                            if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                                continue;
-                            }
-                        }
-                        if (p.equals(caster)) {
-                            continue;
-                        }
-                    }
+                for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(loc, caster, range)) {
                     if (Math.abs(ent.getLocation().getY() - loc.getY()) > upDownRange) {
                         continue;
                     }
                     numEnts++;
                 }
-                for (LivingEntity ent : loc.getNearbyLivingEntities(range)) {
-                    if (ent instanceof ArmorStand) {
-                        continue;
-                    }
-                    if (ent instanceof Player) {
-                        Player p = (Player) ent;
-                        if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
-                            if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                                continue;
-                            }
-                        }
-                        if (p.equals(caster)) {
-                            continue;
-                        }
-                    }
+                for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(loc, caster, range)) {
                     if (Math.abs(ent.getLocation().getY() - loc.getY()) > upDownRange) {
                         continue;
                     }

@@ -1,13 +1,10 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.ElementalStack;
+import com.java.rpg.classes.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.StatusValue;
-import com.java.rpg.party.Party;
-import org.bukkit.Location;
+import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Sound;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -123,23 +120,8 @@ public class Blaze extends Skill {
                 }
                 List<LivingEntity> alreadyLooped = new ArrayList<>();
                 for (BlazeSpot b : blazeLocations.get(p)) {
-                    for (LivingEntity ent : b.getLoc().getNearbyLivingEntities(radius)) {
+                    for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(b.getLoc(), p, radius)) {
                         if (!alreadyLooped.contains(ent)) {
-                            if (ent instanceof ArmorStand) {
-                                continue;
-                            }
-                            if (ent instanceof Player) {
-                                Player pl = (Player) ent;
-                                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
-                                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
-                                        continue;
-                                    }
-                                }
-                                if (pl.equals(p)) {
-                                    continue;
-                                }
-                            }
-
                             if (ticks.containsKey(p) && ticks.get(p).containsKey(ent)) {
                             } else {
                                 ticks.get(p).put(ent, 10);

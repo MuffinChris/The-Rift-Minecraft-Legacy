@@ -1,39 +1,20 @@
 package com.java.rpg.mobs.grassy;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
-import com.java.Main;
-import com.java.rpg.classes.ElementalStack;
-import com.java.rpg.classes.LevelRange;
-import com.java.rpg.classes.MobEXP;
+import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.classes.utility.LevelRange;
+import com.java.rpg.mobs.MobEXP;
 import com.java.rpg.classes.RPGConstants;
-import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTEntity;
-import de.tr7zw.nbtapi.NBTItem;
-import de.tr7zw.nbtapi.NBTList;
 import net.minecraft.server.v1_15_R1.*;
 import com.java.rpg.player.Items;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftZombie;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Zombie;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class WarriorZombie extends EntityZombie {
 

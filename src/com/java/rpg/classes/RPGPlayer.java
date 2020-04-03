@@ -1,23 +1,20 @@
 package com.java.rpg.classes;
 
 import com.java.Main;
-import com.java.holograms.Hologram;
-import com.java.rpg.Damage;
-import com.java.rpg.party.Party;
+import com.java.rpg.modifiers.utility.Damage;
+import com.java.rpg.classes.casting.Skillboard;
+import com.java.rpg.classes.utility.StatusObject;
+import com.java.rpg.classes.utility.StatusValue;
 import com.java.rpg.player.Items;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import com.java.rpg.Leveleable;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,7 +23,6 @@ import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class RPGPlayer extends Leveleable {
 
@@ -55,7 +51,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getArmor() {
         double armor = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -73,7 +69,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getMR() {
         double mr = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -88,7 +84,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getAirDefense() {
         double val = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -103,7 +99,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getEarthDefense() {
         double val = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -118,7 +114,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getElectricDefense() {
         double val = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -133,7 +129,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getFireDefense() {
         double val = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -148,7 +144,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getIceDefense() {
         double val = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -163,7 +159,7 @@ public class RPGPlayer extends Leveleable {
 
     public double getWaterDefense() {
         double val = 0;
-        if (player.isDead()) {
+        if (player == null) {
             return 0;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
@@ -728,30 +724,8 @@ public class RPGPlayer extends Leveleable {
         }
     }
 
-    public ArrayList<LivingEntity> getNearbyTargets(Player p, int range) {
-        ArrayList<LivingEntity> list = new ArrayList<>();
-        for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(range)) {
-            if (ent instanceof ArmorStand) {
-                continue;
-            }
-            if (ent instanceof Player) {
-                Player pl = (Player) ent;
-                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
-                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
-                        continue;
-                    }
-                }
-                if (pl.equals(p)) {
-                    continue;
-                }
-            }
-            list.add(ent);
-        }
-        return list;
-    }
-
     public LivingEntity getNearestEntityInSight(Player player, int range) {
-        ArrayList<LivingEntity> entities = new ArrayList(getNearbyTargets(player, range));
+        List<LivingEntity> entities = main.getNearbyLivingEntitiesTargetValid(player, range);
         List<LivingEntity> sortedEntities = new ArrayList<>();
         while(!entities.isEmpty()) {
             double dist = 999;
@@ -765,18 +739,18 @@ public class RPGPlayer extends Leveleable {
             entities.remove(add);
             sortedEntities.add(add);
         }
-            for (LivingEntity ent : sortedEntities) {
-                Vector toEntity = ent.getLocation().toVector().subtract(player.getEyeLocation().toVector());
-                Vector toEntity2 = ent.getEyeLocation().toVector().subtract(player.getEyeLocation().toVector());
-                Vector direction = player.getEyeLocation().getDirection();
-                double dot = toEntity.normalize().dot(direction);
-                double dot2 = toEntity2.normalize().dot(direction);
-                if (dot > 0.98 || dot2 > 0.98) {
-                    if (player.hasLineOfSight(ent)) {
-                        return ent;
-                    }
+        for (LivingEntity ent : sortedEntities) {
+            Vector toEntity = ent.getLocation().toVector().subtract(player.getEyeLocation().toVector());
+            Vector toEntity2 = ent.getEyeLocation().toVector().subtract(player.getEyeLocation().toVector());
+            Vector direction = player.getEyeLocation().getDirection();
+            double dot = toEntity.normalize().dot(direction);
+            double dot2 = toEntity2.normalize().dot(direction);
+            if (dot > 0.98 || dot2 > 0.98) {
+                if (player.hasLineOfSight(ent)) {
+                    return ent;
                 }
             }
+        }
         //}
         return null;
     }
@@ -1172,9 +1146,7 @@ public class RPGPlayer extends Leveleable {
                 scheduler.cancelTask((int) map.keySet().toArray()[0]);
                 getPassiveTasks().remove(map);
             }
-            tasksToRemove = new ArrayList<>();
         }
-        skillsToRemove = new ArrayList<>();
         board.scrub();
         board = null;
         damages = new ArrayList<>();

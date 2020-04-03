@@ -2,15 +2,13 @@ package com.java.rpg.classes;
 
 import com.java.Main;
 import com.java.holograms.Hologram;
-import com.java.rpg.Damage;
+import com.java.rpg.modifiers.utility.Damage;
 import com.java.rpg.classes.skills.Pyromancer.WorldOnFire;
-import com.java.rpg.party.Party;
+import com.java.rpg.classes.utility.ElementalStack;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -20,55 +18,34 @@ public class Skill {
 
     private Main main = Main.getInstance();
 
-    public void spellDamage(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
-        if (target.isDead() || target.isInvulnerable()) {
-            return;
-        }
-        if (target instanceof Player) {
-            Player t = (Player) target;
-            if (t.getGameMode() == GameMode.CREATIVE) {
-                return;
-            }
-            if (main.getPM().getParty(t) != null && !main.getPM().getParty(t).getPvp()) {
-                if (main.getPM().getParty(t).getPlayers().contains(caster)) {
-                    return;
-                }
-            }
-        }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
-            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
-        }
-        main.getRP(caster).getDamages().add(new Damage(caster, target, 0, damage, 0, edmg, 1));
+    public static void damageNoKB(Player caster, LivingEntity target, double damage) {
         double kbr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue();
         target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         target.setNoDamageTicks(0);
         target.damage(damage, caster);
         target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(kbr);
     }
-    public static void spellDamageStatic(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
-        if (target.isDead() || target.isInvulnerable()) {
+
+    public void spellDamage(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
+        if (!main.isValidTarget(target, caster)) {
             return;
         }
-        if (target instanceof Player) {
-            Player t = (Player) target;
-            if (t.getGameMode() == GameMode.CREATIVE) {
-                return;
-            }
-            if (Main.getInstance().getPM().getParty(t) != null && !Main.getInstance().getPM().getParty(t).getPvp()) {
-                if (Main.getInstance().getPM().getParty(t).getPlayers().contains(caster)) {
-                    return;
-                }
-            }
+        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
+            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
+        }
+        main.getRP(caster).getDamages().add(new Damage(caster, target, 0, damage, 0, edmg, 1));
+        damageNoKB(caster, target, damage);
+    }
+
+    public static void spellDamageStatic(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
+        if (!Main.getInstance().isValidTarget(target, caster)) {
+            return;
         }
         if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
             edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
         }
         Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, 0, damage, 0, edmg, 1));
-        double kbr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue();
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        target.setNoDamageTicks(0);
-        target.damage(damage, caster);
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(kbr);
+        damageNoKB(caster, target, damage);
 
     }
 

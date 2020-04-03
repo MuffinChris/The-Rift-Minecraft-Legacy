@@ -24,7 +24,7 @@ public class RPGConstants {
     public static double expOff = 500;
     public static double expPow = 2.7;
 
-    public static double mobHpBase = 1250;
+    public static double mobHpBase = 500;
     public static double mobHpLevelPow = 2;
     public static double mobHpLevelScalar = 5;
     public static double mobHpBasePow = 0.8;

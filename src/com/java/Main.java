@@ -11,24 +11,44 @@ import com.java.communication.ChatFunctions;
 import com.java.communication.MsgCommand;
 import com.java.communication.PlayerinfoListener;
 import com.java.communication.playerinfoManager;
-import com.java.essentials.*;
+import com.java.essentials.commands.*;
+import com.java.essentials.commands.admin.*;
+import com.java.essentials.commands.admin.utility.FastRestartCommand;
+import com.java.essentials.commands.admin.utility.InvseeCommand;
+import com.java.essentials.commands.admin.utility.KillAllCommand;
+import com.java.essentials.commands.admin.utility.TimedrestartCommand;
+import com.java.essentials.commands.admin.warp.DelWarpCommand;
+import com.java.essentials.commands.admin.warp.SetWarpCommand;
+import com.java.essentials.commands.admin.warp.SpawnCommand;
+import com.java.essentials.commands.admin.warp.WarpsCommand;
 import com.java.holograms.EntityHealthBars;
 import com.java.holograms.Hologram;
 import com.java.rpg.*;
 import com.java.rpg.classes.*;
+import com.java.rpg.classes.casting.Skillcast;
+import com.java.rpg.classes.commands.admin.CDCommand;
+import com.java.rpg.classes.commands.admin.ManaCommand;
+import com.java.rpg.classes.commands.playerinfo.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
+import com.java.rpg.classes.statuses.Stuns;
+import com.java.rpg.classes.utility.StatusObject;
+import com.java.rpg.classes.utility.StatusValue;
 import com.java.rpg.mobs.CustomEntityType;
+import com.java.rpg.mobs.MobEXP;
+import com.java.rpg.mobs.commands.BiomeLevelCommand;
+import com.java.rpg.mobs.commands.BiomesCommand;
 import com.java.rpg.mobs.grassy.WarriorZombie;
+import com.java.rpg.modifiers.DamageListener;
 import com.java.rpg.modifiers.Environmental;
+import com.java.rpg.modifiers.utility.Damage;
+import com.java.rpg.modifiers.utility.DamageTypes;
 import com.java.rpg.player.*;
 import com.java.rpg.player.Items;
-import com.mojang.datafixers.DataFixUtils;
-import com.mojang.datafixers.types.Type;
+import com.java.rpg.player.utility.PlayerListener;
 import de.slikey.effectlib.EffectManager;
-import de.tr7zw.nbtinjector.NBTInjector;
-import net.citizensnpcs.api.event.NPCSpawnEvent;
+import net.citizensnpcs.api.CitizensAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
@@ -95,6 +115,7 @@ public class Main extends JavaPlugin {
                 However they break after max uses is gone over.
         Chef:
             - Can cook custom food with bonuses (more hunger regen, health regen, stat buffs minor for long duration etc)
+            - Golden apples for custom food!
         Farmer:
             - Can rightclick crops to harvest, seed remains placed.
             - Gets many drops from the farm.
@@ -102,35 +123,8 @@ public class Main extends JavaPlugin {
 
         In general, solo players should use the market or publicly available vendors.
 
-    DIRECT LINE TODO LIST:
 
-        -36. Make abilities not able to target or damage tamed mobs!
-
-        -35. Potion Effects need to be reworked, and Attributes need to be updated! (Strength is +3 atk etc)
-
-        -34. Find a better solution for mob burning. Perhaps XP cap gain if Environmental but only if the XP is very high!
-
-        -33. Projectiles are not showing damage holograms
-
-        -32. Disable Drowned Conversion (have own ocean mobs). Make sure to update DmgThreshold and EDefense when a mob transforms.
-
-        -31. List command works by permissions (ranks)
-
-        -30 (RELEVANT RN): Add elemental damage from non player sources (mobs)
-
-        -29. Setting to hide dmg holograms and EXP and TOGGLE OFFHAND!!!
-
-        -26. Fix pyromancer health check for ignition. Make a method to check, and incorporate defense calculations
-
-        -25. Make guardan lasers and spikes do damage
-
-        -24. Make legacy projectiles like fireballs hold a PersistentDataContainer instead of customname (will need to hold Elemental Dmg). Same with Enderdragon damage
-
-        -23. Iron Golems and Villagers need to have a base level that is higher than 0.
-
-        -22. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
-
-        -21.
+        Elemental Info:
                 Fire: &c✴
                 Ice: &b❆
                 Water: &3✾
@@ -164,21 +158,43 @@ public class Main extends JavaPlugin {
                 Air < Electric
                 Air > Earth
 
+    DIRECT LINE TODO LIST:
 
-            Make fire damage actually be fire. Poison damage be true. Wither damage be true.
+        -37. Low level env shit doesnt work if two low lvl players hit it lmao just make a better system 4head. REFER TO #34 (rethink the system btw)
 
-            Elemental Damage needs a split setup of damage. Can all come through in one hologram
-            Update Player Info and Class Info Screens. Can condense defense and attack info into one line!
-            Make Skills GUI less aids to look at.
-            zombie warrior has enchanted item!!!?!??!?! Look into it
+        -36. Make abilities not able to target or damage tamed mobs! (testing)
+
+        -34. Find a better solution for mob burning. Perhaps XP cap gain if Environmental but only if the XP is very high!
+
+        -32. Disable Drowned Conversion (have own ocean mobs). Make sure to update DmgThreshold and EDefense when a mob transforms.
+
+        -31. List command works by permissions (ranks)
+
+        -30 (RELEVANT RN): Add elemental damage from non player sources (mobs)
+
+        -29. Setting to hide dmg holograms and EXP and TOGGLE OFFHAND!!!
+
+        -26. add elemental scaling and balance damage for skills. Fix pyro fire checks.
+
+        -25. Make guardan lasers and spikes do damage
+
+        -24. Make legacy projectiles like fireballs hold a PersistentDataContainer instead of customname (will need to hold Elemental Dmg). Same with Enderdragon damage
+
+        -23. Iron Golems and Villagers need to have a base level that is higher than 0.
+
+        -22. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
+
+        -22. Improve visuals of Skills GUI. Update Class and Info cmd
+
+        -21. zombie warrior has enchanted item!!!?!??!?! Look into it
 
         -20. Make experience bottles give class exp
 
         -19. Make wither always lvl 50
 
-        -18. Raids are broken (Bossbar)
+        -18. Display Raids and Boss Health on the top bar? (change color of top bar)
 
-        -17. Claude has issue on first join. Wither is op af
+        -17. Wither Explosions are crazy Strong.
 
         -16. All biomes capped 1-20 (some a bit higher, but never extremes) Dungeons forced to level
 
@@ -273,21 +289,61 @@ public class Main extends JavaPlugin {
         return JavaPlugin.getPlugin(Main.class);
     }
 
-    public boolean isValidTarget(Entity e) {
+    public boolean sharePartyPvp(Player p1, Player p2) {
+        if (getPM().hasParty(p1) && getPM().hasParty(p2)) {
+            if (getPM().getParty(p1).getPlayers().contains(p2) && !getPM().getParty(p1).getPvp()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isValidTarget(Entity e, Player damager) {
         if (e instanceof LivingEntity) {
-            if (!(e instanceof ArmorStand) && e.isInvulnerable()) {
+            if (!(e instanceof ArmorStand) && !e.isInvulnerable() && !e.isDead()) {
                 if (e instanceof Player) {
                     Player p = (Player) e;
                     if (p.getGameMode() == GameMode.SURVIVAL) {
+                        if (p.equals(damager)) {
+                            return false;
+                        }
+                        if (sharePartyPvp(p, damager)) {
+                            return false;
+                        }
+                        if (CitizensAPI.getNPCRegistry().isNPC(e) && CitizensAPI.getNPCRegistry().getNPC(e).isProtected()) {
+                            return false;
+                        }
                         return true;
                     } else {
                         return false;
+                    }
+                }
+                if (e instanceof Tameable) {
+                    Tameable tameable = (Tameable) e;
+                    if (tameable.getOwner() != null) {
+                        if (Bukkit.getPlayer(tameable.getOwner().getUniqueId()).equals(damager)) {
+                            return false;
+                        }
+                        if (sharePartyPvp(Bukkit.getPlayer(tameable.getOwner().getUniqueId()), damager)) {
+                            return false;
+                        }
+                        return true;
                     }
                 }
                 return true;
             }
         }
         return false;
+    }
+
+    public List<LivingEntity> getNearbyLivingEntitiesTargetValid(Location loc, Player caster, double radius) {
+        List<LivingEntity> ents = new ArrayList<>();
+        for (LivingEntity ent : loc.getNearbyLivingEntities(radius)) {
+            if (isValidTarget(ent, caster)) {
+                ents.add(ent);
+            }
+        }
+        return ents;
     }
 
     /*
@@ -789,7 +845,6 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AFKInvuln(), this);
         Bukkit.getPluginManager().registerEvents(new SettingsCommand(), this);
         Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
-        Bukkit.getPluginManager().registerEvents(new BetterRestart(), this);
         Bukkit.getPluginManager().registerEvents(new Stuns(), this);
         Bukkit.getPluginManager().registerEvents(new Food(), this);
         Bukkit.getPluginManager().registerEvents(new Items(), this);

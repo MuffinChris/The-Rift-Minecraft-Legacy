@@ -2,13 +2,9 @@ package com.java.rpg.classes.skills.Pyromancer.supers;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.StatusValue;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.java.rpg.classes;
 
 import com.java.Main;
-import org.bukkit.Material;
+import com.java.rpg.classes.utility.ElementalStack;
 
 import java.util.List;
 

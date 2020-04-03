@@ -2,9 +2,7 @@ package com.java.rpg.classes.skills.Bishop;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.StatusValue;
-import com.java.rpg.party.Party;
-import com.java.rpg.*;
+import com.java.rpg.classes.utility.StatusValue;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

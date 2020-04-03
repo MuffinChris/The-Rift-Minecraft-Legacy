@@ -1,7 +1,5 @@
 package com.java.rpg.classes;
 
-import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Pyromancer.*;
@@ -9,30 +7,20 @@ import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
 import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
-import com.java.rpg.classes.skills.Wanderer.Rest;
-import net.minecraft.server.v1_15_R1.*;
+import com.java.rpg.classes.utility.ElementalStack;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class ClassManager implements Listener {
@@ -147,7 +135,7 @@ public class ClassManager implements Listener {
         skillsNone.add(new Bulwark());
         List<Skill> superSkillsNone = new ArrayList<>();
 
-        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 25.0, 100, 2, 3, 0.1, "SWORD", 10, 30, 0, 8, 1, 40, 32, 0.5, 0.25, skillsNone, superSkillsNone, 180, new ElementalStack(40, 40, 40, 40, 40, 40), new ElementalStack(0.25, 0.25, 0.25, 0.25, 0.25, 0.25)));
+        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 25.0, 100, 2, 3, 0.1, "SWORD", 10, 60, 0, 6, 1, 40, 32, 0.5, 0.25, skillsNone, superSkillsNone, 180, new ElementalStack(40, 40, 40, 40, 40, 40), new ElementalStack(0.25, 0.25, 0.25, 0.25, 0.25, 0.25)));
 
 
         List<Skill> skillsPyro = new ArrayList<>();
@@ -161,7 +149,7 @@ public class ClassManager implements Listener {
         superSkillsPyro.add(new Flamethrower());
         superSkillsPyro.add(new Conflagration());
 
-        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 1, 20,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110, new ElementalStack(30, 20, 30, 50, 100, 0), new ElementalStack(0, 0, 0, 1, 0.25, 0)));
+        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 2, 20,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110, new ElementalStack(30, 20, 30, 50, 100, 0), new ElementalStack(0, 0, 0, 1, 0.25, 0)));
     }
 
     public PlayerClass getPClassFromString(String s) {

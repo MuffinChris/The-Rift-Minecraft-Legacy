@@ -1,28 +1,18 @@
 package com.java.rpg.player;
 
-import com.destroystokyo.paper.Title;
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
-import com.java.rpg.classes.StatusObject;
-import com.java.rpg.classes.StatusValue;
-import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
+import com.java.rpg.classes.utility.StatusObject;
+import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 public class CustomDeath implements Listener {
 

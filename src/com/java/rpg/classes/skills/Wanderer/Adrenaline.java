@@ -2,10 +2,9 @@ package com.java.rpg.classes.skills.Wanderer;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.StatusValue;
+import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.List;
