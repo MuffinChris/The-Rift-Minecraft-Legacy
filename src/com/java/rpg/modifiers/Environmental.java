@@ -57,7 +57,7 @@ public class Environmental implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void addDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof LivingEntity && !e.isCancelled()) {
+        if (e.getEntity() instanceof LivingEntity && !e.isCancelled() && !main.isNPC(e.getEntity())) {
             LivingEntity p = (LivingEntity) e.getEntity();
             double hp = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
             boolean fire = false;
@@ -215,7 +215,9 @@ public class Environmental implements Listener {
     @EventHandler
     public void ePearlDamage (PlayerTeleportEvent e) {
         if (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            e.setCancelled(true);
             e.getPlayer().setNoDamageTicks(1);
+            e.getPlayer().teleport(e.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
     }
 
@@ -279,7 +281,7 @@ public class Environmental implements Listener {
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.MAGIC) {
                     e.setAmount((e.getAmount() / 30.0) * hp);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.EATING) {
-                    e.setAmount(hp * 0.015);
+                    e.setAmount(0);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.ENDER_CRYSTAL) {
                     e.setAmount(hp * 0.005);
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.WITHER) {

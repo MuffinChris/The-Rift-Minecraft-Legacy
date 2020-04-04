@@ -101,7 +101,7 @@ public class ChatFunctions implements Listener {
     public static void updateName(Player p) {
         Chat c = Main.getInstance().getChat();
         //c.setPlayerPrefix(p, Main.color("&7"));
-        c.setPlayerSuffix(p, Main.color("&8[&e" + Main.getInstance().getPC().get(p.getUniqueId()).getLevel() + "&8]"));
+        c.setPlayerSuffix(p, Main.color("&8[&eLv. " + Main.getInstance().getPC().get(p.getUniqueId()).getLevel() + "&8]"));
 		/*if (p.hasPermission("core.helper")) {
 			c.setPlayerPrefix(p, Main.color("&8[&aHelper&8]&f"));
 		}

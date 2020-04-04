@@ -3,9 +3,8 @@ package com.java;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.events.*;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.destroystokyo.paper.Title;
 import com.java.communication.ChatFunctions;
 import com.java.communication.MsgCommand;
@@ -63,6 +62,7 @@ import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.*;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -197,6 +197,12 @@ public class Main extends JavaPlugin {
             Bracelet, Ring, Ring, Amulet
 
     DIRECT LINE TODO LIST:
+
+        -6. Look into packet holograms. Holos a little laggy for melee hits (why tho?)
+
+        -5. Command to set a players class
+
+        -4. Set level and exp for a class (only set lol)
 
         -3. Mob HP Bar and Name as hologram
 
@@ -717,6 +723,45 @@ public class Main extends JavaPlugin {
         }
     }
 
+    public static BlockFace yawToFace(float yaw, boolean useSubCardinalDirections) {
+        if (useSubCardinalDirections)
+            return radial[Math.round(yaw / 45f) & 0x7].getOppositeFace();
+
+        return axis[Math.round(yaw / 90f) & 0x3].getOppositeFace();
+    }
+
+    public static String yawToString(float yaw) {
+        BlockFace bf = radial[Math.round(yaw / 45f) & 0x7].getOppositeFace();
+        if (bf == BlockFace.NORTH) {
+            return "N";
+        }
+        if (bf == BlockFace.NORTH_WEST) {
+            return "NW";
+        }
+        if (bf == BlockFace.NORTH_EAST) {
+            return "NE";
+        }
+        if (bf == BlockFace.SOUTH) {
+            return "S";
+        }
+        if (bf == BlockFace.SOUTH_EAST) {
+            return "SE";
+        }
+        if (bf == BlockFace.SOUTH_WEST) {
+            return "SW";
+        }
+        if (bf == BlockFace.EAST) {
+            return "E";
+        }
+        if (bf == BlockFace.WEST) {
+            return "W";
+        }
+        return "";
+    }
+
+    private static final BlockFace[] axis = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+    private static final BlockFace[] radial = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
+
     public static void sendHp(Player p) {
         if (getInstance().getRP(p) != null) {
             RPGPlayer rp = getInstance().getRP(p);
@@ -728,7 +773,7 @@ public class Main extends JavaPlugin {
             //String amper = Main.color("&c" + dF.format(100.0 * (1-(300.0/(300.0+armor)))) + "% AM");
             String ad = Main.color("&c" + dF.format(rp.getAD()) + " AD");
             String ap = Main.color("&b" + dF.format(rp.getAP()) + " AP");
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c❤ " + dF.format(p.getHealth()) + "     &b✦ " + rp.getPrettyCMana())));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c❤ " + dF.format(p.getHealth()) + "     &7" + df.format(p.getLocation().getX()) + " &f" + yawToString(p.getLocation().getYaw()) + " &7" + df.format(p.getLocation().getZ()) + "     &b✦ " + rp.getPrettyCMana())));
             p.setLevel(rp.getLevel());
             p.setExp(Math.min(Math.max((float) rp.getPercent(), 0.0f), 1.0F));
         }
@@ -884,6 +929,11 @@ public class Main extends JavaPlugin {
         so("&dRIFT: &fCustom Mobs registered");
     }
 
+    public Map<UUID, Boolean> muted = new HashMap<>();
+    public Map<UUID, Boolean> getMuted() {
+        return muted;
+    }
+
     @Override
     public void onEnable() {
 
@@ -894,6 +944,23 @@ public class Main extends JavaPlugin {
 
         protocolManager = ProtocolLibrary.getProtocolManager();
         so("&dRIFT&7: &fProtocolLib hooked!");
+
+        final List<WrappedGameProfile> names = new ArrayList<WrappedGameProfile>();
+        names.add(new WrappedGameProfile("1", ChatColor.LIGHT_PURPLE + "DISCORD: " + ChatColor.WHITE + "discord.therift.net"));
+        names.add(new WrappedGameProfile("2", ChatColor.LIGHT_PURPLE + "WEBSITE: " + ChatColor.WHITE + "therift.net"));
+        //If you want to add more message, copy 'names.add(new WrappedGameProfile("number", "ur message"));'
+        //Make sure that 'number' goes in order. Instance:
+        //names.add(new WrappedGameProfile("1", ChatColor.LIGHT_PURPLE + "This is message 1!"));
+        //names.add(new WrappedGameProfile("2", ChatColor.GREEN + "This is message 2!"));
+        //names.add(new WrappedGameProfile("3", ChatColor.GREEN + "This is message 3!"));
+        //names.add(new WrappedGameProfile("4", ChatColor.GREEN + "This is message 4!"));
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL,
+                Arrays.asList(PacketType.Status.Server.OUT_SERVER_INFO), ListenerOptions.ASYNC) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                event.getPacket().getServerPings().read(0).setPlayers(names);
+            }
+        });
 
         setupPacketListeners();
         so("&dRIFT&7: &fProtocolLib Packet Listeners Enabled!");
@@ -931,6 +998,8 @@ public class Main extends JavaPlugin {
         getCommand("dummy").setExecutor(new DummyCommand());
         getCommand("help").setExecutor(new HelpCommand());
         getCommand("biomes").setExecutor(new BiomesCommand());
+        getCommand("mute").setExecutor(new MuteCommand());
+        getCommand("unmute").setExecutor(new UnmuteCommand());
 
         getCommand("warp").setExecutor(new WarpsCommand());
         getCommand("setwarp").setExecutor(new SetWarpCommand());
@@ -962,6 +1031,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Stuns(), this);
         Bukkit.getPluginManager().registerEvents(new Food(), this);
         Bukkit.getPluginManager().registerEvents(new Items(), this);
+        Bukkit.getPluginManager().registerEvents(new Accessories(), this);
         Bukkit.getPluginManager().registerEvents(new NPCTag(), this);
 
         //Skills
@@ -1010,7 +1080,7 @@ public class Main extends JavaPlugin {
                 if (e instanceof LivingEntity && !(e instanceof Player)) {
                     if (!getHpBars().containsKey(e)) {
                         DecimalFormat dF = new DecimalFormat("#.##");
-                        getHpBars().put(e, new Hologram(e, e.getLocation().add(new Vector(0, e.getHeight() - 0.2, 0)), "&f" + dF.format(((LivingEntity)e).getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
+                        getHpBars().put(e, new Hologram(e, e.getLocation().add(new Vector(0, e.getHeight() + 0.1, 0)), "&f" + dF.format(((LivingEntity)e).getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
                     }
                 }
             }
@@ -1101,6 +1171,27 @@ public class Main extends JavaPlugin {
             public void onPacketSending(PacketEvent event) {
                 if (event.getPacketType() == PacketType.Play.Server.WORLD_PARTICLES) {
                     if (event.getPacket().getNewParticles().getValues().get(0).getParticle().name().contains("DAMAGE_INDICATOR")) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        });
+
+        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.CHAT) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                Player player = event.getPlayer();
+                PacketContainer packet = event.getPacket();
+                if (!packet.getStrings().read(0).isEmpty() && packet.getStrings().read(0).toCharArray()[0] == '/') {
+
+                } else {
+                    if (muted.containsKey(player.getUniqueId()) && muted.get(player.getUniqueId())) {
+                        Main.so("&c[MUTED] &7" + player.getName() + " &8» &f" + packet.getStrings().read(0));
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            if (p.hasPermission("core.mod")) {
+                                msg(p, "&c[MUTED] &7" + player.getName() + " &8» &f" + packet.getStrings().read(0));
+                            }
+                        }
                         event.setCancelled(true);
                     }
                 }

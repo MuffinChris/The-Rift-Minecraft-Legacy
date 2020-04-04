@@ -116,4 +116,10 @@ commands:
     aliases: [skillpoint, skillpoints, spoints]
   bind:
     description: Bind a skill to an item
+  mute:
+    description: Mutes a user for indefinite time
+    permission: core.mod
+  unmute:
+    description: Unmutes a muted user
+    permission: core.mod
 depend: [ProtocolLib, Vault, NBTAPI, Citizens, WorldEdit, WorldGuard]

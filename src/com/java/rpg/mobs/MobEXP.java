@@ -42,6 +42,11 @@ public class MobEXP implements Listener {
 
     private static BiomeSettings settings = new BiomeSettings();
 
+    @EventHandler
+    public void noExpDrop (EntityDeathEvent e) {
+        e.setDroppedExp(0);
+    }
+
     /*@EventHandler (just change drop tables 4head)
     public void mobNoArmorDrop(EntityDeathEvent e) {
         if (e.getEntityType() != EntityType.PLAYER) {
@@ -366,7 +371,12 @@ public class MobEXP implements Listener {
 
     public static double calcExp(LivingEntity ent) {
         int level = getLevel(ent);
-        return xpmods.get(ent.getType()) * Math.ceil(Math.pow(2, (level + 60.0)/10.5) - 0.0);
+        if (xpmods.containsKey(ent.getType())) {
+
+            return xpmods.get(ent.getType()) * Math.ceil(Math.pow(2, (level + 60.0)/10.5) - 0.0);
+        } else {
+            return Math.ceil(Math.pow(2, (level + 60.0)/10.5) - 0.0);
+        }
         //return (RPGConstants.mobXpScalar * Math.pow(level, RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
     }
 
@@ -586,22 +596,22 @@ public class MobEXP implements Listener {
 
         if (ent instanceof Creeper) {
             Creeper creeper = (Creeper) ent;
-            if (level >= 0 && level < 10) {
+            if (level >= 0 && level < 20) {
                 creeper.setExplosionRadius(3);
                 creeper.setMaxFuseTicks(40);
-            } else if (level >= 10 && level < 20) {
+            } else if (level >= 20 && level < 40) {
                 creeper.setExplosionRadius(3);
                 creeper.setMaxFuseTicks(30);
-            } else if (level >= 20 && level < 30) {
+            } else if (level >= 40 && level < 60) {
                 creeper.setExplosionRadius(4);
                 creeper.setMaxFuseTicks(30);
-            } else if (level >= 30 && level < 40) {
+            } else if (level >= 60 && level < 80) {
                 creeper.setExplosionRadius(4);
                 creeper.setMaxFuseTicks(25);
             } else {
                 creeper.setExplosionRadius(5);
                 creeper.setMaxFuseTicks(20);
-                if (level == 50) {
+                if (level == 100) {
                     creeper.setPowered(true);
                 }
             }
@@ -803,6 +813,23 @@ public class MobEXP implements Listener {
             LivingEntity ent = (LivingEntity) e.getEntity().getWorld().spawnEntity(e.getEntity().getLocation(), type);
             ((Slime) ent).setSize(size);
             setupEnt(ent, level);
+        }
+    }
+
+    @EventHandler
+    public void onTame (EntityTameEvent e) {
+        if (e.getEntityType() == EntityType.WOLF) {
+            new BukkitRunnable() {
+                public void run() {
+                    LivingEntity ent = (LivingEntity) e.getEntity();
+                    int level = getLevel(ent);
+                    ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(3000 + level * 20);
+                    ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+                    setArmor(ent, 100 + level * 20);
+                    setPhysicalDamage(ent, new PhysicalStack(100, 25, 100));
+                    setHPRegen(ent, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.025);
+                }
+            }.runTaskLater(Main.getInstance(), 1L);
         }
     }
 

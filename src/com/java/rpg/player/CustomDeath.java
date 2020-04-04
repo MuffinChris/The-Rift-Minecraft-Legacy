@@ -35,6 +35,7 @@ public class CustomDeath implements Listener {
             e.setCancelled(true);
         }*/
         if (e.getEntity().isOnline() && !e.isCancelled()) {
+            e.setShouldDropExperience(false);
             doDeath(e.getEntity());
         }
     }

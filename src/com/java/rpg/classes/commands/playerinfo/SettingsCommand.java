@@ -39,7 +39,14 @@ public class SettingsCommand implements CommandExecutor, Listener {
                     Player p = (Player) e.getWhoClicked();
 
                     main.getRP(p).setSendExp(!main.getRP(p).getSendExp());
-                    Main.msg(p, "&aSend Exp is now: &f" + main.getRP(p).getSendExp());
+                    Main.msg(p, "&aSend Exp in Chat: &f" + main.getRP(p).getSendExp());
+
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+                } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Shift-Offhand Swaps Offhand")) {
+                    Player p = (Player) e.getWhoClicked();
+
+                    main.getRP(p).setToggleOffhand(!main.getRP(p).getToggleOffhand());
+                    Main.msg(p, "&aShift-Offhand swaps Offhand: &f" + main.getRP(p).getToggleOffhand());
 
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
                 }
@@ -131,6 +138,21 @@ public class SettingsCommand implements CommandExecutor, Listener {
         sendExp.setItemMeta(sendExpMeta);
 
         playerInv.setItem(11, sendExp);
+
+        lore = new ArrayList<>();
+
+        ItemStack toggleOffhand = new ItemStack(Material.SHIELD);
+        ItemMeta toggleOffhandMeta = toggleOffhand.getItemMeta();
+        toggleOffhandMeta.setDisplayName(Main.color("&eShift-Offhand Swaps Offhand"));
+        lore.add(Main.color(""));
+        lore.add(Main.color("&fToggle whether crouching and using the offhand key"));
+        lore.add(Main.color("&fwill swap your offhand or open the Skill Casting GUI."));
+        lore.add(Main.color(""));
+
+        toggleOffhandMeta.setLore(lore);
+        toggleOffhand.setItemMeta(toggleOffhandMeta);
+
+        playerInv.setItem(12, toggleOffhand);
 
         p.openInventory(playerInv);
     }

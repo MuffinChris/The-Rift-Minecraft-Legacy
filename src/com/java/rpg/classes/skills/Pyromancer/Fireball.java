@@ -138,21 +138,7 @@ public class Fireball extends Skill implements Listener {
 
     public void lightEntities(Entity e, Player caster, Location loc, double damage) {
         loc.getWorld().spawnParticle(Particle.LAVA, loc, 25, 0.12, 0.12, 0.12, 0.12, null, true);
-        for (LivingEntity ent : loc.getNearbyLivingEntities(1.1)) {
-            if (ent instanceof ArmorStand) {
-                continue;
-            }
-            if (ent instanceof Player) {
-                Player p = (Player) ent;
-                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
-                    if (main.getPM().getParty(p).getPlayers().contains(caster)) {
-                        continue;
-                    }
-                }
-                if (p.equals(caster)) {
-                    continue;
-                }
-            }
+        for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(loc, caster, 1.1)) {
             /*new BukkitRunnable() {
                 public void run() {*/
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));

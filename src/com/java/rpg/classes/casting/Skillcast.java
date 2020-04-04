@@ -31,7 +31,7 @@ public class Skillcast implements Listener {
 
     @EventHandler
     public void skillBar (PlayerSwapHandItemsEvent e) {
-        if (!e.getPlayer().isSneaking() && main.getRP(e.getPlayer()).getSkillsAll().size() > 0) {
+        if ((!main.getRP(e.getPlayer()).getToggleOffhand() || !e.getPlayer().isSneaking()) && main.getRP(e.getPlayer()).getSkillsAll().size() > 0) {
             e.setCancelled(true);
             main.getRP(e.getPlayer()).getBoard().toggleSkillbar();
             main.getRP(e.getPlayer()).getBoard().updateSkillbar();

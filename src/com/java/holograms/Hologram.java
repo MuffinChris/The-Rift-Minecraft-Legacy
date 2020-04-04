@@ -85,24 +85,24 @@ public class Hologram implements Listener {
             } else {
                 double neg = Math.random();
                 double neg2 = Math.random();
-                double mod = 0.4;
-                double mod2 = 0.4;
+                double mod = 0.25;
+                double mod2 = 0.25;
                 if (neg < 0.5) {
-                    neg = -0.4;
+                    neg = -0.2;
                     mod*=-1;
                 } else {
-                    neg = 0.4;
+                    neg = 0.2;
                 }
                 if (neg2 < 0.5) {
-                    neg2 = -0.4;
+                    neg2 = -0.2;
                     mod2*=-1;
                 } else {
-                    neg2 = 0.4;
+                    neg2 = 0.2;
                 }
                 if (type == HologramType.STATUS) {
-                    stand.teleport(loc.clone().add(new Vector(Math.random() * neg + mod, e.getHeight() + 0.3, Math.random() * neg2 + mod2)));
+                    stand.teleport(loc.clone().add(new Vector(Math.random() * neg + mod, e.getHeight() + 0.1, Math.random() * neg2 + mod2)));
                 } else {
-                    stand.teleport(loc.clone().add(new Vector(Math.random() * neg + mod, e.getHeight() + (Math.random() * 0.3) - 0.05, Math.random() * neg2 + mod2)));
+                    stand.teleport(loc.clone().add(new Vector(Math.random() * neg + mod, e.getHeight() + (Math.random() * 0.5) - 0.5, Math.random() * neg2 + mod2)));
                 }
             }
         } else {

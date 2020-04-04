@@ -251,6 +251,16 @@ public class RPGPlayer extends Leveleable {
         pushFiles();
     }
 
+    private boolean toggleOffhand = true;
+    public boolean getToggleOffhand() {
+        return toggleOffhand;
+    }
+
+    public void setToggleOffhand(boolean b) {
+        toggleOffhand = b;
+        pushFiles();
+    }
+
     public void setIdleSlot(int i) {
         idleslot = i;
         pushFiles();
@@ -549,6 +559,12 @@ public class RPGPlayer extends Leveleable {
                 pData.set("SendExp", true);
             }
 
+            if (pData.contains("ToggleOffhand")) {
+                pData.set("ToggleOffhand", getSendExp());
+            } else {
+                pData.set("ToggleOffhand", true);
+            }
+
             pData.save(pFile);
             updateStats();
         } catch (Exception e) {
@@ -633,6 +649,13 @@ public class RPGPlayer extends Leveleable {
             } else {
                 pData.set("SendExp", true);
                 setSendExp(pData.getBoolean("SendExp"));
+            }
+
+            if (pData.contains("ToggleOffhand")) {
+                setSendExp(pData.getBoolean("ToggleOffhand"));
+            } else {
+                pData.set("ToggleOffhand", true);
+                setSendExp(pData.getBoolean("ToggleOffhand"));
             }
             /*
             if (pData.contains(name + "AD")) {

@@ -90,7 +90,7 @@ public class EntityHealthBars implements Listener {
             LivingEntity ent = (LivingEntity) e.getEntity();
             if (!main.getHpBars().containsKey(ent) && !(ent instanceof Player)) {
                 DecimalFormat dF = new DecimalFormat("#.##");
-                main.getHpBars().put(ent, new Hologram(ent, ent.getLocation().add(new Vector(0, ent.getHeight() - 0.2, 0)), "&f" + dF.format(ent.getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
+                main.getHpBars().put(ent, new Hologram(ent, ent.getLocation().add(new Vector(0, ent.getHeight() + 0.1, 0)), "&f" + dF.format(ent.getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
                 if (ent.getCustomName() != null) {
                     ent.setCustomNameVisible(true);
                 }
