@@ -3,7 +3,7 @@ package com.java.rpg.player;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
@@ -278,16 +278,6 @@ public class Items implements Listener {
         return 0;
     }
 
-    public static double getWaterDefense(ItemStack i) {
-        if (i != null) {
-            NBTItem nbtItem = new NBTItem(i);
-            if (nbtItem.hasKey("WaterDefense")) {
-                return nbtItem.getDouble("WaterDefense");
-            }
-        }
-        return 0;
-    }
-
     public static ItemStack setElementalDefense (ItemStack i, ElementalStack eDef) {
         if (i != null) {
             NBTItem nbtItem = new NBTItem(i);
@@ -296,7 +286,6 @@ public class Items implements Listener {
             nbtItem.setDouble("ElectricDefense", eDef.getElectric());
             nbtItem.setDouble("FireDefense", eDef.getFire());
             nbtItem.setDouble("IceDefense", eDef.getIce());
-            nbtItem.setDouble("WaterDefense", eDef.getWater());
             return nbtItem.getItem();
         }
         return null;
@@ -336,7 +325,7 @@ public class Items implements Listener {
         }
         i = nbtItem.getItem();
         if (!hasDura) {
-            i = setElementalDefense(i, new ElementalStack(0, 0, 0, 0, 0, 0));
+            i = setElementalDefense(i, new ElementalStack(0, 0, 0, 0, 0));
             int am = armor.get(i.getType()).getRandomLevel();
             lore.add(Main.color("&8[ &7Basic Armor &8]"));
             lore.add(Main.color(""));
@@ -344,7 +333,7 @@ public class Items implements Listener {
             lore.add(Main.color(durabilityString + durability.get(i.getType()) + "&8/&f" + durability.get(i.getType())));
             lore.add(Main.color(""));
             lore.add(Main.color(armorString + am));
-            lore.add(Main.color(elementalDefString + "&8(&f" + getAirDefense(i) + "&8|&2" + getEarthDefense(i) + "&8|&e" + getElectricDefense(i) + "&8|&c" + getFireDefense(i) + "&8|&b" + getIceDefense(i) + "&8|&3" + getWaterDefense(i) + "&8)"));
+            lore.add(Main.color(elementalDefString + "&8(&f" + getAirDefense(i) + "&8|&2" + getEarthDefense(i) + "&8|&e" + getElectricDefense(i) + "&8|&c" + getFireDefense(i) + "&8|&b" + getIceDefense(i) + "&8)"));
             //lore.add(Main.color("&8[&e♖&8] &7Weight: &f" + weight.get(i.getType())));
             meta.setLore(lore);
             i.setItemMeta(meta);

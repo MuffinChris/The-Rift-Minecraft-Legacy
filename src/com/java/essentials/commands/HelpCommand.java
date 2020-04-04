@@ -18,6 +18,7 @@ public class HelpCommand implements CommandExecutor {
             Main.msg(p, "&8» &e/skills &7- &fView your Class's Skills");
             Main.msg(p, "&8» &e/info &7- &fView your Player Info");
             Main.msg(p, "&8» &ePress F &8(&eOffhand Key&8) &7- &fOpen Skill UI");
+            Main.msg(p, "&8» &e/bind <skill> &7- &fBind skills to Items");
             Main.msg(p, "");
         } else {
             Bukkit.dispatchCommand(sender.getServer().getConsoleSender(), "?");

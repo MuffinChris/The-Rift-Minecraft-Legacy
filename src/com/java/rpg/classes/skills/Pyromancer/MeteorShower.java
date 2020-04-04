@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftLargeFireball;
@@ -194,7 +194,7 @@ public class MeteorShower extends Skill implements Listener {
                     continue;
                 }
             }
-            spellDamage(caster, ent, dmg, new ElementalStack(0, 0, 0, 50, 0, 0));
+            spellDamage(caster, ent, dmg, new ElementalStack(0, 0, 0, 50, 0));
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
         }
     }

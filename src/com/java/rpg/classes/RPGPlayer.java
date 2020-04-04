@@ -1,6 +1,7 @@
 package com.java.rpg.classes;
 
 import com.java.Main;
+import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.modifiers.utility.Damage;
 import com.java.rpg.classes.casting.Skillboard;
 import com.java.rpg.classes.utility.StatusObject;
@@ -157,26 +158,13 @@ public class RPGPlayer extends Leveleable {
         return val + getPClass().getEDefense().getIce() + getPClass().getEDefenseScaling().getIce() * getLevel();
     }
 
-    public double getWaterDefense() {
-        double val = 0;
-        if (player == null) {
-            return 0;
-        }
-        for (ItemStack i : player.getInventory().getArmorContents()) {
-            if (Items.getDurability(i) <= 0) {
 
-            } else {
-                val += Items.getWaterDefense(i);
-            }
-        }
-        return val + getPClass().getEDefense().getWater() + getPClass().getEDefenseScaling().getWater() * getLevel();
-    }
 
     public int calculateSP() {
         int total;
-        if (getLevel() >= 40 && getLevel() < 50) {
+        if (getLevel() >= RPGConstants.superSkillOne && getLevel() < RPGConstants.superSkillTwo) {
             total = 1;
-        } else if (getLevel() >= 50) {
+        } else if (getLevel() >= RPGConstants.superSkillTwo) {
             total = 2;
         } else {
             total = 0;
@@ -251,6 +239,16 @@ public class RPGPlayer extends Leveleable {
     private int idleslot = 0;
     public int getIdleSlot() {
         return idleslot;
+    }
+
+    private boolean sendExp = true;
+    public boolean getSendExp() {
+        return sendExp;
+    }
+
+    public void setSendExp(boolean b) {
+        sendExp = b;
+        pushFiles();
     }
 
     public void setIdleSlot(int i) {
@@ -375,7 +373,7 @@ public class RPGPlayer extends Leveleable {
     }
 
     public RPGPlayer(Player p) {
-        super (0, 50, p);
+        super (0, RPGConstants.maxLevel, p);
 
         stun = new StatusObject("Stun", "Stunned", false);
         root = new StatusObject("Root", "Rooted", false);
@@ -545,6 +543,12 @@ public class RPGPlayer extends Leveleable {
                 pData.set("IdleSlot", 0);
             }
 
+            if (pData.contains("SendExp")) {
+                pData.set("SendExp", getSendExp());
+            } else {
+                pData.set("SendExp", true);
+            }
+
             pData.save(pFile);
             updateStats();
         } catch (Exception e) {
@@ -622,6 +626,13 @@ public class RPGPlayer extends Leveleable {
             } else {
                 pData.set("IdleSlot", 0);
                 setIdleSlot(pData.getInt("IdleSlot"));
+            }
+
+            if (pData.contains("SendExp")) {
+                setSendExp(pData.getBoolean("SendExp"));
+            } else {
+                pData.set("SendExp", true);
+                setSendExp(pData.getBoolean("SendExp"));
             }
             /*
             if (pData.contains(name + "AD")) {
@@ -724,8 +735,39 @@ public class RPGPlayer extends Leveleable {
         }
     }
 
-    public LivingEntity getNearestEntityInSight(Player player, int range) {
-        List<LivingEntity> entities = main.getNearbyLivingEntitiesTargetValid(player, range);
+    public LivingEntity getNearestAnyEntityInSight(Player player, int range) {
+        List<LivingEntity> entities = main.getNearbyLivingEntitiesTargetValid(player.getEyeLocation(), player, range);
+        List<LivingEntity> sortedEntities = new ArrayList<>();
+        while(!entities.isEmpty()) {
+            double dist = 999;
+            LivingEntity add = null;
+            for (LivingEntity ent : entities) {
+                if (ent.getEyeLocation().distance(player.getEyeLocation()) < dist) {
+                    dist = ent.getEyeLocation().distance(player.getEyeLocation());
+                    add = ent;
+                }
+            }
+            entities.remove(add);
+            sortedEntities.add(add);
+        }
+        for (LivingEntity ent : sortedEntities) {
+            Vector toEntity = ent.getLocation().toVector().subtract(player.getEyeLocation().toVector());
+            Vector toEntity2 = ent.getEyeLocation().toVector().subtract(player.getEyeLocation().toVector());
+            Vector direction = player.getEyeLocation().getDirection();
+            double dot = toEntity.normalize().dot(direction);
+            double dot2 = toEntity2.normalize().dot(direction);
+            if (dot > 0.98 || dot2 > 0.98) {
+                if (player.hasLineOfSight(ent)) {
+                    return ent;
+                }
+            }
+        }
+        //}
+        return null;
+    }
+
+    public LivingEntity getNearestTargetInSight(Player player, int range) {
+        List<LivingEntity> entities = main.getNearbyLivingEntitiesTargetValid(player.getEyeLocation(), player, range);
         List<LivingEntity> sortedEntities = new ArrayList<>();
         while(!entities.isEmpty()) {
             double dist = 999;
@@ -792,8 +834,8 @@ public class RPGPlayer extends Leveleable {
                                 }
 
                                 if (s.getType().contains("TARGET")) {
-                                    if (getNearestEntityInSight(player, s.getTargetRange() * 2) instanceof LivingEntity) {
-                                        target = getNearestEntityInSight(player, s.getTargetRange() * 2);
+                                    if (getNearestTargetInSight(player, s.getTargetRange() * 2) instanceof LivingEntity) {
+                                        target = getNearestTargetInSight(player, s.getTargetRange() * 2);
                                         if (target.getLocation().distance(player.getLocation()) > s.getTargetRange()) {
                                             target = null;
                                             getStatuses().remove("Warmup" + s.getName());
@@ -932,8 +974,8 @@ public class RPGPlayer extends Leveleable {
                                 return "CastedSkill";
                             }
                             if (s.getType().contains("TARGET")) {
-                                if (getNearestEntityInSight(player, s.getTargetRange() * 2) instanceof LivingEntity) {
-                                    target = getNearestEntityInSight(player, s.getTargetRange() * 2);
+                                if (getNearestTargetInSight(player, s.getTargetRange() * 2) instanceof LivingEntity) {
+                                    target = getNearestTargetInSight(player, s.getTargetRange() * 2);
                                     if (target.getLocation().distance(player.getLocation()) > s.getTargetRange()) {
                                         target = null;
                                         getStatuses().remove("Warmup" + s.getName());

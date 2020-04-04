@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.Bukkit;
@@ -88,7 +88,7 @@ public class CombustProjectile {
             /*new BukkitRunnable() {
                 public void run() {*/
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-            Skill.spellDamageStatic(caster, ent, damage, new ElementalStack(0, 0, 0, 100, 0, 0));
+            Skill.spellDamageStatic(caster, ent, damage, new ElementalStack(0, 0, 0, 100, 0));
             ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
                 /*}
             }.runTaskLater(Main.getInstance(), 1L);*/
@@ -150,7 +150,7 @@ public class CombustProjectile {
                     makeCircle(loc.clone().add(new Vector(0, 0, 0)), range, 16, 0);
                     loc.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, loc, 1, 0.01, 0.01, 0.01, 0.01,null, true);
                     ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-                    Skill.spellDamageStatic(caster, ent, dmg, new ElementalStack(0, 0, 0, 300, 0, 0));
+                    Skill.spellDamageStatic(caster, ent, dmg, new ElementalStack(0, 0, 0, 300, 0));
                     ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
                         /*}
                     }.runTaskLater(Main.getInstance(), 1L);*/

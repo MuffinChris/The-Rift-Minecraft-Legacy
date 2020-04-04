@@ -3,9 +3,7 @@ package com.java.rpg.classes;
 import com.destroystokyo.paper.Title;
 import com.java.Main;
 import com.java.holograms.Hologram;
-import com.java.rpg.classes.PlayerClass;
-import com.java.rpg.classes.RPGConstants;
-import com.java.rpg.classes.RPGPlayer;
+import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.party.Party;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -14,9 +12,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Leveleable {
 
@@ -45,7 +40,7 @@ public class Leveleable {
 
     public Leveleable() {
         this.level = 0;
-        this.maxlevel = 50;
+        this.maxlevel = RPGConstants.maxLevel;
         this.rp = null;
         expMod = RPGConstants.expMod;
         expOff = RPGConstants.expOff;
@@ -74,7 +69,8 @@ public class Leveleable {
 
     public void calcMaxExp() {
         //maxexp = Math.pow(level, expPow) * expMod + expOff;
-        maxexp = RPGConstants.levelsExp.get(level);
+        maxexp = Math.ceil(Math.pow(2.7, (level + 70.0)/10.0) - 547.0);
+        //maxexp = RPGConstants.levelsExp.get(level);
     }
 
     public double getPercent() {
@@ -143,13 +139,13 @@ public class Leveleable {
             main.getRP(p).setSP(main.getRP(p).getSP() + cnt);
         }*/
 
-        if (newlvl >= 40 && oldlvl < 40 && newlvl < 50) {
+        if (newlvl >= RPGConstants.superSkillOne && oldlvl < RPGConstants.superSkillOne && newlvl < RPGConstants.superSkillTwo) {
             Main.msg(p, "&8» &7+" + 1 + " &7SKILL UPGRADE POINT");
         }
-        if (newlvl >= 50 && oldlvl < 40) {
+        if (newlvl >= RPGConstants.superSkillTwo && oldlvl < RPGConstants.superSkillOne) {
             Main.msg(p, "&8» &7+" + 2 + " &7SKILL UPGRADE POINT");
         }
-        if (newlvl >= 50 && oldlvl < 50 && oldlvl >= 40) {
+        if (newlvl >= RPGConstants.superSkillTwo && oldlvl < RPGConstants.superSkillTwo && oldlvl >= RPGConstants.superSkillOne) {
             Main.msg(p, "&8» &7+" + 1 + " &7SKILL UPGRADE POINT");
         }
 
@@ -208,7 +204,9 @@ public class Leveleable {
             exp += xp;
             exp = Math.max(exp, 0);
             DecimalFormat dF = new DecimalFormat("#");
-            Main.msg(p, "   &7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
+            if (main.getRP(p).getSendExp()) {
+                Main.msg(p, "   &7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
+            }
             main.getRP(p).getBoard().setBossbar4("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
             Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(" + p.getName() + "&7)", Hologram.HologramType.EXP);
             magic.rise();

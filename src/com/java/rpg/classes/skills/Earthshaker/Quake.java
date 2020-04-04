@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -41,7 +41,7 @@ public class Quake extends Skill {
                 }
             }
             ent.setKiller(p);
-            spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0, 0));
+            spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0));
     	}
     }
 }

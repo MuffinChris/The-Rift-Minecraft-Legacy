@@ -114,4 +114,6 @@ commands:
   sp:
     description: View skillpoints
     aliases: [skillpoint, skillpoints, spoints]
-depend: [ProtocolLib, Vault, NBTAPI, Citizens]
+  bind:
+    description: Bind a skill to an item
+depend: [ProtocolLib, Vault, NBTAPI, Citizens, WorldEdit, WorldGuard]

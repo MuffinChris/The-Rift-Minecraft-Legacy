@@ -2,6 +2,7 @@ package com.java.rpg.classes.commands.playerinfo;
 
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
+import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,12 +36,12 @@ public class ExpCommand implements CommandExecutor {
                                 if (val > tl.getLevel()) {
                                     tl.levelupRewards(target, tl.getPClass(), tl.getLevel(), val);
                                 } else {
-                                    if (tl.getLevel() >= 50 && val < 50) {
+                                    if (tl.getLevel() >= RPGConstants.superSkillTwo && val < RPGConstants.superSkillTwo) {
                                         for (String s : tl.getSkillLevels().keySet()) {
                                             tl.getSkillLevels().replace(s, 0);
                                         }
                                         tl.pushFiles();
-                                    } else if (tl.getLevel() >= 40 && val < 40) {
+                                    } else if (tl.getLevel() >= RPGConstants.superSkillOne && val < RPGConstants.superSkillOne) {
                                         for (String s : tl.getSkillLevels().keySet()) {
                                             tl.getSkillLevels().replace(s, 0);
                                         }
@@ -134,12 +135,12 @@ public class ExpCommand implements CommandExecutor {
                                 if (val > tl.getLevel()) {
                                     tl.levelupRewards(target, tl.getPClass(), tl.getLevel(), val);
                                 } else {
-                                    if (tl.getLevel() >= 50 && val < 50) {
+                                    if (tl.getLevel() >= RPGConstants.superSkillTwo && val < RPGConstants.superSkillTwo) {
                                         for (String s : tl.getSkillLevels().keySet()) {
                                             tl.getSkillLevels().replace(s, 0);
                                         }
                                         tl.pushFiles();
-                                    } else if (tl.getLevel() >= 40 && val < 40) {
+                                    } else if (tl.getLevel() >= RPGConstants.superSkillOne && val < RPGConstants.superSkillOne) {
                                         for (String s : tl.getSkillLevels().keySet()) {
                                             tl.getSkillLevels().replace(s, 0);
                                         }

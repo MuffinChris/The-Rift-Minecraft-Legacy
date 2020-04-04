@@ -30,10 +30,19 @@ public class SettingsCommand implements CommandExecutor, Listener {
     public void cancelClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lSETTINGS")) {
             e.setCancelled(true);
-            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Skill Cast Slot")) {
-                Player p = (Player) e.getWhoClicked();
-                sendSkillcastInv(p);
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().hasItemMeta()) {
+                if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Skill Cast Slot")) {
+                    Player p = (Player) e.getWhoClicked();
+                    sendSkillcastInv(p);
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+                } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Send Exp in Chat")) {
+                    Player p = (Player) e.getWhoClicked();
+
+                    main.getRP(p).setSendExp(!main.getRP(p).getSendExp());
+                    Main.msg(p, "&aSend Exp is now: &f" + main.getRP(p).getSendExp());
+
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+                }
             }
         }
 
@@ -110,6 +119,18 @@ public class SettingsCommand implements CommandExecutor, Listener {
         playerInv.setItem(10, slot);
 
         lore = new ArrayList<>();
+
+        ItemStack sendExp = new ItemStack(Material.PAPER);
+        ItemMeta sendExpMeta = sendExp.getItemMeta();
+        sendExpMeta.setDisplayName(Main.color("&eSend Exp in Chat"));
+        lore.add(Main.color(""));
+        lore.add(Main.color("&fToggle sending of Exp Messages in Chat!"));
+        lore.add(Main.color(""));
+
+        sendExpMeta.setLore(lore);
+        sendExp.setItemMeta(sendExpMeta);
+
+        playerInv.setItem(11, sendExp);
 
         p.openInventory(playerInv);
     }

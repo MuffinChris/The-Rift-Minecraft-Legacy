@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -121,7 +121,7 @@ public class PyroclasmProjectile {
                             dmg*=empowered;
                         }
                         target.get(p.getUniqueId()).setFireTicks(Math.min(80 + target.get(p.getUniqueId()).getFireTicks(), 100));
-                        Skill.spellDamageStatic(p, target.get(p.getUniqueId()), dmg, new ElementalStack(0, 0, 0, 50, 0, 0));
+                        Skill.spellDamageStatic(p, target.get(p.getUniqueId()), dmg, new ElementalStack(0, 0, 0, 50, 0));
                         target.get(p.getUniqueId()).getWorld().playSound(target.get(p.getUniqueId()).getEyeLocation(), Sound.ITEM_BUCKET_FILL_LAVA, 1.0F, 1.0F);
 
                         if (lastTarget.containsKey(p.getUniqueId())) {

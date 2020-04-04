@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Bishop;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
@@ -188,7 +188,7 @@ public class SRay extends Skill implements Listener {
                     continue;
                 }
             }
-            spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 50, 0, 0));
+            spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
             ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
         }
     }

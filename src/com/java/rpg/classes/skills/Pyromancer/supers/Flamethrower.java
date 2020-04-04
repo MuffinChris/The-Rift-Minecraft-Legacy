@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer.supers;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Location;
@@ -85,19 +85,16 @@ public class Flamethrower extends Skill {
                     continue;
                 }
                 double dist = Math.sqrt(Math.pow(loc.getX() - ent.getLocation().getX(), 2) + Math.pow(loc.getZ() - ent.getLocation().getZ(), 2));
-                if (!(dist < 1 + i)) {
+                if (!(dist < 3 + i)) {
                     continue;
                 }
-                if (!(Math.abs(ent.getLocation().add(new Vector(0, ent.getHeight()/2.0, 0)).getY() - loc.getY()) < ent.getHeight()/1.9)) {
-                    continue;
-                }
-                if (Math.abs(ent.getLocation().getY() - loc.getY()) > i / 1.5) {
+                if (!(Math.abs(ent.getLocation().add(new Vector(0, ent.getHeight()/2.0, 0)).getY() - loc.getY()) < ent.getHeight()/1.3 + i + 0.2)) {
                     continue;
                 }
                 alreadyHit.add(ent);
 
                 ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
-                spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 5, 0, 0));
+                spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 5, 0));
                 ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
 
             }

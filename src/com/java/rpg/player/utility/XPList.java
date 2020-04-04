@@ -1,5 +1,6 @@
 package com.java.rpg.player.utility;
 
+import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -52,9 +53,28 @@ public class XPList {
         }
     }
 
+    public boolean hasHighEnv() {
+        double total = 0;
+        for (Double d : dmg.values()) {
+            total+=d;
+        }
+        total+=envdmg;
+        return (total*RPGConstants.xpEnvVal < envdmg);
+    }
+
+    public boolean hasVeryHighEnv() {
+        double total = 0;
+        for (Double d : dmg.values()) {
+            total+=d;
+        }
+        total+=envdmg;
+        return (total*RPGConstants.veryHighEnv < envdmg);
+    }
+
+
     public boolean getAloneAndHighEnv(Player p) {
         if (getPercentages().containsKey(p) && getPercentages().size() == 1) {
-            if (getPercentages().get(p) < 0.25) {
+            if (getPercentages().get(p) < RPGConstants.xpEnvVal) {
                 return true;
             }
         }
@@ -63,7 +83,7 @@ public class XPList {
 
     public boolean getAloneAndLowEnv(Player p) {
         if (getPercentages().containsKey(p) && getPercentages().size() == 1) {
-            if (getPercentages().get(p) >= 0.25) {
+            if (getPercentages().get(p) >= RPGConstants.xpEnvVal) {
                 return true;
             }
         }

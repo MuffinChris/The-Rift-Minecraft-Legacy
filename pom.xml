@@ -38,8 +38,12 @@
     </build>
     <repositories>
         <repository>
-            <id>api-resources</id>
-            <url>file://${project.basedir}/apiresources</url>
+            <id>sk89q-repo</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
@@ -47,22 +51,39 @@
             <layout>default</layout>
         </repository>
         <repository>
-            <id>everything</id>
-            <url>https://repo.citizensnpcs.co/</url>
+            <id>citizens</id>
+            <url>http://repo.citizensnpcs.co/</url>
         </repository>
+        <repository>
+            <id>api-resources</id>
+            <url>file://${project.basedir}/apiresources</url>
+        </repository>
+
     </repositories>
     <dependencies>
         <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>net.citizensnpcs</groupId>
-            <artifactId>citizens</artifactId>
+            <artifactId>citizensapi</artifactId>
             <version>2.0.26-SNAPSHOT</version>
             <type>jar</type>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api-plugin</artifactId>
             <version>2.3.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldguard</groupId>
+            <artifactId>worldguard-bukkit</artifactId>
+            <version>7.0.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.destroystokyo.paper.server</groupId>

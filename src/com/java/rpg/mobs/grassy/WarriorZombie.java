@@ -1,9 +1,10 @@
 package com.java.rpg.mobs.grassy;
 
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
 import com.java.rpg.mobs.MobEXP;
-import com.java.rpg.classes.RPGConstants;
+import com.java.rpg.classes.utility.RPGConstants;
+import com.java.rpg.modifiers.utility.PhysicalStack;
 import de.tr7zw.nbtapi.NBTEntity;
 import net.minecraft.server.v1_15_R1.*;
 import com.java.rpg.player.Items;
@@ -85,17 +86,19 @@ public class WarriorZombie extends EntityZombie {
     public void setupStats() {
         LivingEntity ent = getBukkitLivingEntity();
 
-        MobEXP.setCustomName(ent, "&7[" + RPGConstants.earth + RPGConstants.fire + RPGConstants.strong + " &7| " + RPGConstants.water + RPGConstants.weak + "&7] &cZombie Warrior");
+        MobEXP.setCustomName(ent, "&7[" + RPGConstants.earth + RPGConstants.fire + RPGConstants.strong + " &7| " + RPGConstants.air + RPGConstants.weak + "&7] &cZombie Warrior");
         MobEXP.setLevel(ent, new LevelRange(5, 10).getRandomLevel());
         int level = MobEXP.getLevel(ent);
-        MobEXP.setExp(ent, RPGConstants.mobExp.get(level) * 1.2);
+        MobEXP.setExp(ent, 105 + level * 20);
         MobEXP.setArmor(ent, 125 + level * 5);
         MobEXP.setMagicResist(ent, 50);
         MobEXP.setHPRegen(ent, level * 5 + 50);
-        MobEXP.setElementalDefense(ent, new ElementalStack(0, 75, 0, 100, 25, -50));
+        MobEXP.setElementalDefense(ent, new ElementalStack(-50, 75, 0, 100, 25));
+        MobEXP.setPhysicalDamage(ent, new PhysicalStack(75 + level * 5, 50 + level * 4, 0));
 
         ent.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
-        ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(150 + level * 10);
+        ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
+
         ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(1250 + level * 50);
         ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         ent.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);

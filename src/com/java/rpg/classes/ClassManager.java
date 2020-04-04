@@ -7,7 +7,8 @@ import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
 import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -135,7 +136,7 @@ public class ClassManager implements Listener {
         skillsNone.add(new Bulwark());
         List<Skill> superSkillsNone = new ArrayList<>();
 
-        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 25.0, 100, 2, 3, 0.1, "SWORD", 10, 60, 0, 6, 1, 40, 32, 0.5, 0.25, skillsNone, superSkillsNone, 180, new ElementalStack(40, 40, 40, 40, 40, 40), new ElementalStack(0.25, 0.25, 0.25, 0.25, 0.25, 0.25)));
+        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 40.0, 100, 2, 3, 0.1, "SWORD", 10, 60, 0, 6, 1, 40, 32, 0.5, 0.25, skillsNone, superSkillsNone, 180, new ElementalStack(40, 40, 40, 40, 40), new ElementalStack(0.25, 0.25, 0.25, 0.25, 0.25)));
 
 
         List<Skill> skillsPyro = new ArrayList<>();
@@ -149,7 +150,7 @@ public class ClassManager implements Listener {
         superSkillsPyro.add(new Flamethrower());
         superSkillsPyro.add(new Conflagration());
 
-        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 600.0, 14, 400, 5, 7, 0.14, "HOE", 10, 20, 0, 2, 20,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110, new ElementalStack(30, 20, 30, 50, 100, 0), new ElementalStack(0, 0, 0, 1, 0.25, 0)));
+        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 800.0, 30, 400, 5, 7, 0.14, "HOE", 10, 60, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110, new ElementalStack(5, 20, 30, 50, 100), new ElementalStack(0, 0, 0, 1, 0.25)));
     }
 
     public PlayerClass getPClassFromString(String s) {

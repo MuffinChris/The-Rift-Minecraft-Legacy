@@ -25,6 +25,7 @@ import com.java.holograms.EntityHealthBars;
 import com.java.holograms.Hologram;
 import com.java.rpg.*;
 import com.java.rpg.classes.*;
+import com.java.rpg.classes.casting.BindCommand;
 import com.java.rpg.classes.casting.Skillcast;
 import com.java.rpg.classes.commands.admin.CDCommand;
 import com.java.rpg.classes.commands.admin.ManaCommand;
@@ -33,6 +34,7 @@ import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.classes.statuses.Stuns;
+import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.classes.utility.StatusObject;
 import com.java.rpg.classes.utility.StatusValue;
 import com.java.rpg.mobs.CustomEntityType;
@@ -47,6 +49,11 @@ import com.java.rpg.modifiers.utility.DamageTypes;
 import com.java.rpg.player.*;
 import com.java.rpg.player.Items;
 import com.java.rpg.player.utility.PlayerListener;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import de.slikey.effectlib.EffectManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.md_5.bungee.api.ChatMessageType;
@@ -98,8 +105,12 @@ public class Main extends JavaPlugin {
         Dungeons:
             - Dungeons should also give resource rewards to supplement town resource costs
             - Dungeons can have resource zones that give superb resources that regenerate but ofc u get fukin ganked
+            - Stunned bosses cant use abilities!
+            - Nearby Player size should cause boss to scale. Nearby player size should cause amount of mob spawning
+            - SAML Flags on bosses
 
         Professions:
+        Two Professions Primary and Secondary (100 | 50)
         Blacksmith:
             - Do not damage Anvils when using it
             - Can make repair kits
@@ -123,14 +134,35 @@ public class Main extends JavaPlugin {
 
         In general, solo players should use the market or publicly available vendors.
 
+        Leveling:
+        - superskills at 30 and 40. 45 is max level gear cap. 50 is prestige.
+        - Every 1 level
+        - Update levelup msg
 
         Elemental Info:
-                Fire: &c✴
-                Ice: &b❆
-                Water: &3✾
-                Earth: &2❈
-                Air: &f✸
-                Electric: &e⚡
+
+                (When on items)
+                Impact: Raw Damage, No Pen
+                Puncture: Armor Pen, Crit, Low Damage
+                Slash: All Rounder
+
+                (When on items)
+                Fire: &c✴ (Raw DPS (High Speed, High Dmg, lack of armor))
+                Ice: &b❆ (CRIT)
+                Water: &3✾ (REMOVE)
+                Earth: &2❈ (SLOW ATK SPEED, HIGH DMG)
+                Air: &f✸ (All Rounder (dmg, speed, everything!))
+                Electric: &e⚡ (ATTACK SPEED)
+
+                Armor:
+                Armor
+                MR
+                Elemental Defense
+                Attribute Bonuses
+                Variation of 20%ish (Rerolls!)
+
+                Items:
+                Spells should scale off of item with a spell modifier! Base skill should have zero scaling
 
                 Fire > Ice
                 Fire < Water
@@ -157,64 +189,64 @@ public class Main extends JavaPlugin {
                 Air < Ice
                 Air < Electric
                 Air > Earth
+         Accessories:
+            Bracelet, Ring, Ring, Amulet
 
     DIRECT LINE TODO LIST:
 
-        -37. Low level env shit doesnt work if two low lvl players hit it lmao just make a better system 4head. REFER TO #34 (rethink the system btw)
+        -3. Mob HP Bar and Name as hologram
 
-        -36. Make abilities not able to target or damage tamed mobs! (testing)
+        -2. Add Impact, Slash, Puncture (fully implement with items!)
 
-        -34. Find a better solution for mob burning. Perhaps XP cap gain if Environmental but only if the XP is very high!
+        -1. Add Attributes (heroes style)
 
-        -32. Disable Drowned Conversion (have own ocean mobs). Make sure to update DmgThreshold and EDefense when a mob transforms.
+        0. Make abilities not able to target or damage tamed mobs! (testing)
 
-        -31. List command works by permissions (ranks)
+        1. Find a better solution for mob burning. Perhaps XP cap gain if Environmental but only if the XP is very high! (testing)
 
-        -30 (RELEVANT RN): Add elemental damage from non player sources (mobs)
+        2. Disable Drowned Conversion (have own ocean mobs). Make sure to update DmgThreshold and EDefense when a mob transforms.
 
-        -29. Setting to hide dmg holograms and EXP and TOGGLE OFFHAND!!!
+        3. List command works by permissions (ranks) (testing)
 
-        -26. add elemental scaling and balance damage for skills. Fix pyro fire checks.
+        4 (RELEVANT RN): Add elemental damage from non player sources (mobs)
 
-        -25. Make guardan lasers and spikes do damage
+        5. Setting to hide dmg holograms and EXP and TOGGLE OFFHAND!!!
 
-        -24. Make legacy projectiles like fireballs hold a PersistentDataContainer instead of customname (will need to hold Elemental Dmg). Same with Enderdragon damage
+        6. add elemental scaling and balance damage for skills. Fix pyro fire checks.
 
-        -23. Iron Golems and Villagers need to have a base level that is higher than 0.
+        7. Make guardan lasers and spikes do damage
 
-        -22. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
+        8. Make legacy projectiles like fireballs hold a PersistentDataContainer instead of customname (will need to hold Elemental Dmg). Same with Enderdragon damage
 
-        -22. Improve visuals of Skills GUI. Update Class and Info cmd
+        9. Iron Golems and Villagers need to have a base level that is higher than 0.
 
-        -21. zombie warrior has enchanted item!!!?!??!?! Look into it
+        10. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
 
-        -20. Make experience bottles give class exp
+        11. Improve visuals of Skills GUI. Update Class and Info cmd
 
-        -19. Make wither always lvl 50
+        12. zombie warrior has enchanted item!!!?!??!?! Look into it
 
-        -18. Display Raids and Boss Health on the top bar? (change color of top bar)
+        13. Make experience bottles give class exp
 
-        -17. Wither Explosions are crazy Strong.
+        14. Make wither always lvl 50
 
-        -16. All biomes capped 1-20 (some a bit higher, but never extremes) Dungeons forced to level
+        15. Display Raids and Boss Health on the top bar? (change color of top bar)
 
-        -15. More vanilla exp drop from better mobs
+        16. Wither Explosions are crazy Strong.
 
-        -14. Balance totems of undying (make them good, perhaps have durability or charges!)
+        17. All biomes capped 1-20 (some a bit higher, but never extremes) Dungeons forced to level
 
-        -13. Correctly balance mobs that are wearing armor.
+        18. More vanilla exp drop from better mobs
 
-        -12. Design all custom mobs, step away from formulas. Make sure to use Name PData tag incase mob has dif name than type.
+        19. Balance totems of undying (make them good, perhaps have durability or charges!)
 
-        -11. Lava and fire need to do reduced damage to big boy mobs
+        20. Design all custom mobs, step away from formulas. Make sure to use Name PData tag incase mob has dif name than type.
 
-        -7. Terraria style mobs (mobs have a level range, they only spawn in specific biomes? is this possible monkaS)
+        21. Disallow Shield usage for non shield classes
 
-        -5. NBT Food system for future expansion
+        22. Iron golem healing is absolute dogshit
 
-        -3. Mobs being stunned needs to be standardized. If a boss is stunned, it needs to stop using abilities and whatnot
-
-        -1. Dungeon encounters should scale with party size. Bosses too.
+        23. Allow spells to be casted twice! (no errors lul)
 
         0. ITEM STUFF / IDEAS:
         - make classes use specific item type.
@@ -243,21 +275,6 @@ public class Main extends JavaPlugin {
         - Need to make drops and loot not have vanilla enchantments. If the enchantment is not supported (like proj prot), remove it!
         - Make sure to change existing ench changes (ie. mending)
 
-
-
-        2. Disallow Shield usage for non shield classes
-
-        6. Iron golem healing is absolute dogshit
-
-        7. Allow spells to be casted twice! (no errors lul)
-
-        10. Wanderer no skill levels (test this)
-
-        11. allow players to set spawnpoint at their town maybe? (later)
-
-        . Removing armor defense appears not to work on enchanted items (dropped specifically)
-               ^^^ MUST DEBUG USING PRINTING NBT TAG INFO
-        1. Account for SAML flags when making bosses
 
      RIFT THEME IDEAS:
         Players can open a personal rift using a Rift Key or Rift Gem or Rift Stone
@@ -289,9 +306,72 @@ public class Main extends JavaPlugin {
         return JavaPlugin.getPlugin(Main.class);
     }
 
-    public boolean sharePartyPvp(Player p1, Player p2) {
+    public boolean shareParty(Player p1, Player p2) {
         if (getPM().hasParty(p1) && getPM().hasParty(p2)) {
-            if (getPM().getParty(p1).getPlayers().contains(p2) && !getPM().getParty(p1).getPvp()) {
+            return (getPM().getParty(p1).getPlayers().contains(p2));
+        }
+        return false;
+    }
+
+    public boolean sharePartyPvp(Player p1, Player p2) {
+        return (shareParty(p1, p2) && !getPM().getParty(p1).getPvp());
+    }
+
+    public boolean isValidFriendly(Entity e, Player damager) {
+        if (e instanceof LivingEntity) {
+            if (!(e instanceof ArmorStand) && !e.isInvulnerable() && !e.isDead()) {
+                if (e instanceof Player) {
+                    Player p = (Player) e;
+                    if (p.getGameMode() == GameMode.SURVIVAL) {
+                        if (p.equals(damager)) {
+                            return true;
+                        }
+                        if (shareParty(p, damager)) {
+                            return true;
+                        }
+                        return false;
+                        /*if (CitizensAPI.getNPCRegistry().isNPC(e) && CitizensAPI.getNPCRegistry().getNPC(e).isProtected()) {
+                            return false;
+                        }*/
+                    } else {
+                        return false;
+                    }
+                }
+                if (e instanceof Tameable) {
+                    Tameable tameable = (Tameable) e;
+                    if (tameable.getOwner() != null) {
+                        if (Bukkit.getPlayer(tameable.getOwner().getUniqueId()).equals(damager)) {
+                            return true;
+                        }
+                        if (shareParty(Bukkit.getPlayer(tameable.getOwner().getUniqueId()), damager)) {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean isValidRPG(Entity e, Player damager) {
+        if (e instanceof LivingEntity) {
+            if (!(e instanceof ArmorStand) && !e.isInvulnerable() && !e.isDead()) {
+                if (e instanceof Player) {
+                    Player p = (Player) e;
+                    if (p.getGameMode() == GameMode.SURVIVAL) {
+                        if (p.equals(damager)) {
+                            return false;
+                        }
+                        if (CitizensAPI.getNPCRegistry().isNPC(e) && CitizensAPI.getNPCRegistry().getNPC(e).isProtected()) {
+                            return false;
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
                 return true;
             }
         }
@@ -313,6 +393,12 @@ public class Main extends JavaPlugin {
                         if (CitizensAPI.getNPCRegistry().isNPC(e) && CitizensAPI.getNPCRegistry().getNPC(e).isProtected()) {
                             return false;
                         }
+                        /*RegionContainer rg = WorldGuard.getInstance().getPlatform().getRegionContainer();
+                        for(ProtectedRegion r : rg.get((com.sk89q.worldedit.world.World) p.getWorld()).getApplicableRegions(new BlockVector3())) {
+                            //Check if region is the correct one through r.getId() if by name
+                            //Do the firework thing
+                        }*/
+
                         return true;
                     } else {
                         return false;
@@ -336,7 +422,30 @@ public class Main extends JavaPlugin {
         return false;
     }
 
+    public boolean isPlayer(Entity e) {
+        if (e instanceof Player) {
+            if (!isNPC(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isNPC(Entity e) {
+        return CitizensAPI.getNPCRegistry().isNPC(e);
+    }
+
     public List<LivingEntity> getNearbyLivingEntitiesTargetValid(Location loc, Player caster, double radius) {
+        List<LivingEntity> ents = new ArrayList<>();
+        for (LivingEntity ent : loc.getNearbyLivingEntities(radius)) {
+            if (isValidTarget(ent, caster)) {
+                ents.add(ent);
+            }
+        }
+        return ents;
+    }
+
+    public List<LivingEntity> getNearbyLivingEntitiesValid(Location loc, Player caster, double radius) {
         List<LivingEntity> ents = new ArrayList<>();
         for (LivingEntity ent : loc.getNearbyLivingEntities(radius)) {
             if (isValidTarget(ent, caster)) {
@@ -364,7 +473,7 @@ public class Main extends JavaPlugin {
                     }
                     Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Restarting in &f&l" + seconds + "&a&l seconds!"));
                 } else {
-                    if (times % 4 == 0) {
+                    if (times % 20 == 0 || (times >= 4 * seconds - (4 * 10) && times % 4 == 0)) {
                         Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Restarting in &f&l" + ((seconds * 4 - times) / 4) + "&a&l seconds!"));
                     }
                 }
@@ -598,7 +707,7 @@ public class Main extends JavaPlugin {
     public void setMana(Player pl, double m) {
         UUID p = pl.getUniqueId();
         if (getPC().get(p) != null) {
-            if (getPC().get(p).getPClass() instanceof PlayerClass) {
+            if (getPC().get(p).getPClass() != null) {
                 getPC().get(p).setMana(m);
             }
         }
@@ -638,7 +747,7 @@ public class Main extends JavaPlugin {
             public void run() {
                 for (Player pl : Bukkit.getServer().getOnlinePlayers()) {
                     UUID p = pl.getUniqueId();
-                    if (getPC().get(p) != null && getPC().get(p).getPClass() instanceof PlayerClass) {
+                    if (getPC().get(p) != null && getPC().get(p).getPClass() != null) {
                         int level = getPC().get(p).getLevel();
                         double mana = getMana(pl);
                         double maxmana = getPC().get(p).getPClass().getCalcMana(level);
@@ -826,6 +935,7 @@ public class Main extends JavaPlugin {
 
         getCommand("sp").setExecutor(new SkillpointCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
+        getCommand("bind").setExecutor(new BindCommand());
         so("&dRIFT: &fEnabled commands!");
 
         Bukkit.getPluginManager().registerEvents(new InfoCommand(), this);
@@ -852,6 +962,7 @@ public class Main extends JavaPlugin {
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
+        Bukkit.getPluginManager().registerEvents(new BindCommand(), this);
 
         Bukkit.getPluginManager().registerEvents(new Bulwark(), this);
 

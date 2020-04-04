@@ -1,16 +1,14 @@
 package com.java.rpg.classes.commands.playerinfo;
 
 import com.java.Main;
-import com.java.rpg.classes.RPGConstants;
+import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.classes.RPGPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -134,7 +132,6 @@ public class InfoCommand implements CommandExecutor, Listener {
         double electric = rp.getElectricDefense();
         double fire = rp.getFireDefense();
         double ice = rp.getIceDefense();
-        double water = rp.getWaterDefense();
 
         String mrper = Main.color("&9" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+mr)))) + "%");
         String amper = Main.color("&6" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+armor)))) + "%");
@@ -144,7 +141,6 @@ public class InfoCommand implements CommandExecutor, Listener {
         String electricPer = Main.color("&e" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+electric)))) + "%");
         String firePer = Main.color("&c" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+fire)))) + "%");
         String icePer = Main.color("&b" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+ice)))) + "%");
-        String waterPer = Main.color("&3" + df.format(100.0 * (1-(RPGConstants.defenseDiv/(RPGConstants.defenseDiv+water)))) + "%");
 
         spMeta.setDisplayName(Main.color("&eDefense Stats"));
         sp.setType(Material.IRON_CHESTPLATE);
@@ -158,7 +154,6 @@ public class InfoCommand implements CommandExecutor, Listener {
         lore.add(Main.color("&8[" + RPGConstants.electric +  "&8] &7Electric Defense: &f" + df.format(electric) + " &8(" + electricPer + "&8)"));
         lore.add(Main.color("&8["  + RPGConstants.fire + "&8] &7Fire Defense: &f" + df.format(fire) + " &8(" + firePer + "&8)"));
         lore.add(Main.color("&8[" + RPGConstants.ice +  "&8] &7Ice Defense: &f" + df.format(ice) + " &8(" + icePer + "&8)"));
-        lore.add(Main.color("&8[" + RPGConstants.water +  "&8] &7Water Defense: &f" + df.format(water) + " &8(" + waterPer + "&8)"));
 
 
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

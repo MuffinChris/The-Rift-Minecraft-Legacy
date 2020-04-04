@@ -1,13 +1,12 @@
 package com.java.rpg.modifiers.utility;
 
-import com.java.rpg.classes.utility.ElementalStack;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Damage {
 
     private LivingEntity target;
-    private double physicalDamage;
+    private PhysicalStack physicalDamage;
     private double magicDamage;
     private double trueDamage;
     private ElementalStack elementalDamage;
@@ -17,13 +16,13 @@ public class Damage {
     private int lifetime;
     public enum DamageType
     {
-        PHYSICAL, MAGIC, TRUE, ICE, FIRE, EARTH, ELECTRIC, AIR, WATER
+        PHYSICAL, PUNCTURE, IMPACT, SLASH, MAGIC, TRUE, ICE, FIRE, EARTH, ELECTRIC, AIR
     }
     private int task;
 
-    public Damage(Player caster, LivingEntity p, double physicalDamage, double magicDamage, double trueDamage, ElementalStack ed, int lifetime) {
+    public Damage(Player caster, LivingEntity p, PhysicalStack ps, double magicDamage, double trueDamage, ElementalStack ed, int lifetime) {
         target = p;
-        this.physicalDamage = physicalDamage;
+        this.physicalDamage = ps;
         this.magicDamage = magicDamage;
         this.trueDamage = trueDamage;
         elementalDamage = ed;
@@ -62,7 +61,7 @@ public class Damage {
         return dt;
     }
 
-    public double getPhysicalDamage() {
+    public PhysicalStack getPhysicalDamage() {
         return physicalDamage;
     }
     public double getMagicDamage() {

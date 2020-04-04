@@ -38,7 +38,7 @@ public class Combust extends Skill implements Listener {
     private int travelRange = 8;
 
     public Combust() {
-        super("Combust", 200, 60 * 20, 50, 25, "%player% has shot a fireball!", "CAST");
+        super("Combust", 200, 60 * 20, 50, 35, "%player% has shot a fireball!", "CAST");
     }
 
     public List<String> getDescription(Player p) {

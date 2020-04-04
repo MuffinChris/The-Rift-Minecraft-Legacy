@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Sound;
@@ -35,7 +35,7 @@ public class Blaze extends Skill {
     }
 
     public Blaze() {
-        super("Blaze", 100, 25 * 20, 0, 10, "%player% has shot a fireball!", "CAST");
+        super("Blaze", 100, 25 * 20, 0, 15, "%player% has shot a fireball!", "CAST");
         blazeLocations = new HashMap<>();
         ticks = new HashMap<>();
     }
@@ -126,7 +126,7 @@ public class Blaze extends Skill {
                             } else {
                                 ticks.get(p).put(ent, 10);
                                 ent.setFireTicks(Math.min(ent.getFireTicks() + 20, 60));
-                                Skill.spellDamageStatic(p, ent, getDmg(p), new ElementalStack(10, 0, 0, 10, 0, 0));
+                                Skill.spellDamageStatic(p, ent, getDmg(p), new ElementalStack(10, 0, 0, 10, 0));
                             }
                             alreadyLooped.add(ent);
                         }

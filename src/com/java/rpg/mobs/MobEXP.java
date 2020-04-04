@@ -2,9 +2,10 @@ package com.java.rpg.mobs;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.java.Main;
-import com.java.rpg.classes.RPGConstants;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.classes.utility.RPGConstants;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
+import com.java.rpg.modifiers.utility.PhysicalStack;
 import com.java.rpg.player.utility.XPList;
 import de.tr7zw.nbtapi.NBTEntity;
 import de.tr7zw.nbtapi.NBTList;
@@ -365,11 +366,7 @@ public class MobEXP implements Listener {
 
     public static double calcExp(LivingEntity ent) {
         int level = getLevel(ent);
-        if (xpmods.containsKey(ent.getType())) {
-            return RPGConstants.mobExp.get(level) * (Math.random() * 0.06 + 1) * xpmods.get(ent.getType());
-        } else {
-            return RPGConstants.mobExp.get(level) * (Math.random() * 0.06 + 1);
-        }
+        return xpmods.get(ent.getType()) * Math.ceil(Math.pow(2, (level + 60.0)/10.5) - 0.0);
         //return (RPGConstants.mobXpScalar * Math.pow(level, RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
     }
 
@@ -425,6 +422,48 @@ public class MobEXP implements Listener {
         return WordUtils.capitalize((nmsEnt.getMinecraftKeyString().replace("minecraft:", "")).replace("_", " "));
     }
 
+    public static void setPhysicalRangedDamage(LivingEntity ent, PhysicalStack pd) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "PhysicalRangedDamage"), PersistentDataType.STRING, pd.getCommaDelim());
+    }
+
+    public static PhysicalStack getPhysicalRangedDamage (LivingEntity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "PhysicalRangedDamage"), PersistentDataType.STRING)) {
+            String delim = data.get(new NamespacedKey(Main.getInstance(), "PhysicalRangedDamage"), PersistentDataType.STRING);
+            String[] ar = delim.split(",");
+            double[] ard = new double[3];
+            int index = 0;
+            for (String s : ar) {
+                ard[index] = Double.valueOf(s);
+                index++;
+            }
+            return new PhysicalStack(ard[0], ard[1], ard[2]);
+        }
+        return new PhysicalStack(0, 0, 0);
+    }
+
+    public static void setPhysicalDamage(LivingEntity ent, PhysicalStack pd) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "PhysicalDamage"), PersistentDataType.STRING, pd.getCommaDelim());
+    }
+
+    public static PhysicalStack getPhysicalDamage (LivingEntity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "PhysicalDamage"), PersistentDataType.STRING)) {
+            String delim = data.get(new NamespacedKey(Main.getInstance(), "PhysicalDamage"), PersistentDataType.STRING);
+            String[] ar = delim.split(",");
+            double[] ard = new double[3];
+            int index = 0;
+            for (String s : ar) {
+                ard[index] = Double.valueOf(s);
+                index++;
+            }
+            return new PhysicalStack(ard[0], ard[1], ard[2]);
+        }
+        return new PhysicalStack();
+    }
+
     public static void setElementalDefense (LivingEntity ent, ElementalStack eDef) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         data.set(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING, eDef.getCommaDelim());
@@ -435,15 +474,15 @@ public class MobEXP implements Listener {
         if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING)) {
             String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING);
             String[] ar = delim.split(",");
-            double[] ard = new double[6];
+            double[] ard = new double[5];
             int index = 0;
             for (String s : ar) {
                 ard[index] = Double.valueOf(s);
                 index++;
             }
-            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4], ard[5]);
+            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4]);
         }
-        return new ElementalStack(0, 0, 0, 0, 0, 0);
+        return new ElementalStack(0, 0, 0, 0, 0);
     }
 
     public static double getArmor(LivingEntity ent) {
@@ -882,29 +921,56 @@ public class MobEXP implements Listener {
 
     @EventHandler
     public void onKill (EntityDeathEvent e) {
-        if (e.getEntity() instanceof LivingEntity && e.getEntity().getCustomName() != null && getLevel(e.getEntity()) != -1 && !(e.getEntity() instanceof Player || e.getEntity() instanceof ArmorStand)) {
+        if (e.getEntity().getCustomName() != null && getLevel(e.getEntity()) != -1 && !(e.getEntity() instanceof Player || e.getEntity() instanceof ArmorStand)) {
             LivingEntity ent = e.getEntity();
             double exp = getExp(ent);
+            int level = getLevel(ent);
             if (xp.containsKey(ent) && exp > 0) {//e.getEntity().hasMetadata("EXP")) {
                 //double exp = (double) e.getEntity().getMetadata("EXP").get(0).value();
                 for (Player pl : xp.get(ent).getPercentages().keySet()) {
                     if (xp.get(ent).getIndivPer(pl).contains("100%") || xp.get(ent).getAloneAndLowEnv(pl)) {
-                        main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), "SELF");
+                        double expToGive = exp * xp.get(ent).getPercentages().get(pl);
+                        if (main.getRP(pl).getLevel() - RPGConstants.reducedExpLevelMod >= level) {
+                            expToGive*=Math.floor(Math.pow((1.0 * level)/( 1.0 * main.getRP(pl).getLevel()), RPGConstants.reducedExpLevelPow));
+                        }
+                        main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive, "SELF");
                     } else {
+                        DecimalFormat dF = new DecimalFormat("#.##");
                         if (xp.get(ent).getAloneAndHighEnv(pl)) {
-                            DecimalFormat dF = new DecimalFormat("#.##");
-                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.25), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + 0.75) * 100.0) + "%");
+                            double expToGive = exp * xp.get(ent).getPercentages().get(pl);
+                            if (main.getRP(pl).getLevel() - RPGConstants.reducedExpLevelMod >= level) {
+                                expToGive*=Math.floor(Math.pow((1.0 * level)/( 1.0 * main.getRP(pl).getLevel()), RPGConstants.reducedExpLevelPow));
+                            }
+                            if (xp.get(ent).hasVeryHighEnv()) {
+                                expToGive = Math.min(expToGive, main.getRP(pl).getMaxExp() * 0.25);
+                            }
+                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + (1-RPGConstants.xpEnvVal)), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + (1-RPGConstants.xpEnvVal)) * 100.0) + "%");
                         } else {
-                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), exp * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
+                            double expToGive = exp * xp.get(ent).getPercentages().get(pl);
+                            if (main.getRP(pl).getLevel() - RPGConstants.reducedExpLevelMod >= level) {
+                                expToGive*=Math.floor(Math.pow((1.0 * level)/( 1.0 * main.getRP(pl).getLevel()), RPGConstants.reducedExpLevelPow));
+                            }
+                            if (xp.get(ent).hasVeryHighEnv()) {
+                                expToGive = Math.min(expToGive, main.getRP(pl).getMaxExp() * 0.25);
+                            }
+                            if (xp.get(ent).hasHighEnv()) {
+                                main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + ((1 - RPGConstants.xpEnvVal) / (xp.get(ent).getPercentages().size() * 1.0))), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + ((1 - RPGConstants.xpEnvVal) / (xp.get(ent).getPercentages().size()) * 1.0)) * 100.0) + "%");
+                            } else {
+                                main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
+                            }
                         }
                     }
                 }
                 xp.get(ent).scrub();
                 xp.remove(ent);
             } else {
-                if (exp > 0 && e.getEntity().getKiller() instanceof Player) {//e.getEntity().hasMetadata("EXP") && e.getEntity().getKiller() instanceof Player) {
+                if (exp > 0 && e.getEntity().getKiller() != null) {//e.getEntity().hasMetadata("EXP") && e.getEntity().getKiller() instanceof Player) {
                     //double exp = (double) e.getEntity().getMetadata("EXP").get(0).value();
-                    main.getRP(e.getEntity().getKiller()).giveExpFromSource(e.getEntity().getKiller(), e.getEntity().getLocation(), exp, e.getEntity().getKiller().getName());
+                    double expToGive = exp * xp.get(ent).getPercentages().get(e.getEntity().getKiller());
+                    if (main.getRP(e.getEntity().getKiller()).getLevel() - RPGConstants.reducedExpLevelMod >= level) {
+                        expToGive*=Math.floor(Math.pow((1.0 * level)/( 1.0 * main.getRP(e.getEntity().getKiller()).getLevel()), RPGConstants.reducedExpLevelPow));
+                    }
+                    main.getRP(e.getEntity().getKiller()).giveExpFromSource(e.getEntity().getKiller(), e.getEntity().getLocation(), expToGive, e.getEntity().getKiller().getName());
                 }
             }
         }

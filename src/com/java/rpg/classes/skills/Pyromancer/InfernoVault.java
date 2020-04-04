@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -126,7 +126,7 @@ public class InfernoVault extends Skill implements Listener {
             if (ent.getHealth() < landdamage && !(ent instanceof Player)) {
                 ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
             }
-            spellDamage(caster, ent, landdamage, new ElementalStack(0, 0, 0, 50, 0, 0));
+            spellDamage(caster, ent, landdamage, new ElementalStack(0, 0, 0, 50, 0));
             ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
         }
     }
@@ -150,7 +150,7 @@ public class InfernoVault extends Skill implements Listener {
             if (ent.getHealth() < vaultdamage && !(ent instanceof Player)) {
                 ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
             }
-            spellDamage(caster, ent, vaultdamage, new ElementalStack(0, 0, 0, 50, 0, 0));
+            spellDamage(caster, ent, vaultdamage, new ElementalStack(0, 0, 0, 50, 0));
             ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
         }
     }

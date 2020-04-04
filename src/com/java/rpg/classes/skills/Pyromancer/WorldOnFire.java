@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Location;
@@ -80,7 +80,7 @@ public class WorldOnFire extends Skill implements Listener {
                 continue;
             }
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-            spellDamage(caster, ent, getDmg(caster), new ElementalStack(0, 0, 25, 100, 0, 0));
+            spellDamage(caster, ent, getDmg(caster), new ElementalStack(0, 0, 25, 100, 0));
             caster.getWorld().spawnParticle(Particle.LAVA, ent.getEyeLocation(), 15, 0.2, 0.2, 0.2, 0.2,null, true);
         }
     }

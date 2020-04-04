@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
@@ -156,7 +156,7 @@ public class Fireball extends Skill implements Listener {
             /*new BukkitRunnable() {
                 public void run() {*/
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
-            spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 200, 0, 0));
+            spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 200, 0));
             ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
                 /*}
             }.runTaskLater(Main.getInstance(), 1L);*/

@@ -4,7 +4,8 @@ import com.java.Main;
 import com.java.holograms.Hologram;
 import com.java.rpg.modifiers.utility.Damage;
 import com.java.rpg.classes.skills.Pyromancer.WorldOnFire;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.PhysicalStack;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -33,7 +34,7 @@ public class Skill {
         if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
             edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
         }
-        main.getRP(caster).getDamages().add(new Damage(caster, target, 0, damage, 0, edmg, 1));
+        main.getRP(caster).getDamages().add(new Damage(caster, target, new PhysicalStack(), damage, 0, edmg, 1));
         damageNoKB(caster, target, damage);
     }
 
@@ -44,7 +45,7 @@ public class Skill {
         if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
             edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
         }
-        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, 0, damage, 0, edmg, 1));
+        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, new PhysicalStack(), damage, 0, edmg, 1));
         damageNoKB(caster, target, damage);
 
     }

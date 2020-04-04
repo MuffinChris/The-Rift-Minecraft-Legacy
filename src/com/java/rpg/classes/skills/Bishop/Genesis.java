@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Bishop;
 
 import com.java.Main;
-import com.java.rpg.classes.utility.ElementalStack;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 
 import org.bukkit.*;
@@ -50,11 +50,11 @@ public class Genesis extends Skill {
                 ent.setKiller(p);
                 ent.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(80,2));
                 
-                spellDamage(p, ent, damage, new ElementalStack(0, 0, 0, 50, 0, 0));
+                spellDamage(p, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
             }
             ent.setKiller(p);
             ent.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(80,2));
-            spellDamage(p, ent, damage, new ElementalStack(0, 0, 0, 50, 0, 0));
+            spellDamage(p, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
     	}
     }
     
