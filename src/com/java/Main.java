@@ -89,6 +89,10 @@ public class Main extends JavaPlugin {
         Rift Theme:
             - The dungeons are all portal to nother dimension style.
             - idk use pink and purple and incorporate portals.
+
+            - Witcher 3 Style "Great Frost" / "Eternal Winter"
+            - Gotta beat it away in future expansions
+            - this is the big bad! (perhaps quests o-o?)
         Dynamics and Environment:
             - Weather
              -. Days, seasons, and weather (hypixel style). Useful for economy etc. Also make weather matter (Winter will fuck you up! Winter can also cause Mob faction of winter to spawn and kill u)

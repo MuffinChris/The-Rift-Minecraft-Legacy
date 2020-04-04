@@ -88,7 +88,9 @@ public class BindCommand implements CommandExecutor, Listener {
                 }
             } else {
                 pData.set(className + "Binds", "");
+                pData.save(pFile);
                 setBind(p, i, sk);
+                return;
             }
             pData.save(pFile);
         } catch (Exception e) {

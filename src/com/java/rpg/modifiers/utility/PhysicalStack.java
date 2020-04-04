@@ -11,8 +11,8 @@ public class PhysicalStack {
     }
 
     public PhysicalStack(double p, double i, double s) {
-        impact = i;
         puncture = p;
+        impact = i;
         slash = s;
     }
 

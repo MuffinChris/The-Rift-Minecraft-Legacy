@@ -502,88 +502,115 @@ public class DamageListener implements Listener {
                 double am = rp.getArmor();
                 double damage = e.getDamage();
                 damage = damage * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + am));
-                if ((e.getDamager() instanceof LivingEntity || (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof LivingEntity)) && (MobEXP.getPhysicalDamage((LivingEntity) e.getDamager()).getTotal() > 0 || MobEXP.getPhysicalRangedDamage((LivingEntity) e.getDamager()).getTotal() > 0)) {
-                    DecimalFormat df = new DecimalFormat("#.##");
+                if ((e.getDamager() instanceof LivingEntity || (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof LivingEntity))) {
+                    LivingEntity damager;
+
+                    if (e.getDamager() instanceof Projectile) {
+                        damager = (LivingEntity) ((Projectile) e.getDamager()).getShooter();
+                    } else {
+                        damager = (LivingEntity) e.getDamager();
+                    }
 
                     PhysicalStack physicalDamage;
                     if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() != null) {
-                        physicalDamage = MobEXP.getPhysicalRangedDamage((LivingEntity) ((Projectile) e.getDamager()).getShooter());
+                        physicalDamage = MobEXP.getPhysicalRangedDamage(damager);
                         if (physicalDamage.getTotal() <= 0) {
                             physicalDamage = new PhysicalStack(e.getDamage(), 0, 0);
                         }
                     } else {
-                        physicalDamage = MobEXP.getPhysicalDamage((LivingEntity) e.getDamager());
+                        if (MobEXP.getPhysicalDamage(damager).getTotal() <= 0) {
+                            physicalDamage = new PhysicalStack(0, e.getDamage(), 0);
+                        } else {
+                            physicalDamage = MobEXP.getPhysicalDamage(damager);
+                        }
                     }
+                    if (physicalDamage.getTotal() > 0) {
 
-                    LivingEntity ent = (LivingEntity) e.getEntity();
-                    if (physicalDamage.getPuncture() > 0) {
-                        BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
-                        e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 25, 0.5, 1, 0.5, blood);
-                        double crit = Math.random();
-                        if (crit < RPGConstants.punctureCritChance) {
-                            e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0F, 1.0F);
-                            e.getEntity().getWorld().spawnParticle(Particle.CRIT, ent.getEyeLocation(), 50, 0.2, 0.04, 0.04, 0.04);
-                            physicalDamage.setPuncture(physicalDamage.getPuncture() * RPGConstants.punctureCritDamage);
+                        DecimalFormat df = new DecimalFormat("#.##");
+
+                        LivingEntity ent = (LivingEntity) e.getEntity();
+                        if (physicalDamage.getPuncture() > 0) {
+                            BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
+                            e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 25, 0.5, 1, 0.5, blood);
+                            double crit = Math.random();
+                            if (crit < RPGConstants.punctureCritChance) {
+                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0F, 1.0F);
+                                e.getEntity().getWorld().spawnParticle(Particle.CRIT, ent.getEyeLocation(), 50, 0.2, 0.04, 0.04, 0.04);
+                                physicalDamage.setPuncture(physicalDamage.getPuncture() * RPGConstants.punctureCritDamage);
+                            }
+                            if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
+                                am = rp.getArmor() * RPGConstants.punctureArmorPenPercentage;
+                                physicalDamage.setPuncture(physicalDamage.getPuncture() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
+                            }
+                            npHolo = npHolo + RPGConstants.puncture + df.format(physicalDamage.getPuncture()) + " ";
                         }
-                        if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
-                            am = rp.getArmor() * RPGConstants.punctureArmorPenPercentage;
-                            physicalDamage.setPuncture(physicalDamage.getPuncture() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
+                        if (physicalDamage.getImpact() > 0) {
+                            BlockData blood = Material.BEDROCK.createBlockData();
+                            e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 25, 0.5, 1, 0.5, blood);
+                            if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
+                                physicalDamage.setImpact(physicalDamage.getImpact() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
+                            }
+                            npHolo = npHolo + RPGConstants.impact + df.format(physicalDamage.getImpact()) + " ";
                         }
-                        npHolo = npHolo + RPGConstants.puncture + df.format(physicalDamage.getPuncture()) + " ";
+                        if (physicalDamage.getSlash() > 0) {
+                            BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
+                            e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 100, 0.5, 1, 0.5, blood);
+                            double crit = Math.random();
+                            if (crit < RPGConstants.slashCritChance) {
+                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0F, 1.0F);
+                                e.getEntity().getWorld().spawnParticle(Particle.CRIT, ent.getEyeLocation(), 50, 0.2, 0.04, 0.04, 0.04);
+                                physicalDamage.setSlash(physicalDamage.getSlash() * RPGConstants.slashCritDamage);
+                            }
+                            if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
+                                am = rp.getArmor() * RPGConstants.slashArmorPenPercentage;
+                                physicalDamage.setSlash(physicalDamage.getSlash() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
+                            }
+                            npHolo = npHolo + RPGConstants.slash + df.format(physicalDamage.getSlash()) + " ";
+                        }
+                        damage = physicalDamage.getTotal();
                     }
-                    if (physicalDamage.getImpact() > 0) {
-                        BlockData blood = Material.BEDROCK.createBlockData();
-                        e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 25, 0.5, 1, 0.5, blood);
-                        if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
-                            physicalDamage.setImpact(physicalDamage.getImpact() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
-                        }
-                        npHolo = npHolo + RPGConstants.impact + df.format(physicalDamage.getImpact()) + " ";
-                    }
-                    if (physicalDamage.getSlash() > 0) {
-                        BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
-                        e.getEntity().getWorld().spawnParticle(Particle.BLOCK_DUST, e.getEntity().getLocation(), 100, 0.5, 1, 0.5, blood);
-                        double crit = Math.random();
-                        if (crit < RPGConstants.slashCritChance) {
-                            e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0F, 1.0F);
-                            e.getEntity().getWorld().spawnParticle(Particle.CRIT, ent.getEyeLocation(), 50, 0.2, 0.04, 0.04, 0.04);
-                            physicalDamage.setSlash(physicalDamage.getSlash() * RPGConstants.slashCritDamage);
-                        }
-                        if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
-                            am = rp.getArmor() * RPGConstants.slashArmorPenPercentage;
-                            physicalDamage.setSlash(physicalDamage.getSlash() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
-                        }
-                        npHolo = npHolo + RPGConstants.slash + df.format(physicalDamage.getSlash()) + " ";
-                    }
-                    damage = physicalDamage.getTotal();
                 }
                 e.setDamage(damage);
                 if (npHolo.isEmpty()) {
-                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + e.getDamage(), Hologram.HologramType.DAMAGE);
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
                 } else {
                     Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), npHolo, Hologram.HologramType.DAMAGE);
                 }
             }
         }
-        if (!(e.getDamager() instanceof Player) && !e.isCancelled() && !(e.getEntity() instanceof ArmorStand) && (e.getEntity() instanceof LivingEntity) && !(e.getDamager() instanceof ThrownPotion) && !(e.getDamager() instanceof AreaEffectCloud)) {
+        if (!(e.getDamager() instanceof Player) && !e.isCancelled() && !(e.getEntity() instanceof ArmorStand) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof Player) && !(e.getDamager() instanceof ThrownPotion) && !(e.getDamager() instanceof AreaEffectCloud)) {
             if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof Player) {
 
             } else {
                 String npHolo = "";
                 if (!(e.getEntity() instanceof Player) && (e.getDamager() instanceof LivingEntity || (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof LivingEntity))) {
+                    LivingEntity damager;
+                    if (e.getDamager() instanceof Projectile) {
+                        damager = (LivingEntity) ((Projectile)e.getDamager()).getShooter();
+                    } else {
+                        damager = (LivingEntity) e.getDamager();
+                    }
+
                     double damage = e.getDamage();
                     double am = MobEXP.getArmor((LivingEntity) e.getEntity());
                     damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
-                    if ((MobEXP.getPhysicalDamage((LivingEntity) e.getDamager()).getTotal() > 0 || MobEXP.getPhysicalRangedDamage((LivingEntity) e.getDamager()).getTotal() > 0)) {
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        PhysicalStack physicalDamage;
-                        if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() != null) {
-                            physicalDamage = MobEXP.getPhysicalRangedDamage((LivingEntity) ((Projectile) e.getDamager()).getShooter());
-                            if (physicalDamage.getTotal() <= 0) {
-                                physicalDamage = new PhysicalStack(e.getDamage(), 0, 0);
-                            }
-                        } else {
-                            physicalDamage = MobEXP.getPhysicalDamage((LivingEntity) e.getDamager());
+
+                    PhysicalStack physicalDamage;
+                    if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() != null) {
+                        physicalDamage = MobEXP.getPhysicalRangedDamage(damager);
+                        if (physicalDamage.getTotal() <= 0) {
+                            physicalDamage = new PhysicalStack(e.getDamage(), 0, 0);
                         }
+                    } else {
+                        if (MobEXP.getPhysicalDamage(damager).getTotal() <= 0) {
+                            physicalDamage = new PhysicalStack(0, e.getDamage(), 0);
+                        } else {
+                            physicalDamage = MobEXP.getPhysicalDamage((LivingEntity) damager);
+                        }
+                    }
+                    if (physicalDamage.getTotal() > 0) {
+                        DecimalFormat df = new DecimalFormat("#.##");
 
                         LivingEntity ent = (LivingEntity) e.getEntity();
                         if (physicalDamage.getPuncture() > 0) {
@@ -622,9 +649,9 @@ public class DamageListener implements Listener {
                     }
                     e.setDamage(damage);
                 }
-                DecimalFormat df = new DecimalFormat("#.##");
                 if (npHolo.isEmpty()) {
-                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + e.getDamage(), Hologram.HologramType.DAMAGE);
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
                 } else {
                     Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), npHolo, Hologram.HologramType.DAMAGE);
                 }

@@ -933,7 +933,9 @@ public class MobEXP implements Listener {
                         if (main.getRP(pl).getLevel() - RPGConstants.reducedExpLevelMod >= level) {
                             expToGive*=Math.floor(Math.pow((1.0 * level)/( 1.0 * main.getRP(pl).getLevel()), RPGConstants.reducedExpLevelPow));
                         }
-                        main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive, "SELF");
+                        if (Math.floor(expToGive) > 0) {
+                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive, "SELF");
+                        }
                     } else {
                         DecimalFormat dF = new DecimalFormat("#.##");
                         if (xp.get(ent).getAloneAndHighEnv(pl)) {
@@ -944,7 +946,9 @@ public class MobEXP implements Listener {
                             if (xp.get(ent).hasVeryHighEnv()) {
                                 expToGive = Math.min(expToGive, main.getRP(pl).getMaxExp() * 0.25);
                             }
-                            main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + (1-RPGConstants.xpEnvVal)), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + (1-RPGConstants.xpEnvVal)) * 100.0) + "%");
+                            if (Math.floor(expToGive) > 0) {
+                                main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + (1 - RPGConstants.xpEnvVal)), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + (1 - RPGConstants.xpEnvVal)) * 100.0) + "%");
+                            }
                         } else {
                             double expToGive = exp * xp.get(ent).getPercentages().get(pl);
                             if (main.getRP(pl).getLevel() - RPGConstants.reducedExpLevelMod >= level) {
@@ -953,10 +957,12 @@ public class MobEXP implements Listener {
                             if (xp.get(ent).hasVeryHighEnv()) {
                                 expToGive = Math.min(expToGive, main.getRP(pl).getMaxExp() * 0.25);
                             }
-                            if (xp.get(ent).hasHighEnv()) {
-                                main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + ((1 - RPGConstants.xpEnvVal) / (xp.get(ent).getPercentages().size() * 1.0))), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + ((1 - RPGConstants.xpEnvVal) / (xp.get(ent).getPercentages().size()) * 1.0)) * 100.0) + "%");
-                            } else {
-                                main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
+                            if (Math.floor(expToGive) > 0) {
+                                if (xp.get(ent).hasHighEnv()) {
+                                    main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * Math.min(1.0, xp.get(ent).getPercentages().get(pl) + ((1 - RPGConstants.xpEnvVal) / (xp.get(ent).getPercentages().size() * 1.0))), dF.format(Math.min(1.0, xp.get(ent).getPercentages().get(pl) + ((1 - RPGConstants.xpEnvVal) / (xp.get(ent).getPercentages().size()) * 1.0)) * 100.0) + "%");
+                                } else {
+                                    main.getRP(pl).giveExpFromSource(pl, e.getEntity().getLocation(), expToGive * xp.get(ent).getPercentages().get(pl), xp.get(ent).getIndivPer(pl));
+                                }
                             }
                         }
                     }
