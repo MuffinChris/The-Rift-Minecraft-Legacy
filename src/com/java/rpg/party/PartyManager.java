@@ -13,14 +13,14 @@ public class PartyManager {
     private Main main = Main.getInstance();
 
     public PartyManager() {
-        parties = new ArrayList<Party>();
+        parties = new ArrayList<>();
         main.partyStartup();
     }
 
     public void cleanParties() {
         if (parties.size() > 0) {
             for (int z = parties.size() - 1; z >= 0; z--) {
-                if (!(parties.get(z).getLeader() instanceof Player)) {
+                if ((parties.get(z).getLeader() == null)) {
                     parties.remove(parties.get(z));
                 }
             }
@@ -32,10 +32,14 @@ public class PartyManager {
     }
 
     public boolean hasParty(Player p) {
-        for (Party pa : parties) {
-            for (Player pl : pa.getPlayers()) {
-                if (pl.equals(p)) {
-                    return true;
+        if (p != null) {
+            for (Party pa : parties) {
+                if (pa != null && pa.getPlayers() != null && !pa.getPlayers().contains(null)) {
+                    for (Player pl : pa.getPlayers()) {
+                        if (pl != null && pl.equals(p)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -43,10 +47,12 @@ public class PartyManager {
     }
 
     public Party getParty(Player p) {
-        for (Party pa : parties) {
-            for (Player pl : pa.getPlayers()) {
-                if (pl.equals(p)) {
-                    return pa;
+        if (p != null) {
+            for (Party pa : parties) {
+                for (Player pl : pa.getPlayers()) {
+                    if (pl != null && pl.equals(p)) {
+                        return pa;
+                    }
                 }
             }
         }

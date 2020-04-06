@@ -56,7 +56,11 @@ public class Hologram implements Listener {
     }
 
     public Hologram(Entity e, Location loc, String text, HologramType type) {
-        this.text = text;
+        if (text != null) {
+            this.text = text;
+        } else {
+            this.text = "";
+        }
         this.type = type;
         entity = e;
         lifetime = 0;

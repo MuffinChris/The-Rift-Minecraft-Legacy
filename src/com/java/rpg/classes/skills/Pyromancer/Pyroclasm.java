@@ -73,7 +73,21 @@ public class Pyroclasm extends Skill implements Listener {
     public void warmup(Player p) {
         super.warmup(p);
         //p.getWorld().spawnParticle(Particle.DRIP_LAVA, p.getLocation().add(new Vector(0, 0.1, 0)), 10, 0.04, 0.04, 0.04, 0.04,null, true);
-        p.getWorld().spawnParticle(Particle.FLAME, p.getLocation().add(new Vector(0, 0.5, 0)), 3, 0.2, 0.2, 0.2, 0.01,null, true);
+        Location finalLoc;
+        Vector dir = p.getLocation().getDirection();
+        finalLoc = p.getLocation().add(p.getLocation().getDirection().multiply(3.5).add(new Vector(-dir.multiply(3.5).getX(), 1.5, -dir.multiply(3.5).getZ()).normalize()));
+        p.getWorld().spawnParticle(Particle.LAVA, finalLoc, 1, 0.01, 0.01, 0.01, 0.01,null, true);
+
+        double radius = 0.75;
+        for (double alpha = 0; alpha < Math.PI; alpha+= Math.PI/16) {
+            Location loc = finalLoc;
+            Location firstLocation = loc.clone().add( radius * Math.cos( alpha ), 0.5, radius * Math.sin( alpha ) );
+            Location secondLocation = loc.clone().add( radius * Math.cos( alpha + Math.PI ), 0.5, radius * Math.sin( alpha + Math.PI ) );
+            //Location firstLocation = loc.clone().add( Math.cos( alpha ), Math.sin( alpha ) + 1, Math.sin( alpha ) );
+            //Location secondLocation = loc.clone().add( Math.cos( alpha + Math.PI ), Math.sin( alpha ) + 1, Math.sin( alpha + Math.PI ) );
+            p.getWorld().spawnParticle( Particle.FLAME, firstLocation, 1, 0.0, 0.0, 0.0, 0.0, null, true);
+            p.getWorld().spawnParticle( Particle.FLAME, secondLocation, 1, 0.0, 0.0, 0.0, 0.0,null, true);
+        }
     }
 
     @EventHandler

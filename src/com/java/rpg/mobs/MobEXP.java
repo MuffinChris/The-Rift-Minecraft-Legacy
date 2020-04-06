@@ -835,65 +835,92 @@ public class MobEXP implements Listener {
 
     @EventHandler
     public void pig (PigZapEvent e) {
-        LivingEntity ent = (LivingEntity) e.getTransformedEntity();
-        ent.setCustomName(Main.color("&fZombie Pigman" + " &6Lv. " + getLevel(ent)));
-        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-        ent.setHealth(20);
-        ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(12);
-        scaleHealth(ent, getLevel(ent), 1);
-        scaleDamage(ent, getLevel(ent), 1);
+        new BukkitRunnable() {
+            public void run() {
+                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                ent.setCustomName(Main.color("&fZombie Pigman" + " &6Lv. " + getLevel(ent)));
+                ent.setHealth(20);
+                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(12);
+                scaleHealth(ent, getLevel(ent), 1);
+                scaleDamage(ent, getLevel(ent), 1);
+            }
+        }.runTaskLater(Main.getInstance(), 1L);
     }
 
     @EventHandler
     public void transforms (EntityTransformEvent e) {
         if (e.getTransformReason() == EntityTransformEvent.TransformReason.DROWNED) {
             if (e.getTransformedEntity() instanceof LivingEntity) {
-                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
-                ent.setCustomName(Main.color("&fDrowned" + " &6Lv. " + getLevel(ent)));
-                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-                ent.setHealth(20);
-                ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4);
-                scaleHealth(ent, getLevel(ent), 1);
-                scaleDamage(ent, getLevel(ent), 1);
+
+                new BukkitRunnable() {
+                    public void run() {
+                        LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                        ent.setCustomName(Main.color("&fDrowned" + " &6Lv. " + getLevel(ent)));
+                        ent.setHealth(20);
+                        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                        ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4);
+                        scaleHealth(ent, getLevel(ent), 1);
+                        scaleDamage(ent, getLevel(ent), 1);
+                    }
+                }.runTaskLater(Main.getInstance(), 1L);
             }
         }
         if (e.getTransformReason() == EntityTransformEvent.TransformReason.CURED) {
             if (e.getTransformedEntity() instanceof LivingEntity) {
-                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
-                int level = Math.min(getLevel(ent), 20);
-                ent.setCustomName(Main.color("&fVillager" + " &6Lv. " + level));
-                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-                ent.setHealth(20);
-                scaleHealth(ent, level, 1);
+
+                new BukkitRunnable() {
+                    public void run() {
+                        LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                        int level = Math.min(getLevel(ent), 20);
+                        ent.setCustomName(Main.color("&fVillager" + " &6Lv. " + level));
+                        ent.setHealth(20);
+                        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                        scaleHealth(ent, level, 1);
+                    }
+                }.runTaskLater(Main.getInstance(), 1L);
             }
         }
         if (e.getTransformReason() == EntityTransformEvent.TransformReason.INFECTION) {
             if (e.getTransformedEntity() instanceof LivingEntity) {
-                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
-                ent.setCustomName(Main.color("&fZombie Villager" + " &6Lv. " + getLevel(ent)));
-                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-                ent.setHealth(20);
-                ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(5);
-                scaleHealth(ent, getLevel(ent), 1);
-                scaleDamage(ent, getLevel(ent), 1);
+
+                new BukkitRunnable() {
+                    public void run() {
+                        LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                        ent.setCustomName(Main.color("&fZombie Villager" + " &6Lv. " + getLevel(ent)));
+                        ent.setHealth(20);
+                        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                        ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(5);
+                        scaleHealth(ent, getLevel(ent), 1);
+                        scaleDamage(ent, getLevel(ent), 1);
+                    }
+                }.runTaskLater(Main.getInstance(), 1L);
             }
         }
         if (e.getTransformReason() == EntityTransformEvent.TransformReason.SHEARED) {
             if (e.getTransformedEntity() instanceof LivingEntity) {
-                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
-                ent.setCustomName(Main.color("&fCow" + " &6Lv. " + getLevel(ent)));
-                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
-                ent.setHealth(10);
-                scaleHealth(ent, getLevel(ent), 1);
+                new BukkitRunnable() {
+                    public void run() {
+                        LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                        ent.setCustomName(Main.color("&fCow" + " &6Lv. " + getLevel(ent)));
+                        ent.setHealth(10);
+                        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
+                        scaleHealth(ent, getLevel(ent), 1);
+                    }
+                }.runTaskLater(Main.getInstance(), 1L);
             }
         }
         if (e.getTransformReason() == EntityTransformEvent.TransformReason.LIGHTNING) {
             if (e.getTransformedEntity() instanceof Witch) {
-                LivingEntity ent = (LivingEntity) e.getTransformedEntity();
-                ent.setCustomName(Main.color("&fWitch" + " &6Lv. " + getLevel(ent)));
-                ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-                ent.setHealth(20);
-                scaleHealth(ent, getLevel(ent), 1);
+                new BukkitRunnable() {
+                    public void run() {
+                        LivingEntity ent = (LivingEntity) e.getTransformedEntity();
+                        ent.setCustomName(Main.color("&fWitch" + " &6Lv. " + getLevel(ent)));
+                        ent.setHealth(20);
+                        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                        scaleHealth(ent, getLevel(ent), 1);
+                    }
+                }.runTaskLater(Main.getInstance(), 1L);
             }
         }
     }

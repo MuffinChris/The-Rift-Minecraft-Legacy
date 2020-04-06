@@ -28,8 +28,8 @@ public class Skillboard {
     private BossBar bossbar3;
     private BossBar bossbar4;
     private BossBar bossbarPH1;
-    /*private BossBar bossbarPH2;
-    private BossBar bossbarPH3;
+    private BossBar bossbarPH2;
+    /*private BossBar bossbarPH3;
     private BossBar bossbarPH4;
     private BossBar bossbarPH5;
     private BossBar bossbarPH6;*/
@@ -37,6 +37,24 @@ public class Skillboard {
     List<Integer> prefixes = new ArrayList<>();
 
     private Objective obj;
+
+    public void setHPBar(String s) {
+        if (bossbarPH1 != null) {
+            bossbarPH1.setTitle(Main.color(s));
+        }
+    }
+
+    public String getHPBar() {
+        return bossbarPH1.getTitle();
+    }
+
+    public void setHPBarVisible() {
+        bossbarPH1.setColor(BarColor.RED);
+    }
+
+    public void setHPBarHide() {
+        bossbarPH1.setColor(BarColor.YELLOW);
+    }
 
     public void setBossbar4(String s) {
         if (bossbar4 != null) {
@@ -197,6 +215,7 @@ public class Skillboard {
         bossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbar4 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbarPH1 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        bossbarPH2 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         /*bossbarPH2 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbarPH3 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbarPH4 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
@@ -207,12 +226,9 @@ public class Skillboard {
         bossbar.addPlayer(p);
         bossbar3.addPlayer(p);
         bossbar4.addPlayer(p);
-        /*bossbarPH2.addPlayer(p);
-        bossbarPH3.addPlayer(p);
-        bossbarPH4.addPlayer(p);
-        bossbarPH5.addPlayer(p);
-        bossbarPH6.addPlayer(p);*/
         bossbar2.addPlayer(p);
+        bossbarPH2.addPlayer(p);
+
         setScoreBoard(p);
         update();
         bossbarPH1.setVisible(true);
@@ -225,6 +241,7 @@ public class Skillboard {
         bossbarPH5.setVisible(true);
         bossbarPH6.setVisible(true);*/
         bossbar2.setVisible(true);
+        bossbarPH2.setVisible(true);
     }
 
     public void scrub() {
@@ -234,6 +251,7 @@ public class Skillboard {
         bossbar3 = null;
         bossbar4 = null;
         bossbarPH1 = null;
+        bossbarPH2 = null;
         /*bossbarPH2 = null;
         bossbarPH3 = null;
         bossbarPH4 = null;

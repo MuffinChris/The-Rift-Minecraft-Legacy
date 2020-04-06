@@ -4,6 +4,9 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.*;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.destroystokyo.paper.Title;
 import com.java.communication.ChatFunctions;
@@ -48,6 +51,9 @@ import com.java.rpg.modifiers.utility.DamageTypes;
 import com.java.rpg.player.*;
 import com.java.rpg.player.Items;
 import com.java.rpg.player.utility.PlayerListener;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -75,9 +81,15 @@ import com.java.rpg.party.Party;
 import com.java.rpg.party.PartyCommand;
 import com.java.rpg.party.PartyManager;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -135,6 +147,12 @@ public class Main extends JavaPlugin {
             - Can rightclick crops to harvest, seed remains placed.
             - Gets many drops from the farm.
             - Can breed crops together
+        Quests and Tutorial:
+            - Big Frost Baddie you try and fight in tutorial, you get frozen and preserved for some time, the NPC adventurers pull u out, bring u back to world. (Adventures Log horizon style lmfao)
+            - Tutorial Objective and Quest Objectives displayed in top bossbar
+
+            - Report to your Adventurer Squad Commander and try and fight through Icy Dungeon (teaches u classes and combat mechanics)
+            - Try and fight the boss frost baddie and lose!
 
         In general, solo players should use the market or publicly available vendors.
 
@@ -198,37 +216,35 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
-        -6. Look into packet holograms. Holos a little laggy for melee hits (why tho?)
+        -11. New player bug still exists
+
+        -12. cant tab complete party because shitty command structure
+
+        -10. Block /me and /say (luckperms permission)
+
+        -9. Consider implementing different attacks for melee weapons. (ie. Regular Sword LMB is Slash. Crouch LMB is Heavy. Crouch RMB is Spin)
+
+        -8. Regarding Bossbars: Raids have events so you can fake it. Wither and Enderdragon can Packet Remove Bossbar. Also add another bossbar to hide vanilla bossbars, then convert top to Boss hp!
+
+        -7. Friends list, blocking not nice individuals
+
+        -6. Look into packet holograms. Holos a little laggy for melee hits (why tho?) When you hit mob, should change custom name to HP Bar and HP bar to Custom Name. Swap back when done. Potentially two with packets.
 
         -5. Command to set a players class
 
-        -4. Set level and exp for a class (only set lol)
-
         -3. Mob HP Bar and Name as hologram
-
-        -2. Add Impact, Slash, Puncture (fully implement with items!)
 
         -1. Add Attributes (heroes style)
 
-        0. Make abilities not able to target or damage tamed mobs! (testing)
-
-        1. Find a better solution for mob burning. Perhaps XP cap gain if Environmental but only if the XP is very high! (testing)
-
         2. Disable Drowned Conversion (have own ocean mobs). Make sure to update DmgThreshold and EDefense when a mob transforms.
-
-        3. List command works by permissions (ranks) (testing)
 
         4 (RELEVANT RN): Add elemental damage from non player sources (mobs)
 
-        5. Setting to hide dmg holograms and EXP and TOGGLE OFFHAND!!!
-
-        6. add elemental scaling and balance damage for skills. Fix pyro fire checks.
+        5. Setting to hide dmg holograms
 
         7. Make guardan lasers and spikes do damage
 
         8. Make legacy projectiles like fireballs hold a PersistentDataContainer instead of customname (will need to hold Elemental Dmg). Same with Enderdragon damage
-
-        9. Iron Golems and Villagers need to have a base level that is higher than 0.
 
         10. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
 
@@ -497,6 +513,21 @@ public class Main extends JavaPlugin {
 
                     }
                     Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lSERVER RESTARTING..."));
+                    for (World w : Bukkit.getWorlds()) {
+                        for (Entity e : w.getEntities()) {
+                            if (e.getType() == EntityType.ARMOR_STAND) {
+                                if (e.isCustomNameVisible()) {
+                                    for (String s : RPGConstants.damages) {
+                                        if (e.getCustomName().replace("§","&").contains(s)) {
+                                            e.remove();
+                                            break;
+                                        }
+                                    }
+                                }
+                                continue;
+                            }
+                        }
+                    }
                     cancel();
                     new BukkitRunnable() {
                         public void run() {
@@ -773,7 +804,7 @@ public class Main extends JavaPlugin {
             //String amper = Main.color("&c" + dF.format(100.0 * (1-(300.0/(300.0+armor)))) + "% AM");
             String ad = Main.color("&c" + dF.format(rp.getAD()) + " AD");
             String ap = Main.color("&b" + dF.format(rp.getAP()) + " AP");
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c❤ " + dF.format(p.getHealth()) + "     &7" + df.format(p.getLocation().getX()) + " &f" + yawToString(p.getLocation().getYaw()) + " &7" + df.format(p.getLocation().getZ()) + "     &b✦ " + rp.getPrettyCMana())));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color("&c❤ " + dF.format(p.getHealth()) + "    &7" + df.format(p.getLocation().getX()) + " &f" + yawToString(p.getLocation().getYaw()) + " &7" + df.format(p.getLocation().getZ()) + "    &b✦ " + rp.getPrettyCMana())));
             p.setLevel(rp.getLevel());
             p.setExp(Math.min(Math.max((float) rp.getPercent(), 0.0f), 1.0F));
         }
@@ -934,6 +965,42 @@ public class Main extends JavaPlugin {
         return muted;
     }
 
+    public Map<UUID, String> values = new HashMap<>();
+    public Map<UUID, String> getTextureValues() {
+        return values;
+    }
+
+    public Map<UUID, String> signatures = new HashMap<>();
+    public Map<UUID, String> getTextureSigs() {
+        return signatures;
+    }
+
+    public void tabUpdate() {
+        new BukkitRunnable() {
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (!isNPC(p) && getPC().containsKey(p.getUniqueId()) && getRP(p) != null) {
+                        try {
+                            getRP(p).tabUpdate(false);
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 10L, 10L);
+    }
+
+    private Scoreboard sc;
+    public Scoreboard getSC() {
+        return sc;
+    }
+
+    private Team fake;
+    public Team getFake() {
+        return fake;
+    }
+
     @Override
     public void onEnable() {
 
@@ -944,6 +1011,13 @@ public class Main extends JavaPlugin {
 
         protocolManager = ProtocolLibrary.getProtocolManager();
         so("&dRIFT&7: &fProtocolLib hooked!");
+
+        tabUpdate();
+        sc = Bukkit.getScoreboardManager().getMainScoreboard();
+        fake = sc.registerNewTeam("00Placeholders");
+        /*Objective objective = sc.registerNewObjective("PL", "dummy", "ph");
+        objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);*/
+
 
         final List<WrappedGameProfile> names = new ArrayList<WrappedGameProfile>();
         names.add(new WrappedGameProfile("1", ChatColor.LIGHT_PURPLE + "DISCORD: " + ChatColor.WHITE + "discord.therift.net"));
@@ -1064,7 +1138,39 @@ public class Main extends JavaPlugin {
         remHpBar();
         riseBars();
 
-        for (World w : Bukkit.getWorlds()) {
+        /*for (World w : Bukkit.getWorlds()) {
+            for (Entity e : w.getEntities()) {
+                if (e.getType() == EntityType.ARMOR_STAND) {
+                    if (e.isCustomNameVisible()) {
+                        for (String s : RPGConstants.damages) {
+                            Bukkit.broadcastMessage(e.getCustomName().replace("§","&"));
+                            if (e.getCustomName().replace("§","&").contains(s)) {
+                                e.remove();
+                                break;
+                            }
+                        }
+                    }
+                    continue;
+                }
+                //if (e instanceof LivingEntity && !(e instanceof Player)) {
+                 //   if (!getHpBars().containsKey(e)) {
+                  //      DecimalFormat dF = new DecimalFormat("#.##");
+                    //    getHpBars().put(e, new Hologram(e, e.getLocation().add(new Vector(0, e.getHeight() + 0.1, 0)), "&f" + dF.format(((LivingEntity)e).getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
+                    //}
+                //}
+            }
+        }*/
+
+        autorestart();
+
+        so("&dRIFT: &fSetup complete!");
+
+    }
+
+    @Override
+    public void onDisable() {
+
+        /*for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {
                 if (e.getType() == EntityType.ARMOR_STAND) {
                     if (e.isCustomNameVisible()) {
@@ -1077,23 +1183,8 @@ public class Main extends JavaPlugin {
                     }
                     continue;
                 }
-                if (e instanceof LivingEntity && !(e instanceof Player)) {
-                    if (!getHpBars().containsKey(e)) {
-                        DecimalFormat dF = new DecimalFormat("#.##");
-                        getHpBars().put(e, new Hologram(e, e.getLocation().add(new Vector(0, e.getHeight() + 0.1, 0)), "&f" + dF.format(((LivingEntity)e).getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
-                    }
-                }
             }
-        }
-
-        autorestart();
-
-        so("&dRIFT: &fSetup complete!");
-
-    }
-
-    @Override
-    public void onDisable() {
+        }*/
 
         final BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.cancelTasks(this);
@@ -1109,7 +1200,7 @@ public class Main extends JavaPlugin {
 
         for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {
-                if (e != null && e.getCustomName() != null && e.getCustomName() instanceof String && projectiles.contains(e.getCustomName())) {
+                if (e != null && e.getCustomName() != null && e.getCustomName() != null && projectiles.contains(e.getCustomName())) {
                     e.remove();
                 }
             }
@@ -1164,6 +1255,9 @@ public class Main extends JavaPlugin {
     *
      */
 
+    public ProtocolManager getProtocolManager() {
+        return protocolManager;
+    }
     private ProtocolManager protocolManager;
     public void setupPacketListeners() {
         protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WORLD_PARTICLES) {

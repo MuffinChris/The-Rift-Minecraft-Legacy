@@ -184,7 +184,7 @@ public class Leveleable {
                     int amnt = pa.getNearbyPlayersSize(p);
                     if (pa.getShare() && amnt > 0) {
                         xp *= RPGConstants.partyXpMod;
-                        xp /= (amnt + 1);
+                        xp /= ((amnt + 1) * 1.0);
                         for (Player pp : pa.getNearbyPlayers(p)) {
                             RPGPlayer rp = main.getRP(pp);
                             rp.setExp(rp.getExp() + xp);
