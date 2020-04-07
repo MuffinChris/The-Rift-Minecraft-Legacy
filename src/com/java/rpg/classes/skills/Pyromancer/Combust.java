@@ -4,10 +4,7 @@ import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -38,7 +35,7 @@ public class Combust extends Skill implements Listener {
     private int travelRange = 8;
 
     public Combust() {
-        super("Combust", 200, 60 * 20, 50, 35, "%player% has shot a fireball!", "CAST");
+        super("Combust", 200, 60 * 20, 50, 35, "%player% has shot a fireball!", "CAST", Material.DRAGON_BREATH);
     }
 
     public List<String> getDescription(Player p) {

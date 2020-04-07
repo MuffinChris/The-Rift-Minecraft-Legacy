@@ -111,8 +111,8 @@ public class InfoCommand implements CommandExecutor, Listener {
         double ad = rp.getAD(); // + bonusAD from items later
         double ap = rp.getAP();
         lore.add(Main.color(""));
-        lore.add(Main.color("&8» &cAttack Damage: &f" + df.format(ad)));
-        lore.add(Main.color("&8» &bAbility Power: &f" + df.format(ap)));
+        lore.add(Main.color("&8[" + RPGConstants.attackDamage + "&8] &7Attack Damage: &f" + df.format(ad)));
+        lore.add(Main.color("&8[" + RPGConstants.abilityPower +"&8] &7bAbility Power: &f" + df.format(ap)));
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         spMeta.setLore(lore);
         sp.setItemMeta(spMeta);

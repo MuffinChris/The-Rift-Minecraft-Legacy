@@ -90,7 +90,6 @@ public class PartyCommand implements CommandExecutor, Listener {
         lore.add(Main.color("&8» &cHP: &f" + df.format(p.getHealth()) + "&8/" + "&c" + df.format(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue())));
         lore.add(Main.color("&8» &bMana: &f" + dF.format(rp.getCMana()) + "&8/&b" + dF.format(rp.getPClass().getCalcMana(rp.getLevel()))));
         lore.add(Main.color("&8» &9Mana Regen: &f" + df.format(rp.getPClass().getCalcManaRegen(rp.getLevel())) + "/s"));
-        lore.add(Main.color("&8» &dWalkspeed: &f" + dF.format(rp.getWalkspeed().getValue() + rp.getWalkSpeedS().getValue())));
         spMeta.setLore(lore);
         sp.setItemMeta(spMeta);
         playerInv.setItem(0, sp);
@@ -139,7 +138,6 @@ public class PartyCommand implements CommandExecutor, Listener {
                 lore.add(Main.color("&8» &cHP: &f" + df.format(t.getHealth()) + "&8/" + "&c" + df.format(t.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue())));
                 lore.add(Main.color("&8» &bMana: &f" + dF.format(tp.getCMana()) + "&8/&b" + dF.format(tp.getPClass().getCalcMana(tp.getLevel()))));
                 lore.add(Main.color("&8» &9Mana Regen: &f" + df.format(tp.getPClass().getCalcManaRegen(tp.getLevel())) + "/s"));
-                lore.add(Main.color("&8» &dWalkspeed: &f" + dF.format(tp.getWalkspeed().getValue() + tp.getWalkSpeedS().getValue())));
                 smeta.setLore(lore);
                 player.setItemMeta(smeta);
                 playerInv.setItem(i + mod, player);

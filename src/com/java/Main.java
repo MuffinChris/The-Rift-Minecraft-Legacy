@@ -4,9 +4,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.*;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.destroystokyo.paper.Title;
 import com.java.communication.ChatFunctions;
@@ -30,7 +27,9 @@ import com.java.rpg.classes.*;
 import com.java.rpg.classes.casting.BindCommand;
 import com.java.rpg.classes.casting.Skillcast;
 import com.java.rpg.classes.commands.admin.CDCommand;
+import com.java.rpg.classes.commands.admin.ExpCommand;
 import com.java.rpg.classes.commands.admin.ManaCommand;
+import com.java.rpg.classes.commands.admin.SetClassCommand;
 import com.java.rpg.classes.commands.playerinfo.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
@@ -51,14 +50,6 @@ import com.java.rpg.modifiers.utility.DamageTypes;
 import com.java.rpg.player.*;
 import com.java.rpg.player.Items;
 import com.java.rpg.player.utility.PlayerListener;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import de.slikey.effectlib.EffectManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.md_5.bungee.api.ChatMessageType;
@@ -81,12 +72,9 @@ import com.java.rpg.party.Party;
 import com.java.rpg.party.PartyCommand;
 import com.java.rpg.party.PartyManager;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -118,9 +106,20 @@ public class Main extends JavaPlugin {
             - Make repairing items cost a lot of mixed ingots and resources so you really need to get more resources which means traveling or optimizing.
             - Resource gens differ based on biome! Exploration! Conquest. New mobs to find and see
             - World Border should be something smaller, idk like 15k by 15k to encourage fights and land management
-        Dungeons:
+        Dungeons and Fantasy Worlds:
+            - Most Dungeons are placed in entirely new fantasy worlds.
+            - Some dungeons are in the main overworld, but they're generic shit for low level grinding. (and potentially some higher level ones spread few and far)
+                - Theyre just essentially like oh hey there's a Zombie cave here with evil zombie warlord who might attack a nearby city go fuck with it.
+            - These fantasy worlds can have one of many possible stories. Rn here's the basic two
+                - You take the rift portal into a human outpost in that world where they fight against hostile forces
+                - You take the rift portal into an alien outpost that is allied and fight their enemy with them
+                - The entire world is populated with both ally and enemy mobs, with many unique resource nodes you can't find elsewhere.
+                - There are enemy cities that you can conquer, these act as dungeons essentially.
+                    - Some are more linear dungeonlike than others
+                    - Others are more full on city and you just kill everything that stands in your way, and attempt to reach the center kill the mini boss leader of city or whatever
+                    - Many cities spread apart, most inward cities are the highest level. This is true for all worlds so you can choose what race to fight but not how far you can go
+                    - Also challenges to defend allied outposts.
             - Dungeons should also give resource rewards to supplement town resource costs
-            - Dungeons can have resource zones that give superb resources that regenerate but ofc u get fukin ganked
             - Stunned bosses cant use abilities!
             - Nearby Player size should cause boss to scale. Nearby player size should cause amount of mob spawning
             - SAML Flags on bosses
@@ -215,12 +214,6 @@ public class Main extends JavaPlugin {
             Bracelet, Ring, Ring, Amulet
 
     DIRECT LINE TODO LIST:
-
-        -11. New player bug still exists
-
-        -12. cant tab complete party because shitty command structure
-
-        -10. Block /me and /say (luckperms permission)
 
         -9. Consider implementing different attacks for melee weapons. (ie. Regular Sword LMB is Slash. Crouch LMB is Heavy. Crouch RMB is Spin)
 
@@ -1058,6 +1051,7 @@ public class Main extends JavaPlugin {
         getCommand("list").setExecutor(new ListCommand());
         getCommand("speed").setExecutor(new SpeedCommand());
         getCommand("mana").setExecutor(new ManaCommand());
+        getCommand("setclass").setExecutor(new SetClassCommand());
         getCommand("skills").setExecutor(new SkillsCommand());
         getCommand("cd").setExecutor(new CDCommand());
         getCommand("seen").setExecutor(new SeenCommand());

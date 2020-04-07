@@ -30,7 +30,7 @@ public class Fireball extends Skill implements Listener {
     private int range = 4;
 
     public Fireball() {
-        super("Fireball", 50, 3 * 20, 0, 0, "%player% has shot a fireball!", "CAST");
+        super("Fireball", 50, 3 * 20, 0, 0, "%player% has shot a fireball!", "CAST", Material.FIRE_CHARGE);
     }
 
     public List<String> getDescription(Player p) {

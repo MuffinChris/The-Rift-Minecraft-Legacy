@@ -5,6 +5,7 @@ import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
@@ -26,7 +27,7 @@ public class Flamethrower extends Skill {
     private int tickrate = 2;
 
     public Flamethrower() {
-        super("Flamethrower", 0, 30, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST");
+        super("Flamethrower", 0, 30, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FIRE_CHARGE);
         setToggleMana(5);
         setToggleTicks(tickrate);
     }

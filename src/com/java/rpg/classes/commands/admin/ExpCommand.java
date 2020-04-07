@@ -1,4 +1,4 @@
-package com.java.rpg.classes.commands.playerinfo;
+package com.java.rpg.classes.commands.admin;
 
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;

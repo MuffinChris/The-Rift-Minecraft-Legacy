@@ -754,7 +754,6 @@ public class RPGPlayer extends Leveleable {
             */
             updateStats();
         } else {
-            List<Skill> skills = new ArrayList(pclass.getSkills());
             for (Skill s : main.getCM().getPClassFromString(RPGConstants.defaultClassName).getSkills()) {
                 skillLevels.put(s.getName(), 0);
             }
@@ -784,6 +783,9 @@ public class RPGPlayer extends Leveleable {
 
     public boolean changeClass(PlayerClass pc) {
 
+        if (pclass != null && pc.getName().equalsIgnoreCase(pclass.getName())) {
+            return false;
+        }
         if (pclass != null) {
             for (StatusObject sz : so) {
                 for (Skill s : pclass.getSkills()) {
@@ -797,9 +799,6 @@ public class RPGPlayer extends Leveleable {
 
         double hp = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         pushFiles();
-        if (pclass != null && pc.getName().equalsIgnoreCase(pclass.getName())) {
-            return false;
-        }
         setExp(0);
         pclass = pc;
         skillLevels.clear();

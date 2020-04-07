@@ -5,6 +5,7 @@ import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
@@ -139,7 +140,7 @@ public class WorldOnFire extends Skill implements Listener {
     }
 
     public WorldOnFire() {
-        super("WorldOnFire", 50, 3 * 20, 0, 5, "%player% has conjured a burst of Flame!", "TOGGLE-PASSIVE-CAST");
+        super("WorldOnFire", 50, 3 * 20, 0, 5, "%player% has conjured a burst of Flame!", "TOGGLE-PASSIVE-CAST", Material.FLINT_AND_STEEL);
         setPassiveTicks(20);
         setToggleTicks(10);
         setToggleMana(10);

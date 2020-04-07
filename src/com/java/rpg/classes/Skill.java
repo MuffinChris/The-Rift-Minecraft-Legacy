@@ -7,6 +7,7 @@ import com.java.rpg.classes.skills.Pyromancer.WorldOnFire;
 import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.modifiers.utility.PhysicalStack;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -18,6 +19,14 @@ import java.util.List;
 public class Skill {
 
     private Main main = Main.getInstance();
+
+    private Material skillicon;
+    public Material getSkillIcon() {
+        if (skillicon == null) {
+            return Material.LIME_DYE;
+        }
+        return skillicon;
+    }
 
     public static void damageNoKB(Player caster, LivingEntity target, double damage) {
         double kbr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue();
@@ -89,7 +98,7 @@ public class Skill {
 
     private List<Integer> tasks;
 
-    public Skill(String name, int manaCost, double cooldown, int warmup, int level, String flavor, String type) {
+    public Skill(String name, int manaCost, double cooldown, int warmup, int level, String flavor, String type, Material skillicon) {
         this.name = name;
         this.manaCost = manaCost;
         this.cooldown = cooldown;
@@ -97,7 +106,12 @@ public class Skill {
         this.level = level;
         this.flavor = flavor;
         this.type = type;
+        this.skillicon = skillicon;
         tasks = new ArrayList<>();
+    }
+
+    public Skill(String name, int manaCost, double cooldown, int warmup, int level, String flavor, String type) {
+        this(name, manaCost, cooldown, warmup, level, flavor, type, null);
     }
 
     public List<Integer> getTasks() {

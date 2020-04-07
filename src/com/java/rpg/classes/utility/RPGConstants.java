@@ -16,6 +16,8 @@ public class RPGConstants {
     public static String slash = "&c⒜";
     public static String puncture = "&c⒝";
     public static String impact = "&c⒞";
+    public static String attackDamage = "&c⚔";
+    public static String abilityPower = "&b⒟";
 
     public static String xp = "XP]";
 

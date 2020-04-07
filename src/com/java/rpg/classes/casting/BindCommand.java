@@ -31,7 +31,6 @@ public class BindCommand implements CommandExecutor, Listener {
                 pData.set(main.getRP(p).getPClass().getName() + "Binds", "");
                 pData.save(pFile);
             } else {
-                pData.set("Username", p.getName());
                 String className = main.getRP(p).getPClass().getName();
                 if (pData.contains(className + "Binds") && !pData.getString(className + "Binds").isEmpty() && pData.getString(className + "Binds").contains(i.getType().toString())) {
                     LinkedHashMap<String, String> binds = new LinkedHashMap<>();

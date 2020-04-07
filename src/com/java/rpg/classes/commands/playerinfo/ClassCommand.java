@@ -3,6 +3,7 @@ package com.java.rpg.classes.commands.playerinfo;
 import com.java.Main;
 import com.java.rpg.classes.PlayerClass;
 import com.java.rpg.classes.RPGPlayer;
+import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,8 +39,8 @@ public class ClassCommand implements CommandExecutor, Listener {
         return false;
     }
 
-    public static String hpString = "&8[&c♥&8] &7HP: &f";
-    public static String manaString = "&8[&b✦&8] &7Mana: &f";
+    public static String hpString = "&8[" + RPGConstants.physical + "&8] &7HP: &f";
+    public static String manaString = "&8[&b" + RPGConstants.magic + "&8] &7Mana: &f";
     public static String manaRegenString = "&8[&b⚙&8] &7Mana Regen: &f";
     public static String apString = "&8[&b⚡&8] &7Ability Power: &f";
     public static String adString = "&8[&c⚔&8] &7Attack Damage: &f";
@@ -133,7 +134,7 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color("&bMagic Spellcaster"));
         lore.add(Main.color("&f"));
         lore.add(Main.color("&fPyromancer's have powerful short range skills"));
-        lore.add(Main.color("&fthat decimate nearby enemies by igniting them."));
+        lore.add(Main.color("&fthat decimate nearby enemies and ignite them."));
         lore.add(Main.color(""));
         lore.add(Main.color(hpString + df.format(baseHp) + " &8(&7+" + df.format(hpPerLvl) + "/lvl&8)"));
         lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));

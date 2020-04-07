@@ -27,7 +27,7 @@ public class MeteorShower extends Skill implements Listener {
     private int range = 8;
 
     public MeteorShower() {
-        super("MeteorShower", 150, 40 * 20, 40, 8, "%player% has created a Meteor Shower!", "CAST");
+        super("MeteorShower", 150, 40 * 20, 40, 8, "%player% has created a Meteor Shower!", "CAST", null);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fRain hell on opponents within &e" + range + " &fblocks."));

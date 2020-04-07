@@ -4,6 +4,7 @@ import com.java.Main;
 import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class Blaze extends Skill {
     }
 
     public Blaze() {
-        super("Blaze", 100, 25 * 20, 0, 15, "%player% has shot a fireball!", "CAST");
+        super("Blaze", 100, 25 * 20, 0, 15, "%player% has shot a fireball!", "CAST", Material.BLAZE_POWDER);
         blazeLocations = new HashMap<>();
         ticks = new HashMap<>();
     }

@@ -122,4 +122,7 @@ commands:
   unmute:
     description: Unmutes a muted user
     permission: core.mod
+  setclass:
+    description: Set a user's player class
+    permission: core.admin
 depend: [ProtocolLib, Vault, NBTAPI, Citizens, WorldEdit, WorldGuard]

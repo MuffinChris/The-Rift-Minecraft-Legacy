@@ -27,7 +27,7 @@ public class FlameTornado extends Skill {
     private Map<UUID, Map<LivingEntity, Long>> damage;
 
     public FlameTornado() {
-        super("FlameTornado", 150, 60 * 20, 30, 0, "%player% has shot a fireball!", "CAST");
+        super("FlameTornado", 150, 60 * 20, 30, 0, "%player% has shot a fireball!", "CAST", null);
 
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));

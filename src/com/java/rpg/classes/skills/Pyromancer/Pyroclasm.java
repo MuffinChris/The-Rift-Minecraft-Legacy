@@ -35,7 +35,7 @@ public class Pyroclasm extends Skill implements Listener {
     private double apscale = 0.3;
 
     public Pyroclasm() {
-        super("Pyroclasm", 150, 15 * 20, 40, 25, "%player% has shot a fireball!", "CAST-TARGET");
+        super("Pyroclasm", 150, 15 * 20, 40, 25, "%player% has shot a fireball!", "CAST-TARGET", Material.BLAZE_ROD);
         setTargetRange(range);
     }
 

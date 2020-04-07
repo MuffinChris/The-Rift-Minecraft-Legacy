@@ -2,6 +2,7 @@ package com.java.rpg.classes.skills.Pyromancer.supers;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -22,7 +23,7 @@ public class Conflagration extends Skill {
     private int tickrate = 1;
 
     public Conflagration() {
-        super("Conflagration", 0, 20, 0, 5, "%player% has shot a fireball!", "TOGGLE-CAST");
+        super("Conflagration", 0, 20, 0, 5, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FLINT_AND_STEEL);
         setToggleMana(0);
         setToggleTicks(tickrate);
     }

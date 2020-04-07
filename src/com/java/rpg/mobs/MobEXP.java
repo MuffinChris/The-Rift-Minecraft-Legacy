@@ -19,9 +19,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -61,6 +63,22 @@ public class MobEXP implements Listener {
             }
         }
     }*/
+
+    @EventHandler
+    public void cleanHolos (ChunkUnloadEvent e) {
+        for (Entity ent : e.getChunk().getEntities()) {
+            if (ent instanceof ArmorStand) {
+                if (ent.isCustomNameVisible()) {
+                    for (String s : RPGConstants.damages) {
+                        if (ent.getCustomName().replace("§","&").contains(s)) {
+                            ent.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @EventHandler
     public void mobSpawnEvent (CreatureSpawnEvent e) {
