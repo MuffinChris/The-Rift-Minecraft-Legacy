@@ -41,11 +41,11 @@ public class Combust extends Skill implements Listener {
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fLaunch an explosive projectile."));
-        desc.add(Main.color("&fIt explodes at the nearest target hit for &b" + getDmg(p) + " &fdamage."));
-        desc.add(Main.color("&fA second delayed explosion hits a huge radius of &e" + range + "&f."));
-        desc.add(Main.color("&fIt deals &b" + getDmg(p) + " &fdamage + &b" + getDmgPerEntity(p)));
-        desc.add(Main.color("&fdamage per nearby entity."));
+        desc.add(Main.color("&7Launch an explosive projectile."));
+        desc.add(Main.color("&7It explodes at the nearest target hit for &b" + getDmg(p) + " &7damage."));
+        desc.add(Main.color("&7A second delayed explosion hits a huge radius of &e" + range + "&7."));
+        desc.add(Main.color("&7It deals &b" + getDmg(p) + " &7damage + &b" + getDmgPerEntity(p)));
+        desc.add(Main.color("&7damage per nearby entity."));
         return desc;
     }
 

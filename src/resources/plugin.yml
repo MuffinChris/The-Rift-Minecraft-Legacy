@@ -4,79 +4,39 @@ author: eChris
 version: 0.0.2
 description: Core Plugin for The Rift
 api-version: 1.15
+website: therift.net
 commands:
-  party:
-    description: Group up with friends!
-    aliases: [parties, group, p, pa]
   skill:
     description: Cast a skill!
     aliases: [cast, spell]
   class:
     description: Select a class!
     aliases: [soul, classes]
+  skills:
+    description: View your Skills.
+    aliases: [abilities, skilllist, skillslist, spells, magic]
+  level:
+    description: View level.
+    aliases: [exp, lvl]
+  info:
+    description: View info
+    aliases: [information, whois, who, rpg, character, char]
+  sp:
+    description: View skillpoints
+    aliases: [skillpoint, skillpoints, spoints]
+  party:
+    description: Group up with friends!
+    aliases: [parties, group, p, pa]
+  bind:
+    description: Bind a skill to an item
+  cd:
+    description: Reset Cooldowns.
+    permission: core.admin
   heal:
     description: Heal a target.
-    permission: core.mod
-  list:
-    description: List all online players
-    aliases: [listplayers, playerlist]
-  killall:
-    description: Kill all entities in your world
-    permission: core.admin
-  speed:
-    description: Set your fly and walk speed
-    permission: core.mod
-  lag:
-    description: View detailed RAM Usage
-    aliases: [gc, top, ram]
-  fly:
-    description: Fly and Speed Control
-    permission: core.mod
-  gmss:
-    description: Alias for Spectator
-    permission: core.mod
-  gms:
-    description: Alias for Survival
-    permission: core.mod
-  gmc:
-    description: Alias for Creative
-    permission: core.mod
-  msg:
-    description: Message fellow players
-    aliases: [message, tell, w, whisper, dm, pm]
-  r:
-    description: Reply to messages
-    aliases: [reply]
-  inv:
-    description: View a player's inventory
-    permission: core.mod
-    aliases: [invsee]
-  dummy:
-    description: Spawn a dummy
     permission: core.admin
   mana:
-    description: Restore your mana
-    permission: core.admin
-  skills:
-    description: View your skills
-    aliases: [abilities, skilllist, skillslist, spells, magic]
-  cd:
-    description: Reset cooldowns
-    permission: core.admin
-  level:
-    description: View level
-    aliases: [exp, lvl]
-  seen:
-    description: Check when someone last logged in
-  biome:
-    description: Get the level range of your current location
-    aliases: [locinfo, locationinfo, loclevel, biomelevel, biomelvl, nl, bl, ll]
-  arestart:
-    description: Restart the server on a 30 second timer
-    aliases: [autorestart, timedrestart, trestart]
-    permission: core.admin
-  arestartfast:
-    description: Restart the server on a 5 second timer
+    description: Restore Mana.
     permission: core.admin
   setexp:
     description: Set a player's EXP
@@ -90,12 +50,9 @@ commands:
   addlevel:
     description: Add to a player's level
     permission: core.admin
-  help:
-    description: Useful commands
-  settings:
-    description: Access your settings
-  biomes:
-    description: View all biome levels
+  setclass:
+    description: Set a user's player class
+    permission: core.admin
   warp:
     description: Warp to locations
     aliases: [warps]
@@ -108,21 +65,89 @@ commands:
   spawn:
     description: Warp to spawn
     aliases: [s]
-  info:
-    description: View info
-    aliases: [information, whois, who, rpg, character, char]
-  sp:
-    description: View skillpoints
-    aliases: [skillpoint, skillpoints, spoints]
-  bind:
-    description: Bind a skill to an item
   mute:
     description: Mutes a user for indefinite time
     permission: core.mod
   unmute:
     description: Unmutes a muted user
     permission: core.mod
-  setclass:
-    description: Set a user's player class
+  killall:
+    description: Kill all entities in your world
     permission: core.admin
+  arestart:
+    description: Restart the server on a 30 second timer
+    aliases: [autorestart, timedrestart, trestart]
+    permission: core.admin
+  arestartfast:
+    description: Restart the server on a 5 second timer
+    permission: core.admin
+  speed:
+    description: Set your fly and walk speed
+    permission: core.mod
+  fly:
+    description: Fly and Speed Control
+    permission: core.mod
+  gmss:
+    description: Alias for Spectator
+    permission: core.mod
+  gms:
+    description: Alias for Survival
+    permission: core.mod
+  gmc:
+    description: Alias for Creative
+    permission: core.mod
+  inv:
+    description: View a player's inventory
+    permission: core.mod
+    aliases: [invsee]
+  dummy:
+    description: Spawn a dummy
+    permission: core.admin
+  list:
+    description: List all online players
+    aliases: [listplayers, playerlist]
+  lag:
+    description: View detailed RAM Usage
+    aliases: [gc, top, ram]
+  msg:
+    description: Message fellow players
+    aliases: [message, tell, w, whisper, dm, pm]
+  r:
+    description: Reply to messages
+    aliases: [reply]
+  seen:
+    description: Check when someone last logged in
+  biome:
+    description: Get the level range of your current location
+    aliases: [locinfo, locationinfo, loclevel, biomelevel, biomelvl, nl, bl, ll]
+  help:
+    description: Useful commands
+  settings:
+    description: Access your settings
+  biomes:
+    description: View all biome levels
+  ping:
+    description: Check your latency
+    aliases: [latency]
+permissions:
+  core.owner:
+    description: Complete Rift Access
+    children:
+      core.admin: true
+      core.mod: true
+      core.helper: true
+  core.admin:
+    description: Administrative Access to The Rift
+    children:
+      core.mod: true
+      core.helper: true
+  core.mod:
+    description: Access to Moderation Tools
+    children:
+      core.helper: true
+  core.helper:
+    description: Access to Helping Commands
+  core.default:
+    description: Player Access to The Rift
+    default: true
 depend: [ProtocolLib, Vault, NBTAPI, Citizens, WorldEdit, WorldGuard]

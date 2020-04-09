@@ -12,6 +12,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Leveleable {
 
@@ -69,7 +72,7 @@ public class Leveleable {
 
     public void calcMaxExp() {
         //maxexp = Math.pow(level, expPow) * expMod + expOff;
-        maxexp = Math.ceil(Math.pow(2.7, (level + 70.0)/10.0) - 547.0);
+        maxexp = Math.ceil(Math.pow(3, (level + 70.0)/10.0) - 547.0);
         //maxexp = RPGConstants.levelsExp.get(level);
     }
 
@@ -208,7 +211,7 @@ public class Leveleable {
                 Main.msg(p, "   &7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
             }
             main.getRP(p).getBoard().setBossbar4("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
-            Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(" + p.getName() + "&7)", Hologram.HologramType.EXP);
+            Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(&f" + p.getName() + "&7)", Hologram.HologramType.EXP, new ArrayList<>(Arrays.asList(p)));
             magic.rise();
             levelup();
         }

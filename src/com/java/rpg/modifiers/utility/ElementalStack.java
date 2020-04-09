@@ -198,5 +198,10 @@ public class ElementalStack {
         return air + "," + earth + "," + electric + "," + fire + "," + ice;
     }
 
+    public String getFancyStack() {
+        DecimalFormat dF = new DecimalFormat("#.##");
+        return (Main.color( "&f" + dF.format(air) + "&8|&2" + dF.format(earth) + "&8|&e" + dF.format(electric) + "&8|&c" + dF.format(fire) + "&8|&b" + dF.format(ice) + ""));
+    }
+
 
 }

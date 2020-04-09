@@ -4,6 +4,7 @@ import com.java.Main;
 import com.java.rpg.classes.PlayerClass;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.utility.RPGConstants;
+import com.java.rpg.modifiers.utility.ElementalStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -41,11 +42,13 @@ public class ClassCommand implements CommandExecutor, Listener {
 
     public static String hpString = "&8[" + RPGConstants.physical + "&8] &7HP: &f";
     public static String manaString = "&8[&b" + RPGConstants.magic + "&8] &7Mana: &f";
-    public static String manaRegenString = "&8[&b⚙&8] &7Mana Regen: &f";
-    public static String apString = "&8[&b⚡&8] &7Ability Power: &f";
-    public static String adString = "&8[&c⚔&8] &7Attack Damage: &f";
-    public static String armorString = "&8[&4⛨&8] &7Armor: &f";
-    public static String mrString = "&8[&9⚶&8] &7Magic Resist: &f";
+    public static String manaRegenString = "&8[" + RPGConstants.manaRegen + "&8] &7Mana Regen: &f";
+    public static String apString = "&8[" + RPGConstants.abilityPower + "&8] &7Ability Power: &f";
+    public static String adString = "&8[" + RPGConstants.attackDamage + "&8] &7Attack Damage: &f";
+    public static String armorString = "&8[&6" + RPGConstants.armor + "&8] &7Armor: &f";
+    public static String mrString = "&8[" + RPGConstants.magicResist + "&8] &7Magic Resist: &f";
+    public static String edString = "&8[" + RPGConstants.elementalDefense + "&8] &7Elemental Defense: &f";
+    public static String edLvlString = "&8[" + RPGConstants.elementalDefense + "&8] &7EDef Per Lvl: &f";
 
     public void sendClassInv(Player p) {
         DecimalFormat df = new DecimalFormat("#.##");
@@ -78,6 +81,9 @@ public class ClassCommand implements CommandExecutor, Listener {
         double apPerLvl = pc.getAPPerLevel();
         double adPerLvl = pc.getADPerLevel();
 
+        ElementalStack ed = pc.getEDefense();
+        ElementalStack edS = pc.getEDefenseScaling();
+
         spMeta.setDisplayName(Main.color("&6Wanderer"));
         sp.setType(Material.LEATHER_HELMET);
         lore.add(Main.color("&aLost Soul"));
@@ -89,11 +95,13 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));
         lore.add(Main.color(manaRegenString + df.format(mreg) + " &8(&7+" + df.format(mregPerLvl) + "/lvl&8)"));
         lore.add(Main.color(""));
-        lore.add(Main.color(adString + dF.format(ad) + " &8(&7+" + df.format(adPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(adString + df.format(ad) + " &8(&7+" + df.format(adPerLvl) + "/lvl&8)"));
         lore.add(Main.color(apString + df.format(ap) + " &8(&7+" + df.format(apPerLvl) + "/lvl&8)"));
         lore.add(Main.color(""));
-        lore.add(Main.color(armorString + dF.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(mrString + dF.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(armorString + df.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(mrString + df.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(edString + "&8<" + ed.getFancyStack() + "&8>"));
+        lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
         lore.add(Main.color(""));
         lore.add(Main.color("&fView its Skills with &e/skills Wanderer&f."));
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -127,7 +135,8 @@ public class ClassCommand implements CommandExecutor, Listener {
         ad = pc.getBaseAD();
         apPerLvl = pc.getAPPerLevel();
         adPerLvl = pc.getADPerLevel();
-
+        ed = pc.getEDefense();
+        edS = pc.getEDefenseScaling();
 
         spMeta.setDisplayName(Main.color("&6Pyromancer"));
         sp.setType(Material.FIRE_CHARGE);
@@ -145,6 +154,8 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color(""));
         lore.add(Main.color(armorString + dF.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
         lore.add(Main.color(mrString + dF.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(edString + "&8<" + ed.getFancyStack() + "&8>"));
+        lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
         lore.add(Main.color(""));
         lore.add(Main.color("&fView its Skills with &e/skills Pyromancer&f."));
         if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {

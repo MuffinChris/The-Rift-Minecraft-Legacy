@@ -36,9 +36,9 @@ public class Fireball extends Skill implements Listener {
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fShoot a flaming projectile that travels for &e" + range + "&f seconds."));
-        desc.add(Main.color("&fIt deals &b" + getDmg(p) + " &fdamage to nearby foes"));
-        desc.add(Main.color("&fand ignites them for 5 seconds."));
+        desc.add(Main.color("&7Shoot a flaming projectile that travels for &e" + range + "&7 seconds."));
+        desc.add(Main.color("&7It deals &b" + getDmg(p) + " &7damage to nearby foes"));
+        desc.add(Main.color("&7and ignites them for 5 seconds."));
         //setDescription(desc);
         return desc;
     }

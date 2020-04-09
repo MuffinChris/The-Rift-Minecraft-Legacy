@@ -16,14 +16,18 @@ public class RPGConstants {
     public static String slash = "&c⒜";
     public static String puncture = "&c⒝";
     public static String impact = "&c⒞";
-    public static String attackDamage = "&c⚔";
+    public static String attackDamage = "&c⒠";
     public static String abilityPower = "&b⒟";
+    public static String manaRegen = "&b⚙";
 
     public static String xp = "XP]";
 
     public static String[] damages = new String[]{physical, trued, magic, air, earth, electric, fire, ice, slash, puncture, impact, xp};
 
-    public static String armor = "⛨";
+    public static String armor = "&6⛨";
+    public static String magicResist = "&9⛨";
+    public static String elementalDefense = "&d⛨";
+
     public static String weak = "&6⚶";
     public static String strong = "&6⛨";
 

@@ -112,7 +112,7 @@ public class InfoCommand implements CommandExecutor, Listener {
         double ap = rp.getAP();
         lore.add(Main.color(""));
         lore.add(Main.color("&8[" + RPGConstants.attackDamage + "&8] &7Attack Damage: &f" + df.format(ad)));
-        lore.add(Main.color("&8[" + RPGConstants.abilityPower +"&8] &7bAbility Power: &f" + df.format(ap)));
+        lore.add(Main.color("&8[" + RPGConstants.abilityPower +"&8] &7Ability Power: &f" + df.format(ap)));
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         spMeta.setLore(lore);
         sp.setItemMeta(spMeta);
@@ -146,8 +146,8 @@ public class InfoCommand implements CommandExecutor, Listener {
         sp.setType(Material.IRON_CHESTPLATE);
         lore.add(Main.color(""));
         lore.add(Main.color("&8[" + RPGConstants.physical + "&8] &7Hitpoints: &f" + df.format(hp)));
-        lore.add(Main.color("&8[&6" + RPGConstants.armor + "&8] &7Armor: &f" + df.format(armor) + " &8(" + amper + "&8)"));
-        lore.add(Main.color("&8[&9" + RPGConstants.armor + "&8] &7Magic Resist: &f" + df.format(mr) + " &8(" + mrper + "&8)"));
+        lore.add(Main.color("&8[" + RPGConstants.armor + "&8] &7Armor: &f" + df.format(armor) + " &8(" + amper + "&8)"));
+        lore.add(Main.color("&8[" + RPGConstants.magicResist + "&8] &7Magic Resist: &f" + df.format(mr) + " &8(" + mrper + "&8)"));
         lore.add("");
         lore.add(Main.color("&8[" + RPGConstants.air + "&8] &7Air Defense: &f" + df.format(air) + " &8(" + airPer + "&8)"));
         lore.add(Main.color("&8[" + RPGConstants.earth +  "&8] &7Earth Defense: &f" + df.format(earth) + " &8(" + earthPer + "&8)"));

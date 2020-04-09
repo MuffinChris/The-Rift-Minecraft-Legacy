@@ -150,15 +150,15 @@ public class WorldOnFire extends Skill implements Listener {
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&aPassive:"));
-        desc.add(Main.color("&fFire damage you deal"));
-        desc.add(Main.color("&fis amplified by &b" + empowered + "&fx damage."));
+        desc.add(Main.color("&7Fire damage you deal"));
+        desc.add(Main.color("&7is amplified by &b" + empowered + "x &7damage."));
         desc.add(Main.color(""));
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fActively ignite nearby enemies."));
-        desc.add(Main.color("&fGrant yourself &a" + initRamp + " &fAP."));
-        desc.add(Main.color("&fGain &a" + ramp + " &fAP every tick for each nearby"));
-        desc.add(Main.color("&fentity on fire. Max AP is &a" + maxramp + "&f."));
-        desc.add(Main.color("&fWhen ended, nearby enemies take &b" + getDmg(p) + " &fdamage!"));
+        desc.add(Main.color("&7Actively ignite nearby enemies."));
+        desc.add(Main.color("&7Grant yourself &a" + initRamp + " &7AP."));
+        desc.add(Main.color("&7Gain &a" + ramp + " &7AP every tick for each nearby"));
+        desc.add(Main.color("&7entity on fire. Max AP is &a" + maxramp + "&7."));
+        desc.add(Main.color("&7When ended, nearby enemies take &b" + getDmg(p) + " &7damage!"));
         return desc;
     }
 

@@ -21,6 +21,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Environmental implements Listener {
 
@@ -33,6 +35,7 @@ public class Environmental implements Listener {
                 if (e.getItem().getItemMeta() instanceof PotionMeta) {
                     PotionMeta meta = (PotionMeta) e.getItem().getItemMeta();
                     if (meta.getBasePotionData().getType() == PotionType.INSTANT_DAMAGE) {
+                        List<Player> players = new ArrayList<>(e.getPlayer().getWorld().getNearbyPlayers(e.getPlayer().getEyeLocation(), 24));
                         double hp = e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
                         if (meta.getBasePotionData().isUpgraded()) {
                             double dmg = 100 + hp * 0.15;
@@ -40,14 +43,14 @@ public class Environmental implements Listener {
                             dmg*=(RPGConstants.defenseDiv)/(RPGConstants.defenseDiv + d);
                             e.getPlayer().damage(dmg);
                             DecimalFormat df = new DecimalFormat("#.##");
-                            Hologram magic = new Hologram(e.getPlayer(), e.getPlayer().getLocation(), RPGConstants.magic + df.format(dmg), Hologram.HologramType.DAMAGE);
+                            Hologram magic = new Hologram(e.getPlayer(), e.getPlayer().getLocation(), RPGConstants.magic + df.format(dmg), Hologram.HologramType.DAMAGE, players);
                         } else {
                             double dmg = 50 + hp * 0.1;
                             double d = main.getRP(e.getPlayer()).getMR();
                             dmg*=(RPGConstants.defenseDiv)/(RPGConstants.defenseDiv + d);
                             e.getPlayer().damage(dmg);
                             DecimalFormat df = new DecimalFormat("#.##");
-                            Hologram magic = new Hologram(e.getPlayer(), e.getPlayer().getLocation(), RPGConstants.magic + df.format(dmg), Hologram.HologramType.DAMAGE);
+                            Hologram magic = new Hologram(e.getPlayer(), e.getPlayer().getLocation(), RPGConstants.magic + df.format(dmg), Hologram.HologramType.DAMAGE, players);
                         }
                     }
                 }
@@ -182,31 +185,34 @@ public class Environmental implements Listener {
                 e.setDamage((e.getDamage() / 30.0) * hp);
             }
 
+
+            List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
+
             if (!(e.getEntity() instanceof ArmorStand) && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK && e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE && e.getCause() != EntityDamageEvent.DamageCause.MAGIC && !fire && !poison && !wither) {
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
             }
             if (fire) {
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.fire + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.fire + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
             }
 
             if (wither) {
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), "&8❤" + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), "&8❤" + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
             }
 
             if (poison) {
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.earth + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.earth + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
             }
             if (lightning) {
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.electric + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.electric + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
             }
         }
@@ -239,11 +245,13 @@ public class Environmental implements Listener {
             AreaEffectCloud cloud = (AreaEffectCloud) e.getDamager();
             if (cloud.getBasePotionData().getType() == PotionType.INSTANT_DAMAGE || (cloud.getCustomName() != null && cloud.getCustomName().equals(dragonBreath))) {
                 if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand)) {
+
+                    List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
                     if ((cloud.getCustomName() != null && cloud.getCustomName().equals(dragonBreath))) {
                         double dmg = (e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.15);
 
                         DecimalFormat df = new DecimalFormat("#.##");
-                        Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.trued + df.format(dmg), Hologram.HologramType.DAMAGE);
+                        Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.trued + df.format(dmg), Hologram.HologramType.DAMAGE, players);
                         e.setDamage(dmg);
                     } else {
                         double dmg = (e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.04);
@@ -258,7 +266,7 @@ public class Environmental implements Listener {
                         }
 
                         DecimalFormat df = new DecimalFormat("#.##");
-                        Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.magic + df.format(dmg), Hologram.HologramType.DAMAGE);
+                        Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.magic + df.format(dmg), Hologram.HologramType.DAMAGE, players);
                         e.setDamage(dmg);
                     }
                 }
@@ -289,8 +297,10 @@ public class Environmental implements Listener {
                 } else if (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.WITHER_SPAWN) {
                     e.setAmount(25);
                 }
+
+                List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(ent, ent.getLocation(), "&a❤" + df.format(e.getAmount()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(ent, ent.getLocation(), "&a❤" + df.format(e.getAmount()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
                 if (e.getEntity() instanceof Player) {
                     Main.sendHp((Player) e.getEntity());

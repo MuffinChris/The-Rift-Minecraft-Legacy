@@ -62,8 +62,10 @@ public class Skill {
     public static void healTarget(Player target, double hp) {
         if (target.getHealth() + hp <= target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
             target.setHealth(target.getHealth() + hp);
+
+            List<Player> players = new ArrayList<>(target.getWorld().getNearbyPlayers(target.getEyeLocation(), 24));
             DecimalFormat df = new DecimalFormat("#.##");
-            Hologram magic = new Hologram(target, target.getLocation(), "&a❤" + df.format(hp), Hologram.HologramType.DAMAGE);
+            Hologram magic = new Hologram(target, target.getLocation(), "&a❤" + df.format(hp), Hologram.HologramType.DAMAGE, players);
             magic.rise();
         } else {
             target.setHealth(target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());

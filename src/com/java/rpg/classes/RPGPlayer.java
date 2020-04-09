@@ -1364,7 +1364,7 @@ public class RPGPlayer extends Leveleable {
         PacketContainer tabPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
         WrappedChatComponent header = WrappedChatComponent.fromText(Main.color("\n&d&lThe Rift &7[1.15.2]\n"));
 
-        WrappedChatComponent footer = WrappedChatComponent.fromText(Main.color("\n&dPing: &f" + ((CraftPlayer) player).getHandle().ping + "\n&5therift.net\n"));
+        WrappedChatComponent footer = WrappedChatComponent.fromText(Main.color("\n&dOnline: &f" + Bukkit.getOnlinePlayers().size() + "&d/&f" + Bukkit.getMaxPlayers() + "\n&5therift.net\n"));
         tabPacket.getChatComponents().write(0, header);
         tabPacket.getChatComponents().write(1, footer);
         main.getProtocolManager().sendServerPacket(player, tabPacket);
@@ -1466,7 +1466,7 @@ public class RPGPlayer extends Leveleable {
                     GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
                     prof.getProperties().put("textures", new Property("textures", main.getRP(partySlots.getTs().get(tlIndex).getPlayer()).selfTextureValue, main.getRP(partySlots.getTs().get(tlIndex).getPlayer()).selfTextureSignature));
                     //GameProfile prof = new GameProfile(null, tl + "");
-                    PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
+                    PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
                     fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
                     main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
                 }
@@ -1576,7 +1576,7 @@ public class RPGPlayer extends Leveleable {
                 } else {
                     prof.getProperties().put("textures", new Property("textures", main.getTextureValues().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId()), main.getTextureSigs().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId())));
                 }*/
-                PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
+                PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
                 fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
                 main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
             }
@@ -1645,6 +1645,7 @@ public class RPGPlayer extends Leveleable {
             if (tl == 60) {
                 name = ChatColor.AQUA + "" + ChatColor.BOLD + "♦ TOWN MEMBERS";
             }
+            int latency = 20000;
             if (players.contains(tl) && playerSlots.getTs().get(tl - 21).getPlayer() != null) {
                 name = playerSlots.getTs().get(tl - 21).getPlayer().getDisplayName();
 
@@ -1659,13 +1660,13 @@ public class RPGPlayer extends Leveleable {
                 if (!suffix.isEmpty()) {
                     name = name + " " + suffix;
                 }
-
+                latency = ((CraftPlayer)playerSlots.getTs().get(tl-21).getPlayer()).getHandle().ping;
                 prof.getProperties().put("textures", new Property("textures", main.getTextureValues().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId()), main.getTextureSigs().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId())));
             } else {
                 prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
             }
 
-            PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
+            PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), latency, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
             fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
             try {
                 main.getProtocolManager().sendServerPacket(p, fakePlayerPacket);

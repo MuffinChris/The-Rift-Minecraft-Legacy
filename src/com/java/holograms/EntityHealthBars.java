@@ -18,6 +18,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class EntityHealthBars implements Listener {
 
@@ -90,7 +94,8 @@ public class EntityHealthBars implements Listener {
             LivingEntity ent = (LivingEntity) e.getEntity();
             if (!main.getHpBars().containsKey(ent) && !(ent instanceof Player)) {
                 DecimalFormat dF = new DecimalFormat("#.##");
-                main.getHpBars().put(ent, new Hologram(ent, ent.getLocation().add(new Vector(0, ent.getHeight() + 0.1, 0)), "&f" + dF.format(ent.getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM));
+                List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
+                main.getHpBars().put(ent, new Hologram(ent, ent.getLocation().add(new Vector(0, ent.getHeight() + 0.1, 0)), "&f" + dF.format(ent.getHealth()) + "&c❤", Hologram.HologramType.HOLOGRAM, players));
                 if (ent.getCustomName() != null) {
                     ent.setCustomNameVisible(true);
                 }
@@ -106,6 +111,12 @@ public class EntityHealthBars implements Listener {
                 DecimalFormat dF = new DecimalFormat("#.##");
                 double hp = ent.getHealth();
                 hp-=e.getDamage();
+
+                List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
+                Set<Player> set = new HashSet<>(main.getHpBars().get(ent).getTargets());
+                set.addAll(players);
+                main.getHpBars().get(ent).getTargets().clear();
+                main.getHpBars().get(ent).getTargets().addAll(set);
                 main.getHpBars().get(ent).setText("&f" + dF.format(hp) + "&c❤");
                 main.getHpBars().get(ent).resetLifetime();
                 new BukkitRunnable() {

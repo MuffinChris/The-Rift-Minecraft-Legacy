@@ -47,16 +47,16 @@ public class Pyroclasm extends Skill implements Listener {
         List<String> desc = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("#");
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fLaunch a flaming projectile at the target."));
-        desc.add(Main.color("&fThe projectile leaves a trail of flame."));
-        desc.add(Main.color("&fIt has a base lifetime of &e" + df.format((duration * 1.0)/20.0) + " &fseconds"));
-        desc.add(Main.color("&fand bounces around targets within &e" + range + " &fblocks."));
-        desc.add(Main.color("&fEach hit deals &b" + getDmg(p) + " &fmagic damage."));
-        desc.add(Main.color("&fIf the target is on fire it deals &e" + empowered + "x &fmore damage."));
-        desc.add(Main.color("&fEach bounce increases the lifetime by &e1 &fsecond."));
-        desc.add(Main.color("&fEach bounce deals &e" + df.format(ratio * 100.0) + "% &fdamage"));
-        desc.add(Main.color("&fof the previous bounce."));
-        desc.add(Main.color("&fThe projectile bounces a maximum of &e" + maxbounces + " &ftimes."));
+        desc.add(Main.color("&7Launch a flaming projectile at the target."));
+        desc.add(Main.color("&7The projectile leaves a trail of flame."));
+        desc.add(Main.color("&7It has a base lifetime of &e" + df.format((duration * 1.0)/20.0) + " &7seconds"));
+        desc.add(Main.color("&7and bounces around targets within &e" + range + " &7blocks."));
+        desc.add(Main.color("&7Each hit deals &b" + getDmg(p) + " &7magic damage."));
+        desc.add(Main.color("&7If the target is on fire it deals &e" + empowered + "x &7more damage."));
+        desc.add(Main.color("&7Each bounce increases the lifetime by &e1 &7second."));
+        desc.add(Main.color("&7Each bounce deals &e" + df.format(ratio * 100.0) + "% &7damage"));
+        desc.add(Main.color("&7of the previous bounce."));
+        desc.add(Main.color("&7The projectile bounces a maximum of &e" + maxbounces + " &7times."));
         return desc;
     }
 

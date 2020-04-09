@@ -66,6 +66,7 @@ public class MobEXP implements Listener {
 
     @EventHandler
     public void cleanHolos (ChunkUnloadEvent e) {
+        /*
         for (Entity ent : e.getChunk().getEntities()) {
             if (ent instanceof ArmorStand) {
                 if (ent.isCustomNameVisible()) {
@@ -77,7 +78,7 @@ public class MobEXP implements Listener {
                     }
                 }
             }
-        }
+        }*/
     }
 
     @EventHandler

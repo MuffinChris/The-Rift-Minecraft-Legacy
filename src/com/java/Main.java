@@ -52,6 +52,7 @@ import com.java.rpg.player.Items;
 import com.java.rpg.player.utility.PlayerListener;
 import de.slikey.effectlib.EffectManager;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
@@ -214,6 +215,10 @@ public class Main extends JavaPlugin {
             Bracelet, Ring, Ring, Amulet
 
     DIRECT LINE TODO LIST:
+
+        -11. Particles falling from the sky that deal damage (cuth botest)
+
+        -10. add gravestone model and fix config removal issue
 
         -9. Consider implementing different attacks for melee weapons. (ie. Regular Sword LMB is Slash. Crouch LMB is Heavy. Crouch RMB is Spin)
 
@@ -554,6 +559,35 @@ public class Main extends JavaPlugin {
 
      */
 
+    public void npcTags() {
+        new BukkitRunnable() {
+            public void run() {
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                    if (getNpcTags().containsKey(npc.getEntity())) {
+                        List<Player> players = new ArrayList<>(npc.getEntity().getWorld().getNearbyPlayers(npc.getEntity().getLocation(), 24));
+                        List<Player> remove = new ArrayList<>(getNpcTags().get(npc.getEntity()).getTargets());
+                        for (Player p : getNpcTags().get(npc.getEntity()).getTargets()) {
+                            if (players.contains(p)) {
+                                remove.remove(p);
+                            }
+                        }
+                        for (Player p : remove) {
+                            getNpcTags().get(npc.getEntity()).remove(p);
+                        }
+                        for (Player p : players) {
+                            if (!(getNpcTags().get(npc.getEntity()).getTargets().contains(p))) {
+                                getNpcTags().get(npc.getEntity()).getTargets().add(p);
+                            }
+                        }
+
+                        getNpcTags().get(npc.getEntity()).updateViewership();
+
+                    }
+                }
+            }
+        }.runTaskTimer(this, 10L, 40L);
+    }
+
     // MOB HP REGEN
     public void hpRegen() {
         new BukkitRunnable() {
@@ -624,8 +658,9 @@ public class Main extends JavaPlugin {
             public void run() {
                 for (Hologram h : getHolos()) {
                     if (h.getType() == Hologram.HologramType.DAMAGE || h.getType() == Hologram.HologramType.EXP || h.getType() == Hologram.HologramType.STATUS) {
-                        ArmorStand stand = h.getStand();
-                        stand.teleport(stand.getLocation().add(new Vector(0, 0.025, 0)));
+                        //EntityArmorStand stand = h.getStand();
+                        Location loc = h.getLocation().add(new Vector(0, 0.025, 0));
+                        h.teleport(loc);
                         h.incrementLifetime();
                         if (h.getType() == Hologram.HologramType.EXP || h.getType() == Hologram.HologramType.STATUS) {
                             if (h.getLifetime() * 0.02 >= 1) {
@@ -1065,6 +1100,7 @@ public class Main extends JavaPlugin {
         getCommand("addexp").setExecutor(new ExpCommand());
         getCommand("dummy").setExecutor(new DummyCommand());
         getCommand("help").setExecutor(new HelpCommand());
+        getCommand("ping").setExecutor(new PingCommand());
         getCommand("biomes").setExecutor(new BiomesCommand());
         getCommand("mute").setExecutor(new MuteCommand());
         getCommand("unmute").setExecutor(new UnmuteCommand());
@@ -1131,6 +1167,7 @@ public class Main extends JavaPlugin {
         updatePeriodic();
         remHpBar();
         riseBars();
+        npcTags();
 
         /*for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {

@@ -35,9 +35,9 @@ public class Flamethrower extends Skill {
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fSpew flame from your hand traveling &e" + range + "&f blocks."));
-        desc.add(Main.color("&fIt deals &b" + getDmg(p) + " &fdamage per second"));
-        desc.add(Main.color("&fand ignites them for 1 second."));
+        desc.add(Main.color("&7Spew flame from your hand traveling &e" + range + "&7 blocks."));
+        desc.add(Main.color("&7It deals &b" + getDmg(p) + " &7damage per second"));
+        desc.add(Main.color("&7and ignites them for 1 second."));
         return desc;
     }
 

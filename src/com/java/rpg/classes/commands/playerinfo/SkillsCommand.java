@@ -3,6 +3,7 @@ package com.java.rpg.classes.commands.playerinfo;
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.Skill;
+import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.EnchantmentMending;
 import org.bukkit.Bukkit;
@@ -48,7 +49,6 @@ public class SkillsCommand implements CommandExecutor, Listener {
         }
         return false;
     }
-
     public void sendSkillsInv(Player p, String c) {
         if (c.isEmpty()) {
             RPGPlayer rp = main.getRP(p);
@@ -59,6 +59,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
             spMeta.setDisplayName(Main.color("&6Skillpoints: &f" + rp.calculateSP()));
             lore = new ArrayList<>();
             lore.add(Main.color("&fClick a non-upgraded spell to upgrade it!"));
+            lore.add(Main.color("&fUnlocked at levels &e" + RPGConstants.superSkillOne + " &fand &e" + RPGConstants.superSkillTwo + "&f."));
             spMeta.setLore(lore);
             sp.setItemMeta(spMeta);
             playerInv.setItem(9, sp);
@@ -135,14 +136,14 @@ public class SkillsCommand implements CommandExecutor, Listener {
                     lore.add(Main.color(lockStatus));
                     lore.add(Main.color(""));
                     if (main.getRP(p).getPClass().getSuperSkills().size() > index) {
-                        lore.add(Main.color("&bUpgraded Form: &f" + main.getRP(p).getPClass().getSuperSkills().get(index).getName()));
+                        lore.add(Main.color("&bUpgraded Form: &7" + main.getRP(p).getPClass().getSuperSkills().get(index).getName()));
                         lore.add("");
                     } else {
                         lore.add(Main.color("&bUpgrade not Implemented"));
                         lore.add("");
                     }
                 } else {
-                    lore.add(Main.color("&cLOCKED &8(&cLVL " + s.getLevel() + "&8)"));
+                    lore.add(Main.color("&cLOCKED &8(&cLVL &f" + s.getLevel() + "&8)"));
                     lore.add(Main.color(""));
                 }
 
@@ -150,19 +151,19 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
                 DecimalFormat dF = new DecimalFormat("#.##");
                 if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &f" + s.getManaCost()));
+                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
                 }
                 if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &f" + s.getToggleMana()));
+                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
                 }
                 if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &f" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &f" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &f" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
                 }
                 lore.add(Main.color(""));
                 for (String st : s.getDescription(p)) {
@@ -201,7 +202,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
                     lore.add(Main.color(lockStatus));
                     lore.add(Main.color(""));
                 } else {
-                    lore.add(Main.color("&cLOCKED &8(&cLVL " + s.getLevel() + "&8)"));
+                    lore.add(Main.color("&cLOCKED &8(&cLVL &f" + s.getLevel() + "&8)"));
                     lore.add(Main.color(""));
                 }
 
@@ -209,19 +210,19 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
                 DecimalFormat dF = new DecimalFormat("#.##");
                 if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &f" + s.getManaCost()));
+                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
                 }
                 if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &f" + s.getToggleMana()));
+                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
                 }
                 if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &f" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &f" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &f" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
                 }
                 lore.add(Main.color(""));
                 for (String st : s.getDescription(p)) {
@@ -293,31 +294,34 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
                 spMeta.setDisplayName(Main.color(displayName));
                 lore = new ArrayList<>();
+
                 if (main.getCM().getPClassFromString(c).getSuperSkills().size() > index) {
-                    lore.add(Main.color("&bUpgraded Form: &f" + main.getRP(p).getPClass().getSuperSkills().get(index).getName()));
+                    lore.add(Main.color("&bUpgraded Form: &7" + main.getRP(p).getPClass().getSuperSkills().get(index).getName()));
                     lore.add("");
                 } else {
                     lore.add(Main.color("&bUpgrade not Implemented"));
                     lore.add("");
                 }
+                lore.add(Main.color("&eUnlock Level: &7" + s.getLevel()));
+                lore.add("");
 
                 index++;
 
                 DecimalFormat dF = new DecimalFormat("#.##");
                 if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &f" + s.getManaCost()));
+                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
                 }
                 if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &f" + s.getToggleMana()));
+                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
                 }
                 if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &f" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &f" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &f" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
                 }
                 lore.add(Main.color(""));
                 for (String st : s.getDescription(p)) {
@@ -343,25 +347,26 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 spMeta.addEnchant(Enchantment.MENDING, 1, true);
                 lore = new ArrayList<>();
                 lore.add(Main.color("&bUpgraded Skill"));
+                lore.add(Main.color("&eUnlock Level: &7" + s.getLevel()));
                 lore.add(Main.color(""));
 
                 index++;
 
                 DecimalFormat dF = new DecimalFormat("#.##");
                 if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &f" + s.getManaCost()));
+                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
                 }
                 if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &f" + s.getToggleMana()));
+                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
                 }
                 if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &f" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &f" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
                 }
                 if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &f" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
+                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
                 }
                 lore.add(Main.color(""));
                 for (String st : s.getDescription(p)) {

@@ -31,9 +31,9 @@ public class Conflagration extends Skill {
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fYou become immune to fire damage."));
-        desc.add(Main.color("&fAll blocks in a &a" + range + " &fradius are lit on fire."));
-        desc.add(Main.color("&fEvery time someone is damaged by the fire, gain AP..."));
+        desc.add(Main.color("&7You become immune to fire damage."));
+        desc.add(Main.color("&7All blocks in a &a" + range + " &7radius are lit on fire."));
+        desc.add(Main.color("&7Every time someone is damaged by the fire, gain AP..."));
         return desc;
     }
 

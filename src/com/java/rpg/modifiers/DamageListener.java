@@ -1,17 +1,26 @@
 package com.java.rpg.modifiers;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import com.java.Main;
 import com.java.holograms.Hologram;
 import com.java.rpg.classes.utility.RPGConstants;
-import com.java.rpg.modifiers.utility.Damage;
+import com.java.rpg.modifiers.utility.*;
 import com.java.rpg.classes.*;
-import com.java.rpg.modifiers.utility.ElementalStack;
 import com.java.rpg.classes.utility.StatusValue;
 import com.java.rpg.mobs.MobEXP;
-import com.java.rpg.modifiers.utility.PhysicalStack;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.*;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,9 +32,9 @@ import org.bukkit.potion.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DamageListener implements Listener {
 
@@ -359,7 +368,7 @@ public class DamageListener implements Listener {
 
 
                                 double statusEffect = Math.random();
-                                if (elementalDamage.anyNonzero() && statusEffect < RPGConstants.baseStatusChance && elementalDamage.getStatus()) {
+                                /*if (elementalDamage.anyNonzero() && statusEffect < RPGConstants.baseStatusChance && elementalDamage.getStatus()) {
                                     String element = elementalDamage.pickStatusEffect();
                                     if (element.equals("AIR")) {
                                         ent.setVelocity(new Vector(0, 1.25, 0));
@@ -459,10 +468,146 @@ public class DamageListener implements Listener {
                                         Hologram magic = new Hologram(ent, ent.getLocation(), "&bFreeze &7[" + RPGConstants.ice + "&7]", Hologram.HologramType.STATUS);
                                         magic.rise();
                                     }
-                                }
+                                }*/
                                 if (!hologram.isEmpty()) {
-                                    Hologram magic = new Hologram(ent, ent.getLocation(), hologram.substring(0, hologram.length() - 1), Hologram.HologramType.DAMAGE);
-                                    magic.rise();
+                                    List<Player> players = new ArrayList<>(ent.getWorld().getNearbyPlayers(ent.getEyeLocation(), 24));
+                                    if (!players.contains(damager)) {
+                                        players.add(damager);
+                                    }
+                                    Hologram magic = new Hologram(ent, ent.getLocation(), hologram.substring(0, hologram.length() - 1), Hologram.HologramType.DAMAGE, players);
+                                    /*PacketContainer packet1 = main.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
+                                    int id = (int)(Math.random() * Integer.MAX_VALUE);
+                                    Bukkit.broadcastMessage(id + "");
+                                    packet1.getUUIDs().write(0, UUID.randomUUID());
+                                    Location loc = ent.getEyeLocation();
+                                    packet1.getDoubles()
+                                            .write(0, loc.getX())
+                                            .write(1, loc.getY())
+                                            .write(2, loc.getZ());
+                                    packet1.getIntegers()
+                                            .write(0, id)
+                                            .write(1, 0)
+                                            .write(2, 0)
+                                            .write(3, 0)
+                                            .write(4, 0)
+                                            .write(5, 0)
+                                            .write(6, 78);
+
+                                    PacketContainer packet2 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+                                    packet2.getIntegers().write(0, id);
+
+
+                                    WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
+
+                                    Optional<?> opt = Optional
+                                            .of(WrappedChatComponent
+                                                    .fromChatMessage(Main.color(hologram))[0].getHandle());
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //invis //display name
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true); //custom name visible
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(4, WrappedDataWatcher.Registry.get(Boolean.class)), true);
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(5, WrappedDataWatcher.Registry.get(Boolean.class)), true); //no gravity
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(11, WrappedDataWatcher.Registry.get(Byte.class)), (byte) (0x01 | 0x08 | 0x10)); //isSmall, noBasePlate, set Marker
+
+                                    packet2.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
+
+                                    PacketContainer packet3 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_TELEPORT);
+                                    packet3.getIntegers().write(0, id);
+                                    packet3.getDoubles().write(0, loc.getX());
+                                    packet3.getDoubles().write(1, loc.getY());
+                                    packet3.getDoubles().write(2, loc.getZ());
+
+                                    try {
+                                        main.getProtocolManager().sendServerPacket(damager, packet1);
+                                        main.getProtocolManager().sendServerPacket(damager, packet2);
+                                        main.getProtocolManager().sendServerPacket(damager, packet3);
+                                    } catch (InvocationTargetException ex) {
+                                        ex.printStackTrace();
+                                    }*/
+
+
+                                    /*WrapperPlayServerSpawnEntity armorPacket = new WrapperPlayServerSpawnEntity();
+                                    int id = (int)(Math.random() * Integer.MAX_VALUE);
+                                    armorPacket.setType(78);
+                                    Location loc = ent.getLocation();
+                                    armorPacket.setX(loc.getX());
+                                    armorPacket.setY(loc.getY());
+                                    armorPacket.setZ(loc.getZ());
+                                    armorPacket.setUniqueId(UUID.randomUUID());
+                                    armorPacket.setEntityID(id);
+
+                                    WrapperPlayServerEntityMetadata armorMetaPacket = new WrapperPlayServerEntityMetadata();
+                                    armorMetaPacket.setEntityID(id);*/
+
+                                    /*ArmorStand stand = (ArmorStand)armorPacket.getEntity(ent.getWorld());
+                                    stand.setVisible(false);
+                                    stand.setMarker(true);
+                                    stand.setCustomNameVisible(true);
+                                    stand.setCustomName(Main.color(hologram));
+                                    stand.setAI(false);
+                                    stand.setCollidable(false);
+                                    stand.setInvulnerable(true);
+                                    stand.setGravity(false);
+                                    stand.setCanPickupItems(false);*/
+
+                                    /*WrappedDataWatcher dataWatcher = new WrappedDataWatcher(armorMetaPacket.getMetadata());
+
+                                    Optional<?> opt = Optional
+                                            .of(WrappedChatComponent
+                                                    .fromChatMessage(Main.color(hologram))[0].getHandle());
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //invis //display name
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true); //custom name visible
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(4, WrappedDataWatcher.Registry.get(Boolean.class)), true);
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(5, WrappedDataWatcher.Registry.get(Boolean.class)), true); //no gravity
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(11, WrappedDataWatcher.Registry.get(Byte.class)), (byte) (0x01 | 0x08 | 0x10)); //isSmall, noBasePlate, set Marker
+                                    armorMetaPacket.setMetadata(dataWatcher.getWatchableObjects());
+
+                                    armorPacket.sendPacket(damager);
+                                    armorMetaPacket.sendPacket(damager);*/
+
+
+                                    /*PacketContainer packet1 = main.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
+                                    Integer ID = (int)(Math.random() * Integer.MAX_VALUE);
+                                    packet1.getUUIDs().write(0, UUID.randomUUID());
+                                    Location loc = ent.getEyeLocation();
+                                    packet1.getDoubles()
+                                            .write(0, loc.getX())
+                                            .write(1, loc.getY())
+                                            .write(2, loc.getZ());
+                                    packet1.getIntegers()
+                                            .write(0, ID)
+                                            .write(1, 0)
+                                            .write(2, 0)
+                                            .write(3, 0)
+                                            .write(4, 0)
+                                            .write(5, 0)
+                                            .write(6, 78);*/
+
+                                    /*PacketContainer packet2 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+                                    packet2.getIntegers().write(0, id);
+
+
+                                    WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
+
+                                    Optional<?> opt = Optional
+                                            .of(WrappedChatComponent
+                                                    .fromChatMessage(Main.color(hologram))[0].getHandle());
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //invis //display name
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true); //custom name visible
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(4, WrappedDataWatcher.Registry.get(Boolean.class)), true);
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(5, WrappedDataWatcher.Registry.get(Boolean.class)), true); //no gravity
+                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(11, WrappedDataWatcher.Registry.get(Byte.class)), (byte) (0x01 | 0x08 | 0x10)); //isSmall, noBasePlate, set Marker
+
+                                    packet2.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
+
+                                    try {
+                                        //main.getProtocolManager().sendServerPacket(damager, packet1);
+                                        main.getProtocolManager().sendServerPacket(damager, packet2);
+                                    } catch (InvocationTargetException ex) {
+                                        ex.printStackTrace();
+                                    }*/
                                 }
 
                                 damage += physicalDamage.getTotal();
@@ -571,11 +716,12 @@ public class DamageListener implements Listener {
                     }
                 }
                 e.setDamage(damage);
+                List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
                 if (npHolo.isEmpty()) {
                     DecimalFormat df = new DecimalFormat("#.##");
-                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 } else {
-                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), npHolo, Hologram.HologramType.DAMAGE);
+                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), npHolo, Hologram.HologramType.DAMAGE, players);
                 }
             }
         }
@@ -649,11 +795,12 @@ public class DamageListener implements Listener {
                     }
                     e.setDamage(damage);
                 }
+                List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
                 if (npHolo.isEmpty()) {
                     DecimalFormat df = new DecimalFormat("#.##");
-                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.physical + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 } else {
-                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), npHolo, Hologram.HologramType.DAMAGE);
+                    Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), npHolo, Hologram.HologramType.DAMAGE, players);
                 }
             }
         }
@@ -677,8 +824,9 @@ public class DamageListener implements Listener {
 
                 e.setDamage(dmg);
 
+                List<Player> players = new ArrayList<>(e.getEntity().getWorld().getNearbyPlayers(e.getEntity().getLocation(), 24));
                 DecimalFormat df = new DecimalFormat("#.##");
-                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.magic + df.format(e.getDamage()), Hologram.HologramType.DAMAGE);
+                Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.magic + df.format(e.getDamage()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
             }
         }

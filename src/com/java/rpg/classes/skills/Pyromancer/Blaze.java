@@ -44,10 +44,10 @@ public class Blaze extends Skill {
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
-        desc.add(Main.color("&fFor &e" + duration + " &fseconds, leave a trail of flame"));
-        desc.add(Main.color("&fin your wake and increase your"));
-        desc.add(Main.color("&fmovement speed by &a" + movespeed + " &fpoints."));
-        desc.add(Main.color("&fThe flame trail deals &b" + getDmg(p) + " &fevery half a second."));
+        desc.add(Main.color("&7For &e" + duration + " &7seconds, leave a trail of flame"));
+        desc.add(Main.color("&7in your wake and increase your"));
+        desc.add(Main.color("&7movement speed by &a" + movespeed + " &7points."));
+        desc.add(Main.color("&7The flame trail deals &b" + getDmg(p) + " &7every half a second."));
         return desc;
     }
 
