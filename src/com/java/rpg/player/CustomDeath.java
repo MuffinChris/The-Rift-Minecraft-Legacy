@@ -83,7 +83,8 @@ public class CustomDeath implements Listener {
                     if ((System.currentTimeMillis() - millis) * 0.001 <= 15) {
                         if (!pData.getString("gravestones." + graveLoc.toString() + ".uuid").equals(e.getPlayer().getUniqueId().toString())) {
                             DecimalFormat df = new DecimalFormat("#.##");
-                            Main.msg(e.getPlayer(), "&cThis gravestone cannot be opened by anyone but &f" + pData.getString("gravestone." + graveLoc.toString() + ".player") + " &cfor &f" + df.format((System.currentTimeMillis() - millis) * 0.001) + " seconds&c.");
+                            Main.msg(e.getPlayer(), "&cThis gravestone cannot be opened by anyone but &f" + pData.getString("gravestones." + graveLoc.toString() + ".player") + " &cfor &f" + df.format(15 - ((System.currentTimeMillis() - millis) * 0.001)) + " seconds&c.");
+                            return;
                         }
                     }
                     while (go) {

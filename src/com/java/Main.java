@@ -216,6 +216,8 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -12. check if suffix prefix is being
+
         -11. Particles falling from the sky that deal damage (cuth botest)
 
         -10. add gravestone model and fix config removal issue

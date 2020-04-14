@@ -1322,7 +1322,6 @@ public class RPGPlayer extends Leveleable {
         if (real == null) {
             real = sc.registerNewTeam(teamName);
         }
-
         if (placeholder) {
             Main.getInstance().getFake().addEntry(pl.getName());
         } else {
@@ -1360,6 +1359,7 @@ public class RPGPlayer extends Leveleable {
     }
 
     public void tabUpdate(boolean force) throws InvocationTargetException {
+        nameUpdate(player, false);
 
         PacketContainer tabPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
         WrappedChatComponent header = WrappedChatComponent.fromText(Main.color("\n&d&lThe Rift &7[1.15.2]\n"));
