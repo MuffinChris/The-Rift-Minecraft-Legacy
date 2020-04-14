@@ -216,7 +216,9 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
-        -12. check if suffix prefix is being
+        -13. Make settings menu cleaner and contain current value
+
+        -12. check if suffix prefix is being updated...
 
         -11. Particles falling from the sky that deal damage (cuth botest)
 
