@@ -85,7 +85,11 @@ public class Flamethrower extends Skill {
                 if (alreadyHit.contains(ent)) {
                     continue;
                 }
-                double dist = Math.sqrt(Math.pow(loc.getX() - ent.getLocation().getX(), 2) + Math.pow(loc.getZ() - ent.getLocation().getZ(), 2));
+                Location dist = loc.subtract(ent.getLocation());
+                if(dist.length() < 0.1){
+                    alreadyHit.add(ent);
+                }
+                /*double dist = Math.sqrt(Math.pow(loc.getX() - ent.getLocation().getX(), 2) + Math.pow(loc.getZ() - ent.getLocation().getZ(), 2));
                 if (!(dist < 3 + i)) {
                     continue;
                 }
@@ -93,7 +97,7 @@ public class Flamethrower extends Skill {
                     continue;
                 }
                 alreadyHit.add(ent);
-
+                */
                 ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
                 spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 5, 0));
                 ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
