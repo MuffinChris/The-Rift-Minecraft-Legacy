@@ -845,7 +845,7 @@ public class RPGPlayer extends Leveleable {
         float currentWs = Math.max(0, player.getWalkSpeed());
         float actualWs = Math.max(0, Float.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0 + getWalkSpeedS().getValue() * 1.0) / 100.0))));
         if (currentWs != actualWs) {
-            player.setWalkSpeed(actualWs);
+            player.setWalkSpeed(Math.min(actualWs, 1.0F));
         }
     }
 
