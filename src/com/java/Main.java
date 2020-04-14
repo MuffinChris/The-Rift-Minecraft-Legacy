@@ -216,6 +216,12 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -16. Reduce Environmental Damager as level increases (just more durable to environmental sources)
+
+        -15. Make portal system for rift worlds
+
+        -14. Can blaze (and other skills) do damager after log off? (Blaze especially)
+
         -13. Make settings menu cleaner and contain current value
 
         -12. check if suffix prefix is being updated...
