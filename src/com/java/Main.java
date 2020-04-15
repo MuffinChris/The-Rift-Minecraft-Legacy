@@ -215,6 +215,7 @@ public class Main extends JavaPlugin {
             Bracelet, Ring, Ring, Amulet
 
     DIRECT LINE TODO LIST:
+        -17. Console problem: On stop has a SimplePluginManager error.
 
         -16. Reduce Environmental Damager as level increases (just more durable to environmental sources)
 
@@ -532,6 +533,7 @@ public class Main extends JavaPlugin {
                             }
                         }
                     }
+
                     cancel();
                     new BukkitRunnable() {
                         public void run() {
@@ -652,7 +654,7 @@ public class Main extends JavaPlugin {
                         e.setCustomNameVisible(false);
                     }
                     getHolos().remove(hpBars.get(e));
-                    hpBars.get(e).destroy();
+                    hpBars.get(e).destroy(false);
                     hpBars.remove(e);
                 }
             }
@@ -670,11 +672,11 @@ public class Main extends JavaPlugin {
                         h.incrementLifetime();
                         if (h.getType() == Hologram.HologramType.EXP || h.getType() == Hologram.HologramType.STATUS) {
                             if (h.getLifetime() * 0.02 >= 1) {
-                                h.destroy();
+                                h.destroy(false);
                             }
                         } else {
                             if (h.getLifetime() * 0.025 >= 1) {
-                                h.destroy();
+                                h.destroy(false);
                             }
                         }
                     } else if (h.getType() == Hologram.HologramType.HOLOGRAM) {
@@ -686,7 +688,7 @@ public class Main extends JavaPlugin {
                             if (npcTags.containsKey(h.getEntity())) {
                                 npcTags.remove(h.getEntity());
                             }
-                            h.destroy();
+                            h.destroy(false);
                         }
                     }
                 }
@@ -1227,7 +1229,7 @@ public class Main extends JavaPlugin {
         scheduler.cancelTasks(this);
 
         for (Hologram h : holograms) {
-            h.destroy();
+            h.destroy(true);
         }
 
         List<String> projectiles = new ArrayList<>();

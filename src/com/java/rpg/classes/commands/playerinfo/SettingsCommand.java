@@ -35,6 +35,9 @@ public class SettingsCommand implements CommandExecutor, Listener {
                     Player p = (Player) e.getWhoClicked();
                     sendSkillcastInv(p);
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+
+                    p.closeInventory();
+                    sendSettingsInv(p);
                 } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Exp Messages")) {
                     Player p = (Player) e.getWhoClicked();
 
@@ -42,6 +45,9 @@ public class SettingsCommand implements CommandExecutor, Listener {
                     Main.msg(p, "&aExp Messages: &f" + ("" + main.getRP(p).getSendExp()).toUpperCase());
 
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+
+                    p.closeInventory();
+                    sendSettingsInv(p);
                 } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Crouch Offhand Key")) {
                     Player p = (Player) e.getWhoClicked();
 
@@ -49,6 +55,9 @@ public class SettingsCommand implements CommandExecutor, Listener {
                     Main.msg(p, "&aCrouch Offhand Key: &f" + ("" + main.getRP(p).getToggleOffhand()).toUpperCase());
 
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+
+                    p.closeInventory();
+                    sendSettingsInv(p);
                 }
             }
         }

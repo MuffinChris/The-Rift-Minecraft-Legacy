@@ -99,7 +99,7 @@ public class EntityHealthBars implements Listener {
             if (main.getHpBars().containsKey(ent)) {
                 if (ent.isDead() || (ent instanceof Player && !((Player)ent).isOnline())) {
                     if (main.getHpBars().containsKey(ent)) {
-                        main.getHpBars().get(ent).destroy();
+                        main.getHpBars().get(ent).destroy(false);
                         main.getHpBars().remove(ent);
                     }
                     return;
@@ -119,7 +119,7 @@ public class EntityHealthBars implements Listener {
                     public void run() {
                         if (ent.isDead() || (ent instanceof Player && !((Player)ent).isOnline())) {
                             if (main.getHpBars().containsKey(ent)) {
-                                main.getHpBars().get(ent).destroy();
+                                main.getHpBars().get(ent).destroy(false);
                                 main.getHpBars().remove(ent);
                             }
                             return;

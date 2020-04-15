@@ -325,11 +325,15 @@ public class Hologram implements Listener {
         }
     }
 
-    public void destroy() {
-        for (Player p : targets) {
-            sendRemovePacket(p);
-            //PacketPlayOutEntityDestroy pack = new PacketPlayOutEntityDestroy(stand.getId());
-            //((CraftPlayer) p).getHandle().playerConnection.sendPacket(pack);
+    public void destroy(boolean clearTargets) {
+        if (!clearTargets) {
+            for (Player p : targets) {
+                if (p != null) {
+                    sendRemovePacket(p);
+                }
+                //PacketPlayOutEntityDestroy pack = new PacketPlayOutEntityDestroy(stand.getId());
+                //((CraftPlayer) p).getHandle().playerConnection.sendPacket(pack);
+            }
         }
         text = null;
         entity = null;

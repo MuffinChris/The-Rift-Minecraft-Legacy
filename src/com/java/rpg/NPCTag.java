@@ -35,7 +35,7 @@ public class NPCTag implements Listener {
         }
         if (main.getNpcTags().containsKey(e.getNPC().getEntity())) {
             main.getHolos().remove(main.getNpcTags().get(e.getNPC().getEntity()));
-            main.getNpcTags().get(e.getNPC().getEntity()).destroy();
+            main.getNpcTags().get(e.getNPC().getEntity()).destroy(false);
             main.getNpcTags().remove(e.getNPC().getEntity());
         }
     }
@@ -44,7 +44,7 @@ public class NPCTag implements Listener {
     public void npcDeath (NPCDeathEvent e) {
         if (main.getNpcTags().containsKey(e.getNPC().getEntity())) {
             main.getHolos().remove( main.getNpcTags().get(e.getNPC().getEntity()));
-            main.getNpcTags().get(e.getNPC().getEntity()).destroy();
+            main.getNpcTags().get(e.getNPC().getEntity()).destroy(false);
             main.getNpcTags().remove(e.getNPC().getEntity());
         }
     }
