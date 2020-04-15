@@ -307,12 +307,14 @@ public class Hologram implements Listener {
     }
 
     public void sendRemovePacket(Player p) {
-        PacketContainer packet2 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-        packet2.getIntegerArrays().write(0, new int[]{stand.getId()});
-        try {
-            main.getProtocolManager().sendServerPacket(p, packet2);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        if (p.isOnline() && p != null) {
+            PacketContainer packet2 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+            packet2.getIntegerArrays().write(0, new int[]{stand.getId()});
+            try {
+                main.getProtocolManager().sendServerPacket(p, packet2);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
     }
 
