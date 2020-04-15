@@ -18,17 +18,17 @@ public class Flamethrower extends Skill {
 
     private Main main = Main.getInstance();
 
-    private double damage = 150;
+    private double damage = 50;
 
-    private double apscale = 0.5;
+    private double apscale = 0.3;
 
     private int range = 4;
 
-    private int tickrate = 2;
+    private int tickrate = 1;
 
     public Flamethrower() {
         super("Flamethrower", 0, 10, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FIRE_CHARGE);
-        setToggleMana(5);
+        setToggleMana(7);
         setToggleTicks(tickrate);
     }
 
@@ -37,7 +37,7 @@ public class Flamethrower extends Skill {
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&7Spew flame from your hand traveling &e" + range + "&7 blocks."));
         desc.add(Main.color("&7It deals &b" + getDmg(p) + " &7damage per second"));
-        desc.add(Main.color("&7and ignites them for 1 second."));
+        desc.add(Main.color("&7and ignites them for 1 second. You are slowed while casting."));
         return desc;
     }
 
@@ -53,7 +53,7 @@ public class Flamethrower extends Skill {
         if (!super.toggleCont(p)) {
             return false;
         }
-        spewFlame(p, getDmg(p)/(1.0 * (20/tickrate)));
+        spewFlame(p, getDmg(p)/(1.0 * (20/(tickrate * 1.0))));
         return false;
     }
 
@@ -67,19 +67,20 @@ public class Flamethrower extends Skill {
 
     public int toggleInit(Player p) {
         p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_BLASTFURNACE_FIRE_CRACKLE, 1.0F, 1.0F);
-        main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), -10, 0, 0, true));
+        p.getLocation().getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
+        main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), -12, 0, 0, true));
         main.getRP(p).updateWS();
         return super.toggleInit(p);
     }
 
     public void spewFlame(Player caster, double damage) {
-        caster.getLocation().getWorld().playSound(caster.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 0.25F, 1.0F);
+        caster.getLocation().getWorld().playSound(caster.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 0.15F, 1.0F);
         Location origin = caster.getEyeLocation().clone().subtract(new Vector(0, 0.35, 0));
         Vector direction = origin.getDirection();
         List<LivingEntity> alreadyHit = new ArrayList<>();
         for (double i = 0; i < (range* 1.0 )/3.0; i += 0.25) {
             Location loc = origin.add(direction);
-            loc.getWorld().spawnParticle(Particle.FLAME, loc, 10 + (int) i * 5, 0.01 + i / 1.5, 0.01 + i / 2.0, 0.01 + i / 1.5, 0.0001, null, true);
+            loc.getWorld().spawnParticle(Particle.FLAME, loc, 10 + (int) i * 5, 0.01 + i / 1.5, 0.01 + i / 2.0, 0.01 + i / 1.5, 0.0, null, true);
 
             for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(loc, caster, i + 2)) {
                 if (alreadyHit.contains(ent)) {
@@ -89,8 +90,8 @@ public class Flamethrower extends Skill {
                 if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) < i + 0.1 && Math.abs(dist.getY()) < ent.getHeight()){
                     alreadyHit.add(ent);
                     ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
-                    spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 5, 0));
-                    ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.0F, 1.0F);
+                    spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
+                    ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 0.75F, 1.0F);
                 }
                 /*if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) < 0.4 && Math.abs(dist.getY()) < ent.getHeight()){
                     alreadyHit.add(ent);
