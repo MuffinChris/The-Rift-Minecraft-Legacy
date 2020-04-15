@@ -60,7 +60,6 @@ public class CustomDeath implements Listener {
         new BukkitRunnable() {
             public void run() {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 30, 0));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 20 * 30, 0));
             }
         }.runTaskLater(Main.getInstance(), 1L);
         //p.sendTitle(new Title(Main.color("&c&lRESPAWNED"), Main.color(""), 5, 80, 5));

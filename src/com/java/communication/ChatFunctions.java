@@ -154,6 +154,7 @@ public class ChatFunctions implements Listener {
         } else {
             e.setCancelled(true);
             main.getPM().getParty(e.getPlayer()).sendMessage( "&a&l[PARTY] &7" + (e.getPlayer().getName() + " " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f " + e.getMessage()));
+            Main.so("   &a&l[PARTY] &7" + (e.getPlayer().getName() + " " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f " + e.getMessage()));
         }
     }
 

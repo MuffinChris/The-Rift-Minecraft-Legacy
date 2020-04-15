@@ -224,8 +224,6 @@ public class Main extends JavaPlugin {
 
         -13. Make settings menu cleaner and contain current value
 
-        -12. check if suffix prefix is being updated...
-
         -11. Particles falling from the sky that deal damage (cuth botest)
 
         -10. add gravestone model and fix config removal issue

@@ -569,21 +569,35 @@ public class RPGPlayer extends Leveleable {
         }
     }
 
+    public void setUsernameFile(FileConfiguration pData, String username) {
+        if (pData.contains("Username")) {
+            if (pData.getString("Username").equalsIgnoreCase(player.getName())) {
+                pData.set("Username", username);
+            } else {
+                pData.set("PreviousUsername", pData.getString("Username"));
+                pData.set("Username", username);
+            }
+        } else {
+            pData.set("Username", username);
+        }
+    }
+
+    public void setLastSeenFile(FileConfiguration pData, Long millis) {
+        pData.set("LastSeen", millis);
+    }
+
     public void pushFiles() {
         File pFile = new File("plugins/Rift/data/classes/" + player.getUniqueId() + ".yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
         try {
-            if (pData.contains("Username")) {
-                if (pData.getString("Username").equalsIgnoreCase(player.getName())) {
-                    pData.set("Username", player.getName());
-                } else {
-                    pData.set("PreviousUsername", pData.getString("Username"));
-                    pData.set("Username", player.getName());
-                }
-            } else {
-                pData.set("Username", player.getName());
-            }
-            pData.set("LastSeen", System.currentTimeMillis());
+            /*
+            Utility
+             */
+            setUsernameFile(pData, player.getName());
+            setLastSeenFile(pData, System.currentTimeMillis());
+            /*
+            Class Info
+             */
             String name = RPGConstants.defaultClassName;
             if (pclass != null) {
                 name = pclass.getName();
@@ -595,14 +609,9 @@ public class RPGPlayer extends Leveleable {
             pData.set(name + "Level", getLevel());
             pData.set(name + "Exp", getExp());
             pData.set(name + "CMana", currentMana);
-            /*if (!pData.contains(name + "SP")) {
-                pData.set(name + "SP", 0);
-                skillpoints = 0;
-            } else {
-                pData.set(name + "SP", skillpoints);
-            }*/
-            /*pData.set(name + "AD", pclass.getBaseAD());
-            pData.set(name + "AP", pclass.getBaseAP());*/
+            /*
+            Skill Levels
+             */
             String output = "";
             for (String s : skillLevels.keySet()) {
                 output+=s + "-" + skillLevels.get(s) + ",";
@@ -626,6 +635,9 @@ public class RPGPlayer extends Leveleable {
                 }
                 pData.set(name + "Skills", output);
             }
+            /*
+            Cooldowns
+             */
             String cd = "";
             for (String skill : cooldowns.keySet()) {
                 cd+=skill + ":" + cooldowns.get(skill) + ",";
@@ -634,19 +646,19 @@ public class RPGPlayer extends Leveleable {
                 cd = cd.substring(0, cd.length() - 1);
             }
             pData.set("Cooldowns", cd);
-
+            /*
+            Settings
+             */
             if (pData.contains("IdleSlot")) {
                 pData.set("IdleSlot", getIdleSlot());
             } else {
                 pData.set("IdleSlot", 0);
             }
-
             if (pData.contains("SendExp")) {
                 pData.set("SendExp", getSendExp());
             } else {
                 pData.set("SendExp", true);
             }
-
             if (pData.contains("ToggleOffhand")) {
                 pData.set("ToggleOffhand", getSendExp());
             } else {
@@ -664,33 +676,22 @@ public class RPGPlayer extends Leveleable {
         File pFile = new File("plugins/Rift/data/classes/" + player.getUniqueId() + ".yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
         if (pFile.exists()) {
-            if (pData.contains("Username")) {
-                if (pData.getString("Username").equalsIgnoreCase(player.getName())) {
-                    pData.set("Username", player.getName());
-                } else {
-                    pData.set("PreviousUsername", pData.getString("Username"));
-                    pData.set("Username", player.getName());
-                }
-            } else {
-                pData.set("Username", player.getName());
-            }
-            pData.set("LastSeen", System.currentTimeMillis());
+            setUsernameFile(pData, player.getName());
+            setLastSeenFile(pData, System.currentTimeMillis());
+            /*
+            Class Info
+             */
             String name = RPGConstants.defaultClassName;
             pclass = main.getCM().getPClassFromString(pData.getString("Current Class"));
-            if (pclass instanceof PlayerClass) {
+            if (pclass != null) {
                 name = pclass.getName();
             }
             setLevel(pData.getInt(name + "Level"));
             setExp(pData.getDouble(name + "Exp"));
             currentMana = (pData.getInt(name + "CMana"));
-
-            /*if (pData.contains(name + "SP")) {
-                skillpoints = pData.getInt(name + "SP");
-            } else {
-                pData.set(name + "SP", 0);
-                skillpoints = 0;
-            }*/
-
+            /*
+            Skills
+             */
             if(pData.contains(name + "Skills")) {
                 if (pData.get(name + "Skills").equals("")) {
                     pushFiles();
@@ -712,6 +713,9 @@ public class RPGPlayer extends Leveleable {
                     }
                 }
             }
+            /*
+            Cooldowns
+             */
             if(pData.contains("Cooldowns")) {
                 String cdstr = pData.getString("Cooldowns");
                 if (cdstr.length() > 0) {
@@ -723,6 +727,9 @@ public class RPGPlayer extends Leveleable {
                 }
             }
 
+            /*
+            Settings
+             */
             if (pData.contains("IdleSlot")) {
                 setIdleSlot(pData.getInt("IdleSlot"));
             } else {
@@ -743,17 +750,12 @@ public class RPGPlayer extends Leveleable {
                 pData.set("ToggleOffhand", true);
                 setSendExp(pData.getBoolean("ToggleOffhand"));
             }
-            /*
-            if (pData.contains(name + "AD")) {
-                ad = pData.getDouble(name + "AD");
-            }
 
-            if (pData.contains(name + "AP")) {
-                ap = pData.getDouble(name + "AP");
-            }
-            */
             updateStats();
         } else {
+            /*
+            SkillLevels Empty Bug
+             */
             for (Skill s : main.getCM().getPClassFromString(RPGConstants.defaultClassName).getSkills()) {
                 skillLevels.put(s.getName(), 0);
             }
@@ -762,30 +764,14 @@ public class RPGPlayer extends Leveleable {
         }
     }
 
-    public void noneClass() {
-        cooldowns.clear();
-        double hp = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-        pushFiles();
-        pclass = main.getCM().getPClassFromString(RPGConstants.defaultClassName);
-        File pFile = new File("plugins/Rift/data/classes/" + player.getUniqueId() + ".yml");
-        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
-        try {
-            pData.set("Current Class", RPGConstants.defaultClassName);
-            pData.save(pFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        pullFiles();
-        currentMana = 0;
-        player.setHealth(hp * RPGConstants.defaultHP);
-        updateStats();
-    }
-
     public boolean changeClass(PlayerClass pc) {
-
         if (pclass != null && pc.getName().equalsIgnoreCase(pclass.getName())) {
             return false;
         }
+
+        /*
+        Clear Statuses
+         */
         if (pclass != null) {
             for (StatusObject sz : so) {
                 for (Skill s : pclass.getSkills()) {
@@ -796,7 +782,6 @@ public class RPGPlayer extends Leveleable {
                 }
             }
         }
-
         double hp = player.getHealth() / player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         pushFiles();
         setExp(0);
