@@ -1,4 +1,5 @@
 *.class
 target/*
 .idea/*
+Rift.iml
 !target/*.jar
