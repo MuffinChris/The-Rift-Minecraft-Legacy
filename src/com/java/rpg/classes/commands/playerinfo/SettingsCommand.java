@@ -35,18 +35,18 @@ public class SettingsCommand implements CommandExecutor, Listener {
                     Player p = (Player) e.getWhoClicked();
                     sendSkillcastInv(p);
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
-                } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Send Exp in Chat")) {
+                } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Exp Messages")) {
                     Player p = (Player) e.getWhoClicked();
 
                     main.getRP(p).setSendExp(!main.getRP(p).getSendExp());
-                    Main.msg(p, "&aSend Exp in Chat: &f" + main.getRP(p).getSendExp());
+                    Main.msg(p, "&aExp Messages: &f" + ("" + main.getRP(p).getSendExp()).toUpperCase());
 
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
-                } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Shift-Offhand Swaps Offhand")) {
+                } else if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Crouch Offhand Key")) {
                     Player p = (Player) e.getWhoClicked();
 
                     main.getRP(p).setToggleOffhand(!main.getRP(p).getToggleOffhand());
-                    Main.msg(p, "&aShift-Offhand swaps Offhand: &f" + main.getRP(p).getToggleOffhand());
+                    Main.msg(p, "&aCrouch Offhand Key: &f" + ("" + main.getRP(p).getToggleOffhand()).toUpperCase());
 
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
                 }
@@ -117,7 +117,8 @@ public class SettingsCommand implements CommandExecutor, Listener {
         ItemMeta slotMeta = slot.getItemMeta();
         slotMeta.setDisplayName(Main.color("&eSkill Cast Slot"));
         lore.add(Main.color(""));
-        lore.add(Main.color("&fChange the &edefault slot &fwhen casting!"));
+        lore.add(Main.color("&fCurrently &eSlot " + (main.getRP(p).getIdleSlot() + 1) + "&f."));
+        lore.add(Main.color("&fChange the &eslot &fmoved to when casting &8(&eOffhand Key&8)"));
         lore.add(Main.color(""));
 
         slotMeta.setLore(lore);
@@ -129,9 +130,9 @@ public class SettingsCommand implements CommandExecutor, Listener {
 
         ItemStack sendExp = new ItemStack(Material.PAPER);
         ItemMeta sendExpMeta = sendExp.getItemMeta();
-        sendExpMeta.setDisplayName(Main.color("&eSend Exp in Chat"));
+        sendExpMeta.setDisplayName(Main.color("&eExp Messages &8(&e" + ("" + main.getRP(p).getSendExp()).toUpperCase() + "&8)"));
         lore.add(Main.color(""));
-        lore.add(Main.color("&fToggle sending of Exp Messages in Chat!"));
+        lore.add(Main.color("&fToggle sending of Exp Gain messages in Chat."));
         lore.add(Main.color(""));
 
         sendExpMeta.setLore(lore);
@@ -143,10 +144,10 @@ public class SettingsCommand implements CommandExecutor, Listener {
 
         ItemStack toggleOffhand = new ItemStack(Material.SHIELD);
         ItemMeta toggleOffhandMeta = toggleOffhand.getItemMeta();
-        toggleOffhandMeta.setDisplayName(Main.color("&eShift-Offhand Swaps Offhand"));
+        toggleOffhandMeta.setDisplayName(Main.color("&eCrouch Offhand Key &8(&e" + ("" + main.getRP(p).getToggleOffhand()).toUpperCase() + "&8)"));
         lore.add(Main.color(""));
         lore.add(Main.color("&fToggle whether crouching and using the offhand key"));
-        lore.add(Main.color("&fwill swap your offhand or open the Skill Casting GUI."));
+        lore.add(Main.color("&fwill &eswap your offhand &for open the &eSkill Casting Menu&f."));
         lore.add(Main.color(""));
 
         toggleOffhandMeta.setLore(lore);

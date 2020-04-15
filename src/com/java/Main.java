@@ -20,8 +20,8 @@ import com.java.essentials.commands.admin.warp.DelWarpCommand;
 import com.java.essentials.commands.admin.warp.SetWarpCommand;
 import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
-import com.java.holograms.EntityHealthBars;
-import com.java.holograms.Hologram;
+import com.java.rpg.holograms.EntityHealthBars;
+import com.java.rpg.holograms.Hologram;
 import com.java.rpg.*;
 import com.java.rpg.classes.*;
 import com.java.rpg.classes.casting.BindCommand;
@@ -221,8 +221,6 @@ public class Main extends JavaPlugin {
         -15. Make portal system for rift worlds
 
         -14. Can blaze (and other skills) do damager after log off? (Blaze especially)
-
-        -13. Make settings menu cleaner and contain current value
 
         -11. Particles falling from the sky that deal damage (cuth botest)
 
@@ -1137,7 +1135,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SkillsCommand(), this);
         Bukkit.getPluginManager().registerEvents(new EntityHealthBars(), this);
         Bukkit.getPluginManager().registerEvents(new MobEXP(), this);
-        Bukkit.getPluginManager().registerEvents(new AFKInvuln(), this);
+        Bukkit.getPluginManager().registerEvents(new JoinMenu(), this);
         Bukkit.getPluginManager().registerEvents(new SettingsCommand(), this);
         Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
         Bukkit.getPluginManager().registerEvents(new Stuns(), this);

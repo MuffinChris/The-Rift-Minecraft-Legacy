@@ -1,4 +1,4 @@
-package com.java.rpg.modifiers.utility;
+package com.java.packetwrappers;
 
 import java.lang.reflect.InvocationTargetException;
 

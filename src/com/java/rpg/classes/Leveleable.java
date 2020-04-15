@@ -2,7 +2,7 @@ package com.java.rpg.classes;
 
 import com.destroystokyo.paper.Title;
 import com.java.Main;
-import com.java.holograms.Hologram;
+import com.java.rpg.holograms.Hologram;
 import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.party.Party;
 import org.bukkit.Location;
@@ -14,7 +14,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Leveleable {
 

@@ -1,7 +1,7 @@
 package com.java.rpg.classes;
 
 import com.java.Main;
-import com.java.holograms.Hologram;
+import com.java.rpg.holograms.Hologram;
 import com.java.rpg.modifiers.utility.Damage;
 import com.java.rpg.classes.skills.Pyromancer.WorldOnFire;
 import com.java.rpg.modifiers.utility.ElementalStack;

@@ -3,7 +3,7 @@ package com.java.rpg.modifiers;
 import com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent;
 import com.destroystokyo.paper.event.entity.EnderDragonFlameEvent;
 import com.java.Main;
-import com.java.holograms.Hologram;
+import com.java.rpg.holograms.Hologram;
 import com.java.rpg.mobs.MobEXP;
 import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Material;

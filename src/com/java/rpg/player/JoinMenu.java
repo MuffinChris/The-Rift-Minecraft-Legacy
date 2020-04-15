@@ -20,13 +20,13 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class AFKInvuln implements Listener {
+public class JoinMenu implements Listener {
 
 
     Map<UUID, Location> hasMoved;
     Map<UUID, Boolean> packAccepted;
 
-    public AFKInvuln() {
+    public JoinMenu() {
         hasMoved = new HashMap<>();
         packAccepted = new HashMap<>();
     }

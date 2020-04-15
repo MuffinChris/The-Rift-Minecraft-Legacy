@@ -1,12 +1,11 @@
 package com.java.rpg;
 
 import com.java.Main;
-import com.java.holograms.Hologram;
+import com.java.rpg.holograms.Hologram;
 import com.java.rpg.classes.RPGPlayer;
 import net.citizensnpcs.api.event.NPCDeathEvent;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
