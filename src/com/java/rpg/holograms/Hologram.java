@@ -307,7 +307,7 @@ public class Hologram implements Listener {
     }
 
     public void sendRemovePacket(Player p) {
-        if (p.isOnline() && p != null) {
+        if (p.isOnline()) {
             PacketContainer packet2 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
             packet2.getIntegerArrays().write(0, new int[]{stand.getId()});
             try {
