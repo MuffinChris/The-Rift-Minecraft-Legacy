@@ -216,6 +216,8 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        Git Test
+
         -16. Reduce Environmental Damager as level increases (just more durable to environmental sources)
 
         -15. Make portal system for rift worlds
