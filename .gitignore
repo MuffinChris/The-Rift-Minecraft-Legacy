@@ -1,6 +1,4 @@
 *.class
 target/*
 .idea/*
-/target/
-/bin/
 !target/*.jar
