@@ -27,7 +27,7 @@ public class Flamethrower extends Skill {
     private int tickrate = 2;
 
     public Flamethrower() {
-        super("Flamethrower", 0, 30, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FIRE_CHARGE);
+        super("Flamethrower", 0, 10, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FIRE_CHARGE);
         setToggleMana(5);
         setToggleTicks(tickrate);
     }
