@@ -31,7 +31,11 @@ public class Town {
         return cl.citimap.get(p).getRank();
     }
     public String getRankName(Player p) { return ranks.get(cl.getRank(p)); }
-    
+
+    public void changeRankName(int i, String newname){
+        ranks.set(i, newname);
+    }
+
     public void invite(Player inviter, Player recieve){
         if(cl.getRank(inviter) >= 3){
             //recieve gets an invite
