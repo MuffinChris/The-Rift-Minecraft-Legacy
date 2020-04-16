@@ -215,6 +215,9 @@ public class Main extends JavaPlugin {
             Bracelet, Ring, Ring, Amulet
 
     DIRECT LINE TODO LIST:
+
+        -18. Rework Skill System to instantiate skills (Give each class a dedicated skill listener)
+
         -17. Console problem: On stop has a SimplePluginManager error.
 
         -16. Reduce Environmental Damager as level increases (just more durable to environmental sources)
