@@ -30,7 +30,9 @@ public class Citizen {
     public String getTown(){
         return town;
     }
-
+    public void setRank(int i) { r = i; }
+    public void setTown(String t) { town = t; }
+    
 
     public void invite(Player recieve){
 
