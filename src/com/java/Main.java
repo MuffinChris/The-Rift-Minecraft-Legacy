@@ -216,9 +216,12 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -20. Call Supers Skill Upgrades lmao
+
         -19. Make MenuManager to make menus that are ease
 
         -18. Rework Skill System to instantiate skills (Give each class a dedicated skill listener)
+            - Cooldowns must still be stored independent of skill because recast
 
         -17. Console problem: On stop has a SimplePluginManager error.
 
