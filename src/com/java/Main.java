@@ -216,6 +216,8 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -19. Make MenuManager to make menus that are ease
+
         -18. Rework Skill System to instantiate skills (Give each class a dedicated skill listener)
 
         -17. Console problem: On stop has a SimplePluginManager error.
