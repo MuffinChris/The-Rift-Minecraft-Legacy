@@ -2,7 +2,7 @@ package com.java.rpg.classes.skills.Earthshaker.supers;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.utility.StatusValue;
+import com.java.rpg.classes.utility.*;
 import com.java.rpg.party.Party;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -17,7 +17,7 @@ import java.util.List;
 public class Petrify extends Skill implements Listener {
 	
     private Main main = Main.getInstance();
-    private int duration = 2;
+    private int duration = 20;
     
     public Petrify() {
     	super("Petrify", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST");
@@ -27,6 +27,7 @@ public class Petrify extends Skill implements Listener {
     }
     
     public void cast(Player p) {
+    	super.cast(p);
     	Location init = p.getLocation().clone();
     	Location hitCenter = init.clone();
     	Vector facing = p.getEyeLocation().getDirection().clone();
