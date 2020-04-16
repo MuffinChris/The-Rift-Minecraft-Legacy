@@ -30,4 +30,12 @@ public class Citizen {
     public String getTown(){
         return town;
     }
+
+
+    public void invite(Player recieve){
+
+    }
+    public void kick(Player recieve){
+
+    }
 }

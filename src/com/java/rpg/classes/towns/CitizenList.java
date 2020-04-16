@@ -35,6 +35,12 @@ public class CitizenList {
         town = t;
     }
 
+    public int getRank(Player p){
+        if(citimap.containsKey(p)){
+            return citimap.get(p).getRank();
+        }
+        return -1;
+    }
 
     public Map<Player, Citizen> getCitizenList(){
         return citimap;
@@ -43,8 +49,6 @@ public class CitizenList {
         if(citimap.containsKey(p)){
             return citimap.remove(p);
         }
-        else{
             return null;
-        }
     }
 }

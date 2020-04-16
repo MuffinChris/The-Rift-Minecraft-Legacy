@@ -30,4 +30,20 @@ public class Town {
     public int getRank(Player p){
         return cl.citimap.get(p).getRank();
     }
+    public String getRankName(Player p) { return ranks.get(cl.getRank(p)); }
+    
+    public void invite(Player inviter, Player recieve){
+        if(cl.getRank(inviter) >= 3){
+            //recieve gets an invite
+            return;
+        }
+        //inviter is not high enough rank
+        return;
+    }
+    public void kick(Player kicker, Player recieve){
+        
+    }
+    public void promote(Player promoter, Player recieve){
+        
+    }
 }
