@@ -1,4 +1,4 @@
-package com.java.rpg.towns;
+package com.java.towns;
 
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;

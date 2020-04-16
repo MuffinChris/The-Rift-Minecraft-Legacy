@@ -129,6 +129,8 @@ commands:
   ping:
     description: Check your latency
     aliases: [latency]
+  town:
+    description: Interact with towns
 permissions:
   core.owner:
     description: Complete Rift Access

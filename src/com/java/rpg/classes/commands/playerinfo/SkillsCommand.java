@@ -34,21 +34,22 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
-            if (args.length == 0) {
-                sendSkillsInv(p, "");
-            } else {
-                if (main.getCM().getPClassFromString(args[0]) != null) {
-                    sendSkillsInv(p, main.getCM().getPClassFromString(args[0]).getName());
-                } else {
-                    Main.msg(p, "&cInvalid Class, use /class to see available Classes!");
-                }
-            }
-            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
+        if (!(sender instanceof Player)) return false;
+
+        Player p = (Player) sender;
+        if (args.length == 0) {
+            sendSkillsInv(p, "");
+            return true;
         }
+        if (main.getCM().getPClassFromString(args[0]) != null) {
+            sendSkillsInv(p, main.getCM().getPClassFromString(args[0]).getName());
+            return true;
+        }
+
+        Main.msg(p, "&cInvalid Class, use /class to see available Classes!");
         return false;
     }
+
     public void sendSkillsInv(Player p, String c) {
         if (c.isEmpty()) {
             RPGPlayer rp = main.getRP(p);
@@ -84,11 +85,11 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 playerInv.setItem(i, ph);
             }
 
-            for (int i = 10; i <= 19; i+=9) {
+            for (int i = 10; i <= 19; i += 9) {
                 playerInv.setItem(i, ph);
             }
 
-            for (int i = 16; i <= 25; i+=9) {
+            for (int i = 16; i <= 25; i += 9) {
                 playerInv.setItem(i, ph);
             }
 
@@ -253,22 +254,14 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 playerInv.setItem(i, ph);
             }
 
-            for (int i = 10; i <= 19; i+=9) {
+            for (int i = 10; i <= 19; i += 9) {
                 ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
                 ItemMeta phM = ph.getItemMeta();
                 phM.setDisplayName(" ");
                 ph.setItemMeta(phM);
                 playerInv.setItem(i, ph);
             }
-            for (int i = 9; i <= 18; i+=9) {
-                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-                ItemMeta phM = ph.getItemMeta();
-                phM.setDisplayName(" ");
-                ph.setItemMeta(phM);
-                playerInv.setItem(i, ph);
-            }
-
-            for (int i = 16; i <= 25; i+=9) {
+            for (int i = 9; i <= 18; i += 9) {
                 ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
                 ItemMeta phM = ph.getItemMeta();
                 phM.setDisplayName(" ");
@@ -276,7 +269,15 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 playerInv.setItem(i, ph);
             }
 
-            for (int i = 17; i <= 26; i+=9) {
+            for (int i = 16; i <= 25; i += 9) {
+                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+                ItemMeta phM = ph.getItemMeta();
+                phM.setDisplayName(" ");
+                ph.setItemMeta(phM);
+                playerInv.setItem(i, ph);
+            }
+
+            for (int i = 17; i <= 26; i += 9) {
                 ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
                 ItemMeta phM = ph.getItemMeta();
                 phM.setDisplayName(" ");
@@ -379,6 +380,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 i++;
             }
             p.openInventory(playerInv);
+            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
         }
     }
 

@@ -20,6 +20,7 @@ import com.java.essentials.commands.admin.warp.DelWarpCommand;
 import com.java.essentials.commands.admin.warp.SetWarpCommand;
 import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
+import com.java.towns.TownCommand;
 import com.java.rpg.holograms.EntityHealthBars;
 import com.java.rpg.holograms.Hologram;
 import com.java.rpg.*;
@@ -1129,6 +1130,8 @@ public class Main extends JavaPlugin {
         getCommand("sp").setExecutor(new SkillpointCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
         getCommand("bind").setExecutor(new BindCommand());
+
+        getCommand("town").setExecutor(new TownCommand());
         so("&dRIFT: &fEnabled commands!");
 
         Bukkit.getPluginManager().registerEvents(new InfoCommand(), this);

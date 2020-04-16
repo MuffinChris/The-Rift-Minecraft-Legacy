@@ -1,4 +1,4 @@
-package com.java.rpg.towns;
+package com.java.towns;
 
 import org.bukkit.entity.Player;
 
