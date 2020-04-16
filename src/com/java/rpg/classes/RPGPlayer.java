@@ -897,7 +897,7 @@ public class RPGPlayer extends Leveleable {
     }
 
     public String castSkill(String name) {
-        if (pclass instanceof PlayerClass) {
+        if (pclass != null) {
             Skill s = null;
             for (Skill st : pclass.getSkills()) {
                 if (name.equalsIgnoreCase(st.getName())) {
