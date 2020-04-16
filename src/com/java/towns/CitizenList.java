@@ -1,9 +1,7 @@
-package com.java.rpg.classes.towns;
+package com.java.rpg.towns;
 
-import com.java.Main;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
