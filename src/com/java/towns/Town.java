@@ -56,6 +56,8 @@ public class Town {
         return cl;
     }
 
+    public List<String> getRanks() { return ranks; } // TODO: have some way for town members to create ranks
+
     public int getRank(Player p){ return cl.citimap.get(p).getRank(); }
     public String getRankName(Player p) { return ranks.get(cl.getRank(p)); }
     public void setName(String s) { name = s; }

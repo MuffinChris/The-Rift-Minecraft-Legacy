@@ -60,20 +60,19 @@ public class TownCommand implements CommandExecutor, Listener {
             if(args[0].equalsIgnoreCase("create")) {
                 return CreateNewTown(p);
             }
-            else if(args[0].equalsIgnoreCase("leave"))
-            {
+            else if(args[0].equalsIgnoreCase("leave")) {
                 return LeaveTown(p);
             }
-            else if(args[0].equalsIgnoreCase("invite"))
-            {
+            else if(args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("remove")) {
+                return DeleteTown(p);
+            }
+            else if(args[0].equalsIgnoreCase("invite")) {
                 // TODO: implement
             }
-            else if(args[0].equalsIgnoreCase("kick"))
-            {
+            else if(args[0].equalsIgnoreCase("kick")) {
                 // TODO: implement
             }
-            else if(args[0].equalsIgnoreCase("promote"))
-            {
+            else if(args[0].equalsIgnoreCase("promote")) {
                 // TODO: implement
             }
         }
@@ -264,6 +263,12 @@ public class TownCommand implements CommandExecutor, Listener {
     }
 
     private boolean CreateNewTown(Player p) {
+
+        if(!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
+            Main.msg(p, Main.color("&4You are already in a town!"));
+            return false;
+        }
+
         Main.msg(p, Main.color("&l&eEnter Town Name (A-Z and spaces only): "));
 
         main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Prompted");
@@ -311,9 +316,45 @@ public class TownCommand implements CommandExecutor, Listener {
             fullTowns.remove(t.getName());
             main.setFullTownList(fullTowns);
 
-            Bukkit.broadcastMessage(Main.color("&l&4 Town " + t.getName() + " has been disbanded!"));
+            Bukkit.broadcastMessage(Main.color("&l&4Town " + t.getName() + " has been disbanded!"));
         }
 
+        return true;
+    }
+
+    private boolean DeleteTown(Player p) {
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+
+        if(c.getTown().equalsIgnoreCase("None")) {
+            Main.msg(p, "&4You aren't in any town!");
+            return false;
+        }
+
+        Town t = null;
+        for(Town ct : main.getTowns()) {
+            if(ct.getName().equals(c.getTown())) {
+                t = ct;
+                break;
+            }
+        }
+
+        if(c.getRank() != t.getRanks().size() - 1) { // make sure user is the highest possible rank
+            Main.msg(p, "&4You don't have permission to do this!");
+            return false;
+        }
+
+        Main.msg(p, "&aTown successfully disbanded");
+        for(Citizen ct : t.getCitizenList().citimap.values()) {
+            ct.setRank(-1);
+            ct.setTown("None");
+        }
+
+        main.getTowns().remove(t);
+        List<String> fullTowns = main.getFullTownList();
+        fullTowns.remove(t.getName());
+        main.setFullTownList(fullTowns);
+
+        Bukkit.broadcastMessage(Main.color("&l&4Town " + t.getName() + " has been disbanded!"));
         return true;
     }
 
@@ -334,6 +375,9 @@ public class TownCommand implements CommandExecutor, Listener {
 
             if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Leave Town")) {
                 LeaveTown((Player) e.getWhoClicked());
+            }
+            if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Delete Town")) {
+                DeleteTown((Player) e.getWhoClicked());
             }
 
         }
