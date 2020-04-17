@@ -20,6 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -56,7 +57,8 @@ public class TownCommand implements CommandExecutor, Listener {
             }
             else
             {
-
+                sendTownInv(p);
+                return true;
             }
         }
 
@@ -162,6 +164,7 @@ public class TownCommand implements CommandExecutor, Listener {
         ItemMeta phM = ph.getItemMeta();
         phM.setDisplayName(" ");
         ph.setItemMeta(phM);
+
         for (int i = 0; i < 9; i++) {
             menu.setItem(i, ph);
         }
@@ -192,7 +195,6 @@ public class TownCommand implements CommandExecutor, Listener {
         return sp;
     }
 
-
     public void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
@@ -221,11 +223,15 @@ public class TownCommand implements CommandExecutor, Listener {
 
     private void CreateNewTown(Player p) {
         Main.msg(p, Main.color("&l&eTown Name: "));
-        // somehow do something
-        String tempName = "poggers squad";
 
-        Town nt = new Town(p, tempName);
-        main.getTowns().add(nt);
+        main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Prompted");
+        new BukkitRunnable() {
+            public void run() {
+                main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Normal");
+                Main.msg(p, "Timed Out");
+            }
+        }.runTaskLater(Main.getInstance(), 20*60);
+
     }
 
     @EventHandler
