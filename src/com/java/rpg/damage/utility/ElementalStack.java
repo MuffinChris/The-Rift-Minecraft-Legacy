@@ -1,4 +1,4 @@
-package com.java.rpg.modifiers.utility;
+package com.java.rpg.damage.utility;
 
 import com.java.Main;
 import com.java.rpg.classes.utility.LevelRange;

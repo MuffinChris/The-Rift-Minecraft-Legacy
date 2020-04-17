@@ -1,9 +1,9 @@
-package com.java.rpg.modifiers;
+package com.java.rpg.damage;
 
 import com.java.Main;
 import com.java.rpg.holograms.Hologram;
 import com.java.rpg.classes.utility.RPGConstants;
-import com.java.rpg.modifiers.utility.*;
+import com.java.rpg.damage.utility.*;
 import com.java.rpg.classes.*;
 import com.java.rpg.mobs.MobEXP;
 import org.bukkit.*;
@@ -142,15 +142,6 @@ public class DamageListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onDamage (EntityDamageByEntityEvent e) {
-        boolean disableDamage = false;
-        if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
-            double dt = MobEXP.getDamageThreshold((LivingEntity) e.getEntity());
-            if (dt > 0) {
-                if (e.getDamage() <= dt) {
-                    disableDamage = true;
-                }
-            }
-        }
         if ((main.isPlayer(e.getDamager()) || e.getDamager() instanceof Projectile) && e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !e.isCancelled()) {
             LivingEntity ent = (LivingEntity) e.getEntity();
             int index = 0;
@@ -193,20 +184,11 @@ public class DamageListener implements Listener {
                                 }
                             }
                             if (!party) {
-
-                                String hologram = "";
-
                                 double damage = 0;
                                 PhysicalStack physicalDamage = d.getPhysicalDamage();
                                 double magicDamage = d.getMagicDamage();
                                 double trueDamage = d.getTrueDamage();
                                 ElementalStack elementalDamage = d.getElementalDamage();
-
-                                if (disableDamage) {
-                                    physicalDamage = new PhysicalStack(0, 1, 0);
-                                    magicDamage = 0;
-                                    elementalDamage = new ElementalStack();
-                                }
 
                                 DecimalFormat df = new DecimalFormat("#.##");
 
@@ -220,7 +202,6 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         elementalDamage.setAir(elementalDamage.getAir() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getAir())));
                                     }
-                                    hologram = hologram + RPGConstants.air + df.format(elementalDamage.getAir()) + " ";
                                 }
 
                                 if (elementalDamage.getEarth() > 0) {
@@ -233,7 +214,6 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         elementalDamage.setEarth(elementalDamage.getEarth() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getEarth())));
                                     }
-                                    hologram = hologram + RPGConstants.earth + df.format(elementalDamage.getEarth()) + " ";
                                 }
 
                                 if (elementalDamage.getElectric() > 0) {
@@ -246,7 +226,6 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         elementalDamage.setElectric(elementalDamage.getElectric() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getElectric())));
                                     }
-                                    hologram = hologram + RPGConstants.electric + df.format(elementalDamage.getElectric()) + " ";
                                 }
 
                                 if (physicalDamage.getPuncture() > 0) {
@@ -267,7 +246,6 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         physicalDamage.setPuncture(physicalDamage.getPuncture() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (MobEXP.getArmor((LivingEntity) e.getEntity()) * RPGConstants.punctureArmorPenPercentage))));
                                     }
-                                    hologram = hologram + RPGConstants.puncture + df.format(physicalDamage.getPuncture()) + " ";
                                 }
                                 if (physicalDamage.getImpact() > 0) {
                                     BlockData blood = Material.BEDROCK.createBlockData();
@@ -281,7 +259,6 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         physicalDamage.setImpact(physicalDamage.getImpact() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (MobEXP.getArmor((LivingEntity) e.getEntity())))));
                                     }
-                                    hologram = hologram + RPGConstants.impact + df.format(physicalDamage.getImpact()) + " ";
                                 }
                                 if (physicalDamage.getSlash() > 0) {
                                     BlockData blood = Material.REDSTONE_BLOCK.createBlockData();
@@ -301,7 +278,6 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         physicalDamage.setSlash(physicalDamage.getSlash() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (MobEXP.getArmor((LivingEntity) e.getEntity()) * RPGConstants.slashArmorPenPercentage))));
                                     }
-                                    hologram = hologram + RPGConstants.slash + df.format(physicalDamage.getSlash()) + " ";
                                 }
                                 if (magicDamage > 0) {
                                     if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
@@ -313,19 +289,17 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         magicDamage = magicDamage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getMagicResist((LivingEntity) e.getEntity())));
                                     }
-                                    hologram = hologram + RPGConstants.magic + df.format(magicDamage) + " ";
                                     //ent.damage(damage);
                                     //e.setCancelled(true);
                                     //e.setDamage(damage);
                                     //break;
                                 }
-                                if (trueDamage > 0) {
-                                    hologram = hologram + RPGConstants.trued + df.format(trueDamage) + " ";
+                                //if (trueDamage > 0) {
                                     //ent.damage(damage);
                                     //e.setCancelled(true);
                                     //e.setDamage(damage);
                                     //break;
-                                }
+                                //}
 
                                 if (elementalDamage.getFire() > 0) {
                                     if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
@@ -337,7 +311,6 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         elementalDamage.setFire(elementalDamage.getFire() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getFire())));
                                     }
-                                    hologram = hologram + RPGConstants.fire + df.format(elementalDamage.getFire()) + " ";
                                 }
 
                                 if (elementalDamage.getIce() > 0) {
@@ -350,11 +323,10 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         elementalDamage.setIce(elementalDamage.getIce() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getIce())));
                                     }
-                                    hologram = hologram + RPGConstants.ice + df.format(elementalDamage.getIce()) + " ";
                                 }
 
 
-                                double statusEffect = Math.random();
+                                //double statusEffect = Math.random();
                                 /*if (elementalDamage.anyNonzero() && statusEffect < RPGConstants.baseStatusChance && elementalDamage.getStatus()) {
                                     String element = elementalDamage.pickStatusEffect();
                                     if (element.equals("AIR")) {
@@ -456,146 +428,6 @@ public class DamageListener implements Listener {
                                         magic.rise();
                                     }
                                 }*/
-                                if (!hologram.isEmpty()) {
-                                    List<Player> players = new ArrayList<>(ent.getWorld().getNearbyPlayers(ent.getEyeLocation(), 24));
-                                    if (!players.contains(damager)) {
-                                        players.add(damager);
-                                    }
-                                    Hologram magic = new Hologram(ent, ent.getLocation(), hologram.substring(0, hologram.length() - 1), Hologram.HologramType.DAMAGE, players);
-                                    /*PacketContainer packet1 = main.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
-                                    int id = (int)(Math.random() * Integer.MAX_VALUE);
-                                    Bukkit.broadcastMessage(id + "");
-                                    packet1.getUUIDs().write(0, UUID.randomUUID());
-                                    Location loc = ent.getEyeLocation();
-                                    packet1.getDoubles()
-                                            .write(0, loc.getX())
-                                            .write(1, loc.getY())
-                                            .write(2, loc.getZ());
-                                    packet1.getIntegers()
-                                            .write(0, id)
-                                            .write(1, 0)
-                                            .write(2, 0)
-                                            .write(3, 0)
-                                            .write(4, 0)
-                                            .write(5, 0)
-                                            .write(6, 78);
-
-                                    PacketContainer packet2 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-                                    packet2.getIntegers().write(0, id);
-
-
-                                    WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
-
-                                    Optional<?> opt = Optional
-                                            .of(WrappedChatComponent
-                                                    .fromChatMessage(Main.color(hologram))[0].getHandle());
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //invis //display name
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true); //custom name visible
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(4, WrappedDataWatcher.Registry.get(Boolean.class)), true);
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(5, WrappedDataWatcher.Registry.get(Boolean.class)), true); //no gravity
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(11, WrappedDataWatcher.Registry.get(Byte.class)), (byte) (0x01 | 0x08 | 0x10)); //isSmall, noBasePlate, set Marker
-
-                                    packet2.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
-
-                                    PacketContainer packet3 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_TELEPORT);
-                                    packet3.getIntegers().write(0, id);
-                                    packet3.getDoubles().write(0, loc.getX());
-                                    packet3.getDoubles().write(1, loc.getY());
-                                    packet3.getDoubles().write(2, loc.getZ());
-
-                                    try {
-                                        main.getProtocolManager().sendServerPacket(damager, packet1);
-                                        main.getProtocolManager().sendServerPacket(damager, packet2);
-                                        main.getProtocolManager().sendServerPacket(damager, packet3);
-                                    } catch (InvocationTargetException ex) {
-                                        ex.printStackTrace();
-                                    }*/
-
-
-                                    /*WrapperPlayServerSpawnEntity armorPacket = new WrapperPlayServerSpawnEntity();
-                                    int id = (int)(Math.random() * Integer.MAX_VALUE);
-                                    armorPacket.setType(78);
-                                    Location loc = ent.getLocation();
-                                    armorPacket.setX(loc.getX());
-                                    armorPacket.setY(loc.getY());
-                                    armorPacket.setZ(loc.getZ());
-                                    armorPacket.setUniqueId(UUID.randomUUID());
-                                    armorPacket.setEntityID(id);
-
-                                    WrapperPlayServerEntityMetadata armorMetaPacket = new WrapperPlayServerEntityMetadata();
-                                    armorMetaPacket.setEntityID(id);*/
-
-                                    /*ArmorStand stand = (ArmorStand)armorPacket.getEntity(ent.getWorld());
-                                    stand.setVisible(false);
-                                    stand.setMarker(true);
-                                    stand.setCustomNameVisible(true);
-                                    stand.setCustomName(Main.color(hologram));
-                                    stand.setAI(false);
-                                    stand.setCollidable(false);
-                                    stand.setInvulnerable(true);
-                                    stand.setGravity(false);
-                                    stand.setCanPickupItems(false);*/
-
-                                    /*WrappedDataWatcher dataWatcher = new WrappedDataWatcher(armorMetaPacket.getMetadata());
-
-                                    Optional<?> opt = Optional
-                                            .of(WrappedChatComponent
-                                                    .fromChatMessage(Main.color(hologram))[0].getHandle());
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //invis //display name
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true); //custom name visible
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(4, WrappedDataWatcher.Registry.get(Boolean.class)), true);
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(5, WrappedDataWatcher.Registry.get(Boolean.class)), true); //no gravity
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(11, WrappedDataWatcher.Registry.get(Byte.class)), (byte) (0x01 | 0x08 | 0x10)); //isSmall, noBasePlate, set Marker
-                                    armorMetaPacket.setMetadata(dataWatcher.getWatchableObjects());
-
-                                    armorPacket.sendPacket(damager);
-                                    armorMetaPacket.sendPacket(damager);*/
-
-
-                                    /*PacketContainer packet1 = main.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
-                                    Integer ID = (int)(Math.random() * Integer.MAX_VALUE);
-                                    packet1.getUUIDs().write(0, UUID.randomUUID());
-                                    Location loc = ent.getEyeLocation();
-                                    packet1.getDoubles()
-                                            .write(0, loc.getX())
-                                            .write(1, loc.getY())
-                                            .write(2, loc.getZ());
-                                    packet1.getIntegers()
-                                            .write(0, ID)
-                                            .write(1, 0)
-                                            .write(2, 0)
-                                            .write(3, 0)
-                                            .write(4, 0)
-                                            .write(5, 0)
-                                            .write(6, 78);*/
-
-                                    /*PacketContainer packet2 = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-                                    packet2.getIntegers().write(0, id);
-
-
-                                    WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
-
-                                    Optional<?> opt = Optional
-                                            .of(WrappedChatComponent
-                                                    .fromChatMessage(Main.color(hologram))[0].getHandle());
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //invis //display name
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true); //custom name visible
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(4, WrappedDataWatcher.Registry.get(Boolean.class)), true);
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(5, WrappedDataWatcher.Registry.get(Boolean.class)), true); //no gravity
-                                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(11, WrappedDataWatcher.Registry.get(Byte.class)), (byte) (0x01 | 0x08 | 0x10)); //isSmall, noBasePlate, set Marker
-
-                                    packet2.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
-
-                                    try {
-                                        //main.getProtocolManager().sendServerPacket(damager, packet1);
-                                        main.getProtocolManager().sendServerPacket(damager, packet2);
-                                    } catch (InvocationTargetException ex) {
-                                        ex.printStackTrace();
-                                    }*/
-                                }
 
                                 damage += physicalDamage.getTotal();
                                 damage += magicDamage;
@@ -604,6 +436,58 @@ public class DamageListener implements Listener {
 
                                 ent.setKiller(damager);
                                 e.setDamage(damage);
+
+                                if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
+                                    double dt = MobEXP.getDamageThreshold((LivingEntity) e.getEntity());
+                                    if (dt > 0) {
+                                        if (e.getDamage() <= dt) {
+                                            if (physicalDamage.getTotal() > 0) {
+                                                physicalDamage = new PhysicalStack(0, 1, 0);
+                                            }
+                                            if (magicDamage > 0) {
+                                                magicDamage = 1;
+                                            }
+                                            if (elementalDamage.getTotal() > 0) {
+                                                elementalDamage.setAir(Math.min(1, elementalDamage.getAir()));
+                                                elementalDamage.setEarth(Math.min(1, elementalDamage.getEarth()));
+                                                elementalDamage.setElectric(Math.min(1, elementalDamage.getElectric()));
+                                                elementalDamage.setFire(Math.min(1, elementalDamage.getFire()));
+                                                elementalDamage.setIce(Math.min(1, elementalDamage.getIce()));
+                                            }
+
+                                            e.setDamage(physicalDamage.getTotal() + magicDamage + trueDamage + elementalDamage.getTotal());
+                                        }
+                                    }
+                                }
+
+                                String hologram = "";
+
+                                if (elementalDamage.getAir() > 0)
+                                    hologram = hologram + RPGConstants.air + df.format(elementalDamage.getAir()) + " ";
+                                if (elementalDamage.getEarth() > 0)
+                                    hologram = hologram + RPGConstants.earth + df.format(elementalDamage.getEarth()) + " ";
+                                if (elementalDamage.getElectric() > 0)
+                                    hologram = hologram + RPGConstants.electric + df.format(elementalDamage.getElectric()) + " ";
+                                if (physicalDamage.getPuncture() > 0)
+                                    hologram = hologram + RPGConstants.puncture + df.format(physicalDamage.getPuncture()) + " ";
+                                if (physicalDamage.getImpact() > 0)
+                                    hologram = hologram + RPGConstants.impact + df.format(physicalDamage.getImpact()) + " ";
+                                if (physicalDamage.getSlash() > 0)
+                                    hologram = hologram + RPGConstants.slash + df.format(physicalDamage.getSlash()) + " ";
+                                if (magicDamage > 0)
+                                    hologram = hologram + RPGConstants.magic + df.format(magicDamage) + " ";
+                                if (trueDamage > 0)
+                                    hologram = hologram + RPGConstants.trued + df.format(trueDamage) + " ";
+                                if (elementalDamage.getFire() > 0)
+                                    hologram = hologram + RPGConstants.fire + df.format(elementalDamage.getFire()) + " ";
+                                if (elementalDamage.getIce() > 0)
+                                    hologram = hologram + RPGConstants.ice + df.format(elementalDamage.getIce()) + " ";
+
+                                List<Player> players = new ArrayList<>(ent.getWorld().getNearbyPlayers(ent.getEyeLocation(), 24));
+                                if (!players.contains(damager)) {
+                                    players.add(damager);
+                                }
+                                Hologram magic = new Hologram(ent, ent.getLocation(), hologram.substring(0, hologram.length() - 1), Hologram.HologramType.DAMAGE, players);
                                 break;
                             }
                         }
@@ -611,11 +495,6 @@ public class DamageListener implements Listener {
                     index++;
                 }
                 if (found) {
-                /*
-                BukkitScheduler sched = Bukkit.getScheduler();
-                sched.cancelTask(main.getDmg().get(index).getTask());
-                Bukkit.broadcastMessage(sched.isCurrentlyRunning(main.getDmg().get(index).getTask()) + "");
-                */
                     if (!main.getRP(damager).getDamages().isEmpty()) {
                         if (main.getRP(damager).getDamages().get(index) != null) {
                             main.getRP(damager).getDamages().get(index).scrub();

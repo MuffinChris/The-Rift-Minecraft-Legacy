@@ -1,4 +1,4 @@
-package com.java.rpg.modifiers.utility;
+package com.java.rpg.damage.utility;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

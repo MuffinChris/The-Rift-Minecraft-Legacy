@@ -2,9 +2,7 @@ package com.java.rpg.classes.skills.Earthshaker.supers;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.utility.*;
-import com.java.rpg.modifiers.utility.ElementalStack;
-import com.java.rpg.party.Party;
+import com.java.rpg.damage.utility.ElementalStack;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;

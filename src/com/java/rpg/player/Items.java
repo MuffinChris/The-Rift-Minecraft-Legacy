@@ -3,7 +3,7 @@ package com.java.rpg.player;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;

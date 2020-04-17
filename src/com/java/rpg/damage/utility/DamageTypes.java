@@ -1,6 +1,4 @@
-package com.java.rpg.modifiers.utility;
-
-import com.java.rpg.modifiers.utility.Damage;
+package com.java.rpg.damage.utility;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.java.rpg.classes;
 
 import com.java.Main;
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 
 import java.util.List;
 

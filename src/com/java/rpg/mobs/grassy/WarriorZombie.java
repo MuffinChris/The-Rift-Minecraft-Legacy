@@ -1,10 +1,10 @@
 package com.java.rpg.mobs.grassy;
 
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
 import com.java.rpg.mobs.MobEXP;
 import com.java.rpg.classes.utility.RPGConstants;
-import com.java.rpg.modifiers.utility.PhysicalStack;
+import com.java.rpg.damage.utility.PhysicalStack;
 import de.tr7zw.nbtapi.NBTEntity;
 import net.minecraft.server.v1_15_R1.*;
 import com.java.rpg.player.Items;

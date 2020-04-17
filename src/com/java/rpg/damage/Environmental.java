@@ -1,4 +1,4 @@
-package com.java.rpg.modifiers;
+package com.java.rpg.damage;
 
 import com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent;
 import com.destroystokyo.paper.event.entity.EnderDragonFlameEvent;

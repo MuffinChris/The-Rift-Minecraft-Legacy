@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

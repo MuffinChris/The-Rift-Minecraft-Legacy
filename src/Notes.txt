@@ -128,18 +128,12 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
-    -22. Gravestone show player name when hovered
-
-    -21. Elemental damage is not added in dmg threshhold!
-
     -20. Call Supers Skill Upgrades lmao
 
     -19. Make MenuManager to make menus that are ease
 
     -18. Rework Skill System to instantiate skills (Give each class a dedicated skill listener)
         - Cooldowns must still be stored independent of skill because recast
-
-    -17. Console problem: On stop has a SimplePluginManager error.
 
     -16. Reduce Environmental Damager as level increases (just more durable to environmental sources)
 

@@ -8,7 +8,7 @@ import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
 import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
