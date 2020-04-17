@@ -41,18 +41,22 @@ public class Town {
         ranks.set(i, newname);
     }
 
-    public void invite(Player inviter, Player recieve){
+    public void invite(Player inviter, Player reciever){
         if(cl.getRank(inviter) >= 3){
-            //recieve gets an invite
+            //reciever gets an invite
             return;
         }
         //inviter is not high enough rank
         return;
     }
-    public void kick(Player kicker, Player recieve){
+    public void kick(Player kicker, Player reciever){
         
     }
-    public void promote(Player promoter, Player recieve){
+    public void promote(Player promoter, Player reciever){
         
+    }
+
+    public void demote(Player promoter, Player reciever) {
+
     }
 }

@@ -23,7 +23,7 @@ public class TownManager implements Listener {
     @EventHandler
     public void onJoin (PlayerJoinEvent e) {
         if (!main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
-            main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer()));
+            main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer())); // needs to pull
         }
     }
 
@@ -53,7 +53,11 @@ public class TownManager implements Listener {
 
                 if(cont) {
                     t.pushFiles();
-                    towns.remove(t); // there are no remaining online players of town t
+                    new BukkitRunnable() {
+                        public void run() {
+                            towns.remove(t); // if there are no remaining online players of this town
+                        }
+                    }.runTaskLater(Main.getInstance(), 10L);
                 }
             }
 
