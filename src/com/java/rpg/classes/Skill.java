@@ -199,11 +199,7 @@ public class Skill {
     }
 
     public int toggleInit(Player p) {
-        return Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
-            public void run() {
-                toggleCont(p);
-            }
-        }, 1, toggleTicks);
+        return Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> toggleCont(p), 1, toggleTicks);
     }
 
     public void toggleEnd(Player p) {

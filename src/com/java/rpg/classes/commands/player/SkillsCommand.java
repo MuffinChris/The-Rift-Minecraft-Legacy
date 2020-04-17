@@ -50,8 +50,26 @@ public class SkillsCommand implements CommandExecutor, Listener {
     public void sendSkillsInv(Player p, String c) {
         if (c.isEmpty()) {
             RPGPlayer rp = main.getRP(p);
-            Inventory playerInv = Bukkit.createInventory(null, 36, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
-            ArrayList<String> lore;//
+            Inventory playerInv = Bukkit.createInventory(null, 45, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
+
+            ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+            ItemMeta phM = ph.getItemMeta();
+            phM.setDisplayName(" ");
+            ph.setItemMeta(phM);
+            for (int i = 0; i < playerInv.getSize(); i++) {
+                playerInv.setItem(i, ph);
+            }
+
+            ph = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
+            phM = ph.getItemMeta();
+            phM.setDisplayName(" ");
+            ph.setItemMeta(phM);
+            for (int i = 20; i < 20 + rp.getPClass().getSkills().size(); i++) {
+                playerInv.setItem(i, ph);
+            }
+
+            List<String> lore;
+
             ItemStack sp = new ItemStack(Material.NETHER_STAR);
             ItemMeta spMeta = sp.getItemMeta();
             spMeta.setDisplayName(Main.color("&6Skillpoints: &f" + rp.calculateSP()));
@@ -71,27 +89,6 @@ public class SkillsCommand implements CommandExecutor, Listener {
             sp.setItemMeta(spMeta);
             playerInv.setItem(18, sp);
 
-            ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-            ItemMeta phM = ph.getItemMeta();
-            phM.setDisplayName(" ");
-            ph.setItemMeta(phM);
-            for (int i = 0; i < 9; i++) {
-                playerInv.setItem(i, ph);
-            }
-            for (int i = 27; i < 36; i++) {
-                playerInv.setItem(i, ph);
-            }
-
-            for (int i = 10; i <= 19; i += 9) {
-                playerInv.setItem(i, ph);
-            }
-
-            for (int i = 16; i <= 25; i += 9) {
-                playerInv.setItem(i, ph);
-            }
-
-            playerInv.setItem(26, ph);
-
             ItemStack info = new ItemStack(Material.BOOK);
             ItemMeta infoM = info.getItemMeta();
             List<String> infoLore = new ArrayList<>();
@@ -103,8 +100,8 @@ public class SkillsCommand implements CommandExecutor, Listener {
             infoM.setLore(infoLore);
             infoM.setDisplayName(Main.color("&eCasting Guide"));
             info.setItemMeta(infoM);
+            playerInv.setItem(26, info);
 
-            playerInv.setItem(17, info);
 
             int i = 11;
             int index = 0;
@@ -173,7 +170,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 playerInv.setItem(i, sp);
                 i++;
             }
-            i = 20;
+            i = 29;
             index = 0;
             for (Skill s : rp.getPClass().getSuperSkills()) {
                 Material mat = Material.GRAY_DYE;
@@ -234,51 +231,22 @@ public class SkillsCommand implements CommandExecutor, Listener {
             }
             p.openInventory(playerInv);
         } else {
-            Inventory playerInv = Bukkit.createInventory(null, 36, Main.color("&e&l" + c + " &e&lSkills"));
-            ArrayList<String> lore;//
-            for (int i = 0; i < 9; i++) {
-                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-                ItemMeta phM = ph.getItemMeta();
-                phM.setDisplayName(" ");
-                ph.setItemMeta(phM);
-                playerInv.setItem(i, ph);
-            }
-            for (int i = 27; i < 36; i++) {
-                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-                ItemMeta phM = ph.getItemMeta();
-                phM.setDisplayName(" ");
-                ph.setItemMeta(phM);
+            Inventory playerInv = Bukkit.createInventory(null, 45, Main.color("&e&l" + c + " &e&lSkills"));
+            ArrayList<String> lore;
+
+            ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+            ItemMeta phM = ph.getItemMeta();
+            phM.setDisplayName(" ");
+            ph.setItemMeta(phM);
+            for (int i = 0; i < playerInv.getSize(); i++) {
                 playerInv.setItem(i, ph);
             }
 
-            for (int i = 10; i <= 19; i += 9) {
-                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-                ItemMeta phM = ph.getItemMeta();
-                phM.setDisplayName(" ");
-                ph.setItemMeta(phM);
-                playerInv.setItem(i, ph);
-            }
-            for (int i = 9; i <= 18; i += 9) {
-                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-                ItemMeta phM = ph.getItemMeta();
-                phM.setDisplayName(" ");
-                ph.setItemMeta(phM);
-                playerInv.setItem(i, ph);
-            }
-
-            for (int i = 16; i <= 25; i += 9) {
-                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-                ItemMeta phM = ph.getItemMeta();
-                phM.setDisplayName(" ");
-                ph.setItemMeta(phM);
-                playerInv.setItem(i, ph);
-            }
-
-            for (int i = 17; i <= 26; i += 9) {
-                ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-                ItemMeta phM = ph.getItemMeta();
-                phM.setDisplayName(" ");
-                ph.setItemMeta(phM);
+            ph = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
+            phM = ph.getItemMeta();
+            phM.setDisplayName(" ");
+            ph.setItemMeta(phM);
+            for (int i = 20; i < 20 + main.getCM().getPClassFromString(c).getSkills().size(); i++) {
                 playerInv.setItem(i, ph);
             }
 
@@ -331,7 +299,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
                 playerInv.setItem(i, sp);
                 i++;
             }
-            i = 20;
+            i = 29;
             index = 0;
             for (Skill s : main.getCM().getPClassFromString(c).getSuperSkills()) {
                 Material mat = s.getSkillIcon();
@@ -401,6 +369,8 @@ public class SkillsCommand implements CommandExecutor, Listener {
                         } else {
                             Main.so("&cERROR: Failed to upgrade &4" + p.getName() + "&c's skill &4" + ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()) + "&c.");
                         }
+                    } else {
+                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.5F);
                     }
                 }
                 if (e.getCurrentItem().getItemMeta().getDisplayName().contains("§cReset Skillpoints")) {
