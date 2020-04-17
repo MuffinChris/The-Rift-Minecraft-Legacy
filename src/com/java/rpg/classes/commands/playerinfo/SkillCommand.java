@@ -22,7 +22,13 @@ public class SkillCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length > 0) {
-                String flavor = main.getPC().get(p.getUniqueId()).castSkill(args[0]);
+                StringBuilder builder = new StringBuilder();
+                for (String arg : args) {
+                    builder.append(arg).append(" ");
+                }
+                String skillS = builder.toString();
+
+                String flavor = main.getPC().get(p.getUniqueId()).castSkill(skillS);
                 if (flavor.equalsIgnoreCase("NoMana")) {
                     Main.msg(p, "&cNot enough mana!");
                 } else if (flavor.contains("Level")) {
@@ -30,8 +36,7 @@ public class SkillCommand implements CommandExecutor {
                     Main.msg(p, "&cYou must be level &f" + level + " &cto use that skill.");
                 } else if (flavor.contains("CD:")) {
                     String cd = flavor.replace("CD:", "");
-                    String skill = args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
-                    Main.msg(p, "&c" + skill + " on cooldown: &f" + cd + "s");
+                    Main.msg(p, "&c" + skillS + " on cooldown: &f" + cd + "s");
                 } else if (flavor.contains("Failure")) {
                     Main.msg(p, "&cInternal Skill Error. Please let Admins know what happened.");
                 } else if (flavor.contains("Invalid")) {
@@ -46,7 +51,7 @@ public class SkillCommand implements CommandExecutor {
                             }
 
                             if (p.isDead()) {
-                                Skill skill = main.getPC().get(p.getUniqueId()).getSkillFromName(args[0]);
+                                Skill skill = main.getPC().get(p.getUniqueId()).getSkillFromName(skillS);
                                 p.removePotionEffect(PotionEffectType.SLOW);
                                 main.getRP(p).getBoard().clearChannel();
                                 main.getRP(p).getStatuses().remove("Warmup" + skill.getName());
@@ -55,12 +60,12 @@ public class SkillCommand implements CommandExecutor {
                             }
 
                             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,999999, 2));
-                            if (!main.getPC().get(p.getUniqueId()).getStatuses().contains("Warmup" + main.getPC().get(p.getUniqueId()).getSkillFromName(args[0]).getName())) {
+                            if (!main.getPC().get(p.getUniqueId()).getStatuses().contains("Warmup" + main.getPC().get(p.getUniqueId()).getSkillFromName(skillS).getName())) {
                                 p.removePotionEffect(PotionEffectType.SLOW);
                                 main.getRP(p).getBoard().clearChannel();
                                 cancel();
                             } else {
-                                Skill skill = main.getPC().get(p.getUniqueId()).getSkillFromName(args[0]);
+                                Skill skill = main.getPC().get(p.getUniqueId()).getSkillFromName(skillS);
                                 if (skill.getManaCost() > main.getMana(p)) {
                                     p.removePotionEffect(PotionEffectType.SLOW);
                                     main.getRP(p).getBoard().clearChannel();
