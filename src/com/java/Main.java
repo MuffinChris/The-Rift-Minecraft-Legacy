@@ -33,7 +33,7 @@ import com.java.rpg.classes.commands.admin.CDCommand;
 import com.java.rpg.classes.commands.admin.ExpCommand;
 import com.java.rpg.classes.commands.admin.ManaCommand;
 import com.java.rpg.classes.commands.admin.SetClassCommand;
-import com.java.rpg.classes.commands.playerinfo.*;
+import com.java.rpg.classes.commands.player.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.Fireball;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;

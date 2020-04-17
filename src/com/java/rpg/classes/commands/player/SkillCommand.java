@@ -1,4 +1,4 @@
-package com.java.rpg.classes.commands.playerinfo;
+package com.java.rpg.classes.commands.player;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
@@ -8,10 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.text.DecimalFormat;
 
 public class SkillCommand implements CommandExecutor {
 

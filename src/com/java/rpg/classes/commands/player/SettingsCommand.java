@@ -1,12 +1,10 @@
-package com.java.rpg.classes.commands.playerinfo;
+package com.java.rpg.classes.commands.player;
 
 import com.java.Main;
-import com.java.rpg.party.Party;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,9 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class SettingsCommand implements CommandExecutor, Listener {

@@ -1,11 +1,9 @@
-package com.java.rpg.classes.commands.playerinfo;
+package com.java.rpg.classes.commands.player;
 
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.RPGConstants;
-import com.java.rpg.party.Party;
-import net.minecraft.server.v1_15_R1.EnchantmentMending;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

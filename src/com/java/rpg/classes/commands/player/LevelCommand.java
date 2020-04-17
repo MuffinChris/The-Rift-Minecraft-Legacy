@@ -1,9 +1,8 @@
-package com.java.rpg.classes.commands.playerinfo;
+package com.java.rpg.classes.commands.player;
 
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
