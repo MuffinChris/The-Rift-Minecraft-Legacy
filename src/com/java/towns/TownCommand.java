@@ -209,7 +209,7 @@ public class TownCommand implements CommandExecutor, Listener {
         for (int i = 0; i < 9; i++) {
             menu.setItem(i, ph);
         }
-        for (int i = 18; i <= 26; i++) {
+        for (int i = 27; i <= 35; i++) {
             menu.setItem(i, ph);
         }
 
@@ -255,7 +255,7 @@ public class TownCommand implements CommandExecutor, Listener {
         for (int i = 0; i < 9; i++) {
             menu.setItem(i, ph);
         }
-        for (int i = 27; i < 36; i++) {
+        for (int i = 18; i < 27; i++) {
             menu.setItem(i, ph);
         }
 
