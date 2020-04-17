@@ -1189,6 +1189,7 @@ public class Main extends JavaPlugin {
         so("&dRIFT: &fRegistered events!");
 
 
+
         RPGConstants loadLevels = new RPGConstants();
         hpRegen();
 
