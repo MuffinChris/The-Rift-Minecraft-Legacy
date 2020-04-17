@@ -12,9 +12,9 @@ public class Citizen {
     private int r; //Rank in town, -1 if no town
     private Player p;
     private String town; //Player's town, current "Randos" if townless
-
+    public static String defaultTownName = "None";
     public Citizen(Player pl){
-        this.p = pl; this.r = -1; this.town = "none";
+        this.p = pl; this.r = -1; this.town = defaultTownName;
         pullFiles();
     }
     public Citizen(Player pl, int rnk){
@@ -71,7 +71,6 @@ public class Citizen {
             Utility
              */
             setUsernameFile(pData, p.getName());
-            setLastSeenFile(pData, System.currentTimeMillis());
             /*
             Town info
              */
@@ -92,7 +91,6 @@ public class Citizen {
         }
         else{
             setUsernameFile(pData, p.getName());
-            setLastSeenFile(pData, System.currentTimeMillis());
             /*
             Town info
              */
