@@ -26,8 +26,7 @@ public class SkillCommand implements CommandExecutor {
                 for (String arg : args) {
                     builder.append(arg).append(" ");
                 }
-                String skillS = builder.toString();
-
+                String skillS = builder.toString().substring(0, builder.toString().length() - 1);
                 String flavor = main.getPC().get(p.getUniqueId()).castSkill(skillS);
                 if (flavor.equalsIgnoreCase("NoMana")) {
                     Main.msg(p, "&cNot enough mana!");
