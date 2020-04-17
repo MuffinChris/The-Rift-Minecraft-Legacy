@@ -86,7 +86,6 @@ public class Town {
             recieve.sendMessage(invText1);
             recieve.sendMessage(invText2);
         }
-        //inviter is not high enough rank
         return;
     }
     public void kick(Player kicker, Player recieve){

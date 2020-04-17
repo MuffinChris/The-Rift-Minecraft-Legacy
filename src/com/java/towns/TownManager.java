@@ -5,6 +5,9 @@ import com.java.rpg.classes.RPGPlayer;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import java.io.File;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +17,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class TownManager implements Listener {
     private Main main = Main.getInstance();
@@ -97,5 +102,23 @@ public class TownManager implements Listener {
         Town nt = new Town(sender, e.getMessage());
         main.getTowns().add(nt);
 
+    }
+    //should only need to be ran once
+    public void makeFullTownList(){
+        File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
+        FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
+        List<String> fulltown = new ArrayList<String>();
+        tData.set("FullTownList", fulltown);
+    }
+    public List<String> getFullTownList(){
+        File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
+        FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
+        try{
+            return tData.getStringList("FullTownList");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
