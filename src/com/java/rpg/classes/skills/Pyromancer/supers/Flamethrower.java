@@ -87,7 +87,7 @@ public class Flamethrower extends Skill {
                     continue;
                 }
                 Location dist = new Location(loc.getWorld(), loc.getX() - ent.getLocation().getX(), loc.getY() - ent.getLocation().getY(), loc.getZ() - ent.getLocation().getZ());
-                if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) <= (i * 1.05) + 0.2 && Math.abs(dist.getY()) < ent.getHeight()){
+                if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) <= (i * 1.05) + 0.3 && Math.abs(dist.getY()) < ent.getHeight()){
                     alreadyHit.add(ent);
                     ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
                     spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
