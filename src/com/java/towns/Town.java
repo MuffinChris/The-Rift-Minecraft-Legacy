@@ -1,10 +1,15 @@
 package com.java.towns;
 
 import com.java.Main;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 
 
@@ -23,6 +28,7 @@ public class Town {
         }
     };
     private CitizenList cl;
+    private String name;
 
     public Town(Player p){
 
@@ -36,6 +42,8 @@ public class Town {
         return cl.citimap.get(p).getRank();
     }
     public String getRankName(Player p) { return ranks.get(cl.getRank(p)); }
+    public void setName(String s) { name = s; }
+
 
     public void changeRankName(int i, String newname){
         ranks.set(i, newname);
@@ -54,5 +62,44 @@ public class Town {
     }
     public void promote(Player promoter, Player recieve){
         
+    }
+
+
+    public void pushFiles(){
+        File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
+        FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
+        try{
+             /*
+            Name
+             */
+            tData.set("TownName", name);
+            /*
+            Citizens
+             */
+            String citizenData = "";
+            List<String> uuidList = new ArrayList<String>();
+            for(Map.Entry<Player, Citizen> entry : cl.getCitizenList().entrySet()){
+                uuidList.add(entry.getKey().getUniqueId().toString());
+            }
+            citizenData = String.join(", ", uuidList);
+            tData.set("CitizensList", citizenData);
+            tData.save(tFile);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void pullFiles(){
+        File pFile = new File("plugins/Rift/data/towns/" + name + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if(!pFile.exists()){
+            pushFiles(); pullFiles();
+        }
+        else{
+            /*
+            Town info
+             */
+            setName(pData.getString("TownName"));
+        }
     }
 }
