@@ -47,7 +47,8 @@ public class Overwhelm extends Skill {
     
     public void target(Player p, LivingEntity t) {
     	super.target(p, t);
-    	
+        spellDamage(p, ent, damage + ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, new ElementalStack(0, 0, 0, 50, 0));
+        stun(p, ent, duration);
     }
 
     public void cast(Player p) {

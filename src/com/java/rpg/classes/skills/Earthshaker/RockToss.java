@@ -31,7 +31,6 @@ public class RockToss extends Skill implements Listener {
     
     public RockToss() {
     	super("RockToss", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
-    	DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
     }
 
