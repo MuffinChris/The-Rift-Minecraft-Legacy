@@ -265,6 +265,7 @@ public class TownCommand implements CommandExecutor, Listener {
         }
 
         p.openInventory(menu);
+        p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
     /*public boolean areYouSure(Player p){
