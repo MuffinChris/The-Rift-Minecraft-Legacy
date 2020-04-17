@@ -29,9 +29,12 @@ public class Town {
     };
     private CitizenList cl;
     private String name;
+    private int level;
 
-    public Town(Player p){
 
+    public Town(String n, CitizenList citilist){
+        name = n;
+        cl = citilist;
     }
 
     public CitizenList getCitizenList() {
@@ -57,13 +60,27 @@ public class Town {
         //inviter is not high enough rank
         return;
     }
-    public void kick(Player kicker, Player recieve){
+    public void kick(Player kicker, Player reciever){
         
     }
-    public void promote(Player promoter, Player recieve){
-        
+    public void promote(Player promoter, Player reciever){
+        if(getRank(reciever) == 5){
+            Main.msg(promoter, "&4There is no rank higher than " + ranks.get(getRank(reciever)));
+        }
+        else if(getRank(reciever) == 4){
+            Main.msg(promoter, "&eYou are making " + reciever.getName() + " to " + ranks.get(5) + ".");
+            Main.msg(promoter, "&eAre you sure you want to do this?");
+        }
+        else if(getRank(promoter) >= 3 && getRank(reciever) <= getRank(promoter) - 1) {
+            cl.getCitizenList().get(reciever).setRank(getRank(reciever) + 1);
+        }
+        else{
+            Main.msg(promoter, "&4You are not high enough rank to promote " + reciever.getName() +" to " + ranks.get(getRank(reciever) + 1));
+        }
     }
+    public void demote(Player promoter, Player reciever){
 
+    }
 
     public void pushFiles(){
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
