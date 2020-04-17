@@ -501,6 +501,28 @@ public class Main extends JavaPlugin {
         return towns;
     }
 
+    public void setFullTownList(List<String> fulltown) {
+        try {
+            File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
+            FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
+            tData.set("FullTownList", fulltown);
+            tData.save(tFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getFullTownList() {
+        try {
+            File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
+            FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
+            return tData.getStringList("FullTownList");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /*
      *

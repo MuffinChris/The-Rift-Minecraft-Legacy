@@ -232,7 +232,7 @@ public class TownCommand implements CommandExecutor, Listener {
                 Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
                 if(!mc.getCreationStatus().equals("Normal")) {
                     mc.setCreationStatus("Normal");
-                    Main.msg(p, "Timed Out");
+                    Main.msg(p, Main.color("&4Prompt Timed Out."));
                 }
             }
         }.runTaskLater(Main.getInstance(), 20*60);
@@ -248,6 +248,8 @@ public class TownCommand implements CommandExecutor, Listener {
         if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Create New Town")) {
             CreateNewTown((Player) e.getWhoClicked());
         }
+
+        e.getWhoClicked().closeInventory();
 
     }
 }

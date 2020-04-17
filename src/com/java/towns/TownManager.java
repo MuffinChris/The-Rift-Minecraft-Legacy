@@ -7,7 +7,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -81,22 +83,20 @@ public class TownManager implements Listener {
         // checks passed : create new town
 
         String townName = e.getMessage();
+        e.setCancelled(true);
 
-        Main.msg(e.getPlayer(), "Town Name Entered:\t" + townName);
         c.setCreationStatus("Normal"); // return to normal state
 
         // check if valid town name
         makeFullTownList();
-        for(String tn : getFullTownList())
-        {
-            if(tn.equalsIgnoreCase(townName)){
+        for (String tn : main.getFullTownList()) {
+            if (tn.equalsIgnoreCase(townName)) {
                 Main.msg(sender, Main.color("&4Town name already taken!"));
                 return;
             }
         }
 
-        if(!townName.toLowerCase().matches("[a-z]"))
-        {
+        if (!townName.matches("[a-zA-Z]+")) {
             Main.msg(sender, Main.color("&4Town names can only contain characters (A-Z)"));
             return;
         }
@@ -104,25 +104,27 @@ public class TownManager implements Listener {
         Town nt = new Town(sender, e.getMessage());
         main.getTowns().add(nt);
 
+        List<String> fullTowns = main.getFullTownList();
+        fullTowns.add(e.getMessage());
+        main.setFullTownList(fullTowns);
+
+        Main.msg(sender, Main.color("&l&aSuccessfully created town: &f" + townName));
+
     }
 
     //should only need to be ran once
-    public void makeFullTownList(){
-        File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
-        FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
-        List<String> fulltown = new ArrayList<String>();
-        tData.set("FullTownList", fulltown);
-    }
+    public void makeFullTownList() {
+        try {
+            File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
+            FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
+            List<String> fulltown = new ArrayList<String>();
+            tData.set("FullTownList", fulltown);
 
-    public List<String> getFullTownList(){
-        File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
-        FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
-        try{
-            return tData.getStringList("FullTownList");
-        }
-        catch (Exception e){
+            tData.save(tFile);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
     }
+
+
 }
