@@ -37,7 +37,7 @@ public class TownManager implements Listener {
                 }
             }.runTaskLater(Main.getInstance(), 10L);
 
-            for (Town t : towns) { // check to remove towns
+            for (Town t : main.getTowns()) { // check to remove towns
                 boolean cont = true;
                 for (Player tc : t.getCitizenList().citimap.keySet()) {
                     if (main.getUUIDCitizenMap().containsKey(tc.getUniqueId())) {
@@ -51,7 +51,7 @@ public class TownManager implements Listener {
                     t.pushFiles();
                     new BukkitRunnable() {
                         public void run() {
-                            towns.remove(t); // if there are no remaining online players of this town
+                            main.getTowns().remove(t); // if there are no remaining online players of this town
                         }
                     }.runTaskLater(Main.getInstance(), 10L);
                 }

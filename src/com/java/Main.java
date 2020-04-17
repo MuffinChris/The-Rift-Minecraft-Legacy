@@ -1182,6 +1182,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Accessories(), this);
         Bukkit.getPluginManager().registerEvents(new NPCTag(), this);
         Bukkit.getPluginManager().registerEvents(new TownManager(), this);
+        Bukkit.getPluginManager().registerEvents(new TownCommand(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);

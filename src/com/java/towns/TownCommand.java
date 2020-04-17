@@ -211,6 +211,7 @@ public class TownCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
+        Main.msg((Player) e.getWhoClicked(), "test");
         if (!e.getView().getTitle().contains("§e§lTown Menu")) return;
         if (e.getCurrentItem() == null) return;
         e.setCancelled(true);
