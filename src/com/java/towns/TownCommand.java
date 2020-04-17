@@ -48,40 +48,20 @@ public class TownCommand implements CommandExecutor, Listener {
         Player p = (Player) sender;
 
         if (args.length == 0) {
-            sendTownlessInv(p);
-            return true;
-        }
 
-        if (args[0].equals("create")) {
-
-        } else if (args[0].equals("invite")) {
-
-        } else {
-
-        }
-
-        return true;
-    }
-
-    private ItemStack getNewTownItemStack() {
-        ItemStack sp = new ItemStack(Material.NETHER_STAR);
-
-        ItemMeta spMeta = sp.getItemMeta();
-        spMeta.setDisplayName(Main.color("&6Create New Town"));
-        spMeta.setLore(new ArrayList<String>() {
+            if(main.getUUIDCitizenMap().get(((Player) sender).getUniqueId()).getTown().equals("None"))
             {
-                add(Main.color("&fClick to create a town!"));
+                sendTownlessInv(p);
+                return true;
             }
-        });
+            else
+            {
 
-        spMeta.addEnchant(Enchantment.MENDING, 1, true);
-        spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+        }
 
-        sp.setItemMeta(spMeta);
-
-        return sp;
+        return false;
     }
-
 
     private ItemStack getRemoveTownItemStack() {
         ItemStack sp = new ItemStack(Material.BARRIER);
@@ -98,7 +78,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getInviteItemStack() {
         ItemStack sp = new ItemStack(Material.EMERALD);
 
@@ -114,7 +93,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getKickItemStack() {
         ItemStack sp = new ItemStack(Material.REDSTONE);
 
@@ -130,7 +108,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getPromoteItemStack() {
         ItemStack sp = new ItemStack(Material.GREEN_DYE);
 
@@ -146,7 +123,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getDemoteItemStack() {
         ItemStack sp = new ItemStack(Material.RED_DYE);
 
@@ -163,11 +139,9 @@ public class TownCommand implements CommandExecutor, Listener {
         return sp;
     }
 
-
-    public void sendTownlessInv(Player p) {
-        Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
-
-        menu.setItem(10, getNewTownItemStack());
+    public void sendTownInv(Player p) {
+        String townName = main.getUUIDCitizenMap().get(p.getUniqueId()).getTown();
+        Inventory menu = Bukkit.createInventory(null, 36, Main.color("&e&l" + townName + " Menu"));
 
         // town list
 
@@ -199,6 +173,52 @@ public class TownCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
+    private ItemStack getNewTownItemStack() {
+        ItemStack sp = new ItemStack(Material.NETHER_STAR);
+
+        ItemMeta spMeta = sp.getItemMeta();
+        spMeta.setDisplayName(Main.color("&6Create New Town"));
+        spMeta.setLore(new ArrayList<String>() {
+            {
+                add(Main.color("&fClick to create a town!"));
+            }
+        });
+
+        spMeta.addEnchant(Enchantment.MENDING, 1, true);
+        spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        sp.setItemMeta(spMeta);
+
+        return sp;
+    }
+
+
+    public void sendTownlessInv(Player p) {
+        Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
+
+        menu.setItem(10, getNewTownItemStack());
+
+        // town list
+
+        // town leaderboard
+
+        // town search
+
+        ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+        ItemMeta phM = ph.getItemMeta();
+        phM.setDisplayName(" ");
+        ph.setItemMeta(phM);
+        for (int i = 0; i < 9; i++) {
+            menu.setItem(i, ph);
+        }
+        for (int i = 18; i <= 26; i++) {
+            menu.setItem(i, ph);
+        }
+
+        p.openInventory(menu);
+        p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
+    }
+
     private void CreateNewTown(Player p) {
         Main.msg(p, Main.color("&l&eTown Name: "));
         // somehow do something
@@ -208,18 +228,13 @@ public class TownCommand implements CommandExecutor, Listener {
         main.getTowns().add(nt);
     }
 
-
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        Main.msg((Player) e.getWhoClicked(), "test");
         if (!e.getView().getTitle().contains("§e§lTown Menu")) return;
         if (e.getCurrentItem() == null) return;
         e.setCancelled(true);
 
-        Main.msg((Player) e.getWhoClicked(), "onClick event");
-
         if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Create New Town")) {
-            Main.msg((Player) e.getWhoClicked(), "create new town clicked");
             CreateNewTown((Player) e.getWhoClicked());
         }
 
