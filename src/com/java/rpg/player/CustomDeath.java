@@ -85,7 +85,6 @@ public class CustomDeath implements Listener {
                             return;
                         }
                     }
-                    e.getClickedBlock().setType(Material.AIR);
                     while (go) {
                         if (pData.contains("gravestones." + graveLoc.toString() + "." + index)) {
                             items.add(ItemStack.deserialize(pData.getConfigurationSection("gravestones." + graveLoc.toString() + "." + index).getValues(false)));
@@ -94,6 +93,7 @@ public class CustomDeath implements Listener {
                         }
                         index++;
                     }
+                    e.getClickedBlock().setType(Material.AIR);
                     for (ItemStack i : items) {
                         graveLoc.getWorld().dropItem(graveLoc, i);
                     }
