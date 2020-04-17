@@ -1,9 +1,14 @@
 package com.java.towns;
 
 import com.java.Main;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import net.md_5.bungee.api.chat.TextComponent;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,9 +68,25 @@ public class Town {
     }
 
     public void invite(Player inviter, Player recieve){
-        if(cl.getRank(inviter) >= 3){
+        if(cl.getRank(inviter) < 3){
             //recieve gets an invite
-            return;
+            Main.msg(inviter, "&4You are not high enough rank to invite " + recieve.getName());
+        }
+        else if(!main.getUUIDCitizenMap().get(recieve.getUniqueId()).getTown().equals("none")){
+            Main.msg(inviter, "&4" + recieve.getName() + " is already in another town");
+        }
+        else{
+            TextComponent invText1 = new TextComponent(inviter.getName() + " wants to invite you to " + name);
+            TextComponent acceptText = new TextComponent("[ACCEPT]");
+            TextComponent declineText = new TextComponent("[DECLINE]");
+            acceptText.setBold(true); declineText.setBold(true);
+            acceptText.setColor(ChatColor.GREEN); declineText.setColor(ChatColor.RED);
+            acceptText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/say accept"));
+            declineText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/say decline"));
+            TextComponent invText2 = new TextComponent();
+            invText2.addExtra(acceptText); invText2.addExtra(" or "); invText2.addExtra(declineText);
+            recieve.sendMessage(invText1);
+            recieve.sendMessage(invText2);
         }
         //inviter is not high enough rank
         return;
