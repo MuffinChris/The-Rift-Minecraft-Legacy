@@ -1061,7 +1061,7 @@ public class RPGPlayer extends Leveleable {
                                 return "CastedSkill";
                             }
                             if (s.getType().contains("TARGET")) {
-                                if (getNearestTargetInSight(player, s.getTargetRange() * 2) instanceof LivingEntity) {
+                                if (getNearestTargetInSight(player, s.getTargetRange() * 2) != null) {
                                     target = getNearestTargetInSight(player, s.getTargetRange() * 2);
                                     if (target.getLocation().distance(player.getLocation()) > s.getTargetRange()) {
                                         target = null;
@@ -1101,6 +1101,9 @@ public class RPGPlayer extends Leveleable {
                                 return "CastedSkill";
                             }
                             if (cd.equalsIgnoreCase("Casted")) {
+                                if (!s.getType().contains("CAST")) {
+                                    return "CannotCast";
+                                }
                                 List<Integer> indexesToRemove = new ArrayList<>();
                                 int index = 0;
                                 for (String status : statuses) {
@@ -1123,10 +1126,6 @@ public class RPGPlayer extends Leveleable {
                                 s.cast(player);
                                 if (indexesToRemove != null && indexesToRemove.size() > 0) {
                                     return "Interrupted";
-                                }
-
-                                if (!s.getType().contains("CAST")) {
-                                    return "CannotCast";
                                 }
 
                                 return "CastedSkill";
