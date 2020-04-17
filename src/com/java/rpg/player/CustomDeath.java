@@ -74,7 +74,6 @@ public class CustomDeath implements Listener {
                 FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
                 Location graveLoc = e.getClickedBlock().getLocation();
                 if (pData.contains("gravestones." + graveLoc.toString())) {
-                    e.getClickedBlock().setType(Material.AIR);
                     List<ItemStack> items = new ArrayList<>();
                     boolean go = true;
                     int index = 0;
@@ -86,6 +85,7 @@ public class CustomDeath implements Listener {
                             return;
                         }
                     }
+                    e.getClickedBlock().setType(Material.AIR);
                     while (go) {
                         if (pData.contains("gravestones." + graveLoc.toString() + "." + index)) {
                             items.add(ItemStack.deserialize(pData.getConfigurationSection("gravestones." + graveLoc.toString() + "." + index).getValues(false)));

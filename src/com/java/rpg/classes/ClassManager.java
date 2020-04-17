@@ -2,6 +2,7 @@ package com.java.rpg.classes;
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
+import com.java.rpg.classes.skills.Earthshaker.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
 import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
@@ -151,6 +152,20 @@ public class ClassManager implements Listener {
         superSkillsPyro.add(new Conflagration());
 
         classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 800.0, 30, 400, 5, 7, 0.14, "HOE", 10, 60, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110, new ElementalStack(5, 20, 30, 50, 100), new ElementalStack(0, 0, 0, 1, 0.25)));
+
+        List<Skill> skillsEarthshaker = new ArrayList<>();
+        skillsEarthshaker.add(new StoneSkin());
+        skillsEarthshaker.add(new Overwhelm());
+        skillsEarthshaker.add(new Quake());
+        skillsEarthshaker.add(new RockToss());
+        skillsEarthshaker.add(new RollingStone());
+        skillsEarthshaker.add(new Shatterstrike());
+
+        List<Skill> superSkillsEarthshaker = new ArrayList<>();
+
+        classes.put("Earthshaker", new PlayerClass("Earthshaker", "&6Earthshaker", 1200.0, 40, 500, 5, 7, 0.14, "HOE", 10, 150, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsEarthshaker, superSkillsEarthshaker, 110, new ElementalStack(5, 100, 30, 50, 100), new ElementalStack(0, 1, 0, 1, 0)));
+
+
     }
 
     public PlayerClass getPClassFromString(String s) {
