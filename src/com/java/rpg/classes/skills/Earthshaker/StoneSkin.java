@@ -6,6 +6,8 @@ import org.bukkit.event.Listener;
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
+import java.util.List;
+import java.util.ArrayList;
 
 public class StoneSkin extends Skill implements Listener {
 	

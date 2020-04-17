@@ -32,7 +32,6 @@ public class Overwhelm extends Skill {
 
     public Overwhelm() {
         super("Overwhelm", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST-TARGET");
-        setDescription(desc);
     }
     
     public List<String> getDescription(Player p) {
@@ -45,8 +44,8 @@ public class Overwhelm extends Skill {
         return desc;
     }
     
-    public void target(Player p, LivingEntity t) {
-    	super.target(p, t);
+    public void target(Player p, LivingEntity ent) {
+    	super.target(p, ent);
         spellDamage(p, ent, damage + ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, new ElementalStack(0, 0, 0, 50, 0));
         stun(p, ent, duration);
     }

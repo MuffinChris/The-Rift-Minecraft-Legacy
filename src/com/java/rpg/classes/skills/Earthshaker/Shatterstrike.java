@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 
 import java.text.DecimalFormat;
@@ -13,6 +13,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
+import org.bukkit.Sound;
 
 public class Shatterstrike extends Skill implements Listener {
 	

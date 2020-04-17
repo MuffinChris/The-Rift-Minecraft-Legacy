@@ -38,7 +38,7 @@ public class RockToss extends Skill implements Listener {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fSummon a large rock above an emnemy"));
-        desc.add(Main.color("&fStunning all enemies for" + stunD/20 "seconds and dealing " + getDmg(p) + "damage" ));
+        desc.add(Main.color("&fStunning all enemies for" + stunD/20 + "seconds and dealing " + getDmg(p) + "damage" ));
         desc.add(Main.color("&fAround the target. "));
         return desc;
     }

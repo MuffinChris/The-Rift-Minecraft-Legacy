@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
-
+import org.bukkit.event.EventPriority;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -542,7 +542,7 @@ public class TownCommand implements CommandExecutor, Listener {
     }
 
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lTown Menu")) {
             if (e.getCurrentItem() == null) return;
@@ -579,6 +579,9 @@ public class TownCommand implements CommandExecutor, Listener {
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.equals("§aYes")){
                 DeleteTown((Player) e.getWhoClicked());
+            }
+            else if (itemDispName.equals("§cNo")){
+                return;
             }
             e.getWhoClicked().closeInventory();
         }
