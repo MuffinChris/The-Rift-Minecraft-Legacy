@@ -31,11 +31,15 @@ public class Town {
     private String name;
 
     public Town(Player p, String _n){
+        cl = new CitizenList();
         this.getCitizenList().citimap.put(p, new Citizen(p));
         this.getCitizenList().town = _n;
         this.name = _n;
     }
-
+    public Town(CitizenList citilist, String _n){
+        this.cl = citilist;
+        this.name = _n;
+    }
     public CitizenList getCitizenList() {
         return cl;
     }

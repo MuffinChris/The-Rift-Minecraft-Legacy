@@ -13,7 +13,7 @@ public class CitizenList {
 
     public CitizenList(){
         citimap = new HashMap<Player, Citizen>();
-        town = "Randos";
+        town = "none";
     }
     public CitizenList(List<Citizen> l){
         citimap = new HashMap<Player, Citizen>();
