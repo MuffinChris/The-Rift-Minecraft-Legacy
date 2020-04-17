@@ -746,9 +746,13 @@ public class Main extends JavaPlugin {
      */
 
     private Map<UUID, Citizen> uuidCitizenMap = new HashMap<UUID, Citizen>();
-
     public Map<UUID, Citizen> getUUIDCitizenMap() {
         return uuidCitizenMap;
+    }
+
+    private TownManager tm = new TownManager();
+    public TownManager getTM() {
+        return tm;
     }
 
 

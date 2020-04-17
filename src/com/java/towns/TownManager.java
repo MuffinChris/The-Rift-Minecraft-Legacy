@@ -20,19 +20,22 @@ public class TownManager implements Listener {
         towns = new ArrayList<Town>();
     }
 
+    public ArrayList<Town> getTowns() {
+        return towns;
+    }
+
     @EventHandler
-    public void onJoin (PlayerJoinEvent e) {
+    public void onJoin(PlayerJoinEvent e) {
         if (!main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
             main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer())); // needs to pull
         }
     }
 
     @EventHandler
-    public void onLeave (PlayerQuitEvent e) {
-        if(main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId()))
-        {
+    public void onLeave(PlayerQuitEvent e) {
+        if (main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
             Citizen c = main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId());
-            c.pushFiles(); // not yet implemented
+            c.pushFiles();
 
             new BukkitRunnable() {
                 public void run() {
@@ -40,18 +43,17 @@ public class TownManager implements Listener {
                 }
             }.runTaskLater(Main.getInstance(), 10L);
 
-            for(Town t : towns) // check to remove towns
-            {
+            for (Town t : towns) { // check to remove towns
                 boolean cont = true;
-                for(Player tc: t.getCitizenList().citimap.keySet())
-                {
-                    if(main.getUUIDCitizenMap().containsKey(tc.getUniqueId())) {
+                for (Player tc : t.getCitizenList().citimap.keySet()) {
+                    if (main.getUUIDCitizenMap().containsKey(tc.getUniqueId())) {
                         cont = false;
                         break;
                     }
+
                 }
 
-                if(cont) {
+                if (cont) {
                     t.pushFiles();
                     new BukkitRunnable() {
                         public void run() {
@@ -61,15 +63,6 @@ public class TownManager implements Listener {
                 }
             }
 
-        }
-
-        if (main.getPC().containsKey(e.getPlayer().getUniqueId())) {
-            main.getPC().get(e.getPlayer().getUniqueId()).pushFiles();
-            new BukkitRunnable() {
-                public void run() {
-                    main.getPC().remove(e.getPlayer().getUniqueId());
-                }
-            }.runTaskLater(Main.getInstance(), 10L);
         }
     }
 }

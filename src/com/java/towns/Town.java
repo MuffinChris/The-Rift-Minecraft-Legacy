@@ -30,8 +30,10 @@ public class Town {
     private CitizenList cl;
     private String name;
 
-    public Town(Player p){
-
+    public Town(Player p, String _n){
+        this.getCitizenList().citimap.put(p, new Citizen(p));
+        this.getCitizenList().town = _n;
+        this.name = _n;
     }
 
     public CitizenList getCitizenList() {

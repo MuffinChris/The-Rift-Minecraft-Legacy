@@ -81,6 +81,8 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
+
+
     private ItemStack getRemoveTownItemStack() {
         ItemStack sp = new ItemStack(Material.BARRIER);
 
@@ -96,8 +98,9 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
+
     private ItemStack getInviteItemStack() {
-        ItemStack sp = new ItemStack(Material.EMERALD_BLOCK);
+        ItemStack sp = new ItemStack(Material.EMERALD);
 
         ItemMeta spMeta = sp.getItemMeta();
         spMeta.setDisplayName(Main.color("&aInvite"));
@@ -111,8 +114,9 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
+
     private ItemStack getKickItemStack() {
-        ItemStack sp = new ItemStack(Material.REDSTONE_BLOCK);
+        ItemStack sp = new ItemStack(Material.REDSTONE);
 
         ItemMeta spMeta = sp.getItemMeta();
         spMeta.setDisplayName(Main.color("&cKick"));
@@ -126,8 +130,9 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
+
     private ItemStack getPromoteItemStack() {
-        ItemStack sp = new ItemStack(Material.LAPIS_BLOCK);
+        ItemStack sp = new ItemStack(Material.GREEN_DYE);
 
         ItemMeta spMeta = sp.getItemMeta();
         spMeta.setDisplayName(Main.color("&9Promote"));
@@ -141,8 +146,9 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
+
     private ItemStack getDemoteItemStack() {
-        ItemStack sp = new ItemStack(Material.END_STONE);
+        ItemStack sp = new ItemStack(Material.RED_DYE);
 
         ItemMeta spMeta = sp.getItemMeta();
         spMeta.setDisplayName(Main.color("&dDemote"));
@@ -162,7 +168,12 @@ public class TownCommand implements CommandExecutor, Listener {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
         menu.setItem(10, getNewTownItemStack());
-        menu.setItem(11, getRemoveTownItemStack());
+
+        // town list
+
+        // town leaderboard
+
+        // town search
 
         // invite
         menu.setItem(13, getInviteItemStack());
@@ -188,41 +199,25 @@ public class TownCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
+    private void CreateNewTown(Player p) {
+        Main.msg(p, Main.color("&l&eTown Name: "));
+        // somehow do something
+        String tempName = "poggers squad";
+
+        Town nt = new Town(p, tempName);
+        main.getTM().getTowns().add(nt);
+    }
+
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-       /* if (e.getView().getTitle().contains("§e§lSkills")) {
-            e.setCancelled(true);
-            if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().hasLore()) {
-                if (e.getCurrentItem().getItemMeta().getLore().contains("§cLOCKED §8(§c1 SP§8)")) {
-                    Player p = (Player) e.getWhoClicked();
-                    RPGPlayer rp = main.getRP(p);
-                    int total = rp.calculateSP();
-                    if (total > 0) {
-                        Skill s = rp.getSkillFromSuper(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
-                        if (s != null) {
-                            p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
-                            rp.getSkillLevels().replace(s.getName(), 1);
-                            rp.pushFiles();
-                            p.closeInventory();
-                            sendSkillsInv(p, "");
-                        } else {
-                            Main.so("&cERROR: Failed to upgrade &4" + p.getName() + "&c's skill &4" + ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()) + "&c.");
-                        }
-                    }
-                }
-                if (e.getCurrentItem().getItemMeta().getDisplayName().contains("§cReset Skillpoints")) {
-                    Player p = (Player) e.getWhoClicked();
-                    RPGPlayer rp = main.getRP(p);
-                    p.playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_CLOSE, 1.0F, 1.0F);
-                    for (String s : rp.getSkillLevels().keySet()) {
-                        rp.getSkillLevels().replace(s, 0);
-                    }
-                    rp.pushFiles();
-                    p.closeInventory();
-                    sendSkillsInv(p, "");
-                }
-            }
-        }*/
+        if (!e.getView().getTitle().contains("§e§lSkills")) return;
+        if (e.getCurrentItem() == null) return;
+        e.setCancelled(true);
+
+        if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Create New Town")) {
+            CreateNewTown((Player) e.getWhoClicked());
+        }
+
     }
 }
