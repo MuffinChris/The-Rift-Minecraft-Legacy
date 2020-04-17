@@ -1094,7 +1094,7 @@ public class RPGPlayer extends Leveleable {
                                 }
                                 currentMana -= s.getManaCost();
                                 s.target(player, target);
-                                if (indexesToRemove != null && indexesToRemove.size() > 0) {
+                                if (indexesToRemove.size() > 0) {
                                     return "Interrupted";
                                 }
                                 target = null;

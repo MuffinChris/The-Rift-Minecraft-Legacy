@@ -4,10 +4,8 @@ import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.utility.StatusObject;
 import com.java.rpg.classes.utility.StatusValue;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -19,6 +17,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,12 +28,11 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CustomDeath implements Listener {
 
     private Main main = Main.getInstance();
-
-    //public List<Player> recents = new ArrayList<>();
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void customDeath (PlayerDeathEvent e) {
@@ -60,51 +59,25 @@ public class CustomDeath implements Listener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onRightClick (PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.BEDROCK) {
-                File pFile = new File("plugins/Rift/data/gravestones.yml");
-                FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CHEST) {
+
+
                 Location graveLoc = e.getClickedBlock().getLocation();
-                if (pData.contains("gravestones." + graveLoc.toString())) {
+                if (graveLoc.getBlock().hasMetadata("Time")) {
+                    long millis = graveLoc.getBlock().getMetadata("Time").get(0).asLong();
+                    UUID dead = UUID.fromString(graveLoc.getBlock().getMetadata("Owner").get(0).asString());
 
-                    if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                        Main.msg(e.getPlayer(), "&8» &cThis &4Gravestone &cbelongs to &f" + pData.getString("gravestones." + graveLoc.toString() + ".player") + "&c.");
-                        e.setCancelled(true);
-                        return;
-                    }
-
-                    List<ItemStack> items = new ArrayList<>();
-                    boolean go = true;
-                    int index = 0;
-                    long millis = pData.getLong("gravestones." + graveLoc.toString() + ".time");
                     if ((System.currentTimeMillis() - millis) * 0.001 <= seconds) {
-                        if (!pData.getString("gravestones." + graveLoc.toString() + ".uuid").equals(e.getPlayer().getUniqueId().toString())) {
+                        if (!dead.equals(e.getPlayer().getUniqueId().toString())) {
                             DecimalFormat df = new DecimalFormat("#.##");
-                            Main.msg(e.getPlayer(), "&8» &4Gravestone &ccan only be opened by &f" + pData.getString("gravestones." + graveLoc.toString() + ".player") + " &cfor &f" + df.format(seconds - ((System.currentTimeMillis() - millis) * 0.001)) + " seconds&c.");
+                            Main.msg(e.getPlayer(), "&8» &4Gravestone &ccan only be opened by &f" + Bukkit.getOfflinePlayer(dead).getName() + " &cfor &f" + df.format(seconds - ((System.currentTimeMillis() - millis) * 0.001)) + " seconds&c.");
+                            e.setCancelled(true);
                             return;
                         }
                     }
-                    while (go) {
-                        if (pData.contains("gravestones." + graveLoc.toString() + "." + index)) {
-                            items.add(ItemStack.deserialize(pData.getConfigurationSection("gravestones." + graveLoc.toString() + "." + index).getValues(false)));
-                        } else {
-                            go = false;
-                        }
-                        index++;
-                    }
-                    e.getClickedBlock().setType(Material.AIR);
-                    e.getClickedBlock().getWorld().playSound(e.getClickedBlock().getLocation(), Sound.BLOCK_CHEST_OPEN, 1.0F, 1.0F);
-                    e.getClickedBlock().getWorld().playEffect(e.getClickedBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
 
-                    for (ItemStack i : items) {
-                        graveLoc.getWorld().dropItem(graveLoc, i);
-                    }
-                    try {
-                        pData.set("gravestones." + graveLoc.toString(), null);
-                        pData.save(pFile);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    e.getClickedBlock().getWorld().playEffect(e.getClickedBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
                 }
             }
         }
@@ -131,52 +104,17 @@ public class CustomDeath implements Listener {
 
         Location graveLoc = new Location(p.getLocation().getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ());
         if ((graveLoc.getBlock().getType() == Material.AIR || graveLoc.getBlock().getType() == Material.CAVE_AIR)) {
-            graveLoc.getBlock().setType(Material.BEDROCK);
+            graveLoc.getBlock().setType(Material.CHEST);
+            Chest chest = (Chest) graveLoc.getBlock();
+            chest.setCustomName(Main.color("&c" + p.getName() + "'s Gravestone"));
+            chest.getBlockInventory().setContents(deathitems.toArray(new ItemStack[0]));
+            chest.setMetadata("Time", new FixedMetadataValue(Main.getInstance(), System.currentTimeMillis()));
+            chest.setMetadata("Owner", new FixedMetadataValue(Main.getInstance(), p.getUniqueId().toString()));
         } else {
             for (ItemStack i : deathitems) {
                 graveLoc.getWorld().dropItem(graveLoc, i);
             }
             return;
-        }
-
-        File pFile = new File("plugins/Rift/data/gravestones.yml");
-        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
-        try {
-            if (pData.contains("gravestones." + graveLoc.toString())) {
-                List<ItemStack> oldItems = new ArrayList<>();
-                boolean go = true;
-                int index = 0;
-                while (go) {
-                    if (pData.contains("gravestones." + graveLoc.toString() + "." + index)) {
-                        oldItems.add(ItemStack.deserialize(pData.getConfigurationSection("gravestones." + graveLoc.toString() + "." + index).getValues(false)));
-                    } else {
-                        go = false;
-                    }
-                    index++;
-                }
-                oldItems.addAll(deathitems);
-                index = 0;
-                for (ItemStack i : oldItems) {
-                    pData.set("gravestones." + graveLoc.toString() + "." + index, i.serialize());
-                    index++;
-                }
-                pData.set("gravestones." + graveLoc.toString() + ".time", System.currentTimeMillis());
-                pData.set("gravestones." + graveLoc.toString() + ".player", p.getName());
-                pData.set("gravestones." + graveLoc.toString() + ".uuid", p.getUniqueId().toString());
-                pData.save(pFile);
-            } else {
-                int index = 0;
-                for (ItemStack i : deathitems) {
-                    pData.set("gravestones." + graveLoc.toString() + "." + index, i.serialize());
-                    index++;
-                }
-                pData.set("gravestones." + graveLoc.toString() + ".time", System.currentTimeMillis());
-                pData.set("gravestones." + graveLoc.toString() + ".player", p.getName());
-                pData.set("gravestones." + graveLoc.toString() + ".uuid", p.getUniqueId().toString());
-                pData.save(pFile);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
