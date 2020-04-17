@@ -21,6 +21,8 @@ public class Citizen {
     private String inviteStatus;
     private String inviteSentStatus;
     private String searchStatus;
+    private boolean areYouSureStatus = false;
+
 
     public Citizen(Player pl){
         this.p = pl; this.r = -1; this.town = defaultTownName;
@@ -50,6 +52,10 @@ public class Citizen {
     public String getInviteStatus() { return inviteStatus; }
     public String getInviteSentStatus() { return inviteSentStatus; }
     public String getSearchStatus() { return searchStatus; }
+    public boolean getAreYouSureStatus() {
+        if(areYouSureStatus) { areYouSureStatus = false; return true; }
+        return false;
+    }
 
     public void setRank(int i) { r = i; }
     public void setTown(String t) { town = t; }
@@ -58,6 +64,7 @@ public class Citizen {
     public void setInviteStatus(String status) { inviteStatus = status; }
     public void setInviteSentStatus(String status) { inviteSentStatus = status; }
     public void setSearchStatus(String status) { searchStatus = status; }
+    public void setAreYouSureStatus(boolean status) { areYouSureStatus = status; }
 
     public void setUsernameFile(FileConfiguration pData, String username) {
         if (pData.contains("Username")) {

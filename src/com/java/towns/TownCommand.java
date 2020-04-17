@@ -240,7 +240,45 @@ public class TownCommand implements CommandExecutor, Listener {
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
+    public void createAreYouSure(Player p){
+        Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lAre you sure?\n"));
 
+        // yes and no item stacks
+        ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemStack no = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta yesMeta = yes.getItemMeta();
+        ItemMeta noMeta = no.getItemMeta();
+        yesMeta.setDisplayName("&aYes");
+        noMeta.setDisplayName("&cNo");
+        menu.setItem(11, yes);
+        menu.setItem(15, no);
+
+        ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+        ItemMeta phM = ph.getItemMeta();
+        phM.setDisplayName(" ");
+        ph.setItemMeta(phM);
+        for (int i = 0; i < 9; i++) {
+            menu.setItem(i, ph);
+        }
+        for (int i = 18; i < 27; i++) {
+            menu.setItem(i, ph);
+        }
+
+        p.openInventory(menu);
+        p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
+    }
+    /*public boolean areYouSure(Player p){
+        Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
+        new BukkitRunnable() {
+            public void run() {
+                if (mc.getAreYouSureStatus()) {
+                    mc.setAreYouSureStatus(false);
+                    Main.msg(p, Main.color("&4Prompt Timed Out."));
+                }
+            }
+        }.runTaskLater(Main.getInstance(), 20 * 60);
+        return mc.getAreYouSureStatus();
+    }*/
     public void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
@@ -360,7 +398,9 @@ public class TownCommand implements CommandExecutor, Listener {
             Main.msg(p, "&4You don't have permission to do this!");
             return false;
         }
-
+        createAreYouSure(p);
+        if(!c.getAreYouSureStatus()) return false;
+        
         Main.msg(p, "&aTown successfully disbanded");
         for (Citizen ct : t.getCitizenList().citimap.values()) {
             ct.setRank(-1);
@@ -503,6 +543,18 @@ public class TownCommand implements CommandExecutor, Listener {
                 SendInvite((Player) e.getWhoClicked(), "");
             }
 
+            e.getWhoClicked().closeInventory();
+        } else if (e.getView().getTitle().equals("§e§lAre you sure?\n")){
+            if (e.getCurrentItem() == null) return;
+            if(!e.getCurrentItem().hasItemMeta()) return;
+            e.setCancelled(true);
+
+            String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
+            if (itemDispName.equals("§aYes")){
+                main.getUUIDCitizenMap().get(e.getWhoClicked().getUniqueId()).setAreYouSureStatus(true);
+            } else {
+                main.getUUIDCitizenMap().get(e.getWhoClicked().getUniqueId()).setAreYouSureStatus(false);
+            }
             e.getWhoClicked().closeInventory();
         }
     }
