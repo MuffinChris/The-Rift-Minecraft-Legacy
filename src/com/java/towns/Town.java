@@ -3,6 +3,7 @@ package com.java.towns;
 import com.java.Main;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -85,7 +86,7 @@ public class Town {
 
     public void invite(Player inviter, Player reciever) {
         Main.msg(inviter, "&aInvite sent!");
-        TextComponent invText1 = new TextComponent(inviter.getName() + " wants to invite you to " + name);
+        TextComponent invText1 = new TextComponent(inviter.getName() + " has invited you to " + name + "!       Click to choose:");
         TextComponent acceptText = new TextComponent("[ACCEPT]");
         TextComponent declineText = new TextComponent("[DECLINE]");
         acceptText.setBold(true);
@@ -94,6 +95,7 @@ public class Town {
         declineText.setColor(ChatColor.RED);
         acceptText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town accept"));
         declineText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town decline"));
+        // TODO: maybe do some hover events to make it more obvious what's going on
         TextComponent invText2 = new TextComponent();
         invText2.addExtra(acceptText);
         invText2.addExtra(" or ");
@@ -105,8 +107,8 @@ public class Town {
         mc.setInviteStatus(this.name);
         new BukkitRunnable() {
             public void run() {
-                if (!mc.getCreationStatus().equals("Normal")) {
-                    mc.setCreationStatus("Normal");
+                if (!mc.getInviteStatus().equals("Normal")) {
+                    mc.setInviteStatus("Normal");
                     Main.msg(inviter, Main.color("&4Invite Timed Out."));
                     Main.msg(reciever, Main.color("&4Invite Timed Out."));
                 }

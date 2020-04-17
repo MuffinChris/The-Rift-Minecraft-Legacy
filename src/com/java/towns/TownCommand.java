@@ -58,7 +58,8 @@ public class TownCommand implements CommandExecutor, Listener {
             return true;
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("create")) {
-                return CreateNewTown(p);
+                Main.msg(p, Main.color("&4Must specify a town name!"));
+                return false;
             } else if (args[0].equalsIgnoreCase("leave")) {
                 return LeaveTown(p);
             } else if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("remove")) {
@@ -78,6 +79,8 @@ public class TownCommand implements CommandExecutor, Listener {
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("invite")) {
                 return SendInvite(p, args[1]);
+            } else if( args[0].equalsIgnoreCase("create")) {
+                return CreateNewTown(p, args[1]);
             }
         }
 
@@ -265,27 +268,56 @@ public class TownCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private boolean CreateNewTown(Player p) {
+    private boolean CreateNewTown(Player p, String townName) {
 
-        if (!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
-            Main.msg(p, Main.color("&4You are already in a town!"));
-            return false;
-        }
+        if (townName.equalsIgnoreCase("")) {
+            if (!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
+                Main.msg(p, Main.color("&4You are already in a town!"));
+                return false;
+            }
 
-        Main.msg(p, Main.color("&l&eEnter Town Name (A-Z and spaces only): "));
+            Main.msg(p, Main.color("&l&eEnter Town Name (A-Z and spaces only): "));
 
-        main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Prompted");
-        new BukkitRunnable() {
-            public void run() {
-                Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
-                if (!mc.getCreationStatus().equals("Normal")) {
-                    mc.setCreationStatus("Normal");
-                    Main.msg(p, Main.color("&4Prompt Timed Out."));
+            main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Prompted");
+            new BukkitRunnable() {
+                public void run() {
+                    Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
+                    if (!mc.getCreationStatus().equals("Normal")) {
+                        mc.setCreationStatus("Normal");
+                        Main.msg(p, Main.color("&4Prompt Timed Out."));
+                    }
+                }
+            }.runTaskLater(Main.getInstance(), 20 * 60);
+
+            return true;
+        } else {
+            for (String tn : main.getFullTownList()) {
+                if (tn.equalsIgnoreCase(townName)) {
+                    Main.msg(p, Main.color("&4Town name already taken!"));
+                    return false;
                 }
             }
-        }.runTaskLater(Main.getInstance(), 20 * 60);
 
-        return true;
+            if (!townName.matches("[a-zA-Z ]+")) {
+                Main.msg(p, Main.color("&4Town names can only contain characters (A-Z) and spaces"));
+                return false;
+            }
+
+            if (townName.equalsIgnoreCase("None")) {
+                Main.msg(p, Main.color("&4That is a protected town name!"));
+                return false;
+            }
+
+            Town nt = new Town(p, townName);
+            main.getTowns().add(nt);
+
+            List<String> fullTowns = main.getFullTownList();
+            fullTowns.add(townName);
+            main.setFullTownList(fullTowns);
+
+            Main.msg(p, Main.color("&l&aSuccessfully created town: &f" + townName));
+            return true;
+        }
 
     }
 
@@ -345,6 +377,7 @@ public class TownCommand implements CommandExecutor, Listener {
     }
 
     private boolean SendInvite(Player p, String recieverName) {
+
         Citizen cp = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         if (cp.getRank() < 3) {
@@ -382,6 +415,11 @@ public class TownCommand implements CommandExecutor, Listener {
                 return false;
             }
 
+            if(!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
+                Main.msg(r, "&4This player already has a pending invite!");
+                return false;
+            }
+
             t.invite(p, r);
         }
         return true;
@@ -390,14 +428,14 @@ public class TownCommand implements CommandExecutor, Listener {
     private boolean AcceptInvite(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
-        if(c.getInviteStatus().equalsIgnoreCase("Normal")) {
+        if (c.getInviteStatus().equalsIgnoreCase("Normal")) {
             Main.msg(p, Main.color("&4You have no pending invites!"));
             return false;
         }
 
         Town tinv = null;
         for (Town t : main.getTowns()) {
-            if(t.getName().equalsIgnoreCase(c.getInviteStatus())) {
+            if (t.getName().equalsIgnoreCase(c.getInviteStatus())) {
                 tinv = t;
                 break;
             }
@@ -417,14 +455,14 @@ public class TownCommand implements CommandExecutor, Listener {
     private boolean DeclineInvite(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
-        if(!c.getInviteStatus().equalsIgnoreCase("Pending")) {
+        if (!c.getInviteStatus().equalsIgnoreCase("Pending")) {
             Main.msg(p, Main.color("&4You have no pending invites!"));
             return false;
         }
 
         Town tinv = null;
         for (Town t : main.getTowns()) {
-            if(t.getName().equalsIgnoreCase(c.getInviteStatus())) {
+            if (t.getName().equalsIgnoreCase(c.getInviteStatus())) {
                 tinv = t;
                 break;
             }
@@ -442,25 +480,30 @@ public class TownCommand implements CommandExecutor, Listener {
     public void onClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lTown Menu")) {
             if (e.getCurrentItem() == null) return;
+            if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
 
-            if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Create New Town")) {
-                CreateNewTown((Player) e.getWhoClicked());
+            String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
+            if (itemDispName.contains("Create New Town")) {
+                CreateNewTown((Player) e.getWhoClicked(), "");
             }
 
             e.getWhoClicked().closeInventory();
         } else if (e.getView().getTitle().contains("§b§l" + main.getUUIDCitizenMap().get(e.getWhoClicked().getUniqueId()).getTown() + " Menu")) {
             if (e.getCurrentItem() == null) return;
+            if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
 
-            if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Leave Town")) {
+            String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
+            if (itemDispName.contains("Leave Town")) {
                 LeaveTown((Player) e.getWhoClicked());
-            } else if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Delete Town")) {
+            } else if (itemDispName.contains("Delete Town")) {
                 DeleteTown((Player) e.getWhoClicked());
-            } else if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Invite")) {
+            } else if (itemDispName.contains("Invite")) {
                 SendInvite((Player) e.getWhoClicked(), "");
             }
 
+            e.getWhoClicked().closeInventory();
         }
     }
 }

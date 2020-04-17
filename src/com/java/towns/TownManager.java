@@ -113,6 +113,7 @@ public class TownManager implements Listener {
         else if(c.getInviteSentStatus().equals("Prompted")) {
             String recieverName = e.getMessage();
             c.setInviteSentStatus("Normal");
+            e.setCancelled(true);
 
             Player r = Bukkit.getPlayer(recieverName);
             if (r == null) {
@@ -133,6 +134,12 @@ public class TownManager implements Listener {
                 Main.msg(r, "&4This player is already in another town!");
                 return;
             }
+
+            if(!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
+                Main.msg(r, "&4This player already has a pending invite!");
+                return;
+            }
+
             t.invite(sender, r);
         }
 
