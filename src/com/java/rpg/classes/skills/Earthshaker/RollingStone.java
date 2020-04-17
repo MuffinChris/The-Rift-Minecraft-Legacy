@@ -30,6 +30,9 @@ public class RollingStone extends Skill implements Listener {
         desc.add(Main.color("&fand will travel with you until you stop."));
         setDescription(desc);
     }
+    public List<String> getDescription(Player p) {
+        return new ArrayList<>();
+    }
     
     public void cast(Player p) {
     	new BukkitRunnable() {

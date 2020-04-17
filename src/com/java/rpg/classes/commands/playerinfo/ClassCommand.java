@@ -51,15 +51,25 @@ public class ClassCommand implements CommandExecutor, Listener {
     public static String edLvlString = "&8[" + RPGConstants.elementalDefense + "&8] &7EDef Per Lvl: &f";
 
     public void sendClassInv(Player p) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        DecimalFormat dF = new DecimalFormat("#");
         RPGPlayer rp = main.getRP(p);
         Inventory playerInv = Bukkit.createInventory(null, 36, Main.color("&e&lClass Menu"));
+
+        playerInv.setItem(4, getWandererItemStack(p));
+
+        playerInv.setItem(10, getPyromancerItemStack(p));
+
+        playerInv.setItem(11, getEarthshakerItemStack(p));
+
+        p.openInventory(playerInv);
+    }
+
+    public ItemStack getWandererItemStack(Player p) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat dF = new DecimalFormat("#");
+
         ArrayList<String> lore;
         ItemStack sp;
         ItemMeta spMeta;
-
-        //-------------------------------
 
         sp = new ItemStack(Material.STONE);
         spMeta = sp.getItemMeta();
@@ -112,31 +122,39 @@ public class ClassCommand implements CommandExecutor, Listener {
 
         spMeta.setLore(lore);
         sp.setItemMeta(spMeta);
-        playerInv.setItem(4, sp);
+        return sp;
+    }
 
-        //-------------------------------
+    public ItemStack getPyromancerItemStack(Player p) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat dF = new DecimalFormat("#");
+
+        ArrayList<String> lore;
+        ItemStack sp;
+        ItemMeta spMeta;
 
         sp = new ItemStack(Material.STONE);
         spMeta = sp.getItemMeta();
         lore = new ArrayList<>();
 
-        pc = main.getCM().getPClassFromString("Pyromancer");
-        baseHp = pc.getBaseHP();
-        hpPerLvl = pc.getHpPerLevel();
-        mana = pc.getMana();
-        manaPerLvl = pc.getManaPerLevel();
-        mreg = pc.getManaRegen();
-        mregPerLvl = pc.getManaRegenPerLevel();
-        armor = pc.getCalcArmor(0);
-        armorPerLvl = pc.getArmorPerLevel();
-        mr = pc.getCalcMR(0);
-        mrPerLvl = pc.getMagicResistPerLevel();
-        ap = pc.getBaseAP();
-        ad = pc.getBaseAD();
-        apPerLvl = pc.getAPPerLevel();
-        adPerLvl = pc.getADPerLevel();
-        ed = pc.getEDefense();
-        edS = pc.getEDefenseScaling();
+        PlayerClass pc = main.getCM().getPClassFromString("Pyromancer");
+        double baseHp = pc.getBaseHP();
+        double hpPerLvl = pc.getHpPerLevel();
+        double mana = pc.getMana();
+        double manaPerLvl = pc.getManaPerLevel();
+        double mreg = pc.getManaRegen();
+        double mregPerLvl = pc.getManaRegenPerLevel();
+        double armor = pc.getCalcArmor(0);
+        double armorPerLvl = pc.getArmorPerLevel();
+        double mr = pc.getCalcMR(0);
+        double mrPerLvl = pc.getMagicResistPerLevel();
+        double ap = pc.getBaseAP();
+        double ad = pc.getBaseAD();
+        double apPerLvl = pc.getAPPerLevel();
+        double adPerLvl = pc.getADPerLevel();
+
+        ElementalStack ed = pc.getEDefense();
+        ElementalStack edS = pc.getEDefenseScaling();
 
         spMeta.setDisplayName(Main.color("&6Pyromancer"));
         sp.setType(Material.FIRE_CHARGE);
@@ -158,6 +176,7 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
         lore.add(Main.color(""));
         lore.add(Main.color("&fView its Skills with &e/skills Pyromancer&f."));
+        spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {
             spMeta.addEnchant(Enchantment.MENDING, 1, true);
             spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -165,31 +184,39 @@ public class ClassCommand implements CommandExecutor, Listener {
 
         spMeta.setLore(lore);
         sp.setItemMeta(spMeta);
-        playerInv.setItem(10, sp);
+        return sp;
+    }
 
-        //-------------------------------
+    public ItemStack getEarthshakerItemStack(Player p) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat dF = new DecimalFormat("#");
+
+        ArrayList<String> lore;
+        ItemStack sp;
+        ItemMeta spMeta;
 
         sp = new ItemStack(Material.STONE);
         spMeta = sp.getItemMeta();
         lore = new ArrayList<>();
 
-        pc = main.getCM().getPClassFromString("Earthshaker");
-        baseHp = pc.getBaseHP();
-        hpPerLvl = pc.getHpPerLevel();
-        mana = pc.getMana();
-        manaPerLvl = pc.getManaPerLevel();
-        mreg = pc.getManaRegen();
-        mregPerLvl = pc.getManaRegenPerLevel();
-        armor = pc.getCalcArmor(0);
-        armorPerLvl = pc.getArmorPerLevel();
-        mr = pc.getCalcMR(0);
-        mrPerLvl = pc.getMagicResistPerLevel();
-        ap = pc.getBaseAP();
-        ad = pc.getBaseAD();
-        apPerLvl = pc.getAPPerLevel();
-        adPerLvl = pc.getADPerLevel();
-        ed = pc.getEDefense();
-        edS = pc.getEDefenseScaling();
+        PlayerClass pc = main.getCM().getPClassFromString("Earthshaker");
+        double baseHp = pc.getBaseHP();
+        double hpPerLvl = pc.getHpPerLevel();
+        double mana = pc.getMana();
+        double manaPerLvl = pc.getManaPerLevel();
+        double mreg = pc.getManaRegen();
+        double mregPerLvl = pc.getManaRegenPerLevel();
+        double armor = pc.getCalcArmor(0);
+        double armorPerLvl = pc.getArmorPerLevel();
+        double mr = pc.getCalcMR(0);
+        double mrPerLvl = pc.getMagicResistPerLevel();
+        double ap = pc.getBaseAP();
+        double ad = pc.getBaseAD();
+        double apPerLvl = pc.getAPPerLevel();
+        double adPerLvl = pc.getADPerLevel();
+
+        ElementalStack ed = pc.getEDefense();
+        ElementalStack edS = pc.getEDefenseScaling();
 
         spMeta.setDisplayName(Main.color("&6Earthshaker"));
         sp.setType(Material.COARSE_DIRT);
@@ -210,6 +237,7 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
         lore.add(Main.color(""));
         lore.add(Main.color("&fView its Skills with &e/skills Earthshaker&f."));
+        spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {
             spMeta.addEnchant(Enchantment.MENDING, 1, true);
             spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -217,11 +245,7 @@ public class ClassCommand implements CommandExecutor, Listener {
 
         spMeta.setLore(lore);
         sp.setItemMeta(spMeta);
-        playerInv.setItem(11, sp);
-
-        //---------------------------------
-
-        p.openInventory(playerInv);
+        return sp;
     }
 
     @EventHandler

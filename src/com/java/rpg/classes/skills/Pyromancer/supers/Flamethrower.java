@@ -18,9 +18,11 @@ public class Flamethrower extends Skill {
 
     private Main main = Main.getInstance();
 
-    private double damage = 100;
-
+    private double damage = 50;
     private double apscale = 0.3;
+
+    private double fireDmg = 150;
+    private double fireScale = 0.25;
 
     private int range = 4;
 
@@ -44,6 +46,9 @@ public class Flamethrower extends Skill {
     public double getDmg(Player p) {
         return damage + main.getRP(p).getAP() * apscale;
     }
+    public double getFireDmg(Player p) {
+        return fireDmg + main.getRP(p).getAP() * fireScale;
+    }
 
     public void cast(Player p) {
         super.cast(p);
@@ -53,7 +58,7 @@ public class Flamethrower extends Skill {
         if (!super.toggleCont(p)) {
             return false;
         }
-        spewFlame(p, getDmg(p)/(1.0 * (20/(tickrate * 1.0))));
+        spewFlame(p, getDmg(p)/(1.0 * (20/(tickrate * 1.0))), getFireDmg(p)/(1.0 * (20/(tickrate * 1.0))));
         return false;
     }
 
@@ -73,7 +78,7 @@ public class Flamethrower extends Skill {
         return super.toggleInit(p);
     }
 
-    public void spewFlame(Player caster, double damage) {
+    public void spewFlame(Player caster, double damage, double firedmg) {
         caster.getLocation().getWorld().playSound(caster.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 0.15F, 1.0F);
         Location origin = caster.getEyeLocation().clone().subtract(new Vector(0, 0.35, 0));
         Vector direction = origin.getDirection();
@@ -89,8 +94,8 @@ public class Flamethrower extends Skill {
                 Location dist = new Location(loc.getWorld(), loc.getX() - ent.getLocation().getX(), loc.getY() - ent.getLocation().getY(), loc.getZ() - ent.getLocation().getZ());
                 if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) <= (i * 1.05) + 0.3 && Math.abs(dist.getY()) < ent.getHeight()){
                     alreadyHit.add(ent);
-                    ent.setFireTicks(Math.min(20 + ent.getFireTicks(), 200));
-                    spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
+                    ent.setFireTicks(Math.min(200, ent.getFireTicks() + 10));
+                    spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, firedmg, 0));
                     ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 0.75F, 1.0F);
                 }
                 /*if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) < 0.4 && Math.abs(dist.getY()) < ent.getHeight()){

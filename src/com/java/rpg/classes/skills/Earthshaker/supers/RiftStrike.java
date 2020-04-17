@@ -34,6 +34,10 @@ public class RiftStrike extends Skill implements Listener {
         setDescription(desc);
     }
 
+	public List<String> getDescription(Player p) {
+		return new ArrayList<>();
+	}
+
     public void cast(Player p) {
     	super.cast(p);
     	Location init = p.getLocation().clone();

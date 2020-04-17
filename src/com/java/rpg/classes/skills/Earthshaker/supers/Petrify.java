@@ -25,6 +25,10 @@ public class Petrify extends Skill implements Listener {
         List<String> desc = new ArrayList<>();
         setDescription(desc);
     }
+
+	public List<String> getDescription(Player p) {
+		return new ArrayList<>();
+	}
     
     public void cast(Player p) {
     	super.cast(p);

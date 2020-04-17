@@ -24,4 +24,8 @@ public class ObSkin extends Skill implements Listener {
         List<String> desc = new ArrayList<>();
         setDescription(desc);
     }
+
+    public List<String> getDescription(Player p) {
+        return new ArrayList<>();
+    }
 }

@@ -28,6 +28,10 @@ public class Avalanche extends Skill implements Listener {
     public double getDmg(Player p) {
         return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale ) / 5;
     }
+
+	public List<String> getDescription(Player p) {
+		return new ArrayList<>();
+	}
     
     public Avalanche() {
     	super("Avalanche", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");

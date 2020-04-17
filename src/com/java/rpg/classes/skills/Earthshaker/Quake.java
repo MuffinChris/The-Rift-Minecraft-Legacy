@@ -6,6 +6,9 @@ import com.java.rpg.classes.Skill;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Quake extends Skill {
 	
     private Main main = Main.getInstance();
@@ -18,6 +21,10 @@ public class Quake extends Skill {
     
     public double getDmg(Player p) {
         return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale );
+    }
+
+    public List<String> getDescription(Player p) {
+        return new ArrayList<>();
     }
 	
     public Quake() {

@@ -7,6 +7,9 @@ import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StoneSkin extends Skill implements Listener {
 	
     private Main main = Main.getInstance();
@@ -25,7 +28,11 @@ public class StoneSkin extends Skill implements Listener {
     public StoneSkin() {
     	super("Stone Skin", 0, 0, 0, 5, " ", "PASSIVE");
     }
-    
+
+    public List<String> getDescription(Player p) {
+        return new ArrayList<>();
+    }
+
     public void passive(Player p) {
     	super.passive(p);
         main.getRP(p).getStoneSkinDR().getStatuses().add(new StatusValue("StoneSkinDR" + p.getName(), 1, 1, System.currentTimeMillis(), true));

@@ -3,6 +3,7 @@ package com.java.rpg.classes;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Earthshaker.*;
+import com.java.rpg.classes.skills.Earthshaker.supers.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
 import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
 import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
@@ -162,6 +163,13 @@ public class ClassManager implements Listener {
         skillsEarthshaker.add(new Shatterstrike());
 
         List<Skill> superSkillsEarthshaker = new ArrayList<>();
+        superSkillsEarthshaker.add(new ObSkin());
+        superSkillsEarthshaker.add(new Avalanche());
+        superSkillsEarthshaker.add(new UForce());
+        superSkillsEarthshaker.add(new RiftStrike());
+        superSkillsEarthshaker.add(new SeisStorm());
+        superSkillsEarthshaker.add(new Petrify());
+
 
         classes.put("Earthshaker", new PlayerClass("Earthshaker", "&6Earthshaker", 1200.0, 40, 500, 5, 7, 0.14, "HOE", 10, 150, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsEarthshaker, superSkillsEarthshaker, 110, new ElementalStack(5, 100, 30, 50, 100), new ElementalStack(0, 1, 0, 1, 0)));
 

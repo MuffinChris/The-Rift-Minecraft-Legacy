@@ -11,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RockToss extends Skill implements Listener {
 	
@@ -25,6 +27,9 @@ public class RockToss extends Skill implements Listener {
     
     public double getDmg(Player p) {
         return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale ) / 5;
+    }
+    public List<String> getDescription(Player p) {
+        return new ArrayList<>();
     }
     
     public RockToss() {

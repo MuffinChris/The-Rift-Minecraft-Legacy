@@ -39,6 +39,10 @@ public class Overwhelm extends Skill {
         setDescription(desc);
     }
 
+    public List<String> getDescription(Player p) {
+        return new ArrayList<>();
+    }
+
     public void cast(Player p) {
     	Location bean  = p.getLocation();
     	Vector sightLine = p.getEyeLocation().getDirection();

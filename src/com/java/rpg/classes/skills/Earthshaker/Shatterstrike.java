@@ -10,6 +10,9 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Shatterstrike extends Skill implements Listener {
 	
 	private Main main = Main.getInstance();
@@ -27,7 +30,11 @@ public class Shatterstrike extends Skill implements Listener {
     public Shatterstrike() {
 		super("Shatterstrike", 100, 2, 10, 1, "fireball", "CAST");
 	}
-    
+
+    public List<String> getDescription(Player p) {
+        return new ArrayList<>();
+    }
+
     public void warmup(Player p) {
     	super.warmup(p);
     }

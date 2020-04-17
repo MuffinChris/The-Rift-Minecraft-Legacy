@@ -36,6 +36,10 @@ public class UForce extends Skill implements Listener {
         setDescription(desc);
     }
 
+	public List<String> getDescription(Player p) {
+		return new ArrayList<>();
+	}
+
     public void cast(Player p) {
     	super.cast(p);
     	new BukkitRunnable() {
