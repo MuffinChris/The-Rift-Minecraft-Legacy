@@ -6,6 +6,7 @@ import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.damage.utility.*;
 import com.java.rpg.classes.*;
 import com.java.rpg.mobs.MobEXP;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.Particle;

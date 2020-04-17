@@ -69,6 +69,7 @@ public class CustomDeath implements Listener {
 
                     if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
                         Main.msg(e.getPlayer(), "&8» &cThis &4Gravestone &cbelongs to &f" + pData.getString("gravestones." + graveLoc.toString() + ".player") + "&c.");
+                        e.setCancelled(true);
                         return;
                     }
 
