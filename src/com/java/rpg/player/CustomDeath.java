@@ -59,7 +59,7 @@ public class CustomDeath implements Listener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onRightClick (PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CHEST) {
 
 
@@ -69,7 +69,7 @@ public class CustomDeath implements Listener {
                     UUID dead = UUID.fromString(graveLoc.getBlock().getMetadata("Owner").get(0).asString());
 
                     if ((System.currentTimeMillis() - millis) * 0.001 <= seconds) {
-                        if (!dead.equals(e.getPlayer().getUniqueId().toString())) {
+                        if (!dead.equals(e.getPlayer().getUniqueId())) {
                             DecimalFormat df = new DecimalFormat("#.##");
                             Main.msg(e.getPlayer(), "&8» &4Gravestone &ccan only be opened by &f" + Bukkit.getOfflinePlayer(dead).getName() + " &cfor &f" + df.format(seconds - ((System.currentTimeMillis() - millis) * 0.001)) + " seconds&c.");
                             e.setCancelled(true);
@@ -102,7 +102,7 @@ public class CustomDeath implements Listener {
         }
         rp.giveExpFromSource(p, p.getLocation(), rp.getMaxExp() * -0.1 * (Math.random() * 0.1 + 1), "");
 
-        if ((p.getInventory().getContents().length == 0))
+        if (deathitems.isEmpty())
             return;
 
         Location graveLoc = new Location(p.getLocation().getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ());
