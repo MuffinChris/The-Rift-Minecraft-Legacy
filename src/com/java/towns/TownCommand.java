@@ -265,7 +265,6 @@ public class TownCommand implements CommandExecutor, Listener {
         }
 
         p.openInventory(menu);
-        p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
     /*public boolean areYouSure(Player p){
@@ -399,6 +398,7 @@ public class TownCommand implements CommandExecutor, Listener {
             Main.msg(p, "&4You don't have permission to do this!");
             return false;
         }
+        p.closeInventory();
         createAreYouSure(p);
         if(!c.getAreYouSureStatus()) return false;
 
