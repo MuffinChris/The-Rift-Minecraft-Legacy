@@ -78,6 +78,9 @@ public class CustomDeath implements Listener {
                     }
 
                     e.getClickedBlock().getWorld().playEffect(e.getClickedBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
+
+                    graveLoc.getBlock().removeMetadata("Time", Main.getInstance());
+                    graveLoc.getBlock().removeMetadata("Owner", Main.getInstance());
                 }
             }
         }
@@ -105,11 +108,11 @@ public class CustomDeath implements Listener {
         Location graveLoc = new Location(p.getLocation().getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ());
         if ((graveLoc.getBlock().getType() == Material.AIR || graveLoc.getBlock().getType() == Material.CAVE_AIR)) {
             graveLoc.getBlock().setType(Material.CHEST);
-            Chest chest = (Chest) graveLoc.getBlock();
+            Chest chest = (Chest) graveLoc.getBlock().getState();
             chest.setCustomName(Main.color("&c" + p.getName() + "'s Gravestone"));
             chest.getBlockInventory().setContents(deathitems.toArray(new ItemStack[0]));
-            chest.setMetadata("Time", new FixedMetadataValue(Main.getInstance(), System.currentTimeMillis()));
-            chest.setMetadata("Owner", new FixedMetadataValue(Main.getInstance(), p.getUniqueId().toString()));
+            graveLoc.getBlock().setMetadata("Time", new FixedMetadataValue(Main.getInstance(), System.currentTimeMillis()));
+            graveLoc.getBlock().setMetadata("Owner", new FixedMetadataValue(Main.getInstance(), p.getUniqueId().toString()));
         } else {
             for (ItemStack i : deathitems) {
                 graveLoc.getWorld().dropItem(graveLoc, i);
