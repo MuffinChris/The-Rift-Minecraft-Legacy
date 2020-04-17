@@ -88,7 +88,6 @@ public class TownManager implements Listener {
         c.setCreationStatus("Normal"); // return to normal state
 
         // check if valid town name
-        makeFullTownList();
         for (String tn : main.getFullTownList()) {
             if (tn.equalsIgnoreCase(townName)) {
                 Main.msg(sender, Main.color("&4Town name already taken!"));
@@ -96,8 +95,13 @@ public class TownManager implements Listener {
             }
         }
 
-        if (!townName.matches("[a-zA-Z]+")) {
-            Main.msg(sender, Main.color("&4Town names can only contain characters (A-Z)"));
+        if (!townName.matches("[a-zA-Z ]+")) {
+            Main.msg(sender, Main.color("&4Town names can only contain characters (A-Z) and spaces"));
+            return;
+        }
+
+        if(townName.equalsIgnoreCase("None")) {
+            Main.msg(sender, Main.color("&4That is a protected town name!"));
             return;
         }
 

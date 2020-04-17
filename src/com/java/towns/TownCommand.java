@@ -49,16 +49,32 @@ public class TownCommand implements CommandExecutor, Listener {
         Player p = (Player) sender;
 
         if (args.length == 0) {
-
-            if(main.getUUIDCitizenMap().get(((Player) sender).getUniqueId()).getTown().equals("None"))
-            {
+            if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equals("None"))
                 sendTownlessInv(p);
-                return true;
-            }
             else
-            {
                 sendTownInv(p);
-                return true;
+            return true;
+        }
+        else if(args.length == 1)
+        {
+            if(args[0].equalsIgnoreCase("create")) {
+                return CreateNewTown(p);
+            }
+            else if(args[0].equalsIgnoreCase("leave"))
+            {
+                return LeaveTown(p);
+            }
+            else if(args[0].equalsIgnoreCase("invite"))
+            {
+                // TODO: implement
+            }
+            else if(args[0].equalsIgnoreCase("kick"))
+            {
+                // TODO: implement
+            }
+            else if(args[0].equalsIgnoreCase("promote"))
+            {
+                // TODO: implement
             }
         }
 
@@ -66,20 +82,36 @@ public class TownCommand implements CommandExecutor, Listener {
     }
 
     private ItemStack getRemoveTownItemStack() {
-        ItemStack sp = new ItemStack(Material.BARRIER);
+        ItemStack sp = new ItemStack(Material.TNT);
 
         ItemMeta spMeta = sp.getItemMeta();
         spMeta.setDisplayName(Main.color("&4Delete Town"));
         spMeta.setLore(new ArrayList<String>() {
             {
                 add(Main.color("&fClick to delete your current town!"));
-                add(Main.color("&6 Must be Owner rank"));
+                add(Main.color("&6Must be Owner rank"));
             }
         });
         sp.setItemMeta(spMeta);
 
         return sp;
     }
+
+    private ItemStack getLeaveTownItemStack() {
+        ItemStack sp = new ItemStack(Material.BARRIER);
+
+        ItemMeta spMeta = sp.getItemMeta();
+        spMeta.setDisplayName(Main.color("&aLeave Town"));
+        spMeta.setLore(new ArrayList<String>() {
+            {
+                add(Main.color("&fClick to leave your current town!"));
+            }
+        });
+        sp.setItemMeta(spMeta);
+
+        return sp;
+    }
+
     private ItemStack getInviteItemStack() {
         ItemStack sp = new ItemStack(Material.EMERALD);
 
@@ -88,13 +120,14 @@ public class TownCommand implements CommandExecutor, Listener {
         spMeta.setLore(new ArrayList<String>() {
             {
                 add(Main.color("&fClick to invite a player!"));
-                add(Main.color("&6 Must have permission to invite"));
+                add(Main.color("&6Must have permission to invite"));
             }
         });
         sp.setItemMeta(spMeta);
 
         return sp;
     }
+
     private ItemStack getKickItemStack() {
         ItemStack sp = new ItemStack(Material.REDSTONE);
 
@@ -103,13 +136,14 @@ public class TownCommand implements CommandExecutor, Listener {
         spMeta.setLore(new ArrayList<String>() {
             {
                 add(Main.color("&fClick to kick player!"));
-                add(Main.color("&6 Must have permission to kick"));
+                add(Main.color("&6Must have permission to kick"));
             }
         });
         sp.setItemMeta(spMeta);
 
         return sp;
     }
+
     private ItemStack getPromoteItemStack() {
         ItemStack sp = new ItemStack(Material.GREEN_DYE);
 
@@ -118,13 +152,14 @@ public class TownCommand implements CommandExecutor, Listener {
         spMeta.setLore(new ArrayList<String>() {
             {
                 add(Main.color("&fClick to demote a player!"));
-                add(Main.color("&6 Must be at least as high as promotion rank"));
+                add(Main.color("&6Must be higher than promotion rank"));
             }
         });
         sp.setItemMeta(spMeta);
 
         return sp;
     }
+
     private ItemStack getDemoteItemStack() {
         ItemStack sp = new ItemStack(Material.RED_DYE);
 
@@ -133,7 +168,7 @@ public class TownCommand implements CommandExecutor, Listener {
         spMeta.setLore(new ArrayList<String>() {
             {
                 add(Main.color("&fClick to demote a player!"));
-                add(Main.color("&6 Must be higher rank than player"));
+                add(Main.color("&6Must be higher rank than player"));
             }
         });
         sp.setItemMeta(spMeta);
@@ -145,7 +180,11 @@ public class TownCommand implements CommandExecutor, Listener {
         String townName = main.getUUIDCitizenMap().get(p.getUniqueId()).getTown();
         Inventory menu = Bukkit.createInventory(null, 36, Main.color("&e&l" + townName + " Menu"));
 
+        // delete town
         menu.setItem(10, getRemoveTownItemStack());
+        // leave town
+        menu.setItem(11, getLeaveTownItemStack());
+
 
         // town list
 
@@ -200,6 +239,7 @@ public class TownCommand implements CommandExecutor, Listener {
     public void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
+        // town create
         menu.setItem(10, getNewTownItemStack());
 
         // town list
@@ -215,7 +255,7 @@ public class TownCommand implements CommandExecutor, Listener {
         for (int i = 0; i < 9; i++) {
             menu.setItem(i, ph);
         }
-        for (int i = 18; i <= 26; i++) {
+        for (int i = 27; i < 36; i++) {
             menu.setItem(i, ph);
         }
 
@@ -223,33 +263,79 @@ public class TownCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private void CreateNewTown(Player p) {
-        Main.msg(p, Main.color("&l&eEnter Town Name (Must be A-Z): "));
+    private boolean CreateNewTown(Player p) {
+        Main.msg(p, Main.color("&l&eEnter Town Name (A-Z and spaces only): "));
 
         main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Prompted");
         new BukkitRunnable() {
             public void run() {
                 Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
-                if(!mc.getCreationStatus().equals("Normal")) {
+                if (!mc.getCreationStatus().equals("Normal")) {
                     mc.setCreationStatus("Normal");
                     Main.msg(p, Main.color("&4Prompt Timed Out."));
                 }
             }
-        }.runTaskLater(Main.getInstance(), 20*60);
+        }.runTaskLater(Main.getInstance(), 20 * 60);
 
+        return true;
+
+    }
+
+    private boolean LeaveTown(Player p) {
+
+        // TODO: if the owner of a town leaves -- then either the town should disband or the max level role needs to be transferred (randomly to a maxlvl -1 member?)
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+
+        if(c.getTown().equalsIgnoreCase("None")) {
+            Main.msg(p, "&4You aren't in any town!");
+            return false;
+        }
+
+        Town t = null;
+        for(Town et : main.getTowns()) {
+            if(et.getName().equals(c.getTown())) {
+                t = et;
+                break;
+            }
+        }
+        c.setTown("None"); // default values
+        c.setRank(-1); // %
+        Main.msg(p, "&4You have successfully left " + t.getName());
+
+        t.getCitizenList().removeCitizen(p);
+        if(t.getCitizenList().citimap.size() == 0)
+        {
+            // there are no more people in this town -- delete it
+            main.getTowns().remove(t);
+            List<String> fullTowns = main.getFullTownList();
+            fullTowns.remove(t.getName());
+            main.setFullTownList(fullTowns);
+
+            Bukkit.broadcastMessage(Main.color("&l&4 Town " + t.getName() + " has been disbanded!"));
+        }
+
+        return true;
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (!e.getView().getTitle().contains("§e§lTown Menu")) return;
-        if (e.getCurrentItem() == null) return;
-        e.setCancelled(true);
+        if (e.getView().getTitle().contains("§e§lTown Menu")) {
+            if (e.getCurrentItem() == null) return;
+            e.setCancelled(true);
 
-        if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Create New Town")) {
-            CreateNewTown((Player) e.getWhoClicked());
+            if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Create New Town")) {
+                CreateNewTown((Player) e.getWhoClicked());
+            }
+
+            e.getWhoClicked().closeInventory();
+        } else if (e.getView().getTitle().contains("§e§l" + main.getUUIDCitizenMap().get(e.getWhoClicked().getUniqueId()).getTown() + " Menu")) {
+            if (e.getCurrentItem() == null) return;
+            e.setCancelled(true);
+
+            if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Leave Town")) {
+                LeaveTown((Player) e.getWhoClicked());
+            }
+
         }
-
-        e.getWhoClicked().closeInventory();
-
     }
 }
