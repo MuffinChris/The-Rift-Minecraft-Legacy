@@ -46,8 +46,6 @@ public class Citizen {
 
     }
 
-
-
     public void setUsernameFile(FileConfiguration pData, String username) {
         if (pData.contains("Username")) {
             if (pData.getString("Username").equalsIgnoreCase(p.getName())) {

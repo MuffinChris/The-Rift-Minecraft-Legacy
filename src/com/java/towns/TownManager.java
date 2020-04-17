@@ -20,8 +20,10 @@ public class TownManager implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        Main.msg(e.getPlayer(), "Join Event");
         if (!main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
-            main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer())); // needs to pull
+            Main.msg(e.getPlayer(), "Added to UUIDCitizen Map");
+            main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer()));
         }
     }
 

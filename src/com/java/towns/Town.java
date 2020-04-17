@@ -17,6 +17,8 @@ public class Town {
     /*
     Ranks go from 0 to 5 inclusive (default names subject to change)
     */
+
+    private Main main = Main.getInstance();
     private List<String> ranks = new ArrayList<String> (){
         {
         add("Newbie");
@@ -32,7 +34,12 @@ public class Town {
 
     public Town(Player p, String _n){
         cl = new CitizenList();
-        this.getCitizenList().citimap.put(p, new Citizen(p));
+
+        Citizen citizen = main.getUUIDCitizenMap().get(p.getUniqueId());
+        citizen.setRank(ranks.size() - 1); // first player in creating class so set them to max rank
+        citizen.setTown(_n);
+
+        this.getCitizenList().citimap.put(p, citizen);
         this.getCitizenList().town = _n;
         this.name = _n;
     }
