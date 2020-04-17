@@ -400,7 +400,7 @@ public class TownCommand implements CommandExecutor, Listener {
         }
         createAreYouSure(p);
         if(!c.getAreYouSureStatus()) return false;
-        
+
         Main.msg(p, "&aTown successfully disbanded");
         for (Citizen ct : t.getCitizenList().citimap.values()) {
             ct.setRank(-1);
