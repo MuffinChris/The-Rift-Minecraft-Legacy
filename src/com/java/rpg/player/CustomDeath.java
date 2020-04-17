@@ -4,10 +4,14 @@ import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.utility.StatusObject;
 import com.java.rpg.classes.utility.StatusValue;
+import net.minecraft.server.v1_15_R1.ChatComponentText;
+import net.minecraft.server.v1_15_R1.IChatBaseComponent;
+import net.minecraft.server.v1_15_R1.TileEntityChest;
 import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_15_R1.block.CraftChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -109,7 +113,8 @@ public class CustomDeath implements Listener {
         if ((graveLoc.getBlock().getType() == Material.AIR || graveLoc.getBlock().getType() == Material.CAVE_AIR)) {
             graveLoc.getBlock().setType(Material.CHEST);
             Chest chest = (Chest) graveLoc.getBlock().getState();
-            chest.setCustomName(Main.color("&c" + p.getName() + "'s Gravestone"));
+            TileEntityChest tec = ((CraftChest) chest).getTileEntity();
+            tec.setCustomName(new ChatComponentText(Main.color("&c" + p.getName() + "'s Gravestone")));
             chest.getBlockInventory().setContents(deathitems.toArray(new ItemStack[0]));
             graveLoc.getBlock().setMetadata("Time", new FixedMetadataValue(Main.getInstance(), System.currentTimeMillis()));
             graveLoc.getBlock().setMetadata("Owner", new FixedMetadataValue(Main.getInstance(), p.getUniqueId().toString()));
