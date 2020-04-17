@@ -169,6 +169,58 @@ public class ClassCommand implements CommandExecutor, Listener {
 
         //-------------------------------
 
+        sp = new ItemStack(Material.STONE);
+        spMeta = sp.getItemMeta();
+        lore = new ArrayList<>();
+
+        pc = main.getCM().getPClassFromString("Earthshaker");
+        baseHp = pc.getBaseHP();
+        hpPerLvl = pc.getHpPerLevel();
+        mana = pc.getMana();
+        manaPerLvl = pc.getManaPerLevel();
+        mreg = pc.getManaRegen();
+        mregPerLvl = pc.getManaRegenPerLevel();
+        armor = pc.getCalcArmor(0);
+        armorPerLvl = pc.getArmorPerLevel();
+        mr = pc.getCalcMR(0);
+        mrPerLvl = pc.getMagicResistPerLevel();
+        ap = pc.getBaseAP();
+        ad = pc.getBaseAD();
+        apPerLvl = pc.getAPPerLevel();
+        adPerLvl = pc.getADPerLevel();
+        ed = pc.getEDefense();
+        edS = pc.getEDefenseScaling();
+
+        spMeta.setDisplayName(Main.color("&6Earthshaker"));
+        sp.setType(Material.FIRE_CHARGE);
+        lore.add(Main.color("&bJeffrey Purdue"));
+        lore.add(Main.color("&f"));
+        lore.add(Main.color("&fNOT BAD FOR A GIRL"));
+        lore.add(Main.color(""));
+        lore.add(Main.color(hpString + df.format(baseHp) + " &8(&7+" + df.format(hpPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(manaRegenString + df.format(mreg) + " &8(&7+" + df.format(mregPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(""));
+        lore.add(Main.color(adString + dF.format(ad) + " &8(&7+" + df.format(adPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(apString + df.format(ap) + " &8(&7+" + df.format(apPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(""));
+        lore.add(Main.color(armorString + dF.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(mrString + dF.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
+        lore.add(Main.color(edString + "&8<" + ed.getFancyStack() + "&8>"));
+        lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
+        lore.add(Main.color(""));
+        lore.add(Main.color("&fView its Skills with &e/skills Earthshaker&f."));
+        if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {
+            spMeta.addEnchant(Enchantment.MENDING, 1, true);
+            spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+
+        spMeta.setLore(lore);
+        sp.setItemMeta(spMeta);
+        playerInv.setItem(11, sp);
+
+        //---------------------------------
+
         p.openInventory(playerInv);
     }
 
