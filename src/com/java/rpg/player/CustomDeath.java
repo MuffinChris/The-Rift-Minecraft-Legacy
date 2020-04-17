@@ -126,7 +126,7 @@ public class CustomDeath implements Listener {
 
         Location graveLoc = new Location(p.getLocation().getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ());
 
-        if (graveLoc.getBlock().getType() == Material.AIR) {
+        if (graveLoc.getBlock().getType() == Material.AIR || graveLoc.getBlock().getType() == Material.CAVE_AIR) {
             graveLoc.getBlock().setType(Material.BEDROCK);
         } else {
             for (ItemStack i : deathitems) {

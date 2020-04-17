@@ -192,7 +192,7 @@ public class ClassCommand implements CommandExecutor, Listener {
         edS = pc.getEDefenseScaling();
 
         spMeta.setDisplayName(Main.color("&6Earthshaker"));
-        sp.setType(Material.FIRE_CHARGE);
+        sp.setType(Material.COARSE_DIRT);
         lore.add(Main.color("&bJeffrey Purdue"));
         lore.add(Main.color("&f"));
         lore.add(Main.color("&fNOT BAD FOR A GIRL"));
