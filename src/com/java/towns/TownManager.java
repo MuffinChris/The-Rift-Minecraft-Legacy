@@ -2,6 +2,7 @@ package com.java.towns;
 
 import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -21,16 +22,45 @@ public class TownManager implements Listener {
 
     @EventHandler
     public void onJoin (PlayerJoinEvent e) {
-        if (!main.getPC().containsKey(e.getPlayer().getUniqueId())) {
-            main.getPC().put(e.getPlayer().getUniqueId(), new RPGPlayer(e.getPlayer()));
+        if (!main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
+            main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer()));
         }
     }
 
     @EventHandler
     public void onLeave (PlayerQuitEvent e) {
+        if(main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId()))
+        {
+            Citizen c = main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId());
+            c.pushFiles(); // not yet implemented
+
+            new BukkitRunnable() {
+                public void run() {
+                    main.getUUIDCitizenMap().remove(e.getPlayer().getUniqueId());
+                }
+            }.runTaskLater(Main.getInstance(), 10L);
+
+            for(Town t : towns) // check to remove towns
+            {
+                boolean cont = true;
+                for(Player tc: t.getCitizenList().citimap.keySet())
+                {
+                    if(main.getUUIDCitizenMap().containsKey(tc.getUniqueId())) {
+                        cont = false;
+                        break;
+                    }
+                }
+
+                if(cont) {
+                    t.pushFiles();
+                    towns.remove(t); // there are no remaining online players of town t
+                }
+            }
+
+        }
+
         if (main.getPC().containsKey(e.getPlayer().getUniqueId())) {
             main.getPC().get(e.getPlayer().getUniqueId()).pushFiles();
-            main.getPC().get(e.getPlayer().getUniqueId()).scrub();
             new BukkitRunnable() {
                 public void run() {
                     main.getPC().remove(e.getPlayer().getUniqueId());

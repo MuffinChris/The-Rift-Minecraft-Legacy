@@ -20,6 +20,7 @@ import com.java.essentials.commands.admin.warp.DelWarpCommand;
 import com.java.essentials.commands.admin.warp.SetWarpCommand;
 import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
+import com.java.towns.Citizen;
 import com.java.towns.TownCommand;
 import com.java.rpg.holograms.EntityHealthBars;
 import com.java.rpg.holograms.Hologram;
@@ -51,6 +52,7 @@ import com.java.rpg.modifiers.utility.DamageTypes;
 import com.java.rpg.player.*;
 import com.java.rpg.player.Items;
 import com.java.rpg.player.utility.PlayerListener;
+import com.java.towns.TownManager;
 import de.slikey.effectlib.EffectManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -736,6 +738,20 @@ public class Main extends JavaPlugin {
     public PartyManager getPM() {
         return pm;
     }
+
+    /*
+     *
+     *  TOWN VARIABLES
+     *
+     */
+
+    private Map<UUID, Citizen> uuidCitizenMap = new HashMap<UUID, Citizen>();
+    private TownManager tm = new TownManager();
+
+    public Map<UUID, Citizen> getUUIDCitizenMap() {
+        return uuidCitizenMap;
+    }
+
 
     /*
      *

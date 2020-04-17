@@ -27,6 +27,11 @@ public class Town {
     public Town(Player p){
 
     }
+
+    public CitizenList getCitizenList() {
+        return cl;
+    }
+
     public int getRank(Player p){
         return cl.citimap.get(p).getRank();
     }
