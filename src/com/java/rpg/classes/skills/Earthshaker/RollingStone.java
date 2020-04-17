@@ -16,34 +16,33 @@ import java.util.List;
 public class RollingStone extends Skill implements Listener {
 	
     private Main main = Main.getInstance();
-    private int range = 6;
     private int rad = 2;
     
     public RollingStone() {
-    	super("RollingStone", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
+    	super("RollingStone", 100, 400, 0, 5, "%player% has shot a fireball!", "CAST");
     	DecimalFormat df = new DecimalFormat("#");
-        setTargetRange(range);
+    }
+
+    public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
-        desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fCharge forwards with a shell of rocks around you"));
         desc.add(Main.color("&fEnemies around you are caught in the rockslide"));
         desc.add(Main.color("&fand will travel with you until you stop."));
-        setDescription(desc);
-    }
-    public List<String> getDescription(Player p) {
-        return new ArrayList<>();
+        return desc;
     }
     
     public void cast(Player p) {
-    	new BukkitRunnable() {
+        super.cast(p);
+        new BukkitRunnable() {
             int times = 16;
+
             public void run() {
-                if(checkCollision(p))
+                if (checkCollision(p))
                     cancel();
                 increment(p);
-                if(checkStep(p)) {
-                    for (LivingEntity ent: p.getLocation().getNearbyLivingEntities(rad)) {
-                    	if (ent instanceof Player) {
+                if (checkStep(p)) {
+                    for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(rad)) {
+                        if (ent instanceof Player) {
                             Player player = (Player) ent;
                             if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
                                 if (main.getPM().getParty(p).getPlayers().contains(player)) {
@@ -53,21 +52,17 @@ public class RollingStone extends Skill implements Listener {
                             if (player.equals(p)) {
                                 continue;
                             }
-                    	}
-                    	ent.teleport(ent.getLocation().add(new Vector(0, 1, 0)));
+                        }
+                        ent.teleport(ent.getLocation().add(new Vector(0, 1, 0)));
                     }
                 }
-                if(times < 1) {
+                if (times < 1) {
                     launch(p);
                     cancel();
                 }
-            	times--;
-            }    
+                times--;
+            }
         }.runTaskTimer(Main.getInstance(), 0L, 1L);
-    }
-    
-    public void warmup() {
-    	
     }
     
     // moves the player and the mobs forwards

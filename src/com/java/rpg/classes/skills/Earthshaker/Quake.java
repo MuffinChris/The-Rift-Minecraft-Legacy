@@ -5,7 +5,6 @@ import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +21,17 @@ public class Quake extends Skill {
     public double getDmg(Player p) {
         return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale );
     }
-
-    public List<String> getDescription(Player p) {
-        return new ArrayList<>();
-    }
 	
     public Quake() {
     	super("Quake", 200, 200, 0, 3, "player has shot a fireball", "CAST");
+    }
+
+    public List<String> getDescription(Player p) {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&fShake the Earth beneath you,"));
+        desc.add(Main.color("&fDealing " + getDmg(p) + " to all enemies around you"));
+        return desc;
     }
     
     public void cast(Player p) {
@@ -41,8 +44,8 @@ public class Quake extends Skill {
             }
             if (ent instanceof Player) {
                 Player pl = (Player) ent;
-                if (main.getPM().getParty(pl) != null && !main.getPM().getParty(pl).getPvp()) {
-                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
+                if (main.getPM().getParty(p) != null && !main.getPM().getParty(p).getPvp()) {
+                    if (main.getPM().getParty(p).getPlayers().contains(pl)) {
                         continue;
                     }
                 }
@@ -51,4 +54,5 @@ public class Quake extends Skill {
             spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0));
     	}
     }
+
 }

@@ -5,10 +5,10 @@ import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import com.java.rpg.party.Party;
-import org.bukkit.*;
-import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.*;
+import org.bukkit.entity.*;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,20 +28,25 @@ public class RockToss extends Skill implements Listener {
     public double getDmg(Player p) {
         return ( damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale ) / 5;
     }
-    public List<String> getDescription(Player p) {
-        return new ArrayList<>();
-    }
     
     public RockToss() {
-    	super("Rock Toss", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
+    	super("RockToss", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
     	DecimalFormat df = new DecimalFormat("#");
         setTargetRange(range);
+    }
+
+    public List<String> getDescription(Player p) {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&fSummon a large rock above an emnemy"));
+        desc.add(Main.color("&fStunning all enemies for" + stunD/20 "seconds and dealing " + getDmg(p) + "damage" ));
+        desc.add(Main.color("&fAround the target. "));
+        return desc;
     }
     
     public void target(Player p, LivingEntity t) {
         super.target(p, t);
-        bigExplosion(t.getLocation());
-        makeCircle(p, t);
+        makeCircle(p,t);
     }
     
     public void makeCircle(Player p, LivingEntity t) {
@@ -83,8 +88,8 @@ public class RockToss extends Skill implements Listener {
         }
     }
     
-    public void bigExplosion(Location loc) {
+    /*public void bigExplosion(Location loc) {
     	loc.getWorld().spawnParticle(Particle.BLOCK_DUST, loc, 40, 2, 2, 2);
-    }
+    }*/
     
 }
