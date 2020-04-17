@@ -277,6 +277,7 @@ public class TownCommand implements CommandExecutor, Listener {
         ItemMeta noMeta = no.getItemMeta();
         yesMeta.setDisplayName(Main.color("&aYes"));
         noMeta.setDisplayName(Main.color("&cNo"));
+        yes.setItemMeta(yesMeta); no.setItemMeta(noMeta);
         menu.setItem(11, yes);
         menu.setItem(15, no);
 
