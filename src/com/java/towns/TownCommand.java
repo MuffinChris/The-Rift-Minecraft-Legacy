@@ -48,7 +48,7 @@ public class TownCommand implements CommandExecutor, Listener {
         Player p = (Player) sender;
 
         if (args.length == 0) {
-            sendGeneralTownInv(p);
+            sendTownlessInv(p);
             return true;
         }
 
@@ -81,7 +81,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getRemoveTownItemStack() {
         ItemStack sp = new ItemStack(Material.BARRIER);
 
@@ -97,7 +96,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getInviteItemStack() {
         ItemStack sp = new ItemStack(Material.EMERALD_BLOCK);
 
@@ -113,7 +111,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getKickItemStack() {
         ItemStack sp = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -129,7 +126,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getPromoteItemStack() {
         ItemStack sp = new ItemStack(Material.LAPIS_BLOCK);
 
@@ -145,7 +141,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return sp;
     }
-
     private ItemStack getDemoteItemStack() {
         ItemStack sp = new ItemStack(Material.END_STONE);
 
@@ -163,7 +158,7 @@ public class TownCommand implements CommandExecutor, Listener {
     }
 
 
-    public void sendGeneralTownInv(Player p) {
+    public void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
         menu.setItem(10, getNewTownItemStack());
