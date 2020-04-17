@@ -100,7 +100,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
             infoM.setLore(infoLore);
             infoM.setDisplayName(Main.color("&eCasting Guide"));
             info.setItemMeta(infoM);
-            playerInv.setItem(26, info);
+            playerInv.setItem(27, info);
 
 
             int i = 11;
