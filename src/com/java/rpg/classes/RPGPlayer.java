@@ -1262,22 +1262,22 @@ public class RPGPlayer extends Leveleable {
     public List<Player> getSortedOnlinePlayers() {
         List<Player> pl = new ArrayList<>();
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("core.owner") && !pl.contains(p)) {
+            if (main.getChat().getPlayerPrefix(p).contains("Owner") && !pl.contains(p)) {
                 pl.add(p);
             }
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("core.admin") && !pl.contains(p)) {
+            if (main.getChat().getPlayerPrefix(p).contains("Admin") && !pl.contains(p)) {
                 pl.add(p);
             }
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("core.mod") && !pl.contains(p)) {
+            if (main.getChat().getPlayerPrefix(p).contains("Mod") && !pl.contains(p)) {
                 pl.add(p);
             }
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("core.helper") && !pl.contains(p)) {
+            if (main.getChat().getPlayerPrefix(p).contains("Helper") && !pl.contains(p)) {
                 pl.add(p);
             }
         }

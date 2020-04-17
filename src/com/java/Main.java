@@ -219,6 +219,8 @@ public class Main extends JavaPlugin {
 
     DIRECT LINE TODO LIST:
 
+        -22. Gravestone show player name when hovered
+
         -21. Elemental damage is not added in dmg threshhold!
 
         -20. Call Supers Skill Upgrades lmao

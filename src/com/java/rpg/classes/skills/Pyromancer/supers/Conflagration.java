@@ -50,7 +50,7 @@ public class Conflagration extends Skill {
             return false;
         }
         p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 500000, 1));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 500000, 1, false, false));
 
         p.setFireTicks(0);
         return false;
@@ -63,7 +63,7 @@ public class Conflagration extends Skill {
     }
 
     public int toggleInit(Player p) {
-        p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 500000, 1));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 500000, 1, false, false));
 
         return super.toggleInit(p);
     }
