@@ -248,8 +248,8 @@ public class TownCommand implements CommandExecutor, Listener {
         ItemStack no = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta yesMeta = yes.getItemMeta();
         ItemMeta noMeta = no.getItemMeta();
-        yesMeta.setDisplayName("&aYes");
-        noMeta.setDisplayName("&cNo");
+        yesMeta.setDisplayName(Main.color("&aYes"));
+        noMeta.setDisplayName(Main.color("&cNo"));
         menu.setItem(11, yes);
         menu.setItem(15, no);
 
@@ -263,7 +263,7 @@ public class TownCommand implements CommandExecutor, Listener {
         for (int i = 18; i < 27; i++) {
             menu.setItem(i, ph);
         }
-
+        p.closeInventory();
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
@@ -275,8 +275,8 @@ public class TownCommand implements CommandExecutor, Listener {
         ItemStack no = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta yesMeta = yes.getItemMeta();
         ItemMeta noMeta = no.getItemMeta();
-        yesMeta.setDisplayName("&aYes");
-        noMeta.setDisplayName("&cNo");
+        yesMeta.setDisplayName(Main.color("&aYes"));
+        noMeta.setDisplayName(Main.color("&cNo"));
         menu.setItem(11, yes);
         menu.setItem(15, no);
 
@@ -569,7 +569,7 @@ public class TownCommand implements CommandExecutor, Listener {
                 SendInvite((Player) e.getWhoClicked(), "");
             }
 
-            e.getWhoClicked().closeInventory();
+            //e.getWhoClicked().closeInventory();
         } else if (e.getView().getTitle().equals("§e§lAre you sure you want to delete this town?")){
             if (e.getCurrentItem() == null) return;
             if(!e.getCurrentItem().hasItemMeta()) return;
