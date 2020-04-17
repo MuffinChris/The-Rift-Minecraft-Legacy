@@ -145,6 +145,8 @@ public class TownCommand implements CommandExecutor, Listener {
         String townName = main.getUUIDCitizenMap().get(p.getUniqueId()).getTown();
         Inventory menu = Bukkit.createInventory(null, 36, Main.color("&e&l" + townName + " Menu"));
 
+        menu.setItem(10, getRemoveTownItemStack());
+
         // town list
 
         // town leaderboard
@@ -222,13 +224,16 @@ public class TownCommand implements CommandExecutor, Listener {
     }
 
     private void CreateNewTown(Player p) {
-        Main.msg(p, Main.color("&l&eTown Name: "));
+        Main.msg(p, Main.color("&l&eEnter Town Name (Must be A-Z): "));
 
         main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Prompted");
         new BukkitRunnable() {
             public void run() {
-                main.getUUIDCitizenMap().get(p.getUniqueId()).setCreationStatus("Normal");
-                Main.msg(p, "Timed Out");
+                Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
+                if(!mc.getCreationStatus().equals("Normal")) {
+                    mc.setCreationStatus("Normal");
+                    Main.msg(p, "Timed Out");
+                }
             }
         }.runTaskLater(Main.getInstance(), 20*60);
 

@@ -26,14 +26,15 @@ public class Citizen {
     }
 
     public Citizen(Player pl, int rnk){
-        this(pl);
+        this.p = pl;
         this.r = rnk;
 
         pullFiles();
     }
 
     public Citizen(Player pl, int rnk, String t){
-        this(pl, rnk);
+        this.p = pl;
+        this.r = rnk;
         this.town = t;
 
         pullFiles();

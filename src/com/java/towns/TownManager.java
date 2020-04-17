@@ -81,7 +81,6 @@ public class TownManager implements Listener {
         // check if valid town name
 
         for (Town t : main.getTowns()) {
-            // TODO: REPLACE WITH TOWN.GETNAME WHEN IMPLEMENTED
             if (t.getName().equalsIgnoreCase(townName)) {
                 Main.msg(sender, Main.color("&4Town name already taken!"));
                 return;
