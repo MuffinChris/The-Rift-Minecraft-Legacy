@@ -4,8 +4,10 @@ import com.java.Main;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.utility.StatusObject;
 import com.java.rpg.classes.utility.StatusValue;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -34,19 +36,7 @@ public class CustomDeath implements Listener {
     //public List<Player> recents = new ArrayList<>();
 
     @EventHandler (priority = EventPriority.HIGHEST)
-    public void cancelPD (PlayerDeathEvent e) {
-        /*if (!recents.contains(e.getEntity())) {
-            Bukkit.broadcastMessage("You died lel");
-            doDeath(e.getEntity());
-            recents.add(e.getEntity());
-            new BukkitRunnable() {
-                public void run() {
-                    recents.remove(e.getEntity());
-                }
-            }.runTaskLater(Main.getInstance(), 20);
-        } else {
-            e.setCancelled(true);
-        }*/
+    public void customDeath (PlayerDeathEvent e) {
         if (e.getEntity().isOnline() && !e.isCancelled()) {
             e.setShouldDropExperience(false);
             doDeath(e.getEntity(), e.getDrops());
@@ -66,22 +56,31 @@ public class CustomDeath implements Listener {
         main.setMana(p, 0);
     }
 
+    private int seconds = 60;
+
     @EventHandler (priority = EventPriority.MONITOR)
     public void onRightClick (PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.BEDROCK) {
                 File pFile = new File("plugins/Rift/data/gravestones.yml");
                 FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
                 Location graveLoc = e.getClickedBlock().getLocation();
                 if (pData.contains("gravestones." + graveLoc.toString())) {
+
+                    if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        Main.msg(e.getPlayer(), "&8» &cThis &4Gravestone &cbelongs to &f" + pData.getString("gravestones." + graveLoc.toString() + ".player") + "&c.");
+                        e.setCancelled(true);
+                        return;
+                    }
+
                     List<ItemStack> items = new ArrayList<>();
                     boolean go = true;
                     int index = 0;
                     long millis = pData.getLong("gravestones." + graveLoc.toString() + ".time");
-                    if ((System.currentTimeMillis() - millis) * 0.001 <= 15) {
+                    if ((System.currentTimeMillis() - millis) * 0.001 <= seconds) {
                         if (!pData.getString("gravestones." + graveLoc.toString() + ".uuid").equals(e.getPlayer().getUniqueId().toString())) {
                             DecimalFormat df = new DecimalFormat("#.##");
-                            Main.msg(e.getPlayer(), "&cThis gravestone cannot be opened by anyone but &f" + pData.getString("gravestones." + graveLoc.toString() + ".player") + " &cfor &f" + df.format(15 - ((System.currentTimeMillis() - millis) * 0.001)) + " seconds&c.");
+                            Main.msg(e.getPlayer(), "&8» &4Gravestone &ccan only be opened by &f" + pData.getString("gravestones." + graveLoc.toString() + ".player") + " &cfor &f" + df.format(seconds - ((System.currentTimeMillis() - millis) * 0.001)) + " seconds&c.");
                             return;
                         }
                     }
@@ -94,6 +93,9 @@ public class CustomDeath implements Listener {
                         index++;
                     }
                     e.getClickedBlock().setType(Material.AIR);
+                    e.getClickedBlock().getWorld().playSound(e.getClickedBlock().getLocation(), Sound.BLOCK_CHEST_OPEN, 1.0F, 1.0F);
+                    e.getClickedBlock().getWorld().playEffect(e.getClickedBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
+
                     for (ItemStack i : items) {
                         graveLoc.getWorld().dropItem(graveLoc, i);
                     }

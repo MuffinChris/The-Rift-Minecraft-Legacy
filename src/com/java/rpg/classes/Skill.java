@@ -2,10 +2,10 @@ package com.java.rpg.classes;
 
 import com.java.Main;
 import com.java.rpg.holograms.Hologram;
-import com.java.rpg.modifiers.utility.Damage;
+import com.java.rpg.damage.utility.Damage;
 import com.java.rpg.classes.skills.Pyromancer.WorldOnFire;
-import com.java.rpg.modifiers.utility.ElementalStack;
-import com.java.rpg.modifiers.utility.PhysicalStack;
+import com.java.rpg.damage.utility.ElementalStack;
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;

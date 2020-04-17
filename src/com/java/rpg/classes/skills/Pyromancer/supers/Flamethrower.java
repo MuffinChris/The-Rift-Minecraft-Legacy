@@ -1,7 +1,7 @@
 package com.java.rpg.classes.skills.Pyromancer.supers;
 
 import com.java.Main;
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.Location;
@@ -18,17 +18,17 @@ public class Flamethrower extends Skill {
 
     private Main main = Main.getInstance();
 
-    private double damage = 50;
+    private double damage = 100;
 
     private double apscale = 0.3;
 
     private int range = 4;
 
-    private int tickrate = 1;
+    private int tickrate = 2;
 
     public Flamethrower() {
         super("Flamethrower", 0, 10, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FIRE_CHARGE);
-        setToggleMana(3);
+        setToggleMana(7);
         setToggleTicks(tickrate);
     }
 

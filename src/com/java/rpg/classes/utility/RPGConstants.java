@@ -20,6 +20,8 @@ public class RPGConstants {
     public static String abilityPower = "&b⒟";
     public static String manaRegen = "&b⚙";
 
+    public static String arrow = "»";
+
     public static String xp = "XP]";
 
     public static String[] damages = new String[]{physical, trued, magic, air, earth, electric, fire, ice, slash, puncture, impact, xp};

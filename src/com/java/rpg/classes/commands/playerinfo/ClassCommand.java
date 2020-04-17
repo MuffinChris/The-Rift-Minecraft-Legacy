@@ -4,7 +4,7 @@ import com.java.Main;
 import com.java.rpg.classes.PlayerClass;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.utility.RPGConstants;
-import com.java.rpg.modifiers.utility.ElementalStack;
+import com.java.rpg.damage.utility.ElementalStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
