@@ -81,12 +81,15 @@ public class TownManager implements Listener {
         // checks passed : create new town
 
         String townName = e.getMessage();
+
+        Main.msg(e.getPlayer(), "Town Name Entered:\t" + townName);
         c.setCreationStatus("Normal"); // return to normal state
 
         // check if valid town name
-
-        for (Town t : main.getTowns()) {
-            if (t.getName().equalsIgnoreCase(townName)) {
+        makeFullTownList();
+        for(String tn : getFullTownList())
+        {
+            if(tn.equalsIgnoreCase(townName)){
                 Main.msg(sender, Main.color("&4Town name already taken!"));
                 return;
             }
@@ -102,6 +105,7 @@ public class TownManager implements Listener {
         main.getTowns().add(nt);
 
     }
+
     //should only need to be ran once
     public void makeFullTownList(){
         File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
@@ -109,6 +113,7 @@ public class TownManager implements Listener {
         List<String> fulltown = new ArrayList<String>();
         tData.set("FullTownList", fulltown);
     }
+
     public List<String> getFullTownList(){
         File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
         FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
