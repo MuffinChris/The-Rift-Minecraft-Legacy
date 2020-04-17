@@ -59,6 +59,7 @@ public class Town {
     public int getRank(Player p){ return cl.citimap.get(p).getRank(); }
     public String getRankName(Player p) { return ranks.get(cl.getRank(p)); }
     public void setName(String s) { name = s; }
+    public String getName() { return name; }
 
 
     public void changeRankName(int i, String newname){
