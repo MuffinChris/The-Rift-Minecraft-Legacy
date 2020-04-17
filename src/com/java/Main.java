@@ -746,7 +746,6 @@ public class Main extends JavaPlugin {
      */
 
     private Map<UUID, Citizen> uuidCitizenMap = new HashMap<UUID, Citizen>();
-    private TownManager tm = new TownManager();
 
     public Map<UUID, Citizen> getUUIDCitizenMap() {
         return uuidCitizenMap;
@@ -1148,6 +1147,7 @@ public class Main extends JavaPlugin {
         getCommand("bind").setExecutor(new BindCommand());
 
         getCommand("town").setExecutor(new TownCommand());
+
         so("&dRIFT: &fEnabled commands!");
 
         Bukkit.getPluginManager().registerEvents(new InfoCommand(), this);
@@ -1172,6 +1172,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Items(), this);
         Bukkit.getPluginManager().registerEvents(new Accessories(), this);
         Bukkit.getPluginManager().registerEvents(new NPCTag(), this);
+        Bukkit.getPluginManager().registerEvents(new TownManager(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
