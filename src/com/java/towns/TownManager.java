@@ -14,14 +14,8 @@ import java.util.ArrayList;
 public class TownManager implements Listener {
     private Main main = Main.getInstance();
 
-    private ArrayList<Town> towns;
-
     public TownManager() {
-        towns = new ArrayList<Town>();
-    }
 
-    public ArrayList<Town> getTowns() {
-        return towns;
     }
 
     @EventHandler

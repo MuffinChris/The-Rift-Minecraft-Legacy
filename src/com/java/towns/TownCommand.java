@@ -205,17 +205,20 @@ public class TownCommand implements CommandExecutor, Listener {
         String tempName = "poggers squad";
 
         Town nt = new Town(p, tempName);
-        main.getTM().getTowns().add(nt);
+        main.getTowns().add(nt);
     }
 
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (!e.getView().getTitle().contains("§e§lSkills")) return;
+        if (!e.getView().getTitle().contains("§e§lTown Menu")) return;
         if (e.getCurrentItem() == null) return;
         e.setCancelled(true);
 
+        Main.msg((Player) e.getWhoClicked(), "onClick event");
+
         if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Create New Town")) {
+            Main.msg((Player) e.getWhoClicked(), "create new town clicked");
             CreateNewTown((Player) e.getWhoClicked());
         }
 

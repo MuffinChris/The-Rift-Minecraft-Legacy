@@ -21,6 +21,7 @@ import com.java.essentials.commands.admin.warp.SetWarpCommand;
 import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
 import com.java.towns.Citizen;
+import com.java.towns.Town;
 import com.java.towns.TownCommand;
 import com.java.rpg.holograms.EntityHealthBars;
 import com.java.rpg.holograms.Hologram;
@@ -754,9 +755,9 @@ public class Main extends JavaPlugin {
         return uuidCitizenMap;
     }
 
-    private TownManager tm = new TownManager();
-    public TownManager getTM() {
-        return tm;
+    private ArrayList<Town> towns = new ArrayList<Town>();
+    public ArrayList<Town> getTowns() {
+        return towns;
     }
 
 
