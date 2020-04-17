@@ -19,6 +19,8 @@ public class Citizen {
 
     private String creationStatus;
     private String inviteStatus;
+    private String inviteSentStatus;
+    private String searchStatus;
 
     public Citizen(Player pl){
         this.p = pl; this.r = -1; this.town = defaultTownName;
@@ -46,19 +48,16 @@ public class Citizen {
 
     public String getCreationStatus() { return creationStatus; }
     public String getInviteStatus() { return inviteStatus; }
+    public String getInviteSentStatus() { return inviteSentStatus; }
+    public String getSearchStatus() { return searchStatus; }
 
     public void setRank(int i) { r = i; }
     public void setTown(String t) { town = t; }
 
     public void setCreationStatus(String status) {creationStatus = status; }
     public void setInviteStatus(String status) { inviteStatus = status; }
-
-    public void invite(Player recieve){
-
-    }
-    public void kick(Player recieve){
-
-    }
+    public void setInviteSentStatus(String status) { inviteSentStatus = status; }
+    public void setSearchStatus(String status) { searchStatus = status; }
 
     public void setUsernameFile(FileConfiguration pData, String username) {
         if (pData.contains("Username")) {
@@ -99,6 +98,8 @@ public class Citizen {
 
             pData.set("CreationStatus", creationStatus);
             pData.set("InviteStatus", inviteStatus);
+            pData.set("InviteSentStatus", inviteSentStatus);
+            pData.set("SearchStatus", searchStatus);
 
             pData.save(pFile);
         }

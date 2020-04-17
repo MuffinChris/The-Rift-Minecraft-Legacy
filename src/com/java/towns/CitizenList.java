@@ -1,5 +1,6 @@
 package com.java.towns;
 
+import com.java.Main;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public class CitizenList {
 
     public Map<Player, Citizen> citimap;
     public String town;
+
+    private Main main = Main.getInstance();
 
     public CitizenList(){
         citimap = new HashMap<Player, Citizen>();
@@ -48,5 +51,10 @@ public class CitizenList {
             return citimap.remove(p);
         }
             return null;
+    }
+
+    public void addCitizen(Player p) {
+        if(citimap.containsKey(p)) return; // already exists
+        citimap.put(p, main.getUUIDCitizenMap().get(p.getUniqueId())); // magic
     }
 }

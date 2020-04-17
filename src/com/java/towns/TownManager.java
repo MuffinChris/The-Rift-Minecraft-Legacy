@@ -78,41 +78,63 @@ public class TownManager implements Listener {
         if (!main.getUUIDCitizenMap().containsKey(sender.getUniqueId())) return; // idk if this can ever even be false
 
         Citizen c = main.getUUIDCitizenMap().get(sender.getUniqueId());
-        if (!c.getCreationStatus().equals("Prompted")) return; // they are not being asked for a town creation name
+        if (c.getCreationStatus().equals("Prompted")) {
+            String townName = e.getMessage();
+            e.setCancelled(true);
 
-        // checks passed : create new town
+            c.setCreationStatus("Normal"); // return to normal state
+            // check if valid town name
+            for (String tn : main.getFullTownList()) {
+                if (tn.equalsIgnoreCase(townName)) {
+                    Main.msg(sender, Main.color("&4Town name already taken!"));
+                    return;
+                }
+            }
 
-        String townName = e.getMessage();
-        e.setCancelled(true);
-
-        c.setCreationStatus("Normal"); // return to normal state
-
-        // check if valid town name
-        for (String tn : main.getFullTownList()) {
-            if (tn.equalsIgnoreCase(townName)) {
-                Main.msg(sender, Main.color("&4Town name already taken!"));
+            if (!townName.matches("[a-zA-Z ]+")) {
+                Main.msg(sender, Main.color("&4Town names can only contain characters (A-Z) and spaces"));
                 return;
             }
+
+            if (townName.equalsIgnoreCase("None")) {
+                Main.msg(sender, Main.color("&4That is a protected town name!"));
+                return;
+            }
+
+            Town nt = new Town(sender, e.getMessage());
+            main.getTowns().add(nt);
+
+            List<String> fullTowns = main.getFullTownList();
+            fullTowns.add(e.getMessage());
+            main.setFullTownList(fullTowns);
+
+            Main.msg(sender, Main.color("&l&aSuccessfully created town: &f" + townName));
         }
+        else if(c.getInviteSentStatus().equals("Prompted")) {
+            String recieverName = e.getMessage();
+            c.setInviteSentStatus("Normal");
 
-        if (!townName.matches("[a-zA-Z ]+")) {
-            Main.msg(sender, Main.color("&4Town names can only contain characters (A-Z) and spaces"));
-            return;
+            Player r = Bukkit.getPlayer(recieverName);
+            if (r == null) {
+                Main.msg(sender, Main.color("&4Player not found"));
+                return;
+            }
+
+            Citizen cr = main.getUUIDCitizenMap().get(r.getUniqueId());
+            Town t = null;
+            for (Town ct : main.getTowns()) {
+                if (ct.getName().equals(c.getTown())) {
+                    t = ct;
+                    break;
+                }
+            }
+
+            if (!cr.getTown().equalsIgnoreCase("None")) {
+                Main.msg(r, "&4This player is already in another town!");
+                return;
+            }
+            t.invite(sender, r);
         }
-
-        if(townName.equalsIgnoreCase("None")) {
-            Main.msg(sender, Main.color("&4That is a protected town name!"));
-            return;
-        }
-
-        Town nt = new Town(sender, e.getMessage());
-        main.getTowns().add(nt);
-
-        List<String> fullTowns = main.getFullTownList();
-        fullTowns.add(e.getMessage());
-        main.setFullTownList(fullTowns);
-
-        Main.msg(sender, Main.color("&l&aSuccessfully created town: &f" + townName));
 
     }
 

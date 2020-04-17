@@ -31,14 +31,16 @@ public class TownCommand implements CommandExecutor, Listener {
 
     private Main main = Main.getInstance();
 
-    private boolean is(String comp, String s) {
-        String[] strings = s.split(",");
-        for (String str : strings) {
-            if (str.equalsIgnoreCase(comp)) {
-                return true;
+    private Town getTownFromCitizen(Citizen c) {
+        Town t = null;
+        for (Town ct : main.getTowns()) {
+            if (ct.getName().equals(c.getTown())) {
+                t = ct;
+                break;
             }
         }
-        return false;
+
+        return t;
     }
 
     @Override
@@ -54,30 +56,51 @@ public class TownCommand implements CommandExecutor, Listener {
             else
                 sendTownInv(p);
             return true;
-        }
-        else if(args.length == 1)
-        {
-            if(args[0].equalsIgnoreCase("create")) {
+        } else if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("create")) {
                 return CreateNewTown(p);
-            }
-            else if(args[0].equalsIgnoreCase("leave")) {
+            } else if (args[0].equalsIgnoreCase("leave")) {
                 return LeaveTown(p);
-            }
-            else if(args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("remove")) {
+            } else if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("remove")) {
                 return DeleteTown(p);
-            }
-            else if(args[0].equalsIgnoreCase("invite")) {
+            } else if (args[0].equalsIgnoreCase("invite")) {
+                Main.msg(p, Main.color("&4Must specify player to invite!"));
+                return false;
+            } else if (args[0].equalsIgnoreCase("accept")) {
+                return AcceptInvite(p);
+            } else if (args[0].equalsIgnoreCase("decline")) {
+                return DeclineInvite(p);
+            } else if (args[0].equalsIgnoreCase("kick")) {
+                // TODO: implement
+            } else if (args[0].equalsIgnoreCase("promote")) {
                 // TODO: implement
             }
-            else if(args[0].equalsIgnoreCase("kick")) {
-                // TODO: implement
-            }
-            else if(args[0].equalsIgnoreCase("promote")) {
-                // TODO: implement
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("invite")) {
+                return SendInvite(p, args[1]);
             }
         }
 
         return false;
+    }
+
+    private ItemStack getNewTownItemStack() {
+        ItemStack sp = new ItemStack(Material.NETHER_STAR);
+
+        ItemMeta spMeta = sp.getItemMeta();
+        spMeta.setDisplayName(Main.color("&6Create New Town"));
+        spMeta.setLore(new ArrayList<String>() {
+            {
+                add(Main.color("&fClick to create a town!"));
+            }
+        });
+
+        spMeta.addEnchant(Enchantment.MENDING, 1, true);
+        spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        sp.setItemMeta(spMeta);
+
+        return sp;
     }
 
     private ItemStack getRemoveTownItemStack() {
@@ -177,13 +200,12 @@ public class TownCommand implements CommandExecutor, Listener {
 
     public void sendTownInv(Player p) {
         String townName = main.getUUIDCitizenMap().get(p.getUniqueId()).getTown();
-        Inventory menu = Bukkit.createInventory(null, 36, Main.color("&e&l" + townName + " Menu"));
+        Inventory menu = Bukkit.createInventory(null, 36, Main.color("&b&l" + townName + " Menu"));
 
         // delete town
         menu.setItem(10, getRemoveTownItemStack());
         // leave town
         menu.setItem(11, getLeaveTownItemStack());
-
 
         // town list
 
@@ -216,25 +238,6 @@ public class TownCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private ItemStack getNewTownItemStack() {
-        ItemStack sp = new ItemStack(Material.NETHER_STAR);
-
-        ItemMeta spMeta = sp.getItemMeta();
-        spMeta.setDisplayName(Main.color("&6Create New Town"));
-        spMeta.setLore(new ArrayList<String>() {
-            {
-                add(Main.color("&fClick to create a town!"));
-            }
-        });
-
-        spMeta.addEnchant(Enchantment.MENDING, 1, true);
-        spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-        sp.setItemMeta(spMeta);
-
-        return sp;
-    }
-
     public void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
@@ -264,7 +267,7 @@ public class TownCommand implements CommandExecutor, Listener {
 
     private boolean CreateNewTown(Player p) {
 
-        if(!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
+        if (!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
             Main.msg(p, Main.color("&4You are already in a town!"));
             return false;
         }
@@ -291,25 +294,19 @@ public class TownCommand implements CommandExecutor, Listener {
         // TODO: if the owner of a town leaves -- then either the town should disband or the max level role needs to be transferred (randomly to a maxlvl -1 member?)
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
-        if(c.getTown().equalsIgnoreCase("None")) {
+        if (c.getTown().equalsIgnoreCase("None")) {
             Main.msg(p, "&4You aren't in any town!");
             return false;
         }
 
-        Town t = null;
-        for(Town et : main.getTowns()) {
-            if(et.getName().equals(c.getTown())) {
-                t = et;
-                break;
-            }
-        }
+        Town t = getTownFromCitizen(c);
+
         c.setTown("None"); // default values
         c.setRank(-1); // %
         Main.msg(p, "&4You have successfully left " + t.getName());
 
         t.getCitizenList().removeCitizen(p);
-        if(t.getCitizenList().citimap.size() == 0)
-        {
+        if (t.getCitizenList().citimap.size() == 0) {
             // there are no more people in this town -- delete it
             main.getTowns().remove(t);
             List<String> fullTowns = main.getFullTownList();
@@ -325,26 +322,15 @@ public class TownCommand implements CommandExecutor, Listener {
     private boolean DeleteTown(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
-        if(c.getTown().equalsIgnoreCase("None")) {
-            Main.msg(p, "&4You aren't in any town!");
-            return false;
-        }
+        Town t = getTownFromCitizen(c);
 
-        Town t = null;
-        for(Town ct : main.getTowns()) {
-            if(ct.getName().equals(c.getTown())) {
-                t = ct;
-                break;
-            }
-        }
-
-        if(c.getRank() != t.getRanks().size() - 1) { // make sure user is the highest possible rank
+        if (c.getRank() != t.getRanks().size() - 1) { // make sure user is the highest possible rank
             Main.msg(p, "&4You don't have permission to do this!");
             return false;
         }
 
         Main.msg(p, "&aTown successfully disbanded");
-        for(Citizen ct : t.getCitizenList().citimap.values()) {
+        for (Citizen ct : t.getCitizenList().citimap.values()) {
             ct.setRank(-1);
             ct.setTown("None");
         }
@@ -358,6 +344,100 @@ public class TownCommand implements CommandExecutor, Listener {
         return true;
     }
 
+    private boolean SendInvite(Player p, String recieverName) {
+        Citizen cp = main.getUUIDCitizenMap().get(p.getUniqueId());
+
+        if (cp.getRank() < 3) {
+            Main.msg(p, "&4You do not have sufficient permissions to invite!");
+            return false;
+        }
+
+        if (recieverName.equals("")) {
+            cp.setInviteSentStatus("Prompted");
+            Main.msg(p, Main.color("&l&eEnter Username: "));
+
+            new BukkitRunnable() {
+                public void run() {
+                    if (!cp.getCreationStatus().equals("Normal")) {
+                        cp.setCreationStatus("Normal");
+                        Main.msg(p, Main.color("&4Prompt Timed Out."));
+                    }
+                }
+            }.runTaskLater(Main.getInstance(), 20 * 60);
+
+
+        } else {
+            Player r = Bukkit.getPlayer(recieverName);
+            if (r == null) {
+                Main.msg(p, Main.color("&4Player not found"));
+                return false;
+            }
+
+
+            Citizen cr = main.getUUIDCitizenMap().get(r.getUniqueId());
+            Town t = getTownFromCitizen(cp);
+
+            if (getTownFromCitizen(cr) != null) {
+                Main.msg(r, "&4This player is already in another town!");
+                return false;
+            }
+
+            t.invite(p, r);
+        }
+        return true;
+    }
+
+    private boolean AcceptInvite(Player p) {
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+
+        if(c.getInviteStatus().equalsIgnoreCase("Normal")) {
+            Main.msg(p, Main.color("&4You have no pending invites!"));
+            return false;
+        }
+
+        Town tinv = null;
+        for (Town t : main.getTowns()) {
+            if(t.getName().equalsIgnoreCase(c.getInviteStatus())) {
+                tinv = t;
+                break;
+            }
+        }
+
+        c.setTown(c.getInviteStatus());
+        c.setRank(0); // lowest possible rank
+
+        tinv.getCitizenList().addCitizen(p);
+
+        Main.msg(p, Main.color("&aJoined town " + c.getInviteStatus()));
+
+        c.setInviteStatus("Normal");
+        return true;
+    }
+
+    private boolean DeclineInvite(Player p) {
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+
+        if(!c.getInviteStatus().equalsIgnoreCase("Pending")) {
+            Main.msg(p, Main.color("&4You have no pending invites!"));
+            return false;
+        }
+
+        Town tinv = null;
+        for (Town t : main.getTowns()) {
+            if(t.getName().equalsIgnoreCase(c.getInviteStatus())) {
+                tinv = t;
+                break;
+            }
+        }
+
+        c.setInviteStatus("Normal");
+        Main.msg(p, "&aYou successfully declined the invite");
+        return true;
+
+
+    }
+
+
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lTown Menu")) {
@@ -369,15 +449,16 @@ public class TownCommand implements CommandExecutor, Listener {
             }
 
             e.getWhoClicked().closeInventory();
-        } else if (e.getView().getTitle().contains("§e§l" + main.getUUIDCitizenMap().get(e.getWhoClicked().getUniqueId()).getTown() + " Menu")) {
+        } else if (e.getView().getTitle().contains("§b§l" + main.getUUIDCitizenMap().get(e.getWhoClicked().getUniqueId()).getTown() + " Menu")) {
             if (e.getCurrentItem() == null) return;
             e.setCancelled(true);
 
             if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Leave Town")) {
                 LeaveTown((Player) e.getWhoClicked());
-            }
-            if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Delete Town")) {
+            } else if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Delete Town")) {
                 DeleteTown((Player) e.getWhoClicked());
+            } else if (e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().getDisplayName().contains("Invite")) {
+                SendInvite((Player) e.getWhoClicked(), "");
             }
 
         }
