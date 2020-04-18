@@ -75,12 +75,8 @@ public class CustomDeath implements Listener {
             if (e.getView().getTitle().contains("§cGravestone")) {
                 BlockInventoryHolder chest = (BlockInventoryHolder) e.getInventory().getHolder();
                 if (chest != null) {
-                    for (ItemStack i : e.getInventory().getStorageContents()) {
-                        if (i != null) {
-                            chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
-                        }
-                    }
                     chest.getBlock().setType(Material.AIR);
+                    chest.getBlock().getWorld().playSound(chest.getBlock().getLocation(), Sound.BLOCK_CHEST_CLOSE, 1.0F, 1.0F);
                 }
             }
         }
