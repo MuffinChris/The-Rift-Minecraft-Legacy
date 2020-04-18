@@ -76,6 +76,9 @@ public class Leveleable {
     }
 
     public double getPercent() {
+        if (Double.isNaN(exp/maxexp)) {
+            return 0;
+        }
         return exp / maxexp;
     }
 
