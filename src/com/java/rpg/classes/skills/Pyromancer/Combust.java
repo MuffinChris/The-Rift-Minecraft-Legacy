@@ -59,7 +59,7 @@ public class Combust extends Skill implements Listener {
 
     public void cast(Player p) {
         super.cast(p);
-        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0F, 1.0F);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
         CombustProjectile proj = new CombustProjectile(p, range, 5, getDmg(p), getDmgPerEntity(p), travelRange);
     }
 
