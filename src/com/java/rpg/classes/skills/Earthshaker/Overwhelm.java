@@ -32,6 +32,7 @@ public class Overwhelm extends Skill {
 
     public Overwhelm() {
         super("Overwhelm", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST-TARGET");
+        setTargetRange(range);
     }
     
     public List<String> getDescription(Player p) {

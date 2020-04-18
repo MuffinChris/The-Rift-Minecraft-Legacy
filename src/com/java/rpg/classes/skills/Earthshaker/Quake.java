@@ -4,6 +4,7 @@ import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class Quake extends Skill {
 
     private double damage = 200;
     private int range = 8;
+    BlockData dust = Material.STONE.createBlockData();
     
     private double APscale = .7;
     private double ADscale = 2;
@@ -36,7 +38,7 @@ public class Quake extends Skill {
     
     public void cast(Player p) {
     	super.cast(p);
-    	p.getWorld().spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 40, 4, 1, 4);
+    	p.getWorld().spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 40, 4, 1, 4, dust);
     	p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
     	for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(range)) {
             if (ent instanceof ArmorStand) {

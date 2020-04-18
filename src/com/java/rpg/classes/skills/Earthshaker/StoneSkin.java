@@ -50,7 +50,7 @@ public class StoneSkin extends Skill implements Listener {
     }
     
     public int getStacks(Player p) {
-    	return main.getRP(p).getStoneSkinS().getStatuses().get(0).getValue();
+        return main.getRP(p).getStoneSkinS().getStatuses().get(0).getValue();
     }
     
     public void stacksCD(Player p) {
@@ -59,9 +59,5 @@ public class StoneSkin extends Skill implements Listener {
     		main.getRP(p).getStoneSkinCD().getStatuses().add(new StatusValue("StoneSkinCd" + p.getName(), 0, cooldown, System.currentTimeMillis(), false));
     	}
     	main.getRP(p).getStoneSkinS().getStatuses().add(new StatusValue("StoneSkinS" + p.getName(), 0, 1, System.currentTimeMillis(), true));
-    }
-    
-    public double damageFormula(Player p) {
-    	return (damage + getDmg(p)) * Math.pow(1.2, getStacks(p));
     }
 }

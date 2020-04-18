@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 import org.bukkit.Sound;
+import org.bukkit.block.data.BlockData;
 
 public class Shatterstrike extends Skill implements Listener {
 	
@@ -21,6 +23,7 @@ public class Shatterstrike extends Skill implements Listener {
 	
 	private double damage = 200;
 	private int range = 3;
+    BlockData dust = Material.STONE.createBlockData();
 	
 	private double APscale = 1;
     private double ADscale = 2;
@@ -30,7 +33,7 @@ public class Shatterstrike extends Skill implements Listener {
     }
 	
     public Shatterstrike() {
-		super("Shatterstrike", 100, 20, 10, 1, "fireball niqqa", "CAST");
+		super("Shatterstrike", 100, 20, 0, 1, "fireball niqqa", "CAST");
 	}
     
     public List<String> getDescription(Player p) {
@@ -65,7 +68,7 @@ public class Shatterstrike extends Skill implements Listener {
                 }
                 ent.setKiller(p);
                 spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0));
-                ent.getWorld().spawnParticle(Particle.BLOCK_DUST, ent.getLocation(), 5, .1, .1, .1);
+                ent.getWorld().spawnParticle(Particle.BLOCK_DUST, ent.getLocation(), 50, 1, 1, 1, dust);
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
         	}
     	}
