@@ -137,9 +137,9 @@ public class Town {
             /*
             Citizens
              */
-            List<UUID> citizenData = new ArrayList<UUID>();
+            List<String> citizenData = new ArrayList<String>();
             for (Map.Entry<Player, Citizen> entry : cl.getCitizenList().entrySet()) {
-                citizenData.add(entry.getKey().getUniqueId());
+                citizenData.add(entry.getKey().getUniqueId().toString());
             }
 
             tData.set("CitizensList", citizenData);
@@ -150,17 +150,23 @@ public class Town {
     }
 
     public void pullFiles() {
-        File pFile = new File("plugins/Rift/data/towns/" + name + ".yml");
-        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
-        if (!pFile.exists()) {
+        File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
+        FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
+        if (!tFile.exists()) {
             pushFiles();
             pullFiles();
         } else {
             /*
             Town info
              */
-            setName(pData.getString("TownName"));
-
+            setName(tData.getString("TownName"));
+            List<String> pullUUIDString = new ArrayList<String>();
+            List<Citizen> pullcitizens = new ArrayList<Citizen>();
+            pullUUIDString = tData.getStringList("CitizensList");
+            for(int i = 0; i < pullUUIDString.size(); i++){
+                pullcitizens.add(main.getUUIDCitizenMap().get(UUID.fromString(pullUUIDString.get(i))));
+            }
+            cl = new CitizenList(pullcitizens, name);
         }
     }
 }
