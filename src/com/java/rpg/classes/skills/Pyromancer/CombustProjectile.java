@@ -55,7 +55,7 @@ public class CombustProjectile {
                 @Override
                 public void run() {
                     if (!arrow.isDead()) {
-                        arrow.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.25, 0.15, 0.25, 0.05, null, true);
+                        arrow.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.5, 0.5, 0.5, 0.1, null, true);
                     }
                     if (!arrow.doesBounce() &&( arrow.isOnGround() || arrow.isDead() || arrow.isInBlock())) {
                         explodeSingle(p, arrow.getLocation(), Double.valueOf(arrow.getCustomName().replace("Combust:", "")));

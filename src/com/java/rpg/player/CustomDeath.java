@@ -76,7 +76,9 @@ public class CustomDeath implements Listener {
                 BlockInventoryHolder chest = (BlockInventoryHolder) e.getInventory().getHolder();
                 if (chest != null) {
                     for (ItemStack i : chest.getInventory().getContents()) {
-                        chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
+                        if (i.getType() != null) {
+                            chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
+                        }
                     }
                     chest.getBlock().setType(Material.AIR);
                 }
@@ -88,7 +90,7 @@ public class CustomDeath implements Listener {
     public void onGravestoneBreak (BlockBreakEvent e) {
         if (isGravestone(e.getBlock())) {
             e.setCancelled(true);
-            Main.msg(e.getPlayer(), "&cOpen the Gravestone instead of breaking it.");
+            Main.msg(e.getPlayer(), "&8» &cOpen the &4Gravestone &cinstead of breaking it.");
         }
     }
 
@@ -97,7 +99,7 @@ public class CustomDeath implements Listener {
         if (e.getBlock().getType() == Material.CHEST) {
             if (isGravestone(e.getBlock().getLocation().add(new Vector(1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(-1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,1)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,-1)).getBlock())) {
                 e.setCancelled(true);
-                Main.msg(e.getPlayer(), "&cRemove nearby Gravestone to place Chest.");
+                Main.msg(e.getPlayer(), "&8» &cRemove nearby &4Gravestone &cto place this Chest.");
             }
         }
     }
@@ -113,12 +115,31 @@ public class CustomDeath implements Listener {
         return false;
     }
 
+    public String getGravestoneName(Block b) {
+        if (b.getType() == Material.CHEST) {
+            Chest chest = (Chest) b.getState();
+            TileEntityChest tec = ((CraftChest) chest).getTileEntity();
+            if (tec.hasCustomName() && tec.getCustomName().toString().contains("'s §cGravestone")) {
+                return (tec.getCustomName().toString().substring(0, tec.getCustomName().toString().indexOf("'s §cGravestone")));
+            }
+        }
+        return "";
+    }
+
     @EventHandler (priority = EventPriority.MONITOR)
     public void onGravestoneInteract (PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CHEST) {
+
+                if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    Main.msg(e.getPlayer(), "&8» &cThis &4Gravestone &cbelongs to &f" + getGravestoneName(e.getClickedBlock()));
+                    e.setCancelled(true);
+                    return;
+                }
+
                 Location graveLoc = e.getClickedBlock().getLocation();
                 if (graveLoc.getBlock().hasMetadata("Time")) {
+
                     long millis = graveLoc.getBlock().getMetadata("Time").get(0).asLong();
                     UUID dead = UUID.fromString(graveLoc.getBlock().getMetadata("Owner").get(0).asString());
 

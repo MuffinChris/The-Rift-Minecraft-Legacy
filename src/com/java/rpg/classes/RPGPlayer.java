@@ -1368,6 +1368,9 @@ public class RPGPlayer extends Leveleable {
 
         Chat c = Main.getInstance().getChat();
         if (player != null && main.getPM().hasParty(player)) {
+
+            boolean updatePartyNumber = false;
+
             partyL = new ArrayList<>();
             for (TabSlot t : partySlots.getTs()) {
                 if (t.getPlayer() != null && main.getPM().getParty(player).getPlayers().contains(t.getPlayer())) {
@@ -1418,6 +1421,7 @@ public class RPGPlayer extends Leveleable {
                         index++;
                         continue;
                     }
+                    updatePartyNumber = true;
                     partySlots.getTs().get(tlIndex).put(target, c.getPlayerPrefix(target), c.getPlayerSuffix(target));
                     String suffix = Main.color(c.getPlayerSuffix(target));
                     String name = target.getDisplayName();
@@ -1444,7 +1448,11 @@ public class RPGPlayer extends Leveleable {
                 }
                 index++;
             }
+            if (updatePartyNumber) {
+                updatePartyCount();
+            }
         } else if (!partyL.isEmpty()){
+            updatePartyCount();
             int index = 0;
             for (TabSlot t : partySlots.getTs()) {
                 if (index >= partyL.size()) {
@@ -1478,6 +1486,8 @@ public class RPGPlayer extends Leveleable {
         }
 
         List<Player> plyrs = getSortedOnlinePlayers();
+
+        boolean updatePlayerCount = false;
 
         int index = 0;
         for (int tl : players) {
@@ -1522,6 +1532,7 @@ public class RPGPlayer extends Leveleable {
                     index++;
                     continue;
                 }
+                updatePlayerCount = true;
                 playerSlots.getTs().get(tlIndex).put(target, c.getPlayerPrefix(target), c.getPlayerSuffix(target));
                 String prefix = Main.color(c.getPlayerPrefix(target));
                 String suffix = Main.color(c.getPlayerSuffix(target));
@@ -1553,6 +1564,52 @@ public class RPGPlayer extends Leveleable {
                 main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
             }
             index++;
+        }
+        if (updatePlayerCount) {
+            updatePlayerCount();
+        }
+    }
+
+    public void updatePlayerCount() {
+        int tl = 20;
+        String gpName = "#" + tl;
+        String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
+        uuid+=tl;
+        GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
+        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+        String name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS [" + Bukkit.getOnlinePlayers().size() + "]";
+        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
+        PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
+        fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
+        fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
+        try {
+            main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePartyCount() {
+        int tl = 0;
+        String gpName = "#0" + tl;
+        String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
+        uuid+= "0" + tl;
+        GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
+        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+        String name;
+        if (main.getPM().hasParty(player)) {
+            name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [" + main.getPM().getParty(player).getPlayers().size() + "]";
+        } else {
+            name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [0]";
+        }
+        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
+        PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
+        fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
+        fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
+        try {
+            main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 
@@ -1606,17 +1663,19 @@ public class RPGPlayer extends Leveleable {
             }*/
             String name = "";
             if (tl == 0) {
-                name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS";
+                name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [0]";
             }
             if (tl == 20) {
-                name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS";
+                name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS [" + Bukkit.getOnlinePlayers().size() + "]";
             }
             /*if (tl == 0) {
                 name = ChatColor.GREEN + "" + ChatColor.BOLD + "♦ FRIENDS LIST";
             }*/
             if (tl == 60) {
-                name = ChatColor.AQUA + "" + ChatColor.BOLD + "♦ TOWN MEMBERS";
+                name = ChatColor.AQUA + "" + ChatColor.BOLD + "♦ TOWN MEMBERS [0]";
             }
+
+            name = Main.color(name);
             int latency = 20000;
             if (players.contains(tl) && playerSlots.getTs().get(tl - 21).getPlayer() != null) {
                 name = playerSlots.getTs().get(tl - 21).getPlayer().getDisplayName();
