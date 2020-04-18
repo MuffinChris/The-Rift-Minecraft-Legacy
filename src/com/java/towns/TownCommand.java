@@ -416,8 +416,7 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return true;
     }
-
-    private boolean DeleteTown(Player p) {
+    private boolean DeleteTownPre(Player p){
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         Town t = getTownFromCitizen(c);
@@ -426,6 +425,12 @@ public class TownCommand implements CommandExecutor, Listener {
             Main.msg(p, "&4You don't have permission to do this!");
             return false;
         }
+        return true;
+    }
+    private boolean DeleteTown(Player p) {
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+
+        Town t = getTownFromCitizen(c);
 
         Main.msg(p, "&aTown successfully disbanded");
         for (Citizen ct : t.getCitizenList().citimap.values()) {
@@ -562,9 +567,10 @@ public class TownCommand implements CommandExecutor, Listener {
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.contains("Leave Town")) {
-                LeaveTown((Player) e.getWhoClicked());
+                //LeaveTown((Player) e.getWhoClicked());
+                createAreYouSure((Player) e.getWhoClicked(), "you want to leave");
             } else if (itemDispName.contains("Delete Town")) {
-                //DeleteTown((Player) e.getWhoClicked());
+                DeleteTownPre((Player) e.getWhoClicked());
                 createAreYouSure((Player) e.getWhoClicked(), "you want to delete this town");
             } else if (itemDispName.contains("Invite")) {
                 SendInvite((Player) e.getWhoClicked(), "");
@@ -579,6 +585,20 @@ public class TownCommand implements CommandExecutor, Listener {
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.equals("§aYes")){
                 DeleteTown((Player) e.getWhoClicked());
+            }
+            else if (itemDispName.equals("§cNo")){
+                return;
+            }
+            e.getWhoClicked().closeInventory();
+        }
+        else if (e.getView().getTitle().contains("§e§lAre you sure you want leave?")){
+            if (e.getCurrentItem() == null) return;
+            if(!e.getCurrentItem().hasItemMeta()) return;
+            e.setCancelled(true);
+
+            String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
+            if (itemDispName.equals("§aYes")){
+                LeaveTown((Player) e.getWhoClicked());
             }
             else if (itemDispName.equals("§cNo")){
                 return;
