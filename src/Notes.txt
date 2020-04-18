@@ -128,6 +128,8 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -21. Gravestone find location to place (not just on player)
+
     -20. Call Supers Skill Upgrades lmao
 
     -19. Make MenuManager to make menus that are ease
@@ -142,8 +144,6 @@ DIRECT LINE TODO LIST:
     -14. Can blaze (and other skills) do damager after log off? (Blaze especially)
 
     -11. Particles falling from the sky that deal damage (cuth botest)
-
-    -10. add gravestone model and fix config removal issue
 
     -9. Consider implementing different attacks for melee weapons. (ie. Regular Sword LMB is Slash. Crouch LMB is Heavy. Crouch RMB is Spin)
 

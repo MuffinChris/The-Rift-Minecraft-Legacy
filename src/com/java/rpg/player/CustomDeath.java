@@ -34,6 +34,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,11 +64,9 @@ public class CustomDeath implements Listener {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 30, 0));
             }
         }.runTaskLater(Main.getInstance(), 1L);
-        //p.sendTitle(new Title(Main.color("&c&lRESPAWNED"), Main.color(""), 5, 80, 5));
+
         main.setMana(p, 0);
     }
-
-    private int seconds = 60;
 
     @EventHandler
     public void chestClose (InventoryCloseEvent e) {
@@ -77,6 +76,7 @@ public class CustomDeath implements Listener {
                 if (chest != null) {
                     chest.getBlock().setType(Material.AIR);
                     chest.getBlock().getWorld().playSound(chest.getBlock().getLocation(), Sound.BLOCK_CHEST_CLOSE, 1.0F, 1.0F);
+                    chest.getBlock().getWorld().playEffect(chest.getBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
                 }
             }
         }
@@ -139,6 +139,7 @@ public class CustomDeath implements Listener {
                     long millis = graveLoc.getBlock().getMetadata("Time").get(0).asLong();
                     UUID dead = UUID.fromString(graveLoc.getBlock().getMetadata("Owner").get(0).asString());
 
+                    int seconds = 60;
                     if ((System.currentTimeMillis() - millis) * 0.001 <= seconds) {
                         if (!dead.equals(e.getPlayer().getUniqueId())) {
                             DecimalFormat df = new DecimalFormat("#.##");
@@ -147,8 +148,6 @@ public class CustomDeath implements Listener {
                             return;
                         }
                     }
-
-                    e.getClickedBlock().getWorld().playEffect(e.getClickedBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
 
                     graveLoc.getBlock().removeMetadata("Time", Main.getInstance());
                     graveLoc.getBlock().removeMetadata("Owner", Main.getInstance());
@@ -182,7 +181,24 @@ public class CustomDeath implements Listener {
             Chest chest = (Chest) graveLoc.getBlock().getState();
             TileEntityChest tec = ((CraftChest) chest).getTileEntity();
             tec.setCustomName(new ChatComponentText(Main.color("&c" + p.getName() + "'s &cGravestone")));
+
+            List<ItemStack> overflow = new ArrayList<>();
+
+            int index = 0;
+            for (ItemStack i : deathitems) {
+                if (index > chest.getBlockInventory().getSize()) {
+                    overflow.add(i);
+                } else {
+                    chest.getBlockInventory().addItem(i);
+                }
+                index++;
+            }
             chest.getBlockInventory().setContents(deathitems.toArray(new ItemStack[0]));
+
+            for (ItemStack i : overflow) {
+                chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
+            }
+
             graveLoc.getBlock().setMetadata("Time", new FixedMetadataValue(Main.getInstance(), System.currentTimeMillis()));
             graveLoc.getBlock().setMetadata("Owner", new FixedMetadataValue(Main.getInstance(), p.getUniqueId().toString()));
         } else {

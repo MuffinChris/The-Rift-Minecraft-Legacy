@@ -50,18 +50,6 @@ public class RPGPlayer extends Leveleable {
 
     private Main main = Main.getInstance();
 
-    private int pstrength;
-
-    private int skillpoints;
-
-    public int getSP() {
-        return skillpoints;
-    }
-
-    public void setSP(int i) {
-        skillpoints = i;
-    }
-
     private Player player;
     private PlayerClass pclass;
 
@@ -82,7 +70,7 @@ public class RPGPlayer extends Leveleable {
     public double getArmor() {
         double armor = 0;
         if (player == null) {
-            return 0;
+            return armor;
         }
         for (ItemStack i : player.getInventory().getArmorContents()) {
             if (Items.getDurability(i) <= 0) {
@@ -91,7 +79,7 @@ public class RPGPlayer extends Leveleable {
                 armor += Items.getArmor(i);
             }
         }
-        if (getPClass() == null) {
+        if (pclass == null) {
             return armor;
         }
         return getPClass().getCalcArmor(getLevel()) + armor;
@@ -465,7 +453,6 @@ public class RPGPlayer extends Leveleable {
         target = null;
         pullFiles();
         board = new Skillboard(p);
-        pstrength = 100;
 
         damages = new ArrayList<>();
 
@@ -485,14 +472,6 @@ public class RPGPlayer extends Leveleable {
             }
         }
         return skillLevels;
-    }
-
-    public void setPStrength(int d) {
-        pstrength = d;
-    }
-
-    public int getPStrength() {
-        return pstrength;
     }
 
     public Skillboard getBoard() {

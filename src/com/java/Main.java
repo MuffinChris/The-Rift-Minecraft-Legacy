@@ -537,6 +537,10 @@ public class Main extends JavaPlugin {
     }
 
     public RPGPlayer getRP(Player p) {
+        if (getPC().get(p.getUniqueId()) == null) {
+            Main.so("&4&l[ERROR] &cgetRP returned null. Defaulting to NPC RPGPlayer");
+            return new RPGPlayer();
+        }
         return getPC().get(p.getUniqueId());
     }
 

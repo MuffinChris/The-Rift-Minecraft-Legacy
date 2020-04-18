@@ -488,7 +488,9 @@ public class DamageListener implements Listener {
                                 if (!players.contains(damager)) {
                                     players.add(damager);
                                 }
-                                Hologram magic = new Hologram(ent, ent.getLocation(), hologram.substring(0, hologram.length() - 1), Hologram.HologramType.DAMAGE, players);
+                                if (!hologram.isEmpty()) {
+                                    Hologram magic = new Hologram(ent, ent.getLocation(), hologram.substring(0, hologram.length() - 1), Hologram.HologramType.DAMAGE, players);
+                                }
                                 break;
                             }
                         }
@@ -506,8 +508,8 @@ public class DamageListener implements Listener {
                 }
             }
         }
-        if (!(e.getDamager() instanceof Player) && e.getEntity() instanceof Player) {
-            if ((!(e.getDamager() instanceof Projectile) || (e.getDamager() instanceof Projectile && !(((Projectile)e.getDamager()).getShooter() instanceof Player))) && !(e.getDamager() instanceof ThrownPotion) && !(e.getDamager() instanceof AreaEffectCloud)) {
+        if (!(main.isPlayer(e.getDamager())) && main.isPlayer(e.getEntity())) {
+            if ((!(e.getDamager() instanceof Projectile) || (e.getDamager() instanceof Projectile && !(main.isPlayer((Entity) ((Projectile)e.getDamager()).getShooter())))) && !(e.getDamager() instanceof ThrownPotion) && !(e.getDamager() instanceof AreaEffectCloud)) {
                 String npHolo = "";
                 Player p = (Player) e.getEntity();
                 RPGPlayer rp = main.getRP(p);
