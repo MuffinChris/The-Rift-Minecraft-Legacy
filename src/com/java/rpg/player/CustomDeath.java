@@ -75,10 +75,8 @@ public class CustomDeath implements Listener {
             if (e.getView().getTitle().contains("§cGravestone")) {
                 BlockInventoryHolder chest = (BlockInventoryHolder) e.getInventory().getHolder();
                 if (chest != null) {
-                    for (ItemStack i : chest.getInventory().getContents()) {
-                        if (i.getType() != null) {
-                            chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
-                        }
+                    for (ItemStack i : e.getInventory().getStorageContents()) {
+                        chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
                     }
                     chest.getBlock().setType(Material.AIR);
                 }
@@ -109,7 +107,7 @@ public class CustomDeath implements Listener {
             Chest chest = (Chest) b.getState();
             TileEntityChest tec = ((CraftChest) chest).getTileEntity();
             if (tec.hasCustomName()) {
-                return (tec.getCustomName().toString().contains("§cGravestone"));
+                return (tec.getCustomName().getText().contains("§cGravestone"));
             }
         }
         return false;
@@ -120,7 +118,7 @@ public class CustomDeath implements Listener {
             Chest chest = (Chest) b.getState();
             TileEntityChest tec = ((CraftChest) chest).getTileEntity();
             if (tec.hasCustomName() && tec.getCustomName().toString().contains("'s §cGravestone")) {
-                return (tec.getCustomName().toString().substring(0, tec.getCustomName().toString().indexOf("'s §cGravestone")));
+                return (tec.getCustomName().getText().substring(0, tec.getCustomName().getText().indexOf("'s §cGravestone")));
             }
         }
         return "";
