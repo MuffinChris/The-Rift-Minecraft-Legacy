@@ -76,7 +76,9 @@ public class CustomDeath implements Listener {
                 BlockInventoryHolder chest = (BlockInventoryHolder) e.getInventory().getHolder();
                 if (chest != null) {
                     for (ItemStack i : e.getInventory().getStorageContents()) {
-                        chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
+                        if (i != null) {
+                            chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
+                        }
                     }
                     chest.getBlock().setType(Material.AIR);
                 }
@@ -118,7 +120,7 @@ public class CustomDeath implements Listener {
             Chest chest = (Chest) b.getState();
             TileEntityChest tec = ((CraftChest) chest).getTileEntity();
             if (tec.hasCustomName() && tec.getCustomName().toString().contains("'s §cGravestone")) {
-                return (tec.getCustomName().getText().substring(0, tec.getCustomName().getText().indexOf("'s §cGravestone")));
+                return ChatColor.stripColor(tec.getCustomName().getText().substring(0, tec.getCustomName().getText().indexOf("'s §cGravestone")));
             }
         }
         return "";
@@ -127,10 +129,10 @@ public class CustomDeath implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)
     public void onGravestoneInteract (PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CHEST) {
+            if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CHEST && isGravestone(e.getClickedBlock())) {
 
                 if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    Main.msg(e.getPlayer(), "&8» &cThis &4Gravestone &cbelongs to &f" + getGravestoneName(e.getClickedBlock()));
+                    Main.msg(e.getPlayer(), "&8» &cThis &4Gravestone &cbelongs to &f" + getGravestoneName(e.getClickedBlock()) + "&c.");
                     e.setCancelled(true);
                     return;
                 }
