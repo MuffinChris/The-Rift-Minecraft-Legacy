@@ -193,7 +193,7 @@ public class CustomDeath implements Listener {
                 }
                 index++;
             }
-            chest.getBlockInventory().setContents(deathitems.toArray(new ItemStack[0]));
+            //chest.getBlockInventory().setContents(deathitems.toArray(new ItemStack[0]));
 
             for (ItemStack i : overflow) {
                 chest.getBlock().getWorld().dropItem(chest.getBlock().getLocation(), i);
