@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -185,7 +186,7 @@ public class CustomDeath implements Listener {
             List<ItemStack> overflow = new ArrayList<>();
 
             for (ItemStack i : deathitems) {
-                if (chest.getBlockInventory().getContents().length > 27) {
+                if (!Arrays.asList(chest.getBlockInventory().getContents()).contains(null)) {
                     overflow.add(i);
                 } else {
                     chest.getBlockInventory().addItem(i);
