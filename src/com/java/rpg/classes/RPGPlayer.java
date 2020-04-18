@@ -1578,7 +1578,7 @@ public class RPGPlayer extends Leveleable {
         GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
         prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
         String name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS [" + Bukkit.getOnlinePlayers().size() + "]";
-        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
+        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
         PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
         fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
         fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
@@ -1602,7 +1602,7 @@ public class RPGPlayer extends Leveleable {
         } else {
             name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [0]";
         }
-        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
+        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
         PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
         fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
         fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
