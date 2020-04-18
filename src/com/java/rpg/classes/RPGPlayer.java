@@ -1336,7 +1336,7 @@ public class RPGPlayer extends Leveleable {
         PacketContainer tabPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
         WrappedChatComponent header = WrappedChatComponent.fromText(Main.color("\n&d&lThe Rift &7[1.15.2]\n"));
 
-        WrappedChatComponent footer = WrappedChatComponent.fromText(Main.color("\n&dOnline: &f" + Bukkit.getOnlinePlayers().size() + "&d/&f" + Bukkit.getMaxPlayers() + "\n&5therift.net\n"));
+        WrappedChatComponent footer = WrappedChatComponent.fromText(Main.color("\n&5therift.net\n"));
         tabPacket.getChatComponents().write(0, header);
         tabPacket.getChatComponents().write(1, footer);
         main.getProtocolManager().sendServerPacket(player, tabPacket);
