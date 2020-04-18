@@ -570,8 +570,9 @@ public class TownCommand implements CommandExecutor, Listener {
                 //LeaveTown((Player) e.getWhoClicked());
                 createAreYouSure((Player) e.getWhoClicked(), "you want to leave");
             } else if (itemDispName.contains("Delete Town")) {
-                DeleteTownPre((Player) e.getWhoClicked());
-                createAreYouSure((Player) e.getWhoClicked(), "you want to delete this town");
+                if(DeleteTownPre((Player) e.getWhoClicked())) {
+                    createAreYouSure((Player) e.getWhoClicked(), "you want to delete this town");
+                }
             } else if (itemDispName.contains("Invite")) {
                 SendInvite((Player) e.getWhoClicked(), "");
             }

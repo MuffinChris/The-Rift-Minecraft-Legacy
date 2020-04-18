@@ -27,6 +27,7 @@ public class Citizen {
     public Citizen(Player pl){
         this.p = pl; this.r = -1; this.town = defaultTownName;
         pullFiles();
+        creationStatus = "Normal"; inviteStatus = "Normal"; inviteSentStatus = "Normal"; searchStatus = "Normal";
     }
 
     public Citizen(Player pl, int rnk){
@@ -34,6 +35,8 @@ public class Citizen {
         this.r = rnk;
 
         pullFiles();
+
+        creationStatus = "Normal"; inviteStatus = "Normal"; inviteSentStatus = "Normal"; searchStatus = "Normal";
     }
 
     public Citizen(Player pl, int rnk, String t){
@@ -42,6 +45,8 @@ public class Citizen {
         this.town = t;
 
         pullFiles();
+
+        creationStatus = "Normal"; inviteStatus = "Normal"; inviteSentStatus = "Normal"; searchStatus = "Normal";
     }
 
     public Player getPlayer(){ return p; }
