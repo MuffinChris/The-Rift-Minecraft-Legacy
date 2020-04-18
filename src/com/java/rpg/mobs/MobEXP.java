@@ -18,7 +18,10 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -46,6 +49,11 @@ public class MobEXP implements Listener {
     @EventHandler
     public void noExpDrop (EntityDeathEvent e) {
         e.setDroppedExp(0);
+    }
+
+    @EventHandler
+    public void noExpBlocks (BlockBreakEvent e) {
+        e.setExpToDrop(0);
     }
 
     /*@EventHandler (just change drop tables 4head)
@@ -785,6 +793,11 @@ public class MobEXP implements Listener {
 
     @EventHandler
     public void onSpawn (EntityAddToWorldEvent e) {
+        if (e.getEntity() instanceof ExperienceOrb) {
+            ExperienceOrb orb = (ExperienceOrb) e.getEntity();
+            orb.setExperience(0);
+            return;
+        }
         if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
             if (!xp.containsKey((LivingEntity) e.getEntity())) {
                 xp.put((LivingEntity) e.getEntity(), new XPList());
