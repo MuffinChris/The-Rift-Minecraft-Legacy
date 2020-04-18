@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.HashMap;
 
 
@@ -136,12 +137,11 @@ public class Town {
             /*
             Citizens
              */
-            String citizenData = "";
-            List<String> uuidList = new ArrayList<String>();
+            List<UUID> citizenData = new ArrayList<UUID>();
             for (Map.Entry<Player, Citizen> entry : cl.getCitizenList().entrySet()) {
-                uuidList.add(entry.getKey().getUniqueId().toString());
+                citizenData.add(entry.getKey().getUniqueId());
             }
-            citizenData = String.join(", ", uuidList);
+
             tData.set("CitizensList", citizenData);
             tData.save(tFile);
         } catch (Exception e) {
@@ -160,6 +160,7 @@ public class Town {
             Town info
              */
             setName(pData.getString("TownName"));
+
         }
     }
 }
