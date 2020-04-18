@@ -1,11 +1,7 @@
 package com.java.towns;
 
 import com.java.Main;
-import com.java.rpg.classes.RPGPlayer;
-import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -21,9 +17,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Nullable;
 import org.bukkit.event.EventPriority;
-import java.text.DecimalFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -240,7 +235,7 @@ public class TownCommand implements CommandExecutor, Listener {
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
-    public void createAreYouSure(Player p){
+    public void sendConfirmInv(Player p){
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lAre you sure?"));
 
         // yes and no item stacks
@@ -267,7 +262,8 @@ public class TownCommand implements CommandExecutor, Listener {
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
-    public void createAreYouSure(Player p, String s){
+
+    public void sendConfirmInv(Player p, String s){
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lAre you sure " + s + "?"));
 
         // yes and no item stacks
@@ -295,18 +291,7 @@ public class TownCommand implements CommandExecutor, Listener {
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
-    /*public boolean areYouSure(Player p){
-        Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
-        new BukkitRunnable() {
-            public void run() {
-                if (mc.getAreYouSureStatus()) {
-                    mc.setAreYouSureStatus(false);
-                    Main.msg(p, Main.color("&4Prompt Timed Out."));
-                }
-            }
-        }.runTaskLater(Main.getInstance(), 20 * 60);
-        return mc.getAreYouSureStatus();
-    }*/
+
     public void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
@@ -560,12 +545,13 @@ public class TownCommand implements CommandExecutor, Listener {
             if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
 
+
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.contains("Leave Town")) {
                 LeaveTown((Player) e.getWhoClicked());
             } else if (itemDispName.contains("Delete Town")) {
                 //DeleteTown((Player) e.getWhoClicked());
-                createAreYouSure((Player) e.getWhoClicked(), "you want to delete this town");
+                sendConfirmInv((Player) e.getWhoClicked(), "you want to delete this town");
             } else if (itemDispName.contains("Invite")) {
                 SendInvite((Player) e.getWhoClicked(), "");
             }

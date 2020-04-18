@@ -17,10 +17,10 @@ public class Citizen {
     private String town; //Player's town, current "Randos" if townless
     public static String defaultTownName = "None";
 
-    private String creationStatus;
-    private String inviteStatus;
-    private String inviteSentStatus;
-    private String searchStatus;
+    private String creationStatus = "Normal";
+    private String inviteStatus = "Normal";
+    private String inviteSentStatus = "Normal";
+    private String searchStatus = "Normal";
     private int areYouSureStatus = -1;
 
 
