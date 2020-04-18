@@ -302,7 +302,7 @@ public class Environmental implements Listener {
                 DecimalFormat df = new DecimalFormat("#.##");
                 Hologram magic = new Hologram(ent, ent.getLocation(), "&a❤" + df.format(e.getAmount()), Hologram.HologramType.DAMAGE, players);
                 magic.rise();
-                if (e.getEntity() instanceof Player) {
+                if (main.isPlayer(e.getEntity())) {
                     Main.sendHp((Player) e.getEntity());
                 }
                 DecimalFormat dF = new DecimalFormat("#.##");

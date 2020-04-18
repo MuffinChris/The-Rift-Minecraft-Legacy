@@ -184,14 +184,12 @@ public class CustomDeath implements Listener {
 
             List<ItemStack> overflow = new ArrayList<>();
 
-            int index = 0;
             for (ItemStack i : deathitems) {
-                if (index > chest.getBlockInventory().getSize()) {
+                if (chest.getBlockInventory().getContents().length > 27) {
                     overflow.add(i);
                 } else {
                     chest.getBlockInventory().addItem(i);
                 }
-                index++;
             }
             //chest.getBlockInventory().setContents(deathitems.toArray(new ItemStack[0]));
 
