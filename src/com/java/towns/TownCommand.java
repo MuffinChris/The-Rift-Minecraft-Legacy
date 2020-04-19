@@ -405,7 +405,7 @@ public class TownCommand implements CommandExecutor, Listener {
         List<String> fullTowns = main.getFullTownList();
         fullTowns.remove(t.getName());
         main.setFullTownList(fullTowns);
-
+        t.deleteFiles();
         Bukkit.broadcastMessage(Main.color("&l&4Town " + t.getName() + " has been disbanded!"));
         return true;
     }

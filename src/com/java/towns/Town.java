@@ -187,4 +187,9 @@ public class Town {
             cl = new CitizenList(pullcitizens, name);
         }
     }
+
+    public void deleteFiles(){
+        File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
+        tFile.delete();
+    }
 }
