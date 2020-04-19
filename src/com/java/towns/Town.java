@@ -125,14 +125,17 @@ public class Town {
     }
 
     public void promote(Player promoter, Player reciever) {
-        if(cl.getRank(reciever) == ranks.size() - 1){
-            main.msg(promoter, reciever.getName() + " is " + getRankName(reciever) +".");
-            main.msg(promoter, reciever.getName() + " cannot be promoted");
+        if(!main.getUUIDCitizenMap().get(reciever).getTown().equals(name)){
             return;
         }
         //Check if promoter rank is high enough
         if(cl.getRank(promoter) <= 3){
             main.msg(promoter, "You are not high enough rank to promote.");
+            return;
+        }
+        if(cl.getRank(reciever) == ranks.size() - 1){
+            main.msg(promoter, reciever.getName() + " is " + getRankName(reciever) +".");
+            main.msg(promoter, reciever.getName() + " cannot be promoted");
             return;
         }
         if(cl.getRank(promoter) - cl.getRank(reciever) < 2 && cl.getRank(promoter) != ranks.size() - 1){

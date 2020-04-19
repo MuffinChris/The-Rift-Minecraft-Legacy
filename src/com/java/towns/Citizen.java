@@ -21,16 +21,16 @@ public class Citizen {
     private String inviteStatus = "Normal";
     private String inviteSentStatus = "Normal";
     private String searchStatus = "Normal";
+    private String promoteStatus = "Normal";
+    private String demoteStatus = "Normal";
+
 
     public Citizen(Player pl) {
         this.p = pl;
         this.r = -1;
         this.town = defaultTownName;
         pullFiles();
-        creationStatus = "Normal";
-        inviteStatus = "Normal";
-        inviteSentStatus = "Normal";
-        searchStatus = "Normal";
+
     }
 
     public Citizen(Player pl, int rnk) {
@@ -38,11 +38,6 @@ public class Citizen {
         this.r = rnk;
 
         pullFiles();
-
-        creationStatus = "Normal";
-        inviteStatus = "Normal";
-        inviteSentStatus = "Normal";
-        searchStatus = "Normal";
     }
 
     public Citizen(Player pl, int rnk, String t) {
@@ -51,11 +46,6 @@ public class Citizen {
         this.town = t;
 
         pullFiles();
-
-        creationStatus = "Normal";
-        inviteStatus = "Normal";
-        inviteSentStatus = "Normal";
-        searchStatus = "Normal";
     }
 
     public Player getPlayer() {
@@ -86,6 +76,13 @@ public class Citizen {
         return searchStatus;
     }
 
+    public String getPromoteStatus() {
+        return promoteStatus;
+    }
+
+    public String getDemoteStatus() {
+        return demoteStatus;
+    }
     public void setRank(int i) {
         r = i;
     }
@@ -108,6 +105,14 @@ public class Citizen {
 
     public void setSearchStatus(String status) {
         searchStatus = status;
+    }
+
+    public void setPromoteStatus(String promoteStatus) {
+        this.promoteStatus = promoteStatus;
+    }
+
+    public void setDemoteStatus(String demoteStatus) {
+        this.demoteStatus = demoteStatus;
     }
 
     public void setUsernameFile(FileConfiguration pData, String username) {
@@ -143,15 +148,6 @@ public class Citizen {
             pData.set("CurrentTown", town);
             pData.set("Rank", r);
 
-            /*
-            User Status Info
-             */
-
-            pData.set("CreationStatus", creationStatus);
-            pData.set("InviteStatus", inviteStatus);
-            pData.set("InviteSentStatus", inviteSentStatus);
-            pData.set("SearchStatus", searchStatus);
-
             pData.save(pFile);
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,8 +172,6 @@ public class Citizen {
             /*
             User Status info
              */
-            setCreationStatus(pData.getString("CreationStatus"));
-            setInviteStatus(pData.getString("InviteStatus"));
         }
     }
 

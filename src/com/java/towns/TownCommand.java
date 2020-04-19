@@ -170,7 +170,7 @@ public class TownCommand implements CommandExecutor, Listener {
         spMeta.setDisplayName(Main.color("&9Promote"));
         spMeta.setLore(new ArrayList<String>() {
             {
-                add(Main.color("&fClick to demote a player!"));
+                add(Main.color("&fClick to promote a player!"));
                 add(Main.color("&6Must be higher than promotion rank"));
             }
         });
@@ -510,6 +510,29 @@ public class TownCommand implements CommandExecutor, Listener {
 
     }
 
+    private boolean promotePlayer(Player p, String r){
+        if(r.equalsIgnoreCase("")){
+            Main.msg(p, Main.color("&l&Who do you want to promote?"));
+
+            main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
+            new BukkitRunnable() {
+                public void run() {
+                    Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
+                    if (!mc.getPromoteStatus().equals("Normal")) {
+                        mc.setPromoteStatus("Normal");
+                        Main.msg(p, Main.color("&4Prompt Timed Out."));
+                    }
+                }
+            }.runTaskLater(Main.getInstance(), 20 * 60);
+            return true;
+        } else {
+            Player reciever = Bukkit.getPlayer(r);
+            Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+            Town t = getTownFromCitizen(c);
+            t.promote(p, reciever);
+            return true;
+        }
+    }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onClick(InventoryClickEvent e) {
@@ -539,6 +562,8 @@ public class TownCommand implements CommandExecutor, Listener {
                 }
             } else if (itemDispName.contains("Invite")) {
                 SendInvite((Player) e.getWhoClicked(), "");
+            } else if (itemDispName.contains("Promote")) {
+                promotePlayer((Player) e.getWhoClicked(), "");
             }
         } else if (e.getView().getTitle().equals("§e§lDisband Town?")) {
             if (e.getCurrentItem() == null) return;
