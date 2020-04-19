@@ -528,7 +528,7 @@ public class TownCommand implements CommandExecutor, Listener {
 
     private boolean promotePlayer(Player p, String r){
         if(r.equalsIgnoreCase("")){
-            Main.msg(p, Main.color("&l&Who do you want to promote?"));
+            Main.msg(p, Main.color("&l&eWho do you want to promote?"));
 
             main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
             new BukkitRunnable() {
