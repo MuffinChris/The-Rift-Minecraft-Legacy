@@ -412,6 +412,9 @@ public class TownCommand implements CommandExecutor, Listener {
         for (Citizen ct : t.getCitizenList().citimap.values()) {
             ct.setRank(-1);
             ct.setTown("None");
+            Citizen ctmain = main.getUUIDCitizenMap().get(ct.getPlayer());
+            ct.setRank(-1);
+            ctmain.setTown("None");
         }
 
         main.getTowns().remove(t);
