@@ -50,7 +50,10 @@ public class Town {
         this.getCitizenList().town = _n;
         this.name = _n;
     }
-
+    public Town(String _n){
+        name = _n;
+        pullFiles();
+    }
     public Town(CitizenList citilist, String _n) {
         this.cl = citilist;
         this.name = _n;

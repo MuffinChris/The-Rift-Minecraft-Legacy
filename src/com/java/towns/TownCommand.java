@@ -370,7 +370,8 @@ public class TownCommand implements CommandExecutor, Listener {
 
             Bukkit.broadcastMessage(Main.color("&l&4Town " + t.getName() + " has been disbanded!"));
         }
-
+        c.pushFiles();
+        t.pushFiles();
         return true;
     }
 
@@ -390,7 +391,10 @@ public class TownCommand implements CommandExecutor, Listener {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         Town t = getTownFromCitizen(c);
-
+        if (c.getRank() != t.getRanks().size() - 1) { // make sure user is the highest possible rank
+            Main.msg(p, "&4You don't have permission to do this!");
+            return false;
+        }
         Main.msg(p, "&aTown successfully disbanded");
         for (Citizen ct : t.getCitizenList().citimap.values()) {
             ct.setRank(-1);
@@ -451,6 +455,7 @@ public class TownCommand implements CommandExecutor, Listener {
             }
 
             t.invite(p, r);
+            cr.pushFiles();
         }
         return true;
     }
