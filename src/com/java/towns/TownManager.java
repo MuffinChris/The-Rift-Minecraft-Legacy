@@ -35,6 +35,11 @@ public class TownManager implements Listener {
             main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer()));
 
             Citizen c = main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId());
+
+            if(c.getTown().equals("None")) {
+                return;
+            }
+
             boolean alreadyFound = false;
             for(Town t: main.getTowns()) {
                 if(t.getName().equals(c.getTown())) {
