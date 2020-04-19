@@ -126,23 +126,46 @@ public class Town {
 
     public void promote(Player promoter, Player reciever) {
         if(cl.getRank(reciever) == ranks.size() - 1){
-            //TODO: Reciever is owner
+            main.msg(promoter, reciever.getName() + " is " + getRankName(reciever) +".");
+            main.msg(promoter, reciever.getName() + " cannot be promoted");
             return;
         }
         //Check if promoter rank is high enough
         if(cl.getRank(promoter) <= 3){
-            //TODO: You are not high enough rank
+            main.msg(promoter, "You are not high enough rank to promote.");
             return;
         }
-        if(cl.getRank(promoter) - cl.getRank(reciever) < 2){
-            //TODO: You are not high enough rank to promote reciever
+        if(cl.getRank(promoter) - cl.getRank(reciever) < 2 && cl.getRank(promoter) != ranks.size() - 1){
+            main.msg(promoter, "You are not high enough rank to promote " + reciever.getName() + " to "
+                    + ranks.get(cl.getRank(reciever) + 1));
             return;
         }
-        //TODO: Promoter has successfully promoted reciever
-        //TODO: Reciever has successfully been promoted by Promoter
+        //TODO: Promote sub-owner to owner
+        main.msg(promoter, "You have promoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) + 1));
+        main.msg(reciever, "You have been promoted to " + ranks.get(cl.getRank(reciever) + 1) + " by " + promoter.getName());
         main.getUUIDCitizenMap().get(reciever).setRank(getRank(reciever) + 1);
+        main.getUUIDCitizenMap().get(reciever).pushFiles();
     }
-
+    public void demote(Player demoter, Player reciever){
+        int drank = cl.getRank(demoter);
+        int rrank = cl.getRank(reciever);
+        if(drank == rrank){
+            main.msg(demoter, "You cannot demote someone that is the same rank as you");
+            return;
+        }
+        if(drank < rrank){
+            main.msg(demoter, "You cannot demote someone that is a higher rank than you");
+            return;
+        }
+        if(rrank <= 0){
+            main.msg(demoter, reciever.getName() + " cannot be demoted any lower");
+            return;
+        }
+        main.msg(demoter, "You have demoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) - 1));
+        main.msg(reciever, "You have been demoted to " + ranks.get(cl.getRank(reciever) - 1) + " by " + demoter.getName());
+        main.getUUIDCitizenMap().get(reciever).setRank(getRank(reciever) - 1);
+        main.getUUIDCitizenMap().get(reciever).pushFiles();
+    }
 
     public void pushFiles() {
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
