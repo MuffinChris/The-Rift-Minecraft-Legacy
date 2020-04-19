@@ -33,6 +33,19 @@ public class TownManager implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         if (!main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
             main.getUUIDCitizenMap().put(e.getPlayer().getUniqueId(), new Citizen(e.getPlayer()));
+
+            Citizen c = main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId());
+            boolean alreadyFound = false;
+            for(Town t: main.getTowns()) {
+                if(t.getName().equals(c.getTown())) {
+                    alreadyFound = true;
+                    break;
+                }
+            }
+
+            if(!alreadyFound) {
+                main.getTowns().add(new Town(c.getTown())); // need to add it back to memory if they are the only online player (just joined)
+            }
         }
     }
 
