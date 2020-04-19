@@ -1,11 +1,7 @@
 package com.java.towns;
 
 import com.java.Main;
-import com.java.rpg.classes.RPGPlayer;
-import com.java.rpg.classes.Skill;
-import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -21,9 +17,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Nullable;
 import org.bukkit.event.EventPriority;
-import java.text.DecimalFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +34,6 @@ public class TownCommand implements CommandExecutor, Listener {
                 break;
             }
         }
-
         return t;
     }
 
@@ -78,9 +72,9 @@ public class TownCommand implements CommandExecutor, Listener {
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("invite")) {
-                return SendInvite(p, args[1]);
-            } else if( args[0].equalsIgnoreCase("create")) {
-                return CreateNewTown(p, args[1]);
+                return SendInvite(p, args[1]); // args[1] is username of player to inv
+            } else if (args[0].equalsIgnoreCase("create")) {
+                return CreateNewTown(p, args[1]); // args[1] is name of town
             }
         }
 
@@ -240,46 +234,20 @@ public class TownCommand implements CommandExecutor, Listener {
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
-    public void createAreYouSure(Player p){
-        Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lAre you sure?"));
 
-        // yes and no item stacks
-        ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-        ItemStack no = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta yesMeta = yes.getItemMeta();
-        ItemMeta noMeta = no.getItemMeta();
-        yesMeta.setDisplayName(Main.color("&aYes"));
-        noMeta.setDisplayName(Main.color("&cNo"));
-        menu.setItem(11, yes);
-        menu.setItem(15, no);
+    public void sendAreYouSureInv(Player p, String s) {
+        Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&l" + s));
 
-        ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-        ItemMeta phM = ph.getItemMeta();
-        phM.setDisplayName(" ");
-        ph.setItemMeta(phM);
-        for (int i = 0; i < 9; i++) {
-            menu.setItem(i, ph);
-        }
-        for (int i = 18; i < 27; i++) {
-            menu.setItem(i, ph);
-        }
-        p.closeInventory();
-        p.openInventory(menu);
-        p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
-    }
-    public void createAreYouSure(Player p, String s){
-        Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lAre you sure " + s + "?"));
-
-        // yes and no item stacks
-        ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-        ItemStack no = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta yesMeta = yes.getItemMeta();
-        ItemMeta noMeta = no.getItemMeta();
-        yesMeta.setDisplayName(Main.color("&aYes"));
-        noMeta.setDisplayName(Main.color("&cNo"));
-        yes.setItemMeta(yesMeta); no.setItemMeta(noMeta);
-        menu.setItem(11, yes);
-        menu.setItem(15, no);
+        ItemStack yesStack = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemStack noStack = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta yesMeta = yesStack.getItemMeta();
+        ItemMeta noMeta = noStack.getItemMeta();
+        yesMeta.setDisplayName(Main.color("&a&lYes"));
+        noMeta.setDisplayName(Main.color("&c&lNo"));
+        yesStack.setItemMeta(yesMeta);
+        noStack.setItemMeta(noMeta);
+        menu.setItem(11, yesStack);
+        menu.setItem(15, noStack);
 
         ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
         ItemMeta phM = ph.getItemMeta();
@@ -295,18 +263,7 @@ public class TownCommand implements CommandExecutor, Listener {
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
-    /*public boolean areYouSure(Player p){
-        Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
-        new BukkitRunnable() {
-            public void run() {
-                if (mc.getAreYouSureStatus()) {
-                    mc.setAreYouSureStatus(false);
-                    Main.msg(p, Main.color("&4Prompt Timed Out."));
-                }
-            }
-        }.runTaskLater(Main.getInstance(), 20 * 60);
-        return mc.getAreYouSureStatus();
-    }*/
+
     public void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
@@ -416,7 +373,8 @@ public class TownCommand implements CommandExecutor, Listener {
 
         return true;
     }
-    private boolean DeleteTownPre(Player p){
+
+    private boolean DeleteTownPre(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         Town t = getTownFromCitizen(c);
@@ -427,6 +385,7 @@ public class TownCommand implements CommandExecutor, Listener {
         }
         return true;
     }
+
     private boolean DeleteTown(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
@@ -462,9 +421,9 @@ public class TownCommand implements CommandExecutor, Listener {
 
             new BukkitRunnable() {
                 public void run() {
-                    if (!cp.getCreationStatus().equals("Normal")) {
-                        cp.setCreationStatus("Normal");
-                        Main.msg(p, Main.color("&4Prompt Timed Out."));
+                    if (!cp.getInviteStatus().equals("Normal")) {
+                        cp.setInviteStatus("Normal");
+                        Main.msg(p, Main.color("&4Invite Timed Out."));
                     }
                 }
             }.runTaskLater(Main.getInstance(), 20 * 60);
@@ -486,7 +445,7 @@ public class TownCommand implements CommandExecutor, Listener {
                 return false;
             }
 
-            if(!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
+            if (!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
                 Main.msg(r, "&4This player already has a pending invite!");
                 return false;
             }
@@ -568,40 +527,40 @@ public class TownCommand implements CommandExecutor, Listener {
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.contains("Leave Town")) {
                 //LeaveTown((Player) e.getWhoClicked());
-                createAreYouSure((Player) e.getWhoClicked(), "you want to leave");
+                sendAreYouSureInv((Player) e.getWhoClicked(), "Leave Town?");
             } else if (itemDispName.contains("Delete Town")) {
-                if(DeleteTownPre((Player) e.getWhoClicked())) {
-                    createAreYouSure((Player) e.getWhoClicked(), "you want to delete this town");
+                if (DeleteTownPre((Player) e.getWhoClicked())) {
+                    sendAreYouSureInv((Player) e.getWhoClicked(), "Disband Town?");
                 }
             } else if (itemDispName.contains("Invite")) {
                 SendInvite((Player) e.getWhoClicked(), "");
             }
 
+            e.getWhoClicked().closeInventory();
+
             //e.getWhoClicked().closeInventory();
-        } else if (e.getView().getTitle().equals("§e§lAre you sure you want to delete this town?")){
+        } else if (e.getView().getTitle().equals("§e§lDisband Town?")) {
             if (e.getCurrentItem() == null) return;
-            if(!e.getCurrentItem().hasItemMeta()) return;
+            if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
-            if (itemDispName.equals("§aYes")){
+            if (itemDispName.equals("§aYes")) {
                 DeleteTown((Player) e.getWhoClicked());
-            }
-            else if (itemDispName.equals("§cNo")){
+            } else if (itemDispName.equals("§cNo")) {
                 return;
             }
             e.getWhoClicked().closeInventory();
-        }
-        else if (e.getView().getTitle().contains("§e§lAre you sure you want leave?")){
+        } else if (e.getView().getTitle().contains("§e§lLeave Town?")) {
             if (e.getCurrentItem() == null) return;
-            if(!e.getCurrentItem().hasItemMeta()) return;
+            if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
-            if (itemDispName.equals("§aYes")){
+            if (itemDispName.equals("§aYes")) {
                 LeaveTown((Player) e.getWhoClicked());
-            }
-            else if (itemDispName.equals("§cNo")){
+            } else if (itemDispName.equals("§cNo")) {
+                e.getWhoClicked().closeInventory();
                 return;
             }
             e.getWhoClicked().closeInventory();

@@ -21,56 +21,94 @@ public class Citizen {
     private String inviteStatus = "Normal";
     private String inviteSentStatus = "Normal";
     private String searchStatus = "Normal";
-    private int areYouSureStatus = -1;
 
-
-    public Citizen(Player pl){
-        this.p = pl; this.r = -1; this.town = defaultTownName;
+    public Citizen(Player pl) {
+        this.p = pl;
+        this.r = -1;
+        this.town = defaultTownName;
         pullFiles();
-        creationStatus = "Normal"; inviteStatus = "Normal"; inviteSentStatus = "Normal"; searchStatus = "Normal";
+        creationStatus = "Normal";
+        inviteStatus = "Normal";
+        inviteSentStatus = "Normal";
+        searchStatus = "Normal";
     }
 
-    public Citizen(Player pl, int rnk){
+    public Citizen(Player pl, int rnk) {
         this.p = pl;
         this.r = rnk;
 
         pullFiles();
 
-        creationStatus = "Normal"; inviteStatus = "Normal"; inviteSentStatus = "Normal"; searchStatus = "Normal";
+        creationStatus = "Normal";
+        inviteStatus = "Normal";
+        inviteSentStatus = "Normal";
+        searchStatus = "Normal";
     }
 
-    public Citizen(Player pl, int rnk, String t){
+    public Citizen(Player pl, int rnk, String t) {
         this.p = pl;
         this.r = rnk;
         this.town = t;
 
         pullFiles();
 
-        creationStatus = "Normal"; inviteStatus = "Normal"; inviteSentStatus = "Normal"; searchStatus = "Normal";
+        creationStatus = "Normal";
+        inviteStatus = "Normal";
+        inviteSentStatus = "Normal";
+        searchStatus = "Normal";
     }
 
-    public Player getPlayer(){ return p; }
-    public int getRank(){ return r; }
-    public String getTown(){ return town; }
-
-    public String getCreationStatus() { return creationStatus; }
-    public String getInviteStatus() { return inviteStatus; }
-    public String getInviteSentStatus() { return inviteSentStatus; }
-    public String getSearchStatus() { return searchStatus; }
-    public int getAreYouSureStatus() {
-        if(areYouSureStatus == 1) { areYouSureStatus = -1; return 1; }
-        else if(areYouSureStatus == 0) { areYouSureStatus = -1; return 0; }
-        return -1;
+    public Player getPlayer() {
+        return p;
     }
 
-    public void setRank(int i) { r = i; }
-    public void setTown(String t) { town = t; }
+    public int getRank() {
+        return r;
+    }
 
-    public void setCreationStatus(String status) {creationStatus = status; }
-    public void setInviteStatus(String status) { inviteStatus = status; }
-    public void setInviteSentStatus(String status) { inviteSentStatus = status; }
-    public void setSearchStatus(String status) { searchStatus = status; }
-    public void setAreYouSureStatus(int status) { areYouSureStatus = status; }
+    public String getTown() {
+        return town;
+    }
+
+    public String getCreationStatus() {
+        return creationStatus;
+    }
+
+    public String getInviteStatus() {
+        return inviteStatus;
+    }
+
+    public String getInviteSentStatus() {
+        return inviteSentStatus;
+    }
+
+    public String getSearchStatus() {
+        return searchStatus;
+    }
+
+    public void setRank(int i) {
+        r = i;
+    }
+
+    public void setTown(String t) {
+        town = t;
+    }
+
+    public void setCreationStatus(String status) {
+        creationStatus = status;
+    }
+
+    public void setInviteStatus(String status) {
+        inviteStatus = status;
+    }
+
+    public void setInviteSentStatus(String status) {
+        inviteSentStatus = status;
+    }
+
+    public void setSearchStatus(String status) {
+        searchStatus = status;
+    }
 
     public void setUsernameFile(FileConfiguration pData, String username) {
         if (pData.contains("Username")) {
@@ -89,10 +127,10 @@ public class Citizen {
         pData.set("LastSeen", millis);
     }
 
-    public void pushFiles(){
+    public void pushFiles() {
         File pFile = new File("plugins/Rift/data/towns/" + p.getUniqueId() + ".yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
-        try{
+        try {
              /*
             Utility
              */
@@ -115,19 +153,19 @@ public class Citizen {
             pData.set("SearchStatus", searchStatus);
 
             pData.save(pFile);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    public void pullFiles(){
+
+    public void pullFiles() {
         File pFile = new File("plugins/Rift/data/towns/" + p.getUniqueId() + ".yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
-        if(!pFile.exists()){
-            pushFiles(); pullFiles();
-        }
-        else{
+        if (!pFile.exists()) {
+            pushFiles();
+            pullFiles();
+        } else {
             setUsernameFile(pData, p.getName());
             /*
             Town info
