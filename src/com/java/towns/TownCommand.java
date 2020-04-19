@@ -1,6 +1,9 @@
 package com.java.towns;
 
 import com.java.Main;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -526,8 +529,8 @@ public class TownCommand implements CommandExecutor, Listener {
 
     }
 
-    private boolean promotePlayer(Player p, String r){
-        if(r.equalsIgnoreCase("")){
+    private boolean promotePlayer(Player p, String r) {
+        if (r.equalsIgnoreCase("")) {
             Main.msg(p, Main.color("&l&Who do you want to promote?"));
 
             main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
@@ -551,6 +554,36 @@ public class TownCommand implements CommandExecutor, Listener {
 
     private boolean showLeaderboard(Player p) {
 
+        int lpage = main.getUUIDCitizenMap().get(p.getUniqueId()).getLeaderboardPage();
+        sendLeaderboardPage(p, lpage);
+
+        TextComponent nextText = new TextComponent("[Previous Page]");
+        TextComponent previousText = new TextComponent("[Next Page]");
+        nextText.setBold(true);
+        previousText.setBold(true);
+        nextText.setColor(ChatColor.GREEN);
+        previousText.setColor(ChatColor.RED);
+        nextText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town leaderboard next"));
+        previousText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town leaderboard previous"));
+        // TODO: maybe do some hover events to make it more obvious what's going on
+        TextComponent invText2 = new TextComponent();
+
+        invText2.addExtra(nextText);
+        invText2.addExtra(" or ");
+        invText2.addExtra(previousText);
+        p.sendMessage(invText2);
+
+        return true;
+    }
+
+    private void sendLeaderboardPage(Player p, int x) {
+        final int TOWNS_PER_PAGE = 5;
+
+        Main.msg(p, Main.color("&l&b==LEADERBOARD=="));
+        List<String> fullTownNames = main.getFullTownList();
+
+        ArrayList<Town> fullTowns = new ArrayList<Town>();
+        
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -563,8 +596,7 @@ public class TownCommand implements CommandExecutor, Listener {
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.contains("Create New Town")) {
                 createNewTown((Player) e.getWhoClicked(), "");
-            }
-            else if(itemDispName.contains("Leaderboard")) {
+            } else if (itemDispName.contains("Leaderboard")) {
 
             }
 

@@ -95,7 +95,7 @@ public class Town {
 
     public void invite(Player inviter, Player reciever) {
         Main.msg(inviter, "&aInvite sent!");
-        TextComponent invText1 = new TextComponent(inviter.getName() + " has invited you to " + name + "!       Click to choose:");
+        TextComponent invText1 = new TextComponent(inviter.getName() + " has invited you to " + name + "!");
         TextComponent acceptText = new TextComponent("[ACCEPT]");
         TextComponent declineText = new TextComponent("[DECLINE]");
         acceptText.setBold(true);

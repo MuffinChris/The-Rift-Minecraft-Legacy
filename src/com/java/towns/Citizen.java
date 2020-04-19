@@ -24,6 +24,8 @@ public class Citizen {
     private String promoteStatus = "Normal";
     private String demoteStatus = "Normal";
 
+    private int leaderboardPage = 0;
+
 
     public Citizen(Player pl) {
         this.p = pl;
@@ -83,6 +85,10 @@ public class Citizen {
     public String getDemoteStatus() {
         return demoteStatus;
     }
+
+    public int getLeaderboardPage() {
+        return leaderboardPage;
+    }
     public void setRank(int i) {
         r = i;
     }
@@ -115,17 +121,17 @@ public class Citizen {
         this.demoteStatus = demoteStatus;
     }
 
+    public void setLeaderboardPage(int lpage) {
+        leaderboardPage = lpage;
+    }
+
     public void setUsernameFile(FileConfiguration pData, String username) {
         if (pData.contains("Username")) {
-            if (pData.getString("Username").equalsIgnoreCase(p.getName())) {
-                pData.set("Username", username);
-            } else {
+            if (!pData.getString("Username").equalsIgnoreCase(p.getName())) {
                 pData.set("PreviousUsername", pData.getString("Username"));
-                pData.set("Username", username);
             }
-        } else {
-            pData.set("Username", username);
         }
+        pData.set("Username", username);
     }
 
     public void setLastSeenFile(FileConfiguration pData, Long millis) {
