@@ -146,8 +146,8 @@ public class Town {
         //TODO: Promote sub-owner to owner
         main.msg(promoter, "You have promoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) + 1));
         main.msg(reciever, "You have been promoted to " + ranks.get(cl.getRank(reciever) + 1) + " by " + promoter.getName());
-        main.getUUIDCitizenMap().get(reciever).setRank(getRank(reciever) + 1);
-        main.getUUIDCitizenMap().get(reciever).pushFiles();
+        main.getUUIDCitizenMap().get(reciever.getUniqueId()).setRank(getRank(reciever) + 1);
+        main.getUUIDCitizenMap().get(reciever.getUniqueId()).pushFiles();
     }
     public void demote(Player demoter, Player reciever){
         int drank = cl.getRank(demoter);
@@ -166,8 +166,8 @@ public class Town {
         }
         main.msg(demoter, "You have demoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) - 1));
         main.msg(reciever, "You have been demoted to " + ranks.get(cl.getRank(reciever) - 1) + " by " + demoter.getName());
-        main.getUUIDCitizenMap().get(reciever).setRank(getRank(reciever) - 1);
-        main.getUUIDCitizenMap().get(reciever).pushFiles();
+        main.getUUIDCitizenMap().get(reciever.getUniqueId()).setRank(getRank(reciever) - 1);
+        main.getUUIDCitizenMap().get(reciever.getUniqueId()).pushFiles();
     }
 
     public void pushFiles() {
