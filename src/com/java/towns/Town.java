@@ -38,6 +38,7 @@ public class Town {
     };
     private CitizenList cl;
     private String name;
+    private int level;
 
     public Town(Player p, String _n) {
         cl = new CitizenList();
@@ -82,6 +83,10 @@ public class Town {
     public String getName() {
         return name;
     }
+
+    public void setLevel(int l) { level = l; }
+
+    public int getLevel() { return level; }
 
 
     public void changeRankName(int i, String newname) {

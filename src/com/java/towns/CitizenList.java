@@ -16,7 +16,7 @@ public class CitizenList {
 
     public CitizenList(){
         citimap = new HashMap<Player, Citizen>();
-        town = "none";
+        town = "None";
     }
     public CitizenList(List<Citizen> l){
         citimap = new HashMap<Player, Citizen>();
@@ -46,14 +46,18 @@ public class CitizenList {
     public Map<Player, Citizen> getCitizenList(){
         return citimap;
     }
-    public Citizen removeCitizen(Player p){
-        if(citimap.containsKey(p)){
-            return citimap.remove(p);
+
+    public void removeCitizen(Citizen c){ // this sucks really much but i think i have to do it
+
+        for(Player tp : citimap.keySet()) {
+            if(tp.getUniqueId().equals(c.getPlayer().getUniqueId())) {
+                citimap.remove(tp);
+                return;
+            }
         }
-            return null;
     }
 
-    public void addCitizen(Player p) {
+    public void addPlayer(Player p) {
         if(citimap.containsKey(p)) return; // already exists
         citimap.put(p, main.getUUIDCitizenMap().get(p.getUniqueId())); // magic
     }

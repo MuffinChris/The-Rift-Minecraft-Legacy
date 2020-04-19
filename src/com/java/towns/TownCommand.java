@@ -55,16 +55,16 @@ public class TownCommand implements CommandExecutor, Listener {
                 Main.msg(p, Main.color("&4Must specify a town name!"));
                 return false;
             } else if (args[0].equalsIgnoreCase("leave")) {
-                return LeaveTown(p);
+                return leaveTown(p);
             } else if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("remove")) {
-                return DeleteTown(p);
+                return deleteTown(p);
             } else if (args[0].equalsIgnoreCase("invite")) {
                 Main.msg(p, Main.color("&4Must specify player to invite!"));
                 return false;
             } else if (args[0].equalsIgnoreCase("accept")) {
-                return AcceptInvite(p);
+                return acceptInvite(p);
             } else if (args[0].equalsIgnoreCase("decline")) {
-                return DeclineInvite(p);
+                return declineInvite(p);
             } else if (args[0].equalsIgnoreCase("kick")) {
                 // TODO: implement
             } else if (args[0].equalsIgnoreCase("promote")) {
@@ -72,9 +72,9 @@ public class TownCommand implements CommandExecutor, Listener {
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("invite")) {
-                return SendInvite(p, args[1]); // args[1] is username of player to inv
+                return sendInvite(p, args[1]); // args[1] is username of player to inv
             } else if (args[0].equalsIgnoreCase("create")) {
-                return CreateNewTown(p, args[1]); // args[1] is name of town
+                return createNewTown(p, args[1]); // args[1] is name of town
             }
         }
 
@@ -195,6 +195,21 @@ public class TownCommand implements CommandExecutor, Listener {
         return sp;
     }
 
+    private ItemStack getLeaderboardItemStack() {
+        ItemStack sp = new ItemStack(Material.PAPER);
+
+        ItemMeta spMeta = sp.getItemMeta();
+        spMeta.setDisplayName(Main.color("&dLeaderboard"));
+        spMeta.setLore(new ArrayList<String>() {
+            {
+                add(Main.color("&fShows the top towns on the server!"));
+            }
+        });
+        sp.setItemMeta(spMeta);
+
+        return sp;
+    }
+
     public void sendTownInv(Player p) {
         String townName = main.getUUIDCitizenMap().get(p.getUniqueId()).getTown();
         Inventory menu = Bukkit.createInventory(null, 36, Main.color("&b&l" + townName + " Menu"));
@@ -204,9 +219,8 @@ public class TownCommand implements CommandExecutor, Listener {
         // leave town
         menu.setItem(11, getLeaveTownItemStack());
 
-        // town list
-
         // town leaderboard
+        menu.setItem(21, getLeaderboardItemStack());
 
         // town search
 
@@ -270,9 +284,8 @@ public class TownCommand implements CommandExecutor, Listener {
         // town create
         menu.setItem(10, getNewTownItemStack());
 
-        // town list
-
         // town leaderboard
+        menu.setItem(21, getLeaderboardItemStack());
 
         // town search
 
@@ -291,7 +304,7 @@ public class TownCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private boolean CreateNewTown(Player p, String townName) {
+    private boolean createNewTown(Player p, String townName) {
 
         if (townName.equalsIgnoreCase("")) {
             if (!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
@@ -312,7 +325,6 @@ public class TownCommand implements CommandExecutor, Listener {
                 }
             }.runTaskLater(Main.getInstance(), 20 * 60);
 
-            return true;
         } else {
             for (String tn : main.getFullTownList()) {
                 if (tn.equalsIgnoreCase(townName)) {
@@ -339,12 +351,12 @@ public class TownCommand implements CommandExecutor, Listener {
             main.setFullTownList(fullTowns);
 
             Main.msg(p, Main.color("&l&aSuccessfully created town: &f" + townName));
-            return true;
         }
+        return true;
 
     }
 
-    private boolean LeaveTown(Player p) {
+    private boolean leaveTown(Player p) {
 
         // TODO: if the owner of a town leaves -- then either the town should disband or the max level role needs to be transferred (randomly to a maxlvl -1 member?)
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
@@ -360,7 +372,8 @@ public class TownCommand implements CommandExecutor, Listener {
         c.setRank(-1); // %
         Main.msg(p, "&4You have successfully left " + t.getName());
 
-        t.getCitizenList().removeCitizen(p);
+        t.getCitizenList().removeCitizen(c);
+
         if (t.getCitizenList().citimap.size() == 0) {
             // there are no more people in this town -- delete it
             main.getTowns().remove(t);
@@ -375,7 +388,7 @@ public class TownCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean DeleteTownPre(Player p) {
+    private boolean deleteTownPre(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         Town t = getTownFromCitizen(c);
@@ -387,7 +400,7 @@ public class TownCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean DeleteTown(Player p) {
+    private boolean deleteTown(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         Town t = getTownFromCitizen(c);
@@ -410,7 +423,7 @@ public class TownCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean SendInvite(Player p, String recieverName) {
+    private boolean sendInvite(Player p, String recieverName) {
 
         Citizen cp = main.getUUIDCitizenMap().get(p.getUniqueId());
 
@@ -460,7 +473,7 @@ public class TownCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean AcceptInvite(Player p) {
+    private boolean acceptInvite(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         if (c.getInviteStatus().equalsIgnoreCase("Normal")) {
@@ -479,7 +492,7 @@ public class TownCommand implements CommandExecutor, Listener {
         c.setTown(c.getInviteStatus());
         c.setRank(0); // lowest possible rank
 
-        tinv.getCitizenList().addCitizen(p);
+        tinv.getCitizenList().addPlayer(p);
 
         Main.msg(p, Main.color("&aJoined town " + c.getInviteStatus()));
 
@@ -487,7 +500,7 @@ public class TownCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean DeclineInvite(Player p) {
+    private boolean declineInvite(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         if (!c.getInviteStatus().equalsIgnoreCase("Pending")) {
@@ -524,14 +537,17 @@ public class TownCommand implements CommandExecutor, Listener {
                     }
                 }
             }.runTaskLater(Main.getInstance(), 20 * 60);
-            return true;
         } else {
             Player reciever = Bukkit.getPlayer(r);
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
             t.promote(p, reciever);
-            return true;
         }
+        return true;
+    }
+
+    private boolean showLeaderboard(Player p) {
+
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -543,7 +559,10 @@ public class TownCommand implements CommandExecutor, Listener {
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.contains("Create New Town")) {
-                CreateNewTown((Player) e.getWhoClicked(), "");
+                createNewTown((Player) e.getWhoClicked(), "");
+            }
+            else if(itemDispName.contains("Leaderboard")) {
+
             }
 
             e.getWhoClicked().closeInventory();
@@ -557,14 +576,16 @@ public class TownCommand implements CommandExecutor, Listener {
                 //LeaveTown((Player) e.getWhoClicked());
                 sendAreYouSureInv((Player) e.getWhoClicked(), "Leave Town?");
             } else if (itemDispName.contains("Delete Town")) {
-                if (DeleteTownPre((Player) e.getWhoClicked())) {
+                if (deleteTownPre((Player) e.getWhoClicked())) {
                     sendAreYouSureInv((Player) e.getWhoClicked(), "Disband Town?");
                 }
             } else if (itemDispName.contains("Invite")) {
-                SendInvite((Player) e.getWhoClicked(), "");
+                sendInvite((Player) e.getWhoClicked(), "");
             } else if (itemDispName.contains("Promote")) {
                 promotePlayer((Player) e.getWhoClicked(), "");
             }
+
+            e.getWhoClicked().closeInventory();
         } else if (e.getView().getTitle().equals("§e§lDisband Town?")) {
             if (e.getCurrentItem() == null) return;
             if (!e.getCurrentItem().hasItemMeta()) return;
@@ -572,7 +593,7 @@ public class TownCommand implements CommandExecutor, Listener {
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.equals("§a§lYes")) {
-                DeleteTown((Player) e.getWhoClicked());
+                deleteTown((Player) e.getWhoClicked());
             } else if (itemDispName.equals("§c§lNo")) {
                 return;
             }
@@ -584,7 +605,7 @@ public class TownCommand implements CommandExecutor, Listener {
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.equals("§a§lYes")) {
-                LeaveTown((Player) e.getWhoClicked());
+                leaveTown((Player) e.getWhoClicked());
             } else if (itemDispName.equals("§c§lNo")) {
                 e.getWhoClicked().closeInventory();
                 return;
