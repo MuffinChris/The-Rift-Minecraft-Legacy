@@ -122,7 +122,22 @@ public class Town {
     }
 
     public void promote(Player promoter, Player reciever) {
-
+        if(cl.getRank(reciever) == ranks.size() - 1){
+            //TODO: Reciever is owner
+            return;
+        }
+        //Check if promoter rank is high enough
+        if(cl.getRank(promoter) <= 3){
+            //TODO: You are not high enough rank
+            return;
+        }
+        if(cl.getRank(promoter) - cl.getRank(reciever) < 2){
+            //TODO: You are not high enough rank to promote reciever
+            return;
+        }
+        //TODO: Promoter has successfully promoted reciever
+        //TODO: Reciever has successfully been promoted by Promoter
+        main.getUUIDCitizenMap().get(reciever).setRank(getRank(reciever) + 1);
     }
 
 

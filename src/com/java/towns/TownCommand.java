@@ -541,9 +541,9 @@ public class TownCommand implements CommandExecutor, Listener {
             e.setCancelled(true);
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
-            if (itemDispName.equals("§aYes")) {
+            if (itemDispName.equals("§a§lYes")) {
                 DeleteTown((Player) e.getWhoClicked());
-            } else if (itemDispName.equals("§cNo")) {
+            } else if (itemDispName.equals("§c§lNo")) {
                 return;
             }
             e.getWhoClicked().closeInventory();
@@ -553,9 +553,9 @@ public class TownCommand implements CommandExecutor, Listener {
             e.setCancelled(true);
 
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
-            if (itemDispName.equals("§aYes")) {
+            if (itemDispName.equals("§a§lYes")) {
                 LeaveTown((Player) e.getWhoClicked());
-            } else if (itemDispName.equals("§cNo")) {
+            } else if (itemDispName.equals("§c§lNo")) {
                 e.getWhoClicked().closeInventory();
                 return;
             }
