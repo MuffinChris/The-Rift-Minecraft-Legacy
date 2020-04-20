@@ -60,6 +60,9 @@ public class RockToss extends Skill implements Listener {
                         continue;
                     }
                 }
+                if(pl == p) {
+                	continue;
+                }
             }
             ent.setKiller(p);
             spellDamage(p, ent, getDmg(p), new ElementalStack());
