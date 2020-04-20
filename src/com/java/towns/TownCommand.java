@@ -550,7 +550,7 @@ public class TownCommand implements CommandExecutor, Listener {
     }
 
     private boolean showLeaderboard(Player p) {
-
+        return true;
     }
 
     @EventHandler(priority = EventPriority.LOW)
