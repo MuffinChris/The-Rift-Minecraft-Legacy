@@ -6,8 +6,8 @@ import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -22,6 +22,7 @@ public class Overwhelm extends Skill {
     private int range = 8;
     private double damage = 200;
     private int duration = 40;
+    BlockData dust = Material.STONE.createBlockData();
     
     private double APscale = 1;
     private double ADscale = 2;
@@ -86,11 +87,9 @@ public class Overwhelm extends Skill {
     }
     
     public void stun(Player player, LivingEntity e, int stunDur) {
-    	if (e instanceof ArmorStand) {
-        }
-        else if (e instanceof Player) {
+    	if (e instanceof Player) {
             Player pl = (Player) e;
-        	main.getRP(pl).getStun().getStatuses().add(new StatusValue("Stun:" + pl.getName(), 1, duration, System.currentTimeMillis(), false));
+        	main.getRP(pl).getStun().getStatuses().add(new StatusValue("Stun:" + player.getName(), 1, stunDur, System.currentTimeMillis(), false));
         } 
 		else {
 			e.setAI(false);
@@ -111,7 +110,7 @@ public class Overwhelm extends Skill {
     	new BukkitRunnable() {
 	    	int times = 0;
 			public void run() {
-                p.getWorld().spawnParticle(Particle.BLOCK_DUST, ent.getLocation(), 20, new MaterialData(Material.DIRT));
+                p.getWorld().spawnParticle(Particle.BLOCK_DUST, ent.getLocation(), 20, dust);
 				times++;
 				if(times >= duration)
 					cancel();

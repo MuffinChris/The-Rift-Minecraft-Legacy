@@ -69,7 +69,8 @@ public class Shatterstrike extends Skill implements Listener {
                 ent.setKiller(p);
                 spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0));
                 ent.getWorld().spawnParticle(Particle.BLOCK_DUST, ent.getLocation(), 50, 1, 1, 1, dust);
-                p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
+                p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 2.0F, .5F);
+                p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_HURT, 2.0F, .5F);
         	}
     	}
     }

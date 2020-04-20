@@ -33,6 +33,7 @@ public class RollingStone extends Skill implements Listener {
     
     public void cast(Player p) {
         super.cast(p);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_MINECART_RIDING, 2F, .5F);
         new BukkitRunnable() {
             int times = 16;
 
@@ -85,9 +86,9 @@ public class RollingStone extends Skill implements Listener {
                     continue;
                 }
             }
-    		ent.setVelocity(FDir.multiply(0.5f).add(rand));
+    		ent.setVelocity(FDir.multiply(2.0).add(rand));
     	}
-    	pl.setVelocity(FDir.multiply(0.5f));
+    	pl.setVelocity(FDir.multiply(2.0));
     }
     
     // launch enemies forwards or something idk
