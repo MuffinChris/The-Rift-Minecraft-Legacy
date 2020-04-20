@@ -25,7 +25,7 @@ import org.bukkit.event.EventPriority;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TownCommand implements CommandExecutor, Listener {
+public class TownCoreCommand implements CommandExecutor, Listener {
 
     private Main main = Main.getInstance();
 

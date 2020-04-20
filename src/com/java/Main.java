@@ -22,7 +22,7 @@ import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
 import com.java.towns.Citizen;
 import com.java.towns.Town;
-import com.java.towns.TownCommand;
+import com.java.towns.TownCoreCommand;
 import com.java.rpg.holograms.EntityHealthBars;
 import com.java.rpg.holograms.Hologram;
 import com.java.rpg.*;
@@ -918,7 +918,7 @@ public class Main extends JavaPlugin {
         getCommand("settings").setExecutor(new SettingsCommand());
         getCommand("bind").setExecutor(new BindCommand());
 
-        getCommand("town").setExecutor(new TownCommand());
+        getCommand("town").setExecutor(new TownCoreCommand());
 
         so("&dRIFT: &fEnabled commands!");
 
@@ -945,7 +945,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Accessories(), this);
         Bukkit.getPluginManager().registerEvents(new NPCTag(), this);
         Bukkit.getPluginManager().registerEvents(new TownManager(), this);
-        Bukkit.getPluginManager().registerEvents(new TownCommand(), this);
+        Bukkit.getPluginManager().registerEvents(new TownCoreCommand(), this);
 
         //Skills
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
