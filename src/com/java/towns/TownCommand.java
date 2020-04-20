@@ -382,6 +382,7 @@ public class TownCommand implements CommandExecutor, Listener {
             main.getTowns().remove(t);
             List<String> fullTowns = main.getFullTownList();
             fullTowns.remove(t.getName());
+            t.deleteFiles();
             main.setFullTownList(fullTowns);
 
             Bukkit.broadcastMessage(Main.color("&l&4Town " + t.getName() + " has been disbanded!"));
@@ -617,11 +618,11 @@ public class TownCommand implements CommandExecutor, Listener {
                 }
             } else if (itemDispName.contains("Invite")) {
                 sendInvite((Player) e.getWhoClicked(), "");
+                e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Promote")) {
                 promotePlayer((Player) e.getWhoClicked(), "");
+                e.getWhoClicked().closeInventory();
             }
-
-            e.getWhoClicked().closeInventory();
         } else if (e.getView().getTitle().equals("§e§lDisband Town?")) {
             if (e.getCurrentItem() == null) return;
             if (!e.getCurrentItem().hasItemMeta()) return;
