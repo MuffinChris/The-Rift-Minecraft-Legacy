@@ -72,12 +72,22 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 // TODO: implement
             } else if (args[0].equalsIgnoreCase("promote")) {
                 // TODO: implement
+                return promotePlayer(p, "");
+            } else if (args[0].equalsIgnoreCase("demote")) {
+                return demotePlayer(p, "");
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("invite")) {
                 return sendInvite(p, args[1]); // args[1] is username of player to inv
             } else if (args[0].equalsIgnoreCase("create")) {
                 return createNewTown(p, args[1]); // args[1] is name of town
+            } else if (args[0].equalsIgnoreCase("kick")) {
+                // TODO: implement
+            } else if (args[0].equalsIgnoreCase("promote")) {
+                // TODO: implement
+                return promotePlayer(p, args[1]);
+            } else if (args[0].equalsIgnoreCase("demote")) {
+                return demotePlayer(p, args[1]);
             }
         }
 
@@ -553,6 +563,28 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
+    private boolean demotePlayer(Player p, String r){
+        if(r.equalsIgnoreCase("")){
+            Main.msg(p, Main.color("&l&eWho do you want to demote?"));
+
+            main.getUUIDCitizenMap().get(p.getUniqueId()).setDemoteStatus("Prompted");
+            new BukkitRunnable() {
+                public void run() {
+                    Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
+                    if (!mc.getDemoteStatus().equals("Normal")) {
+                        mc.setDemoteStatus("Normal");
+                        Main.msg(p, Main.color("&4Prompt Timed Out."));
+                    }
+                }
+            }.runTaskLater(Main.getInstance(), 20 * 60);
+        } else {
+            Player reciever = Bukkit.getPlayer(r);
+            Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+            Town t = getTownFromCitizen(c);
+            t.demote(p, reciever);
+        }
+        return true;
+    }
     private boolean showLeaderboard(Player p) {
 
         int lpage = main.getUUIDCitizenMap().get(p.getUniqueId()).getLeaderboardPage();
@@ -622,6 +654,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (itemDispName.contains("Promote")) {
                 promotePlayer((Player) e.getWhoClicked(), "");
                 e.getWhoClicked().closeInventory();
+            } else if(itemDispName.contains("Demote")) {
+                demotePlayer((Player) e.getWhoClicked(), "");
             }
         } else if (e.getView().getTitle().equals("§e§lDisband Town?")) {
             if (e.getCurrentItem() == null) return;

@@ -135,7 +135,7 @@ public class Town {
             return;
         }
         //Check if promoter rank is high enough
-        if(cl.getRank(promoter) <= 3){
+        if(cl.getRank(promoter) <= 2){
             main.msg(promoter, "You are not high enough rank to promote.");
             return;
         }
@@ -158,6 +158,10 @@ public class Town {
     public void demote(Player demoter, Player reciever){
         int drank = cl.getRank(demoter);
         int rrank = cl.getRank(reciever);
+        if(drank <= 2){
+            main.msg(demoter, "You are not high enough rank to demote someone");
+            return;
+        }
         if(drank == rrank){
             main.msg(demoter, "You cannot demote someone that is the same rank as you");
             return;

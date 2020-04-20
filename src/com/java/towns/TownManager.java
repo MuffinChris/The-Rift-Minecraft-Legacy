@@ -166,7 +166,6 @@ public class TownManager implements Listener {
                 Main.msg(sender, Main.color("&4Player not found"));
                 return;
             }
-            e.setCancelled(true);
             Town t = null;
             for (Town ct : main.getTowns()) {
                 if (ct.getName().equals(c.getTown())) {
@@ -175,6 +174,24 @@ public class TownManager implements Listener {
                 }
             }
             t.promote(sender, r);
+            return;
+        } else if (c.getDemoteStatus().equals("Prompted")) {
+            String recieverName = e.getMessage();
+            Player r = Bukkit.getPlayer(recieverName);
+            e.setCancelled(true);
+            c.setDemoteStatus("Normal");
+            if (r == null) {
+                Main.msg(sender, Main.color("&4Player not found"));
+                return;
+            }
+            Town t = null;
+            for (Town ct : main.getTowns()) {
+                if (ct.getName().equals(c.getTown())) {
+                    t = ct;
+                    break;
+                }
+            }
+            t.demote(sender, r);
             return;
         }
 
