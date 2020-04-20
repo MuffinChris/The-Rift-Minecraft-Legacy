@@ -94,7 +94,7 @@ public class Town {
     }
 
     public void invite(Player inviter, Player reciever) {
-        Main.msg(inviter, "&aInvite sent!");
+        Main.msg(inviter, "&aInvite sent to " + reciever.getDisplayName() + "!");
         TextComponent invText1 = new TextComponent(inviter.getName() + " has invited you to " + name + "!");
         TextComponent acceptText = new TextComponent("[ACCEPT]");
         TextComponent declineText = new TextComponent("[DECLINE]");
@@ -131,27 +131,27 @@ public class Town {
 
     public void promote(Player promoter, Player reciever) {
         if(!main.getUUIDCitizenMap().get(reciever.getUniqueId()).getTown().equals(name)){
-            main.msg(promoter, reciever.getName() + " is in another town.");
+            Main.msg(promoter, reciever.getName() + " is not in your town!");
             return;
         }
         //Check if promoter rank is high enough
         if(cl.getRank(promoter) <= 2){
-            main.msg(promoter, "You are not high enough rank to promote.");
+            Main.msg(promoter, "You are not high enough rank to promote.");
             return;
         }
         if(cl.getRank(reciever) == ranks.size() - 1){
-            main.msg(promoter, reciever.getName() + " is " + getRankName(reciever) +".");
-            main.msg(promoter, reciever.getName() + " cannot be promoted");
+            Main.msg(promoter, reciever.getName() + " is " + getRankName(reciever) +".");
+            Main.msg(promoter, reciever.getName() + " cannot be promoted");
             return;
         }
         if(cl.getRank(promoter) - cl.getRank(reciever) < 2 && cl.getRank(promoter) != ranks.size() - 1){
-            main.msg(promoter, "You are not high enough rank to promote " + reciever.getName() + " to "
+            Main.msg(promoter, "You are not high enough rank to promote " + reciever.getName() + " to "
                     + ranks.get(cl.getRank(reciever) + 1));
             return;
         }
         //TODO: Promote sub-owner to owner
-        main.msg(promoter, "You have promoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) + 1));
-        main.msg(reciever, "You have been promoted to " + ranks.get(cl.getRank(reciever) + 1) + " by " + promoter.getName());
+        Main.msg(promoter, "You have promoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) + 1));
+        Main.msg(reciever, "You have been promoted to " + ranks.get(cl.getRank(reciever) + 1) + " by " + promoter.getName());
         main.getUUIDCitizenMap().get(reciever.getUniqueId()).setRank(getRank(reciever) + 1);
         main.getUUIDCitizenMap().get(reciever.getUniqueId()).pushFiles();
     }
@@ -159,23 +159,23 @@ public class Town {
         int drank = cl.getRank(demoter);
         int rrank = cl.getRank(reciever);
         if(drank <= 2){
-            main.msg(demoter, "You are not high enough rank to demote someone");
+            Main.msg(demoter, "You are not high enough rank to demote someone");
             return;
         }
         if(drank == rrank){
-            main.msg(demoter, "You cannot demote someone that is the same rank as you");
+            Main.msg(demoter, "You cannot demote someone that is the same rank as you");
             return;
         }
         if(drank < rrank){
-            main.msg(demoter, "You cannot demote someone that is a higher rank than you");
+            Main.msg(demoter, "You cannot demote someone that is a higher rank than you");
             return;
         }
         if(rrank <= 0){
-            main.msg(demoter, reciever.getName() + " cannot be demoted any lower");
+            Main.msg(demoter, reciever.getName() + " cannot be demoted any lower");
             return;
         }
-        main.msg(demoter, "You have demoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) - 1));
-        main.msg(reciever, "You have been demoted to " + ranks.get(cl.getRank(reciever) - 1) + " by " + demoter.getName());
+        Main.msg(demoter, "You have demoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) - 1));
+        Main.msg(reciever, "You have been demoted to " + ranks.get(cl.getRank(reciever) - 1) + " by " + demoter.getName());
         main.getUUIDCitizenMap().get(reciever.getUniqueId()).setRank(getRank(reciever) - 1);
         main.getUUIDCitizenMap().get(reciever.getUniqueId()).pushFiles();
     }

@@ -62,8 +62,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("remove")) {
                 return deleteTown(p);
             } else if (args[0].equalsIgnoreCase("invite")) {
-                Main.msg(p, Main.color("&4Must specify player to invite!"));
-                return false;
+                return sendInvite(p, "");
             } else if (args[0].equalsIgnoreCase("accept")) {
                 return acceptInvite(p);
             } else if (args[0].equalsIgnoreCase("decline")) {
@@ -71,7 +70,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (args[0].equalsIgnoreCase("kick")) {
                 // TODO: implement
             } else if (args[0].equalsIgnoreCase("promote")) {
-                // TODO: implement
                 return promotePlayer(p, "");
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, "");
@@ -84,7 +82,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (args[0].equalsIgnoreCase("kick")) {
                 // TODO: implement
             } else if (args[0].equalsIgnoreCase("promote")) {
-                // TODO: implement
                 return promotePlayer(p, args[1]);
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, args[1]);
@@ -223,7 +220,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return sp;
     }
 
-    public void sendTownInv(Player p) {
+    private void sendTownInv(Player p) {
         String townName = main.getUUIDCitizenMap().get(p.getUniqueId()).getTown();
         Inventory menu = Bukkit.createInventory(null, 36, Main.color("&b&l" + townName + " Menu"));
 
@@ -262,7 +259,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    public void sendAreYouSureInv(Player p, String s) {
+    private void sendAreYouSureInv(Player p, String s) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&l" + s));
 
         ItemStack yesStack = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
@@ -291,7 +288,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    public void sendTownlessInv(Player p) {
+    private void sendTownlessInv(Player p) {
         Inventory menu = Bukkit.createInventory(null, 27, Main.color("&e&lTown Menu"));
 
         // town create
@@ -317,7 +314,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private boolean createNewTown(Player p, String townName) {
+    public boolean createNewTown(Player p, String townName) {
 
         if (townName.equalsIgnoreCase("")) {
             if (!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
@@ -358,6 +355,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
             Town nt = new Town(p, townName);
             main.getTowns().add(nt);
+            nt.pushFiles();
 
             List<String> fullTowns = main.getFullTownList();
             fullTowns.add(townName);
@@ -369,7 +367,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     }
 
-    private boolean leaveTown(Player p) {
+    public boolean leaveTown(Player p) {
 
         // TODO: if the owner of a town leaves -- then either the town should disband or the max level role needs to be transferred (randomly to a maxlvl -1 member?)
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
@@ -414,7 +412,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean deleteTown(Player p) {
+    public boolean deleteTown(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         Town t = getTownFromCitizen(c);
@@ -423,12 +421,12 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             return false;
         }
         Main.msg(p, "&aTown successfully disbanded");
-        for (Citizen ct : t.getCitizenList().citimap.values()) {
+        for (Player pt : t.getCitizenList().citimap.keySet()) {
+            Citizen ct = main.getUUIDCitizenMap().get(pt.getPlayer().getUniqueId());
             ct.setRank(-1);
             ct.setTown("None");
-            Citizen ctmain = main.getUUIDCitizenMap().get(ct.getPlayer());
-            ct.setRank(-1);
-            ctmain.setTown("None");
+
+            ct.pushFiles();
         }
 
         main.getTowns().remove(t);
@@ -440,7 +438,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean sendInvite(Player p, String recieverName) {
+    public boolean sendInvite(Player p, String recieverName) {
 
         Citizen cp = main.getUUIDCitizenMap().get(p.getUniqueId());
 
@@ -510,6 +508,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         c.setRank(0); // lowest possible rank
 
         tinv.getCitizenList().addPlayer(p);
+        c.pushFiles();
 
         Main.msg(p, Main.color("&aJoined town " + c.getInviteStatus()));
 
@@ -525,22 +524,12 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             return false;
         }
 
-        Town tinv = null;
-        for (Town t : main.getTowns()) {
-            if (t.getName().equalsIgnoreCase(c.getInviteStatus())) {
-                tinv = t;
-                break;
-            }
-        }
-
         c.setInviteStatus("Normal");
         Main.msg(p, "&aYou successfully declined the invite");
         return true;
-
-
     }
 
-    private boolean promotePlayer(Player p, String r){
+    public boolean promotePlayer(Player p, String r){
         if(r.equalsIgnoreCase("")){
             Main.msg(p, Main.color("&l&eWho do you want to promote?"));
 
@@ -555,15 +544,21 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 }
             }.runTaskLater(Main.getInstance(), 20 * 60);
         } else {
-            Player reciever = Bukkit.getPlayer(r);
+            Player receiver = Bukkit.getPlayer(r);
+
+            if(receiver == null) {
+                Main.msg(p, Main.color("&cPlayer not found!"));
+                return false;
+            }
+
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
-            t.promote(p, reciever);
+            t.promote(p, receiver);
         }
         return true;
     }
 
-    private boolean demotePlayer(Player p, String r){
+    public boolean demotePlayer(Player p, String r){
         if(r.equalsIgnoreCase("")){
             Main.msg(p, Main.color("&l&eWho do you want to demote?"));
 
@@ -578,10 +573,15 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 }
             }.runTaskLater(Main.getInstance(), 20 * 60);
         } else {
-            Player reciever = Bukkit.getPlayer(r);
+            Player receiver = Bukkit.getPlayer(r);
+
+            if(receiver == null) {
+                Main.msg(p, Main.color("&aPlayer not found!"));
+                return false;
+            }
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
-            t.demote(p, reciever);
+            t.demote(p, receiver);
         }
         return true;
     }

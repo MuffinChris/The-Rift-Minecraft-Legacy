@@ -24,6 +24,7 @@ import java.util.Map;
 
 public class TownManager implements Listener {
     private Main main = Main.getInstance();
+    private TownCoreCommand tcc = new TownCoreCommand();
 
     public TownManager() {
 
@@ -95,104 +96,33 @@ public class TownManager implements Listener {
         if (!main.getUUIDCitizenMap().containsKey(sender.getUniqueId())) return; // idk if this can ever even be false
 
         Citizen c = main.getUUIDCitizenMap().get(sender.getUniqueId());
-        if (c.getCreationStatus().equals("Prompted")) {
+        if (c.getCreationStatus().equals("Prompted")) { // creating town
             String townName = e.getMessage();
             e.setCancelled(true);
-
             c.setCreationStatus("Normal"); // return to normal state
-            // check if valid town name
-            for (String tn : main.getFullTownList()) {
-                if (tn.equalsIgnoreCase(townName)) {
-                    Main.msg(sender, Main.color("&4Town name already taken!"));
-                    return;
-                }
-            }
 
-            if (!townName.matches("[a-zA-Z ]+")) {
-                Main.msg(sender, Main.color("&4Town names can only contain characters (A-Z) and spaces"));
-                return;
-            }
+            tcc.createNewTown(sender, townName);
 
-            if (townName.equalsIgnoreCase("None")) {
-                Main.msg(sender, Main.color("&4That is a protected town name!"));
-                return;
-            }
-
-            Town nt = new Town(sender, e.getMessage());
-            main.getTowns().add(nt);
-
-            List<String> fullTowns = main.getFullTownList();
-            fullTowns.add(e.getMessage());
-            main.setFullTownList(fullTowns);
-
-            Main.msg(sender, Main.color("&l&aSuccessfully created town: &f" + townName));
-        } else if (c.getInviteSentStatus().equals("Prompted")) {
-            String recieverName = e.getMessage();
+        } else if (c.getInviteSentStatus().equals("Prompted")) { // invite prompt
+            String receiverName = e.getMessage();
             c.setInviteSentStatus("Normal");
             e.setCancelled(true);
 
-            Player r = Bukkit.getPlayer(recieverName);
-            if (r == null) {
-                Main.msg(sender, Main.color("&4Player not found"));
-                return;
-            }
+            tcc.sendInvite(e.getPlayer(), receiverName);
 
-            Citizen cr = main.getUUIDCitizenMap().get(r.getUniqueId());
-            Town t = null;
-            for (Town ct : main.getTowns()) {
-                if (ct.getName().equals(c.getTown())) {
-                    t = ct;
-                    break;
-                }
-            }
-
-            if (!cr.getTown().equalsIgnoreCase("None")) {
-                Main.msg(sender, "&4This player is already in another town!");
-                return;
-            }
-
-            if (!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
-                Main.msg(sender, "&4This player already has a pending invite!");
-                return;
-            }
-
-            t.invite(sender, r);
-        } else if (c.getPromoteStatus().equals("Prompted")) {
+        } else if (c.getPromoteStatus().equals("Prompted")) { // promotion prompt
             String recieverName = e.getMessage();
-            Player r = Bukkit.getPlayer(recieverName);
             e.setCancelled(true);
             c.setPromoteStatus("Normal");
-            if (r == null) {
-                Main.msg(sender, Main.color("&4Player not found"));
-                return;
-            }
-            Town t = null;
-            for (Town ct : main.getTowns()) {
-                if (ct.getName().equals(c.getTown())) {
-                    t = ct;
-                    break;
-                }
-            }
-            t.promote(sender, r);
-            return;
-        } else if (c.getDemoteStatus().equals("Prompted")) {
+
+            tcc.promotePlayer(sender, recieverName);
+
+        } else if (c.getDemoteStatus().equals("Prompted")) { // demotion prompt
             String recieverName = e.getMessage();
-            Player r = Bukkit.getPlayer(recieverName);
             e.setCancelled(true);
             c.setDemoteStatus("Normal");
-            if (r == null) {
-                Main.msg(sender, Main.color("&4Player not found"));
-                return;
-            }
-            Town t = null;
-            for (Town ct : main.getTowns()) {
-                if (ct.getName().equals(c.getTown())) {
-                    t = ct;
-                    break;
-                }
-            }
-            t.demote(sender, r);
-            return;
+
+            tcc.demotePlayer(sender, recieverName);
         }
 
     }
