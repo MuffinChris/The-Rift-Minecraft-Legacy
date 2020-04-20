@@ -130,7 +130,7 @@ public class Town {
     }
 
     public void promote(Player promoter, Player reciever) {
-        if(!main.getUUIDCitizenMap().get(reciever).getTown().equals(name)){
+        if(!main.getUUIDCitizenMap().get(reciever.getUniqueId()).getTown().equals(name)){
             main.msg(promoter, reciever.getName() + " is in another town.");
             return;
         }

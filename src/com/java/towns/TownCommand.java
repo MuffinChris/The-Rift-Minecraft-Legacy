@@ -584,7 +584,6 @@ public class TownCommand implements CommandExecutor, Listener {
 
         ArrayList<Town> fullTowns = new ArrayList<Town>();
 
-        return true;
     }
 
     @EventHandler(priority = EventPriority.LOW)
