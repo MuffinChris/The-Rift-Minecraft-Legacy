@@ -162,12 +162,13 @@ public class TownManager implements Listener {
         } else if(c.getPromoteStatus().equals("Prompted")){
             String recieverName = e.getMessage();
             Player r = Bukkit.getPlayer(recieverName);
+            e.setCancelled(true);
+            c.setPromoteStatus("Normal");
             if (r == null) {
                 Main.msg(sender, Main.color("&4Player not found"));
                 return;
             }
-
-            String sr = main.getUUIDCitizenMap().get(sender.getUniqueId()).getTown();
+            e.setCancelled(true);
             Town t = null;
             for (Town ct : main.getTowns()) {
                 if (ct.getName().equals(c.getTown())) {

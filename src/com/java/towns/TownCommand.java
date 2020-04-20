@@ -529,9 +529,9 @@ public class TownCommand implements CommandExecutor, Listener {
 
     }
 
-    private boolean promotePlayer(Player p, String r) {
-        if (r.equalsIgnoreCase("")) {
-            Main.msg(p, Main.color("&l&Who do you want to promote?"));
+    private boolean promotePlayer(Player p, String r){
+        if(r.equalsIgnoreCase("")){
+            Main.msg(p, Main.color("&l&eWho do you want to promote?"));
 
             main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
             new BukkitRunnable() {
@@ -583,7 +583,8 @@ public class TownCommand implements CommandExecutor, Listener {
         List<String> fullTownNames = main.getFullTownList();
 
         ArrayList<Town> fullTowns = new ArrayList<Town>();
-        
+
+        return true;
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -596,7 +597,8 @@ public class TownCommand implements CommandExecutor, Listener {
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.contains("Create New Town")) {
                 createNewTown((Player) e.getWhoClicked(), "");
-            } else if (itemDispName.contains("Leaderboard")) {
+            }
+            else if(itemDispName.contains("Leaderboard")) {
 
             }
 
