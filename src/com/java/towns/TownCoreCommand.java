@@ -23,9 +23,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventPriority;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TownCoreCommand implements CommandExecutor, Listener {
+
+    final int TOWNS_PER_PAGE = 5;
 
     private Main main = Main.getInstance();
 
@@ -67,6 +71,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return acceptInvite(p);
             } else if (args[0].equalsIgnoreCase("decline")) {
                 return declineInvite(p);
+            } else if (args[0].equalsIgnoreCase("leaderboard")) {
+                return showLeaderboard(p);
             } else if (args[0].equalsIgnoreCase("kick")) {
                 // TODO: implement
             } else if (args[0].equalsIgnoreCase("promote")) {
@@ -86,8 +92,18 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, args[1]);
             }
+
+            if(args[0].equalsIgnoreCase("leaderboard")) {
+                if(args[1].equalsIgnoreCase("next")) {
+                    return leaderboardNextPage(p);
+                }
+                else if(args[1].equalsIgnoreCase("previous")) {
+                    return leaderboardPreviousPage(p);
+                }
+            }
         }
 
+        Main.msg(p, Main.color("&cUnknown command! Use /town to see menu"));
         return false;
     }
 
@@ -388,9 +404,9 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         if (t.getCitizenList().citimap.size() == 0) {
             // there are no more people in this town -- delete it
             main.getTowns().remove(t);
+            t.deleteFiles();
             List<String> fullTowns = main.getFullTownList();
             fullTowns.remove(t.getName());
-            t.deleteFiles();
             main.setFullTownList(fullTowns);
 
             Bukkit.broadcastMessage(Main.color("&l&4Town " + t.getName() + " has been disbanded!"));
@@ -488,49 +504,58 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean acceptInvite(Player p) {
-        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+    private boolean acceptInvite(Player reciever) {
+        Citizen c = main.getUUIDCitizenMap().get(reciever.getUniqueId());
 
         if (c.getInviteStatus().equalsIgnoreCase("Normal")) {
-            Main.msg(p, Main.color("&4You have no pending invites!"));
+            Main.msg(reciever, Main.color("&aYou have no pending invites!"));
             return false;
         }
 
-        Town tinv = null;
+        Town townInvite = null;
         for (Town t : main.getTowns()) {
             if (t.getName().equalsIgnoreCase(c.getInviteStatus())) {
-                tinv = t;
+                townInvite = t;
                 break;
             }
+        }
+
+        if (townInvite == null) {
+            Main.msg(reciever, Main.color("&aThis town no longer exists!"));
+            return false;
         }
 
         c.setTown(c.getInviteStatus());
         c.setRank(0); // lowest possible rank
 
-        tinv.getCitizenList().addPlayer(p);
+        for (Player p : townInvite.getCitizenList().citimap.keySet()) {
+            Main.msg(p, Main.color("&a" + reciever.getDisplayName() + " has accepted their invite and joined the town!"));
+        }
+
+        townInvite.getCitizenList().addPlayer(reciever);
         c.pushFiles();
 
-        Main.msg(p, Main.color("&aJoined town " + c.getInviteStatus()));
+        Main.msg(reciever, Main.color("&aJoined town " + c.getInviteStatus()));
 
         c.setInviteStatus("Normal");
         return true;
     }
 
-    private boolean declineInvite(Player p) {
-        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+    private boolean declineInvite(Player reciever) {
+        Citizen c = main.getUUIDCitizenMap().get(reciever.getUniqueId());
 
         if (!c.getInviteStatus().equalsIgnoreCase("Pending")) {
-            Main.msg(p, Main.color("&4You have no pending invites!"));
+            Main.msg(reciever, Main.color("&4You have no pending invites!"));
             return false;
         }
 
         c.setInviteStatus("Normal");
-        Main.msg(p, "&aYou successfully declined the invite");
+        Main.msg(reciever, Main.color("&aYou successfully declined the invite)"));
         return true;
     }
 
-    public boolean promotePlayer(Player p, String r){
-        if(r.equalsIgnoreCase("")){
+    public boolean promotePlayer(Player p, String r) {
+        if (r.equalsIgnoreCase("")) {
             Main.msg(p, Main.color("&l&eWho do you want to promote?"));
 
             main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
@@ -546,7 +571,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         } else {
             Player receiver = Bukkit.getPlayer(r);
 
-            if(receiver == null) {
+            if (receiver == null) {
                 Main.msg(p, Main.color("&cPlayer not found!"));
                 return false;
             }
@@ -558,8 +583,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    public boolean demotePlayer(Player p, String r){
-        if(r.equalsIgnoreCase("")){
+    public boolean demotePlayer(Player p, String r) {
+        if (r.equalsIgnoreCase("")) {
             Main.msg(p, Main.color("&l&eWho do you want to demote?"));
 
             main.getUUIDCitizenMap().get(p.getUniqueId()).setDemoteStatus("Prompted");
@@ -575,8 +600,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         } else {
             Player receiver = Bukkit.getPlayer(r);
 
-            if(receiver == null) {
-                Main.msg(p, Main.color("&aPlayer not found!"));
+            if (receiver == null) {
+                Main.msg(p, Main.color("&cPlayer not found!"));
                 return false;
             }
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
@@ -585,6 +610,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         }
         return true;
     }
+
     private boolean showLeaderboard(Player p) {
 
         int lpage = main.getUUIDCitizenMap().get(p.getUniqueId()).getLeaderboardPage();
@@ -610,13 +636,54 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     }
 
     private void sendLeaderboardPage(Player p, int x) {
-        final int TOWNS_PER_PAGE = 5;
+
 
         Main.msg(p, Main.color("&l&b==LEADERBOARD=="));
         List<String> fullTownNames = main.getFullTownList();
 
         ArrayList<Town> fullTowns = new ArrayList<Town>();
 
+        for (int i = 0; i < fullTownNames.size(); i++) {
+            fullTowns.add(new Town(fullTownNames.get(i)));
+        }
+
+        fullTowns.sort((o1, o2) -> {
+            // this is kind of a weird metric (lvl^2 * citizenCount)
+            int o1score = (int) Math.pow((o1.getLevel() + 1), 2) * o1.getCitizenList().citimap.size();
+            int o2score = (int) Math.pow((o2.getLevel() + 1), 2) * o2.getCitizenList().citimap.size();
+
+            return Integer.compare(o1score, o2score);
+        });
+
+        for (int i = x * TOWNS_PER_PAGE; i < (x + 1) * TOWNS_PER_PAGE; i++) {
+            if (i >= fullTowns.size()) break;
+
+            Main.msg(p, Main.color("&6" + i +
+                    "   Town: " + fullTowns.get(i).getName() +
+                    "    Level: " + fullTowns.get(i).getLevel() +
+                    "    Size: " + fullTowns.get(i).getCitizenList().citimap.size()));
+        }
+
+    }
+
+    private boolean leaderboardNextPage(Player p) {
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+        int cpage= c.getLeaderboardPage();
+
+        int npage = (int)((cpage + 1) % Math.ceil((double)(main.getFullTownList().size()/TOWNS_PER_PAGE)));
+        c.setLeaderboardPage(npage);
+
+        return showLeaderboard(p);
+    }
+
+    private boolean leaderboardPreviousPage(Player p) {
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+        int cpage= c.getLeaderboardPage();
+
+        int npage = (int)((cpage - 1) % Math.ceil((double)(main.getFullTownList().size()/TOWNS_PER_PAGE)));
+        c.setLeaderboardPage(npage);
+
+        return showLeaderboard(p);
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -629,9 +696,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             String itemDispName = e.getCurrentItem().getItemMeta().getDisplayName();
             if (itemDispName.contains("Create New Town")) {
                 createNewTown((Player) e.getWhoClicked(), "");
-            }
-            else if(itemDispName.contains("Leaderboard")) {
-
+            } else if (itemDispName.contains("Leaderboard")) {
+                showLeaderboard((Player) e.getWhoClicked());
             }
 
             e.getWhoClicked().closeInventory();
@@ -654,8 +720,11 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (itemDispName.contains("Promote")) {
                 promotePlayer((Player) e.getWhoClicked(), "");
                 e.getWhoClicked().closeInventory();
-            } else if(itemDispName.contains("Demote")) {
+            } else if (itemDispName.contains("Demote")) {
                 demotePlayer((Player) e.getWhoClicked(), "");
+                e.getWhoClicked().closeInventory();
+            } else if (itemDispName.contains("Leaderboard")) {
+                showLeaderboard((Player) e.getWhoClicked());
             }
         } else if (e.getView().getTitle().equals("§e§lDisband Town?")) {
             if (e.getCurrentItem() == null) return;

@@ -4,6 +4,7 @@ import com.java.Main;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class Town {
     };
     private CitizenList cl;
     private String name;
-    private int level;
+    private int level = 1;
 
     public Town(Player p, String _n) {
         cl = new CitizenList();
@@ -46,6 +47,7 @@ public class Town {
         Citizen citizen = main.getUUIDCitizenMap().get(p.getUniqueId());
         citizen.setRank(ranks.size() - 1); // first player in creating class so set them to max rank
         citizen.setTown(_n);
+        citizen.pushFiles(); // this is kinda of weird place to do this -- but refactoring this part is for some other time
 
         this.getCitizenList().citimap.put(p, citizen);
         this.getCitizenList().town = _n;
@@ -224,6 +226,9 @@ public class Town {
         }
     }
 
+    // this function is broken (?)
+    //      - tFile.delete() returns true so it thinks it works except the file is not actually removed
+    //      - low prio fix though because it will get overridden if someone creates a town of the same name
     public void deleteFiles(){
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         tFile.delete();
