@@ -468,7 +468,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    public boolean sendInvite(Player p, String recieverName) {
+    public boolean sendInvite(Player p, String receiverName) {
 
         Citizen cp = main.getUUIDCitizenMap().get(p.getUniqueId());
 
@@ -477,7 +477,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             return false;
         }
 
-        if (recieverName.equals("")) {
+        if (receiverName.equals("")) {
             cp.setInviteSentStatus("Prompted");
             Main.msg(p, Main.color("&l&eEnter Username: "));
 
@@ -492,7 +492,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
 
         } else {
-            Player r = Bukkit.getPlayer(recieverName);
+            Player r = Bukkit.getPlayer(receiverName);
             if (r == null) {
                 Main.msg(p, Main.color("&4Player not found"));
                 return false;
@@ -518,11 +518,11 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean acceptInvite(Player reciever) {
-        Citizen c = main.getUUIDCitizenMap().get(reciever.getUniqueId());
+    private boolean acceptInvite(Player receiver) {
+        Citizen c = main.getUUIDCitizenMap().get(receiver.getUniqueId());
 
         if (c.getInviteStatus().equalsIgnoreCase("Normal")) {
-            Main.msg(reciever, Main.color("&aYou have no pending invites!"));
+            Main.msg(receiver, Main.color("&aYou have no pending invites!"));
             return false;
         }
 
@@ -535,7 +535,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         }
 
         if (townInvite == null) {
-            Main.msg(reciever, Main.color("&aThis town no longer exists!"));
+            Main.msg(receiver, Main.color("&aThis town no longer exists!"));
             return false;
         }
 
@@ -543,28 +543,28 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         c.setRank(0); // lowest possible rank
 
         for (UUID p : townInvite.getCitizenList()) {
-            Main.msg(Bukkit.getPlayer(p), Main.color("&a" + reciever.getDisplayName() + " has accepted their invite and joined the town!"));
+            Main.msg(Bukkit.getPlayer(p), Main.color("&a" + receiver.getDisplayName() + " has accepted their invite and joined the town!"));
         }
 
-        townInvite.getCitizenList().add(reciever.getUniqueId());
+        townInvite.getCitizenList().add(receiver.getUniqueId());
         c.pushFiles();
-
-        Main.msg(reciever, Main.color("&aJoined town " + c.getInviteStatus()));
+        townInvite.pushFiles();
+        Main.msg(receiver, Main.color("&aJoined town " + c.getInviteStatus()));
 
         c.setInviteStatus("Normal");
         return true;
     }
 
-    private boolean declineInvite(Player reciever) {
-        Citizen c = main.getUUIDCitizenMap().get(reciever.getUniqueId());
+    private boolean declineInvite(Player receiver) {
+        Citizen c = main.getUUIDCitizenMap().get(receiver.getUniqueId());
 
         if (!c.getInviteStatus().equalsIgnoreCase("Pending")) {
-            Main.msg(reciever, Main.color("&4You have no pending invites!"));
+            Main.msg(receiver, Main.color("&4You have no pending invites!"));
             return false;
         }
 
         c.setInviteStatus("Normal");
-        Main.msg(reciever, Main.color("&aYou successfully declined the invite)"));
+        Main.msg(receiver, Main.color("&aYou successfully declined the invite)"));
         return true;
     }
 
