@@ -36,19 +36,19 @@ public class TownManager implements Listener {
 
             Citizen c = main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId());
 
-            if(c.getTown().equals("None")) {
+            if (c.getTown().equals("None")) {
                 return;
             }
 
             boolean alreadyFound = false;
-            for(Town t: main.getTowns()) {
-                if(t.getName().equals(c.getTown())) {
+            for (Town t : main.getTowns()) {
+                if (t.getName().equals(c.getTown())) {
                     alreadyFound = true;
                     break;
                 }
             }
 
-            if(!alreadyFound) {
+            if (!alreadyFound) {
                 main.getTowns().add(new Town(c.getTown())); // need to add it back to memory if they are the only online player (just joined)
             }
         }
@@ -63,28 +63,27 @@ public class TownManager implements Listener {
             new BukkitRunnable() {
                 public void run() {
                     main.getUUIDCitizenMap().remove(e.getPlayer().getUniqueId());
+                    for (Town t : main.getTowns()) { // check to remove towns
+                        boolean cont = true;
+                        for (Player tc : t.getCitizenList().citimap.keySet()) {
+                            if (main.getUUIDCitizenMap().containsKey(tc.getUniqueId())) {
+                                cont = false;
+                                break;
+                            }
+                        }
+
+                        if (cont) {
+                            new BukkitRunnable() {
+                                public void run() {
+                                    main.getTowns().remove(t); // if there are no remaining online players of this town
+                                    t.pushFiles();
+                                }
+                            }.runTaskLater(Main.getInstance(), 10L);
+                        }
+                    }
                 }
             }.runTaskLater(Main.getInstance(), 10L);
 
-            for (Town t : main.getTowns()) { // check to remove towns
-                boolean cont = true;
-                for (Player tc : t.getCitizenList().citimap.keySet()) {
-                    if (main.getUUIDCitizenMap().containsKey(tc.getUniqueId())) {
-                        cont = false;
-                        break;
-                    }
-
-                }
-
-                if (cont) {
-                    t.pushFiles();
-                    new BukkitRunnable() {
-                        public void run() {
-                            main.getTowns().remove(t); // if there are no remaining online players of this town
-                        }
-                    }.runTaskLater(Main.getInstance(), 10L);
-                }
-            }
 
         }
     }
@@ -127,8 +126,7 @@ public class TownManager implements Listener {
             main.setFullTownList(fullTowns);
 
             Main.msg(sender, Main.color("&l&aSuccessfully created town: &f" + townName));
-        }
-        else if(c.getInviteSentStatus().equals("Prompted")) {
+        } else if (c.getInviteSentStatus().equals("Prompted")) {
             String recieverName = e.getMessage();
             c.setInviteSentStatus("Normal");
             e.setCancelled(true);
@@ -149,17 +147,17 @@ public class TownManager implements Listener {
             }
 
             if (!cr.getTown().equalsIgnoreCase("None")) {
-                Main.msg(r, "&4This player is already in another town!");
+                Main.msg(sender, "&4This player is already in another town!");
                 return;
             }
 
-            if(!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
-                Main.msg(r, "&4This player already has a pending invite!");
+            if (!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
+                Main.msg(sender, "&4This player already has a pending invite!");
                 return;
             }
 
             t.invite(sender, r);
-        } else if(c.getPromoteStatus().equals("Prompted")){
+        } else if (c.getPromoteStatus().equals("Prompted")) {
             String recieverName = e.getMessage();
             Player r = Bukkit.getPlayer(recieverName);
             e.setCancelled(true);

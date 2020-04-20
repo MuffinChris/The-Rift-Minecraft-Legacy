@@ -464,12 +464,12 @@ public class TownCommand implements CommandExecutor, Listener {
             Town t = getTownFromCitizen(cp);
 
             if (getTownFromCitizen(cr) != null) {
-                Main.msg(r, "&4This player is already in another town!");
+                Main.msg(p, "&4This player is already in another town!");
                 return false;
             }
 
             if (!cr.getInviteStatus().equalsIgnoreCase("Normal")) {
-                Main.msg(r, "&4This player already has a pending invite!");
+                Main.msg(p, "&4This player already has a pending invite!");
                 return false;
             }
 
