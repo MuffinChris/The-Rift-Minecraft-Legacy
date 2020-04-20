@@ -330,6 +330,19 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
+    private void showTownMemberInv(Player p, String townName) {
+
+        // fetching heads is hard
+        Inventory menu = Bukkit.createInventory(null, 5, Main.color("&b&l" + townName + " Menu"));
+
+        for (int i = 39; i <= 53; i++) {
+            menu.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        }
+
+        p.openInventory(menu);
+        p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
+    }
+
     public boolean createNewTown(Player p, String townName) {
 
         if (townName.equalsIgnoreCase("")) {
@@ -616,8 +629,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         int lpage = main.getUUIDCitizenMap().get(p.getUniqueId()).getLeaderboardPage();
         sendLeaderboardPage(p, lpage);
 
-        TextComponent nextText = new TextComponent("[Previous Page]");
-        TextComponent previousText = new TextComponent("[Next Page]");
+        TextComponent nextText = new TextComponent("[Next Page]");
+        TextComponent previousText = new TextComponent("[Previous Page]");
         nextText.setBold(true);
         previousText.setBold(true);
         nextText.setColor(ChatColor.GREEN);
@@ -627,17 +640,15 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         // TODO: maybe do some hover events to make it more obvious what's going on
         TextComponent invText2 = new TextComponent();
 
-        invText2.addExtra(nextText);
-        invText2.addExtra(" or ");
         invText2.addExtra(previousText);
+        invText2.addExtra(" or ");
+        invText2.addExtra(nextText);
         p.sendMessage(invText2);
 
         return true;
     }
 
     private void sendLeaderboardPage(Player p, int x) {
-
-
         Main.msg(p, Main.color("&l&b==LEADERBOARD=="));
         List<String> fullTownNames = main.getFullTownList();
 
@@ -658,7 +669,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         for (int i = x * TOWNS_PER_PAGE; i < (x + 1) * TOWNS_PER_PAGE; i++) {
             if (i >= fullTowns.size()) break;
 
-            Main.msg(p, Main.color("&6" + i +
+            Main.msg(p, Main.color("&6" + (i+1) +
                     "   Town: " + fullTowns.get(i).getName() +
                     "    Level: " + fullTowns.get(i).getLevel() +
                     "    Size: " + fullTowns.get(i).getCitizenList().citimap.size()));
