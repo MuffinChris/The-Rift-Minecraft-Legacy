@@ -38,7 +38,7 @@ public class Quake extends Skill {
     
     public void cast(Player p) {
     	super.cast(p);
-    	p.getWorld().spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 80, 4, 1, 4, dust);
+    	p.getWorld().spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 300, 4, 1, 4, dust);
     	p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 2.0F, 0.5F);
     	for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(range)) {
             if (ent instanceof ArmorStand) {
