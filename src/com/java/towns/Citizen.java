@@ -91,10 +91,12 @@ public class Citizen {
     }
     public void setRank(int i) {
         r = i;
+        pushFiles();
     }
 
     public void setTown(String t) {
         town = t;
+        pushFiles();
     }
 
     public void setCreationStatus(String status) {

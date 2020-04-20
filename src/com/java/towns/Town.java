@@ -37,33 +37,30 @@ public class Town {
             add("Owner");
         }
     };
-    private CitizenList cl;
+    //private CitizenList cl;
     private String name;
     private int level = 1;
-
+    private List<UUID> cList;
     public Town(Player p, String _n) {
-        cl = new CitizenList();
-
+        //cl = new CitizenList();
+        cList = new ArrayList<UUID>();
         Citizen citizen = main.getUUIDCitizenMap().get(p.getUniqueId());
         citizen.setRank(ranks.size() - 1); // first player in creating class so set them to max rank
         citizen.setTown(_n);
         citizen.pushFiles(); // this is kinda of weird place to do this -- but refactoring this part is for some other time
 
-        this.getCitizenList().citimap.put(p, citizen);
-        this.getCitizenList().town = _n;
+        cList.add(p.getUniqueId());
         this.name = _n;
+        pushFiles();
     }
     public Town(String _n){
         name = _n;
         pullFiles();
     }
-    public Town(CitizenList citilist, String _n) {
-        this.cl = citilist;
-        this.name = _n;
-    }
 
-    public CitizenList getCitizenList() {
-        return cl;
+
+    public List<UUID> getCitizenList() {
+        return cList;
     }
 
     public List<String> getRanks() {
@@ -71,22 +68,22 @@ public class Town {
     } // TODO: have some way for town members to create ranks
 
     public int getRank(Player p) {
-        return cl.citimap.get(p).getRank();
+        return main.getUUIDCitizenMap().get(p.getUniqueId()).getRank();
     }
 
     public String getRankName(Player p) {
-        return ranks.get(cl.getRank(p));
+        return ranks.get(getRank(p));
     }
 
     public void setName(String s) {
-        name = s;
+        name = s; pushFiles();
     }
 
     public String getName() {
         return name;
     }
 
-    public void setLevel(int l) { level = l; }
+    public void setLevel(int l) { level = l; pushFiles(); }
 
     public int getLevel() { return level; }
 
@@ -95,8 +92,8 @@ public class Town {
         ranks.set(i, newname);
     }
 
-    public void invite(Player inviter, Player reciever) {
-        Main.msg(inviter, "&aInvite sent to " + reciever.getDisplayName() + "!");
+    public void invite(Player inviter, Player receiver) {
+        Main.msg(inviter, "&aInvite sent to " + receiver.getDisplayName() + "!");
         TextComponent invText1 = new TextComponent(inviter.getName() + " has invited you to " + name + "!");
         TextComponent acceptText = new TextComponent("[ACCEPT]");
         TextComponent declineText = new TextComponent("[DECLINE]");
@@ -111,55 +108,56 @@ public class Town {
         invText2.addExtra(acceptText);
         invText2.addExtra(" or ");
         invText2.addExtra(declineText);
-        reciever.sendMessage(invText1);
-        reciever.sendMessage(invText2);
+        receiver.sendMessage(invText1);
+        receiver.sendMessage(invText2);
 
-        Citizen mc = main.getUUIDCitizenMap().get(reciever.getUniqueId());
+        Citizen mc = main.getUUIDCitizenMap().get(receiver.getUniqueId());
         mc.setInviteStatus(this.name);
         new BukkitRunnable() {
             public void run() {
                 if (!mc.getInviteStatus().equals("Normal")) {
                     mc.setInviteStatus("Normal");
                     Main.msg(inviter, Main.color("&4Invite Timed Out."));
-                    Main.msg(reciever, Main.color("&4Invite Timed Out."));
+                    Main.msg(receiver, Main.color("&4Invite Timed Out."));
                 }
             }
         }.runTaskLater(Main.getInstance(), 20 * 60);
     }
 
-    public void kick(Player kicker, Player reciever) {
+    public void kick(Player kicker, Player receiver) {
 
     }
 
-    public void promote(Player promoter, Player reciever) {
-        if(!main.getUUIDCitizenMap().get(reciever.getUniqueId()).getTown().equals(name)){
-            Main.msg(promoter, reciever.getName() + " is not in your town!");
+    public void promote(Player promoter, Player receiver) {
+        if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
+            Main.msg(promoter, receiver.getName() + " is not in your town!");
             return;
         }
+        int prank = getRank(promoter); int rrank = getRank(receiver);
         //Check if promoter rank is high enough
-        if(cl.getRank(promoter) <= 2){
+        if(prank <= 2){
             Main.msg(promoter, "You are not high enough rank to promote.");
             return;
         }
-        if(cl.getRank(reciever) == ranks.size() - 1){
-            Main.msg(promoter, reciever.getName() + " is " + getRankName(reciever) +".");
-            Main.msg(promoter, reciever.getName() + " cannot be promoted");
+        if(rrank == ranks.size() - 1){
+            Main.msg(promoter, receiver.getName() + " is " + getRankName(receiver) +".");
+            Main.msg(promoter, receiver.getName() + " cannot be promoted");
             return;
         }
-        if(cl.getRank(promoter) - cl.getRank(reciever) < 2 && cl.getRank(promoter) != ranks.size() - 1){
-            Main.msg(promoter, "You are not high enough rank to promote " + reciever.getName() + " to "
-                    + ranks.get(cl.getRank(reciever) + 1));
+        if(prank - rrank < 2 && prank != ranks.size() - 1){
+            Main.msg(promoter, "You are not high enough rank to promote " + receiver.getName() + " to "
+                    + ranks.get(rrank + 1));
             return;
         }
         //TODO: Promote sub-owner to owner
-        Main.msg(promoter, "You have promoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) + 1));
-        Main.msg(reciever, "You have been promoted to " + ranks.get(cl.getRank(reciever) + 1) + " by " + promoter.getName());
-        main.getUUIDCitizenMap().get(reciever.getUniqueId()).setRank(getRank(reciever) + 1);
-        main.getUUIDCitizenMap().get(reciever.getUniqueId()).pushFiles();
+        Main.msg(promoter, "You have promoted " + receiver.getName() + " to " + ranks.get(rrank + 1));
+        Main.msg(receiver, "You have been promoted to " + ranks.get(rrank + 1) + " by " + promoter.getName());
+        main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(getRank(receiver) + 1);
+        main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
     }
-    public void demote(Player demoter, Player reciever){
-        int drank = cl.getRank(demoter);
-        int rrank = cl.getRank(reciever);
+    public void demote(Player demoter, Player receiver){
+        int drank = getRank(demoter);
+        int rrank = getRank(receiver);
         if(drank <= 2){
             Main.msg(demoter, "You are not high enough rank to demote someone");
             return;
@@ -173,13 +171,13 @@ public class Town {
             return;
         }
         if(rrank <= 0){
-            Main.msg(demoter, reciever.getName() + " cannot be demoted any lower");
+            Main.msg(demoter, receiver.getName() + " cannot be demoted any lower");
             return;
         }
-        Main.msg(demoter, "You have demoted " + reciever.getName() + " to " + ranks.get(cl.getRank(reciever) - 1));
-        Main.msg(reciever, "You have been demoted to " + ranks.get(cl.getRank(reciever) - 1) + " by " + demoter.getName());
-        main.getUUIDCitizenMap().get(reciever.getUniqueId()).setRank(getRank(reciever) - 1);
-        main.getUUIDCitizenMap().get(reciever.getUniqueId()).pushFiles();
+        Main.msg(demoter, "You have demoted " + receiver.getName() + " to " + ranks.get(rrank - 1));
+        Main.msg(receiver, "You have been demoted to " + ranks.get(rrank - 1) + " by " + demoter.getName());
+        main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(getRank(receiver) - 1);
+        main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
     }
 
     public void pushFiles() {
@@ -194,8 +192,8 @@ public class Town {
             Citizens
              */
             List<String> citizenData = new ArrayList<String>();
-            for (Map.Entry<Player, Citizen> entry : cl.getCitizenList().entrySet()) {
-                citizenData.add(entry.getKey().getUniqueId().toString());
+            for(int i = 0; i < cList.size(); i++){
+                citizenData.add(cList.get(i).toString());
             }
 
             tData.set("CitizensList", citizenData);
@@ -217,12 +215,11 @@ public class Town {
              */
             setName(tData.getString("TownName"));
             List<String> pullUUIDString = new ArrayList<String>();
-            List<Citizen> pullcitizens = new ArrayList<Citizen>();
             pullUUIDString = tData.getStringList("CitizensList");
             for(int i = 0; i < pullUUIDString.size(); i++){
-                pullcitizens.add(main.getUUIDCitizenMap().get(UUID.fromString(pullUUIDString.get(i))));
+                cList.add(UUID.fromString(pullUUIDString.get(i)));
             }
-            cl = new CitizenList(pullcitizens, name);
+
         }
     }
 

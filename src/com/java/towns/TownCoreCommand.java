@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventPriority;
 
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -412,9 +413,9 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         c.setRank(-1); // %
         Main.msg(p, "&4You have successfully left " + t.getName());
 
-        t.getCitizenList().removeCitizen(c);
+        t.getCitizenList().remove(p.getUniqueId());
 
-        if (t.getCitizenList().citimap.size() == 0) {
+        if (t.getCitizenList().size() == 0) {
             // there are no more people in this town -- delete it
             main.getTowns().remove(t);
             t.deleteFiles();
@@ -450,8 +451,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             return false;
         }
         Main.msg(p, "&aTown successfully disbanded");
-        for (Player pt : t.getCitizenList().citimap.keySet()) {
-            Citizen ct = main.getUUIDCitizenMap().get(pt.getPlayer().getUniqueId());
+        for (UUID pt : t.getCitizenList()) {
+            Citizen ct = main.getUUIDCitizenMap().get(pt);
             ct.setRank(-1);
             ct.setTown("None");
 
@@ -541,11 +542,11 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         c.setTown(c.getInviteStatus());
         c.setRank(0); // lowest possible rank
 
-        for (Player p : townInvite.getCitizenList().citimap.keySet()) {
-            Main.msg(p, Main.color("&a" + reciever.getDisplayName() + " has accepted their invite and joined the town!"));
+        for (UUID p : townInvite.getCitizenList()) {
+            Main.msg(Bukkit.getPlayer(p), Main.color("&a" + reciever.getDisplayName() + " has accepted their invite and joined the town!"));
         }
 
-        townInvite.getCitizenList().addPlayer(reciever);
+        townInvite.getCitizenList().add(reciever.getUniqueId());
         c.pushFiles();
 
         Main.msg(reciever, Main.color("&aJoined town " + c.getInviteStatus()));
@@ -660,8 +661,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
         fullTowns.sort((o1, o2) -> {
             // this is kind of a weird metric (lvl^2 * citizenCount)
-            int o1score = (int) Math.pow((o1.getLevel() + 1), 2) * o1.getCitizenList().citimap.size();
-            int o2score = (int) Math.pow((o2.getLevel() + 1), 2) * o2.getCitizenList().citimap.size();
+            int o1score = (int) Math.pow((o1.getLevel() + 1), 2) * o1.getCitizenList().size();
+            int o2score = (int) Math.pow((o2.getLevel() + 1), 2) * o2.getCitizenList().size();
 
             return Integer.compare(o1score, o2score);
         });
@@ -672,7 +673,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             Main.msg(p, Main.color("&6" + (i+1) +
                     "   Town: " + fullTowns.get(i).getName() +
                     "    Level: " + fullTowns.get(i).getLevel() +
-                    "    Size: " + fullTowns.get(i).getCitizenList().citimap.size()));
+                    "    Size: " + fullTowns.get(i).getCitizenList().size()));
         }
 
     }

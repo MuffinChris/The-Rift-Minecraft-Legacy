@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,8 @@ public class TownManager implements Listener {
                     main.getUUIDCitizenMap().remove(e.getPlayer().getUniqueId());
                     for (Town t : main.getTowns()) { // check to remove towns
                         boolean cont = true;
-                        for (Player tc : t.getCitizenList().citimap.keySet()) {
-                            if (main.getUUIDCitizenMap().containsKey(tc.getUniqueId())) {
+                        for (UUID tc : t.getCitizenList()) {
+                            if (main.getUUIDCitizenMap().containsKey(tc)) {
                                 cont = false;
                                 break;
                             }
