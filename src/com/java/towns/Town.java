@@ -216,7 +216,6 @@ public class Town {
             /*
             Town info
              */
-            setName(tData.getString("TownName"));
             List<String> pullUUIDString = tData.getStringList("CitizensList");
             for(int i = 0; i < pullUUIDString.size(); i++){
                 Bukkit.broadcastMessage("Pull town file -- UUID: " + pullUUIDString.get(i));
