@@ -17,6 +17,7 @@ import com.java.essentials.commands.admin.warp.DelWarpCommand;
 import com.java.essentials.commands.admin.warp.SetWarpCommand;
 import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
+import com.java.rpg.entity.EntityUtils;
 import com.java.towns.Citizen;
 import com.java.towns.Town;
 import com.java.towns.TownCoreCommand;
@@ -38,11 +39,11 @@ import com.java.rpg.classes.statuses.Stuns;
 import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.classes.utility.StatusObject;
 import com.java.rpg.classes.utility.StatusValue;
-import com.java.rpg.mobs.CustomEntityType;
-import com.java.rpg.mobs.MobEXP;
-import com.java.rpg.mobs.commands.BiomeLevelCommand;
-import com.java.rpg.mobs.commands.BiomesCommand;
-import com.java.rpg.mobs.grassy.WarriorZombie;
+import com.java.rpg.entity.CustomEntityType;
+import com.java.rpg.entity.Mobs;
+import com.java.rpg.entity.commands.BiomeLevelCommand;
+import com.java.rpg.entity.commands.BiomesCommand;
+import com.java.rpg.entity.grassy.WarriorZombie;
 import com.java.rpg.damage.DamageListener;
 import com.java.rpg.damage.Environmental;
 import com.java.rpg.damage.utility.Damage;
@@ -360,7 +361,7 @@ public class Main extends JavaPlugin {
                 for (World w : Bukkit.getWorlds()) {
                     for (LivingEntity e : w.getLivingEntities()) {
                         if (!(e instanceof Player) && !(e instanceof ArmorStand) && !(e.isDead())) {
-                            if (e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() > e.getHealth() && MobEXP.getHPRegen(e) > 0) {
+                            if (e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() > e.getHealth() && EntityUtils.getHPRegen(e) > 0) {
                                 LivingEntity ent = e;
                                 DecimalFormat df = new DecimalFormat("#.##");
                                 //Hologram magic = new Hologram(ent, ent.getLocation(), "&a❤" + df.format(MobEXP.getHPRegen(e)), Hologram.HologramType.DAMAGE);
@@ -370,7 +371,7 @@ public class Main extends JavaPlugin {
                                     getHpBars().get(ent).setText("&f" + dF.format(ent.getHealth()) + "&c❤");
                                 }
                             }
-                            e.setHealth(Math.max(0, Math.min(e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue(), MobEXP.getHPRegen(e) + e.getHealth())));
+                            e.setHealth(Math.max(0, Math.min(e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue(), EntityUtils.getHPRegen(e) + e.getHealth())));
                         }
                     }
                 }
@@ -920,7 +921,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Hologram(), this);
         Bukkit.getPluginManager().registerEvents(new SkillsCommand(), this);
         Bukkit.getPluginManager().registerEvents(new EntityHealthBars(), this);
-        Bukkit.getPluginManager().registerEvents(new MobEXP(), this);
+        Bukkit.getPluginManager().registerEvents(new Mobs(), this);
         Bukkit.getPluginManager().registerEvents(new JoinMenu(), this);
         Bukkit.getPluginManager().registerEvents(new SettingsCommand(), this);
         Bukkit.getPluginManager().registerEvents(new CustomDeath(), this);
@@ -936,14 +937,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Skillcast(), this);
         Bukkit.getPluginManager().registerEvents(new BindCommand(), this);
 
-        Bukkit.getPluginManager().registerEvents(new Bulwark(), this);
-
-        Bukkit.getPluginManager().registerEvents(new Fireball(), this);
-        Bukkit.getPluginManager().registerEvents(new MeteorShower(), this);
-        Bukkit.getPluginManager().registerEvents(new WorldOnFire(), this);
-        Bukkit.getPluginManager().registerEvents(new InfernoVault(), this);
-        Bukkit.getPluginManager().registerEvents(new Pyroclasm(), this);
-        Bukkit.getPluginManager().registerEvents(new Combust(), this);
+        Bukkit.getPluginManager().registerEvents(new PyromancerListeners(), this);
         so("&dRIFT: &fRegistered events!");
 
         final BukkitScheduler scheduler = Bukkit.getScheduler();
@@ -1029,7 +1023,7 @@ public class Main extends JavaPlugin {
                 if (e != null && e.getCustomName() != null && e.getCustomName() != null && projectiles.contains(e.getCustomName())) {
                     e.remove();
                     for (String s : projectiles) {
-                        if (e != null && MobEXP.getCustomName(e) != null && MobEXP.getCustomName(e).equalsIgnoreCase(s)) {
+                        if (EntityUtils.getCustomName(e) != null && EntityUtils.getCustomName(e).equalsIgnoreCase(s)) {
                             e.remove();
                         }
                     }

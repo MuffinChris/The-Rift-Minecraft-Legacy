@@ -1,12 +1,11 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.mobs.MobEXP;
+import com.java.rpg.entity.Mobs;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +15,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import static com.java.rpg.entity.EntityUtils.*;
 
 public class PyromancerListeners implements Listener {
 
@@ -27,18 +27,18 @@ public class PyromancerListeners implements Listener {
     public void projectileHe(ProjectileHitEvent e) {
         if (e.getEntity() instanceof Arrow) {
             Arrow a = (Arrow) e.getEntity();
-            if (a.getShooter() instanceof Player && main.isPlayer((Player) a.getShooter()) && MobEXP.getCustomName(a) != null && MobEXP.getCustomName(a).equalsIgnoreCase("Fireball")) {
+            if (a.getShooter() instanceof Player && main.isPlayer((Player) a.getShooter()) && getCustomName(a) != null && getCustomName(a).equalsIgnoreCase("Fireball")) {
                 Player shooter = (Player) a.getShooter();
                 if (e.getHitEntity() != null) {
-                    Fireball.lightEntities(e.getHitEntity(), shooter, e.getHitEntity().getLocation(), MobEXP.getMagicDamage(a), MobEXP.getElementalDamage(a));
+                    Fireball.lightEntities(e.getHitEntity(), shooter, e.getHitEntity().getLocation(), getMagicDamage(a), getElementalDamage(a));
                     e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08, null, true);
                 } else {
-                    Fireball.lightEntities(e.getHitEntity(), shooter, e.getEntity().getLocation(), MobEXP.getMagicDamage(a), MobEXP.getElementalDamage(a));
+                    Fireball.lightEntities(e.getHitEntity(), shooter, e.getEntity().getLocation(), getMagicDamage(a), getElementalDamage(a));
                     e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08, null, true);
                 }
                 a.remove();
             }
-            if (a.getShooter() instanceof Player && main.isPlayer((Player) a.getShooter()) && MobEXP.getCustomName(a) != null && MobEXP.getCustomName(a).equalsIgnoreCase("Fireball")) {
+            if (a.getShooter() instanceof Player && main.isPlayer((Player) a.getShooter()) && getCustomName(a) != null && getCustomName(a).equalsIgnoreCase("Fireball")) {
                 a.remove();
             }
         }
@@ -48,7 +48,7 @@ public class PyromancerListeners implements Listener {
     public void onHit(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Arrow && !(e.getEntity() instanceof ArmorStand)) {
             Arrow a = (Arrow) e.getDamager();
-            if (a.getShooter() instanceof Player && main.isPlayer((Player) a.getShooter()) && MobEXP.getCustomName(a) != null && (MobEXP.getCustomName(a).equalsIgnoreCase("Fireball") || MobEXP.getCustomName(a).equalsIgnoreCase("Combust"))) {
+            if (a.getShooter() instanceof Player && main.isPlayer((Player) a.getShooter()) && getCustomName(a) != null && (getCustomName(a).equalsIgnoreCase("Fireball") || getCustomName(a).equalsIgnoreCase("Combust"))) {
                 Player shooter = (Player) a.getShooter();
                 if (!main.isValidTarget(e.getEntity(), shooter)) {
                     a.remove();

@@ -5,8 +5,7 @@ import com.java.rpg.holograms.Hologram;
 import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.damage.utility.*;
 import com.java.rpg.classes.*;
-import com.java.rpg.mobs.MobEXP;
-import net.md_5.bungee.api.chat.TextComponent;
+import com.java.rpg.entity.Mobs;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -201,7 +200,7 @@ public class DamageListener implements Listener {
                                         elementalDamage.setAir(elementalDamage.getAir() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + def)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        elementalDamage.setAir(elementalDamage.getAir() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getAir())));
+                                        elementalDamage.setAir(elementalDamage.getAir() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + Mobs.getElementalDefense((LivingEntity) e.getEntity()).getAir())));
                                     }
                                 }
 
@@ -213,7 +212,7 @@ public class DamageListener implements Listener {
                                         elementalDamage.setEarth(elementalDamage.getEarth() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + def)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        elementalDamage.setEarth(elementalDamage.getEarth() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getEarth())));
+                                        elementalDamage.setEarth(elementalDamage.getEarth() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + Mobs.getElementalDefense((LivingEntity) e.getEntity()).getEarth())));
                                     }
                                 }
 
@@ -225,7 +224,7 @@ public class DamageListener implements Listener {
                                         elementalDamage.setElectric(elementalDamage.getElectric() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + def)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        elementalDamage.setElectric(elementalDamage.getElectric() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getElectric())));
+                                        elementalDamage.setElectric(elementalDamage.getElectric() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + Mobs.getElementalDefense((LivingEntity) e.getEntity()).getElectric())));
                                     }
                                 }
 
@@ -245,7 +244,7 @@ public class DamageListener implements Listener {
                                         physicalDamage.setPuncture(physicalDamage.getPuncture() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        physicalDamage.setPuncture(physicalDamage.getPuncture() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (MobEXP.getArmor((LivingEntity) e.getEntity()) * RPGConstants.punctureArmorPenPercentage))));
+                                        physicalDamage.setPuncture(physicalDamage.getPuncture() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (Mobs.getArmor((LivingEntity) e.getEntity()) * RPGConstants.punctureArmorPenPercentage))));
                                     }
                                 }
                                 if (physicalDamage.getImpact() > 0) {
@@ -258,7 +257,7 @@ public class DamageListener implements Listener {
                                         physicalDamage.setImpact(physicalDamage.getImpact() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        physicalDamage.setImpact(physicalDamage.getImpact() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (MobEXP.getArmor((LivingEntity) e.getEntity())))));
+                                        physicalDamage.setImpact(physicalDamage.getImpact() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (Mobs.getArmor((LivingEntity) e.getEntity())))));
                                     }
                                 }
                                 if (physicalDamage.getSlash() > 0) {
@@ -277,7 +276,7 @@ public class DamageListener implements Listener {
                                         physicalDamage.setSlash(physicalDamage.getSlash() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        physicalDamage.setSlash(physicalDamage.getSlash() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (MobEXP.getArmor((LivingEntity) e.getEntity()) * RPGConstants.slashArmorPenPercentage))));
+                                        physicalDamage.setSlash(physicalDamage.getSlash() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + (Mobs.getArmor((LivingEntity) e.getEntity()) * RPGConstants.slashArmorPenPercentage))));
                                     }
                                 }
                                 if (magicDamage > 0) {
@@ -288,7 +287,7 @@ public class DamageListener implements Listener {
                                         magicDamage = magicDamage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + mr));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        magicDamage = magicDamage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getMagicResist((LivingEntity) e.getEntity())));
+                                        magicDamage = magicDamage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + Mobs.getMagicResist((LivingEntity) e.getEntity())));
                                     }
                                     //ent.damage(damage);
                                     //e.setCancelled(true);
@@ -310,7 +309,7 @@ public class DamageListener implements Listener {
                                         elementalDamage.setFire(elementalDamage.getFire() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + def)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        elementalDamage.setFire(elementalDamage.getFire() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getFire())));
+                                        elementalDamage.setFire(elementalDamage.getFire() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + Mobs.getElementalDefense((LivingEntity) e.getEntity()).getFire())));
                                     }
                                 }
 
@@ -322,7 +321,7 @@ public class DamageListener implements Listener {
                                         elementalDamage.setIce(elementalDamage.getIce() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + def)));
                                     }
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                                        elementalDamage.setIce(elementalDamage.getIce() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getElementalDefense((LivingEntity) e.getEntity()).getIce())));
+                                        elementalDamage.setIce(elementalDamage.getIce() * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + Mobs.getElementalDefense((LivingEntity) e.getEntity()).getIce())));
                                     }
                                 }
 
@@ -439,7 +438,7 @@ public class DamageListener implements Listener {
                                 e.setDamage(damage);
 
                                 if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !(e.getEntity() instanceof Player)) {
-                                    double dt = MobEXP.getDamageThreshold((LivingEntity) e.getEntity());
+                                    double dt = Mobs.getDamageThreshold((LivingEntity) e.getEntity());
                                     if (dt > 0) {
                                         if (e.getDamage() <= dt) {
                                             if (physicalDamage.getTotal() > 0) {
@@ -527,15 +526,15 @@ public class DamageListener implements Listener {
 
                     PhysicalStack physicalDamage;
                     if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() != null) {
-                        physicalDamage = MobEXP.getPhysicalRangedDamage(damager);
+                        physicalDamage = Mobs.getPhysicalRangedDamage(damager);
                         if (physicalDamage.getTotal() <= 0) {
                             physicalDamage = new PhysicalStack(e.getDamage(), 0, 0);
                         }
                     } else {
-                        if (MobEXP.getPhysicalDamage(damager).getTotal() <= 0) {
+                        if (Mobs.getPhysicalDamage(damager).getTotal() <= 0) {
                             physicalDamage = new PhysicalStack(0, e.getDamage(), 0);
                         } else {
-                            physicalDamage = MobEXP.getPhysicalDamage(damager);
+                            physicalDamage = Mobs.getPhysicalDamage(damager);
                         }
                     }
                     if (physicalDamage.getTotal() > 0) {
@@ -608,20 +607,20 @@ public class DamageListener implements Listener {
                     }
 
                     double damage = e.getDamage();
-                    double am = MobEXP.getArmor((LivingEntity) e.getEntity());
+                    double am = Mobs.getArmor((LivingEntity) e.getEntity());
                     damage = damage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + am));
 
                     PhysicalStack physicalDamage;
                     if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() != null) {
-                        physicalDamage = MobEXP.getPhysicalRangedDamage(damager);
+                        physicalDamage = Mobs.getPhysicalRangedDamage(damager);
                         if (physicalDamage.getTotal() <= 0) {
                             physicalDamage = new PhysicalStack(e.getDamage(), 0, 0);
                         }
                     } else {
-                        if (MobEXP.getPhysicalDamage(damager).getTotal() <= 0) {
+                        if (Mobs.getPhysicalDamage(damager).getTotal() <= 0) {
                             physicalDamage = new PhysicalStack(0, e.getDamage(), 0);
                         } else {
-                            physicalDamage = MobEXP.getPhysicalDamage((LivingEntity) damager);
+                            physicalDamage = Mobs.getPhysicalDamage((LivingEntity) damager);
                         }
                     }
                     if (physicalDamage.getTotal() > 0) {
@@ -688,7 +687,7 @@ public class DamageListener implements Listener {
                     dmg = dmg * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + mr));
                 }
                 if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
-                    dmg = dmg * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + MobEXP.getMagicResist((LivingEntity) e.getEntity())));
+                    dmg = dmg * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + Mobs.getMagicResist((LivingEntity) e.getEntity())));
                 }
 
                 e.setDamage(dmg);

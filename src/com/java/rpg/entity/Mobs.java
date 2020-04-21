@@ -1,36 +1,31 @@
-package com.java.rpg.mobs;
+package com.java.rpg.entity;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.java.Main;
 import com.java.rpg.classes.utility.RPGConstants;
-import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
 import com.java.rpg.damage.utility.PhysicalStack;
 import com.java.rpg.player.utility.XPList;
 import de.tr7zw.nbtapi.NBTEntity;
 import de.tr7zw.nbtapi.NBTList;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class MobEXP implements Listener {
+import static com.java.rpg.entity.EntityUtils.*;
+
+public class Mobs implements Listener {
 
     private Main main = Main.getInstance();
 
@@ -46,122 +41,13 @@ public class MobEXP implements Listener {
 
     private static BiomeSettings settings = new BiomeSettings();
 
-    @EventHandler
-    public void noExpDrop (EntityDeathEvent e) {
-        e.setDroppedExp(0);
+    public static Map<LivingEntity, XPList> xp;
+
+    public Map<LivingEntity, XPList> getXP() {
+        return xp;
     }
 
-    @EventHandler
-    public void noExpBlocks (BlockBreakEvent e) {
-        e.setExpToDrop(0);
-    }
-
-    /*@EventHandler (just change drop tables 4head)
-    public void mobNoArmorDrop(EntityDeathEvent e) {
-        if (e.getEntityType() != EntityType.PLAYER) {
-            List<ItemStack> remove = new ArrayList<>();
-            for (ItemStack i : e.getDrops()) {
-                if (Items.isArmor(i.getType().toString())) {
-                    remove.add(i);
-                }
-            }
-            for (ItemStack i : remove) {
-                e.getDrops().remove(i);
-            }
-        }
-    }*/
-
-    @EventHandler
-    public void cleanHolos (ChunkUnloadEvent e) {
-        /*
-        for (Entity ent : e.getChunk().getEntities()) {
-            if (ent instanceof ArmorStand) {
-                if (ent.isCustomNameVisible()) {
-                    for (String s : RPGConstants.damages) {
-                        if (ent.getCustomName().replace("§","&").contains(s)) {
-                            ent.remove();
-                            break;
-                        }
-                    }
-                }
-            }
-        }*/
-    }
-
-    @EventHandler
-    public void mobSpawnEvent (CreatureSpawnEvent e) {
-        LivingEntity ent = e.getEntity();
-        if (!(ent instanceof ArmorStand) && !(ent instanceof Player)) {
-            if (ent instanceof Phantom) {
-                double random = Math.random();
-                if (random >= 0.05) {
-                    ent.remove();
-                }
-            }
-            if (getSetup(ent) == 0) {
-                if (hasLevel(ent)) {
-                    setupEnt(ent, getLevel(ent));
-                } else {
-                    setupEnt(ent, new LevelRange(0, 10).getRandomLevel());
-                }
-            }
-        }
-
-        /*if (ent instanceof Zombie && !(ent instanceof WarriorZombie)) {
-            e.setCancelled(true);
-
-            main.warriorZombie.spawn(ent.getLocation());
-        }*/
-
-        /*NBTEntity nent = new NBTEntity(e.getEntity());
-        if (nent.hasKey("ArmorItems")) {
-            NBTList list = nent.getCompoundList("ArmorItems");
-            for (int i = 0; i < list.size(); i++) {
-                NBTCompound n = (NBTCompound) list.get(i);
-                if (n.hasKey("Count")) {
-                    NBTCompound tag;
-                    if (n.hasKey("tag")) {
-                        tag = n.getCompound("tag");
-                    } else {
-                        tag = n.addCompound("tag");
-                    }
-                    NBTCompound atr = tag.addCompound("AttributesModifiers");
-                    atr.setDouble("Amount", 0.0);
-                    atr.setString("AttributeName", "generic.armor");
-                    atr.setString("Name", "generic.armor");
-                    atr.setInteger("Operation", 0);
-                    atr.setInteger("UUIDLeast", 59764);
-                    atr.setInteger("UUIDMost", 31483);
-
-                    NBTCompound atrT = tag.getCompoundList("AttributeModifiers").addCompound();
-                    atrT.setDouble("Amount", 0.0);
-                    atrT.setString("AttributeName", "generic.armorToughness");
-                    atrT.setString("Name", "generic.armorToughness");
-                    atrT.setInteger("Operation", 0);
-                    atrT.setInteger("UUIDLeast", 58764);
-                    atrT.setInteger("UUIDMost", 32483);
-                }
-            }
-        }*/
-    }
-
-    public static void removeDropChances(Entity ent) {
-        NBTEntity nent = new NBTEntity(ent);
-        if (nent.hasKey("ArmorDropChances")) {
-            NBTList list = nent.getFloatList("ArmorDropChances");
-            for (int i = 0; i < list.size(); i++) {
-                list.set(i, 0.0f);
-            }
-        }
-        if (nent.hasKey("HandDropChances")) {
-            NBTList list = nent.getFloatList("HandDropChances");
-            for (int i = 0; i < list.size(); i++) {
-                list.set(i, 0.0f);
-            }
-        }
-    }
-
-    public MobEXP() {
+    public Mobs() {
         biomeLevels = new LinkedHashMap<>();
 
         biomeLevels.clear();
@@ -370,353 +256,55 @@ public class MobEXP implements Listener {
 
     }
 
-    public static void setExp(LivingEntity ent, double exp) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "Exp"), PersistentDataType.DOUBLE, exp);
-
-        /*
-        if (ent.getMetadata("EXP") != null && ent.hasMetadata("EXP")) {
-            ent.removeMetadata("EXP", Main.getInstance());
-        }
-        ent.setMetadata("EXP", new FixedMetadataValue(Main.getInstance(), exp));*/
+    @EventHandler
+    public void noExpDrop (EntityDeathEvent e) {
+        e.setDroppedExp(0);
     }
 
-    public static double getExp(LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "Exp"), PersistentDataType.DOUBLE)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "Exp"), PersistentDataType.DOUBLE);
-        }
-        return 0;
-
-        /*
-        if (getLevel(ent) == -1 || !(Integer.valueOf(getLevel(ent)) instanceof Integer)) {
-            return 0;
-        }
-        return (RPGConstants.mobXpScalar * Math.pow(getLevel(ent), RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());*/
+    @EventHandler
+    public void noExpBlocks (BlockBreakEvent e) {
+        e.setExpToDrop(0);
     }
 
-    public static double calcExp(LivingEntity ent) {
-        int level = getLevel(ent);
-        if (xpmods.containsKey(ent.getType())) {
-
-            return xpmods.get(ent.getType()) * Math.ceil(Math.pow(2, (level + 60.0)/10.5) - 0.0);
-        } else {
-            return Math.ceil(Math.pow(2, (level + 60.0)/10.5) - 0.0);
-        }
-        //return (RPGConstants.mobXpScalar * Math.pow(level, RPGConstants.mobXpPow) + RPGConstants.mobXpBase) * (Math.random() * 0.1 + 1) * xpmods.get(ent.getType());
+    @EventHandler
+    public void cleanHolos (ChunkUnloadEvent e) {
+        /* Unused */
     }
 
-    public static int getLevel(LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER);
-        }
-        /*
-        if (ent.getName().contains("Lv. ")) {
-            String name = ChatColor.stripColor(ent.getName());
-            name+=" ";
-            name = name.substring(0, name.indexOf("Lv. ") + 6).trim();
-            return Integer.valueOf(name.substring(name.indexOf("Lv. ") + 4));
-        }*/
-        return -1;
-    }
-
-    public static boolean hasLevel(LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        return (data.has(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER));
-    }
-
-    public static void setLevel(LivingEntity ent, int level) {
-
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "Level"), PersistentDataType.INTEGER, level);
-        setLevelVisual(ent, level);
-
-        /*
-
-        if (ent.getCustomName() == null) {
-            if (ent.getName().contains("Lv.")) {
-                ent.setCustomName(Main.color(ChatColor.stripColor(ent.getName()).substring(0, ChatColor.stripColor(ent.getName()).indexOf("Lv.") - 1).trim() + " &6Lv. " + level));
-            } else {
-                ent.setCustomName(Main.color(ChatColor.stripColor(ent.getName()).trim() + " &6Lv. " + level));
+    @EventHandler
+    public void mobSpawnEvent (CreatureSpawnEvent e) {
+        LivingEntity ent = e.getEntity();
+        if (!(ent instanceof ArmorStand) && !(ent instanceof Player)) {
+            if (ent instanceof Phantom) {
+                double random = Math.random();
+                if (random >= 0.05) {
+                    ent.remove();
+                }
             }
-        } else if (ent.getCustomName().contains("Lv.")){
-            ent.setCustomName(Main.color(ChatColor.stripColor(ent.getCustomName()).substring(0, ChatColor.stripColor(ent.getCustomName()).indexOf("Lv.") - 1).trim() + " &6Lv. " + level));
-        }*/
-    }
-
-    public static void setLevelVisual(LivingEntity ent, int level) {
-        ent.setCustomName(Main.color("&f" + getNiceName(ent) + " &6Lv. " + level));
-    }
-
-    public static String getNiceName(LivingEntity ent) {
-        //net.minecraft.server.v1_15_R1.Entity nmsEnt = CraftLivingEntity.getEntity((CraftServer) Bukkit.getServer(), ((CraftEntity) ent).getHandle()).getHandle();
-        if (getCustomName(ent) != null) {
-            return getCustomName(ent);
-        }
-        net.minecraft.server.v1_15_R1.Entity nmsEnt = ((CraftEntity) ent).getHandle();
-        return WordUtils.capitalize((nmsEnt.getMinecraftKeyString().replace("minecraft:", "")).replace("_", " "));
-    }
-
-    public static void setPhysicalRangedDamage(LivingEntity ent, PhysicalStack pd) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "PhysicalRangedDamage"), PersistentDataType.STRING, pd.getCommaDelim());
-    }
-
-    public static PhysicalStack getPhysicalRangedDamage (LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "PhysicalRangedDamage"), PersistentDataType.STRING)) {
-            String delim = data.get(new NamespacedKey(Main.getInstance(), "PhysicalRangedDamage"), PersistentDataType.STRING);
-            String[] ar = delim.split(",");
-            double[] ard = new double[3];
-            int index = 0;
-            for (String s : ar) {
-                ard[index] = Double.valueOf(s);
-                index++;
-            }
-            return new PhysicalStack(ard[0], ard[1], ard[2]);
-        }
-        return new PhysicalStack(0, 0, 0);
-    }
-
-    public static void setPhysicalDamage(LivingEntity ent, PhysicalStack pd) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "PhysicalDamage"), PersistentDataType.STRING, pd.getCommaDelim());
-    }
-
-    public static PhysicalStack getPhysicalDamage (LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "PhysicalDamage"), PersistentDataType.STRING)) {
-            String delim = data.get(new NamespacedKey(Main.getInstance(), "PhysicalDamage"), PersistentDataType.STRING);
-            String[] ar = delim.split(",");
-            double[] ard = new double[3];
-            int index = 0;
-            for (String s : ar) {
-                ard[index] = Double.valueOf(s);
-                index++;
-            }
-            return new PhysicalStack(ard[0], ard[1], ard[2]);
-        }
-        return new PhysicalStack();
-    }
-
-    public static void setElementalDamage (Entity ent, ElementalStack eDef) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "ElementalDamage"), PersistentDataType.STRING, eDef.getCommaDelim());
-    }
-
-    public static ElementalStack getElementalDamage (Entity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDamage"), PersistentDataType.STRING)) {
-            String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDamage"), PersistentDataType.STRING);
-            String[] ar = delim.split(",");
-            double[] ard = new double[5];
-            int index = 0;
-            for (String s : ar) {
-                ard[index] = Double.parseDouble(s);
-                index++;
-            }
-            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4]);
-        }
-        return new ElementalStack(0, 0, 0, 0, 0);
-    }
-
-    public static void setElementalDamagePerEnt (Entity ent, ElementalStack eDef) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "ElementalDamagePerEnt"), PersistentDataType.STRING, eDef.getCommaDelim());
-    }
-
-    public static ElementalStack getElementalDamagePerEnt (Entity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDamagePerEnt"), PersistentDataType.STRING)) {
-            String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDamagePerEnt"), PersistentDataType.STRING);
-            String[] ar = delim.split(",");
-            double[] ard = new double[5];
-            int index = 0;
-            for (String s : ar) {
-                ard[index] = Double.parseDouble(s);
-                index++;
-            }
-            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4]);
-        }
-        return new ElementalStack(0, 0, 0, 0, 0);
-    }
-
-    public static double getMagicDamage(Entity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "MagicDamage"), PersistentDataType.DOUBLE)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "MagicDamage"), PersistentDataType.DOUBLE);
-        }
-        return 0;
-    }
-
-    public static void setMagicDamage(Entity ent, double magicdmg) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "MagicDamage"), PersistentDataType.DOUBLE, magicdmg);
-    }
-
-    public static double getMagicDamagePerEnt(Entity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "MagicDamagePerEnt"), PersistentDataType.DOUBLE)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "MagicDamagePerEnt"), PersistentDataType.DOUBLE);
-        }
-        return 0;
-    }
-
-    public static void setMagicDamagePerEnt(Entity ent, double magicdmg) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "MagicDamagePerEnt"), PersistentDataType.DOUBLE, magicdmg);
-    }
-
-    public static void setElementalDefense (LivingEntity ent, ElementalStack eDef) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING, eDef.getCommaDelim());
-    }
-
-    public static ElementalStack getElementalDefense (LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING)) {
-            String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING);
-            String[] ar = delim.split(",");
-            double[] ard = new double[5];
-            int index = 0;
-            for (String s : ar) {
-                ard[index] = Double.valueOf(s);
-                index++;
-            }
-            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4]);
-        }
-        return new ElementalStack(0, 0, 0, 0, 0);
-    }
-
-    public static double getArmor(LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "Armor"), PersistentDataType.DOUBLE)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "Armor"), PersistentDataType.DOUBLE);
-        }
-        return 0;
-    }
-
-    public static void setArmor(LivingEntity ent, double armor) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "Armor"), PersistentDataType.DOUBLE, armor);
-    }
-
-    public static void setMagicResist(LivingEntity ent, double mr) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "MagicResist"), PersistentDataType.DOUBLE, mr);
-    }
-
-    public static double getMagicResist(LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "MagicResist"), PersistentDataType.DOUBLE)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "MagicResist"), PersistentDataType.DOUBLE);
-        }
-        return 0;
-    }
-
-    public static double getDamageThreshold(LivingEntity ent){
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "DamageThreshold"), PersistentDataType.DOUBLE)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "DamageThreshold"), PersistentDataType.DOUBLE);
-        }
-        return 0;
-    }
-    public static void setDamageThreshold(LivingEntity ent, double dt) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "DamageThreshold"), PersistentDataType.DOUBLE, dt);
-    }
-
-    public static double getHPRegen(LivingEntity ent){
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE);
-        }
-        return 0;
-    }
-    public static void setHPRegen(LivingEntity ent, double r) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE, r);
-    }
-
-    public static String getCustomName(Entity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING);
-        }
-        return null;
-    }
-
-    public static void setCustomName(Entity ent, String s) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING, s);
-    }
-
-    public static int getSetup(LivingEntity ent) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getInstance(), "Setup"), PersistentDataType.INTEGER)) {
-            return data.get(new NamespacedKey(Main.getInstance(), "Setup"), PersistentDataType.INTEGER);
-        }
-        return 0;
-    }
-
-    public static void setSetup(LivingEntity ent, int i) {
-        PersistentDataContainer data = ent.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getInstance(), "Setup"), PersistentDataType.INTEGER, i);
-    }
-
-    public void scaleHealth(LivingEntity ent, int level, double modifier) {
-
-        double hp = RPGConstants.mobHpBase + Math.pow(level, RPGConstants.mobHpLevelPow) * RPGConstants.mobHpLevelScalar * Math.pow(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/20.0, RPGConstants.mobHpBasePow);
-        if (peaceful.contains(ent.getType())) {
-            if (ent instanceof Horse) {
-                hp = Math.max(hp, 10000);
-            } else {
-                hp = Math.max(Math.min(hp, 5000), 1000);
-            }
-        }
-        hp*=modifier;
-        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
-        ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-    }
-
-    public void scaleDamage(LivingEntity ent, int level, double modifier) {
-        if (ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null) {
-            double damage = Math.pow(level, RPGConstants.mobDmgLevelPow) * RPGConstants.mobDmgLevelScalar * Math.sqrt(ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue()/4.0);
-            damage += ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue() * 3 + 40;
-            damage *= modifier;
-            ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(damage);
-        }
-
-        if (ent instanceof Creeper) {
-            Creeper creeper = (Creeper) ent;
-            if (level >= 0 && level < 20) {
-                creeper.setExplosionRadius(3);
-                creeper.setMaxFuseTicks(40);
-            } else if (level >= 20 && level < 40) {
-                creeper.setExplosionRadius(3);
-                creeper.setMaxFuseTicks(30);
-            } else if (level >= 40 && level < 60) {
-                creeper.setExplosionRadius(4);
-                creeper.setMaxFuseTicks(30);
-            } else if (level >= 60 && level < 80) {
-                creeper.setExplosionRadius(4);
-                creeper.setMaxFuseTicks(25);
-            } else {
-                creeper.setExplosionRadius(5);
-                creeper.setMaxFuseTicks(20);
-                if (level == 100) {
-                    creeper.setPowered(true);
+            if (getSetup(ent) == 0) {
+                if (hasLevel(ent)) {
+                    setupEnt(ent, getLevel(ent));
+                } else {
+                    setupEnt(ent, new LevelRange(0, 10).getRandomLevel());
                 }
             }
         }
     }
 
-
-    public static Map<LivingEntity, XPList> xp;
-
-    public Map<LivingEntity, XPList> getXP() {
-        return xp;
+    public static void removeDropChances(Entity ent) {
+        NBTEntity nent = new NBTEntity(ent);
+        if (nent.hasKey("ArmorDropChances")) {
+            NBTList list = nent.getFloatList("ArmorDropChances");
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, 0.0f);
+            }
+        }
+        if (nent.hasKey("HandDropChances")) {
+            NBTList list = nent.getFloatList("HandDropChances");
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, 0.0f);
+            }
+        }
     }
 
     public void setupEnt(LivingEntity ent, int lvl) {
@@ -774,6 +362,64 @@ public class MobEXP implements Listener {
 
         setLevel(ent, level);
         setExp(ent, calcExp(ent));
+    }
+
+    public static double calcExp(LivingEntity ent) {
+        int level = EntityUtils.getLevel(ent);
+        final double ceil = Math.ceil(Math.pow(2, (level + 60.0) / 10.5) - 0.0);
+        if (xpmods.containsKey(ent.getType())) {
+
+            return xpmods.get(ent.getType()) * ceil;
+        } else {
+            return ceil;
+        }
+    }
+
+    public void scaleHealth(LivingEntity ent, int level, double modifier) {
+
+        double hp = RPGConstants.mobHpBase + Math.pow(level, RPGConstants.mobHpLevelPow) * RPGConstants.mobHpLevelScalar * Math.pow(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/20.0, RPGConstants.mobHpBasePow);
+        if (peaceful.contains(ent.getType())) {
+            if (ent instanceof Horse) {
+                hp = Math.max(hp, 10000);
+            } else {
+                hp = Math.max(Math.min(hp, 5000), 1000);
+            }
+        }
+        hp*=modifier;
+        ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
+        ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+    }
+
+    public void scaleDamage(LivingEntity ent, int level, double modifier) {
+        if (ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null) {
+            double damage = Math.pow(level, RPGConstants.mobDmgLevelPow) * RPGConstants.mobDmgLevelScalar * Math.sqrt(ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue()/4.0);
+            damage += ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue() * 3 + 40;
+            damage *= modifier;
+            ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(damage);
+        }
+
+        if (ent instanceof Creeper) {
+            Creeper creeper = (Creeper) ent;
+            if (level >= 0 && level < 20) {
+                creeper.setExplosionRadius(3);
+                creeper.setMaxFuseTicks(40);
+            } else if (level >= 20 && level < 40) {
+                creeper.setExplosionRadius(3);
+                creeper.setMaxFuseTicks(30);
+            } else if (level >= 40 && level < 60) {
+                creeper.setExplosionRadius(4);
+                creeper.setMaxFuseTicks(30);
+            } else if (level >= 60 && level < 80) {
+                creeper.setExplosionRadius(4);
+                creeper.setMaxFuseTicks(25);
+            } else {
+                creeper.setExplosionRadius(5);
+                creeper.setMaxFuseTicks(20);
+                if (level == 100) {
+                    creeper.setPowered(true);
+                }
+            }
+        }
     }
 
     @EventHandler (priority = EventPriority.LOWEST)
@@ -870,23 +516,6 @@ public class MobEXP implements Listener {
             if (!xp.containsKey((LivingEntity) e.getEntity())) {
                 xp.put((LivingEntity) e.getEntity(), new XPList());
             }
-            /*
-            new BukkitRunnable() {
-                public void run() {
-                    LivingEntity ent = (LivingEntity) e.getEntity();
-                    if (hasLevel(ent)) {
-                        setupEnt(ent, getLevel(ent));
-                    } else {
-                        setupEnt(ent, -1);
-                    }
-                    if (ent instanceof Phantom) {
-                        double random = Math.random();
-                        if (random >= 0.05) {
-                            ent.remove();
-                        }
-                    }
-                }
-            }.runTaskLater(Main.getInstance(), 1);*/
         }
     }
 

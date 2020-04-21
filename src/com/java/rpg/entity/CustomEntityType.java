@@ -1,11 +1,9 @@
-package com.java.rpg.mobs;
+package com.java.rpg.entity;
 
 import com.google.common.collect.BiMap;
-import com.java.Main;
 import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.types.Type;
 import net.minecraft.server.v1_15_R1.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 

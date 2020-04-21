@@ -1,8 +1,8 @@
-package com.java.rpg.mobs.commands;
+package com.java.rpg.entity.commands;
 
 import com.java.Main;
 import com.java.rpg.classes.utility.LevelRange;
-import com.java.rpg.mobs.MobEXP;
+import com.java.rpg.entity.Mobs;
 import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,7 +19,7 @@ public class BiomesCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            Map<Biome, LevelRange> bl = MobEXP.getBL();
+            Map<Biome, LevelRange> bl = Mobs.getBL();
             if (args.length == 0) {
                 int i = 0;
                 Main.msg(p, "&7>>----- &eBiomes Page 1 &7-----<<");

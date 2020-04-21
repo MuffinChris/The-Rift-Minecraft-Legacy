@@ -1,8 +1,8 @@
-package com.java.rpg.mobs.grassy;
+package com.java.rpg.entity.grassy;
 
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
-import com.java.rpg.mobs.MobEXP;
+import com.java.rpg.entity.Mobs;
 import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.damage.utility.PhysicalStack;
 import de.tr7zw.nbtapi.NBTEntity;
@@ -80,21 +80,21 @@ public class WarriorZombie extends EntityZombie {
 
         setSlot(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(axe));
 
-        MobEXP.removeDropChances(getBukkitEntity());
+        Mobs.removeDropChances(getBukkitEntity());
     }
 
     public void setupStats() {
         LivingEntity ent = getBukkitLivingEntity();
 
-        MobEXP.setCustomName(ent, "&7[" + RPGConstants.earth + RPGConstants.fire + RPGConstants.strong + " &7| " + RPGConstants.air + RPGConstants.weak + "&7] &cZombie Warrior");
-        MobEXP.setLevel(ent, new LevelRange(5, 10).getRandomLevel());
-        int level = MobEXP.getLevel(ent);
-        MobEXP.setExp(ent, 105 + level * 20);
-        MobEXP.setArmor(ent, 125 + level * 5);
-        MobEXP.setMagicResist(ent, 50);
-        MobEXP.setHPRegen(ent, level * 5 + 50);
-        MobEXP.setElementalDefense(ent, new ElementalStack(-50, 75, 0, 100, 25));
-        MobEXP.setPhysicalDamage(ent, new PhysicalStack(75 + level * 5, 50 + level * 4, 0));
+        Mobs.setCustomName(ent, "&7[" + RPGConstants.earth + RPGConstants.fire + RPGConstants.strong + " &7| " + RPGConstants.air + RPGConstants.weak + "&7] &cZombie Warrior");
+        Mobs.setLevel(ent, new LevelRange(5, 10).getRandomLevel());
+        int level = Mobs.getLevel(ent);
+        Mobs.setExp(ent, 105 + level * 20);
+        Mobs.setArmor(ent, 125 + level * 5);
+        Mobs.setMagicResist(ent, 50);
+        Mobs.setHPRegen(ent, level * 5 + 50);
+        Mobs.setElementalDefense(ent, new ElementalStack(-50, 75, 0, 100, 25));
+        Mobs.setPhysicalDamage(ent, new PhysicalStack(75 + level * 5, 50 + level * 4, 0));
 
         ent.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
         ent.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
@@ -109,7 +109,7 @@ public class WarriorZombie extends EntityZombie {
         NBTEntity nent = new NBTEntity(ent);
         nent.setByte("CanPickUpLoot", (byte) 0);
 
-        MobEXP.setSetup(ent, 1);
+        Mobs.setSetup(ent, 1);
     }
 
     public WarriorZombie(World world) {

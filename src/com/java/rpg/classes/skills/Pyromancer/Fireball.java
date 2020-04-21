@@ -5,21 +5,18 @@ import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.damage.utility.PhysicalStack;
-import com.java.rpg.mobs.MobEXP;
+import com.java.rpg.entity.Mobs;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.java.rpg.entity.EntityUtils.*;
 
 public class Fireball extends Skill implements Listener {
 
@@ -41,7 +38,7 @@ public class Fireball extends Skill implements Listener {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&7Shoot a flaming projectile that travels for &e" + range + "&7 seconds."));
-        desc.add(Main.color("&7It deals &b" + getMagicDmg(p) + " &7+ " + elementalDamage.getFancyNumberFire() + " &7damage to nearby foes"));
+        desc.add(Main.color("&7It deals &b" + getMagicDmg(p) + " &7+ " + getEDmg(p) + " &7damage to nearby foes"));
         desc.add(Main.color("&7and ignites them for 5 seconds."));
         return desc;
     }
@@ -58,7 +55,7 @@ public class Fireball extends Skill implements Listener {
     public double getMagicDmg(Player p) {
         return magicDamage + main.getRP(p).getAP() * apscale;
     }
-    public ElementalStack getElementalDamage(Player p) {
+    public ElementalStack getEDmg(Player p) {
         return elementalDamage;
     }
 
@@ -66,9 +63,9 @@ public class Fireball extends Skill implements Listener {
         super.cast(p);
         Location loc = new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY() - 0.1, p.getEyeLocation().getZ());
         final Arrow arrow = p.getWorld().spawn(loc, Arrow.class);
-        MobEXP.setElementalDamage(arrow, getElementalDamage(p));
-        MobEXP.setMagicDamage(arrow, getMagicDmg(p));
-        MobEXP.setCustomName(arrow, "Fireball");
+        setElementalDamage(arrow, getEDmg(p));
+        setMagicDamage(arrow, getMagicDmg(p));
+        setCustomName(arrow, "Fireball");
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(arrow.getEntityId());
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
@@ -84,7 +81,7 @@ public class Fireball extends Skill implements Listener {
             if (!arrow.isDead()) {
                 p.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 15, 0.04, 0.04, 0.04, 0.04, null, true);
                 if (arrow.isOnGround() || arrow.isDead()) {
-                    lightEntities(arrow, p, arrow.getLocation(), MobEXP.getMagicDamage(arrow), MobEXP.getElementalDamage(arrow));
+                    lightEntities(arrow, p, arrow.getLocation(), getMagicDamage(arrow), getElementalDamage(arrow));
                     arrow.remove();
                     arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 50, 0.04, 0.04, 0.04, 0.04, null, true);
                 }
@@ -95,7 +92,7 @@ public class Fireball extends Skill implements Listener {
             @Override
             public void run() {
                 if (!(arrow.isOnGround() || arrow.isDead())) {
-                    lightEntities(arrow, p, arrow.getLocation(), MobEXP.getMagicDamage(arrow), MobEXP.getElementalDamage(arrow));
+                    lightEntities(arrow, p, arrow.getLocation(), getMagicDamage(arrow), getElementalDamage(arrow));
                     arrow.getWorld().spawnParticle(Particle.LAVA, arrow.getLocation(), 20, 0.04, 0.04, 0.04, 0.04, null, true);
                 }
                 scheduler.cancelTask(task);

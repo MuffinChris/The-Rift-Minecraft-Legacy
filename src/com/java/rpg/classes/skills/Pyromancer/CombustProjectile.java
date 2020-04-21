@@ -2,9 +2,8 @@ package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
-import com.java.rpg.classes.Skill;
 import com.java.rpg.damage.utility.PhysicalStack;
-import com.java.rpg.mobs.MobEXP;
+import com.java.rpg.entity.Mobs;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
+
+import static com.java.rpg.entity.EntityUtils.*;
 
 import static com.java.rpg.classes.Skill.spellDamage;
 
@@ -44,10 +45,10 @@ public class CombustProjectile {
         Location loc = new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY() - 0.1, p.getEyeLocation().getZ());
         final Arrow arrow = p.getWorld().spawn(loc, Arrow.class);
 
-        MobEXP.setMagicDamage(arrow, dmgB);
-        MobEXP.setMagicDamagePerEnt(arrow, dmgPerEnt);
-        MobEXP.setElementalDamage(arrow, eDmg);
-        MobEXP.setElementalDamagePerEnt(arrow, eDmgPerEntity);
+        setMagicDamage(arrow, dmgB);
+        setMagicDamagePerEnt(arrow, dmgPerEnt);
+        setElementalDamage(arrow, eDmg);
+        setElementalDamagePerEnt(arrow, eDmgPerEntity);
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(arrow.getEntityId());
@@ -66,7 +67,7 @@ public class CombustProjectile {
                     arrow.getWorld().spawnParticle(Particle.FLAME, arrow.getLocation(), 25, 0.5, 0.5, 0.5, 0.1, null, true);
                 }
                 if (!arrow.doesBounce() &&( arrow.isOnGround() || arrow.isDead() || arrow.isInBlock())) {
-                    explodeSingle(p, arrow.getLocation(), MobEXP.getMagicDamage(arrow), MobEXP.getMagicDamagePerEnt(arrow), MobEXP.getElementalDamage(arrow), MobEXP.getElementalDamagePerEnt(arrow));
+                    explodeSingle(p, arrow.getLocation(), getMagicDamage(arrow), getMagicDamagePerEnt(arrow), getElementalDamage(arrow), getElementalDamagePerEnt(arrow));
                     arrow.remove();
                     arrow.setBounce(true);
                 }
@@ -77,7 +78,7 @@ public class CombustProjectile {
                     scheduler.cancelTask(task);
                 }
                 if (p.isOnline() && !(arrow.isOnGround() || arrow.isDead())) {
-                    explodeSingle(p, arrow.getLocation(), MobEXP.getMagicDamage(arrow), MobEXP.getMagicDamagePerEnt(arrow), MobEXP.getElementalDamage(arrow), MobEXP.getElementalDamagePerEnt(arrow));
+                    explodeSingle(p, arrow.getLocation(), getMagicDamage(arrow), getMagicDamagePerEnt(arrow), getElementalDamage(arrow), getElementalDamagePerEnt(arrow));
                 }
                 scheduler.cancelTask(task);
                 arrow.remove();

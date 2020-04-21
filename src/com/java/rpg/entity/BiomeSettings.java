@@ -1,7 +1,6 @@
-package com.java.rpg.mobs;
+package com.java.rpg.entity;
 
 import org.bukkit.block.Biome;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;

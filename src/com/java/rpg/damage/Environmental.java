@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent;
 import com.destroystokyo.paper.event.entity.EnderDragonFlameEvent;
 import com.java.Main;
 import com.java.rpg.holograms.Hologram;
-import com.java.rpg.mobs.MobEXP;
+import com.java.rpg.entity.Mobs;
 import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -89,7 +89,7 @@ public class Environmental implements Listener {
                     double fd = main.getRP(pl).getEarthDefense();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 } else {
-                    double fd = MobEXP.getElementalDefense(p).getEarth();
+                    double fd = Mobs.getElementalDefense(p).getEarth();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 }
 
@@ -119,7 +119,7 @@ public class Environmental implements Listener {
                     double fd = main.getRP(pl).getFireDefense();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 } else {
-                    double fd = MobEXP.getElementalDefense(p).getFire();
+                    double fd = Mobs.getElementalDefense(p).getFire();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 }
                 fire = true;
@@ -131,7 +131,7 @@ public class Environmental implements Listener {
                     double fd = main.getRP(pl).getFireDefense();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 } else {
-                    double fd = MobEXP.getElementalDefense(p).getFire();
+                    double fd = Mobs.getElementalDefense(p).getFire();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 }
                 fire = true;
@@ -143,7 +143,7 @@ public class Environmental implements Listener {
                     double fd = main.getRP(pl).getFireDefense();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 } else {
-                    double fd = MobEXP.getElementalDefense(p).getFire();
+                    double fd = Mobs.getElementalDefense(p).getFire();
                     e.setDamage(e.getDamage() * (RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                 }
                 fire = true;
@@ -261,7 +261,7 @@ public class Environmental implements Listener {
                             double fd = main.getRP(pl).getMR();
                             dmg*=((RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                         } else {
-                            double fd = MobEXP.getMagicResist((LivingEntity) e.getEntity());
+                            double fd = Mobs.getMagicResist((LivingEntity) e.getEntity());
                             dmg*=((RPGConstants.defenseDiv/(RPGConstants.defenseDiv + fd)));
                         }
 
