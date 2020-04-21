@@ -30,7 +30,14 @@ public class TownManager implements Listener {
     public TownManager() {
 
     }
-
+    public Town findTown(Citizen c){
+        for (Town t : main.getTowns()){
+            if(t.getName() == c.getTown()){
+                return t;
+            }
+        }
+        return null;
+    }
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (!main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
@@ -124,6 +131,12 @@ public class TownManager implements Listener {
             c.setDemoteStatus("Normal");
 
             tcc.demotePlayer(sender, recieverName);
+        } else if (c.getTownChat()){
+            Town t = findTown(c);
+            e.setCancelled(true);
+            for(UUID uid : t.getCitizenList()){
+                main.msg(Bukkit.getPlayer(uid), e.getMessage());
+            }
         }
 
     }
