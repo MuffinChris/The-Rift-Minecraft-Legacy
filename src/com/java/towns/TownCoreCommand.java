@@ -83,6 +83,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return promotePlayer(p, "");
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, "");
+            } else if (args[0].equalsIgnoreCase("chat")){
+                return toggleTownChat(p);
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("invite")) {
@@ -733,6 +735,17 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return showLeaderboard(p);
     }
 
+    private boolean toggleTownChat(Player p){
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+        if (c.getTownChat()){
+            main.msg(p, "You have disabled town chat.");
+        }
+        else {
+            main.msg(p, "You have enabled town chat.");
+        }
+        c.setTownChat(!c.getTownChat());
+        return true;
+    }
     @EventHandler(priority = EventPriority.LOW)
     public void onClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lTown Menu")) {
