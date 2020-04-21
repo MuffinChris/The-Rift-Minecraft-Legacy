@@ -653,7 +653,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     }
 
     private void sendLeaderboardPage(Player p, int x) {
-        Main.msg(p, Main.color("&l&b==LEADERBOARD=="));
+        Main.msg(p, Main.color("&l&b━━━LEADERBOARD━━━"));
         List<String> fullTownNames = main.getFullTownList();
 
         ArrayList<Town> fullTowns = new ArrayList<Town>();
@@ -678,17 +678,28 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             TextComponent fullText = new TextComponent();
             TextComponent towntc = new TextComponent();
 
-            fullText.setText((i+1) + " ");
+            fullText.setText((i+1) + "   ");
             fullText.setColor(ChatColor.GOLD);
 
             towntc.setText(fullTowns.get(i).getName());
             towntc.setColor(ChatColor.BOLD);
 
-            towntc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder(
-                    "Level: " + fullTowns.get(i).getLevel()
-                    + "\nSize: " + fullTowns.get(i).getCitizenList().size()
-                    + "\n\n&aClick to see full list of members!").create()));
+            TextComponent lvl = new TextComponent();
+            lvl.setText("Level: " + fullTowns.get(i).getLevel());
+            lvl.setColor(ChatColor.BLUE);
+
+            TextComponent sz = new TextComponent();
+            sz.setText("\nSize: " + fullTowns.get(i).getCitizenList().size());
+            sz.setColor(ChatColor.BLUE);
+
+            TextComponent click = new TextComponent();
+            click.setText("\n\nClick to see full list of members!");
+            click.setColor(ChatColor.GREEN);
+            click.setBold(true);
+
+            towntc.addExtra(lvl);
+            towntc.addExtra(sz);
+            towntc.addExtra(click);
 
             fullText.addExtra(towntc);
 
