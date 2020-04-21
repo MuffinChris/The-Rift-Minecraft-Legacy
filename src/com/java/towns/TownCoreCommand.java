@@ -339,7 +339,11 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     private void showTownMemberInv(Player p, String townName) {
 
         // fetching heads is hard
-        Inventory menu = Bukkit.createInventory(null, 5, Main.color("&b&l" + townName + " Menu"));
+        Inventory menu = Bukkit.createInventory(null, 54, Main.color("&b&l" + townName + " Members"));
+
+        Town t = new Town(townName);
+
+
 
         for (int i = 39; i <= 53; i++) {
             menu.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
@@ -703,7 +707,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             towntc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder().append(lvl).append(sz).append(click).create()));
             fullText.addExtra(towntc);
 
-            Main.sendCenteredMessage(p, fullText.getText());
+            Main.sendCenteredMessage(p, fullText);
 
             /*Main.msg(p, Main.color("&6" + (i+1) +
                     "   Town: " + fullTowns.get(i).getName() +
@@ -737,14 +741,15 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     private boolean toggleTownChat(Player p){
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
         if (c.getTownChat()){
-            main.msg(p, "You have disabled town chat.");
+            Main.msg(p, "You have disabled town chat.");
         }
         else {
-            main.msg(p, "You have enabled town chat.");
+            Main.msg(p, "You have enabled town chat.");
         }
         c.setTownChat(!c.getTownChat());
         return true;
     }
+
     @EventHandler(priority = EventPriority.LOW)
     public void onClick(InventoryClickEvent e) {
         if (e.getView().getTitle().contains("§e§lTown Menu")) {

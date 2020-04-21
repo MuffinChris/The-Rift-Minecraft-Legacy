@@ -135,7 +135,7 @@ public class TownManager implements Listener {
             Town t = findTown(c);
             e.setCancelled(true);
             for(UUID uid : t.getCitizenList()){
-                main.msg(Bukkit.getPlayer(uid), e.getMessage());
+                Main.msg(Bukkit.getPlayer(uid), e.getMessage());
             }
         }
 

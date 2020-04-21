@@ -55,6 +55,7 @@ import de.slikey.effectlib.EffectManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.chat.Chat;
 import net.minecraft.server.v1_15_R1.*;
@@ -1193,6 +1194,59 @@ public class Main extends JavaPlugin {
             compensated += spaceLength;
         }
         player.sendMessage(sb.toString() + message);
+        if(toSendAfter != null) sendCenteredMessage(player, toSendAfter);
+    }
+    public static void sendCenteredMessage(Player player, TextComponent tc){
+
+        String message = ChatColor.translateAlternateColorCodes('&', tc.getText());
+
+        for(BaseComponent bc : tc.getExtra()) {
+            message += bc.toPlainText();
+        }
+
+        int messagePxSize = 0;
+        boolean previousCode = false;
+        boolean isBold = false;
+        int charIndex = 0;
+        int lastSpaceIndex = 0;
+        String toSendAfter = null;
+        String recentColorCode = "";
+        for(char c : message.toCharArray()){
+            if(c == '§'){
+                previousCode = true;
+                continue;
+            }else if(previousCode == true){
+                previousCode = false;
+                recentColorCode = "§" + c;
+                if(c == 'l' || c == 'L'){
+                    isBold = true;
+                    continue;
+                }else isBold = false;
+            }else if(c == ' ') lastSpaceIndex = charIndex;
+            else{
+                DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
+                messagePxSize += isBold ? dFI.getBoldLength() : dFI.getLength();
+                messagePxSize++;
+            }
+            if(messagePxSize >= MAX_PX){
+                toSendAfter = recentColorCode + message.substring(lastSpaceIndex + 1, message.length());
+                message = message.substring(0, lastSpaceIndex + 1);
+                break;
+            }
+            charIndex++;
+        }
+        int halvedMessageSize = messagePxSize / 2;
+        int toCompensate = CENTER_PX - halvedMessageSize;
+        int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
+        int compensated = 0;
+        StringBuilder sb = new StringBuilder();
+        while(compensated < toCompensate){
+            sb.append(" ");
+            compensated += spaceLength;
+        }
+
+        tc.setText(sb.toString() + tc.getText());
+        player.sendMessage(tc);
         if(toSendAfter != null) sendCenteredMessage(player, toSendAfter);
     }
 
