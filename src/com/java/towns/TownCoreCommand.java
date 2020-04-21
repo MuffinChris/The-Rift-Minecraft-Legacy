@@ -3,6 +3,8 @@ package com.java.towns;
 import com.java.Main;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventPriority;
+import org.w3c.dom.Text;
 
 import java.util.UUID;
 import java.util.ArrayList;
@@ -667,13 +670,34 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             return Integer.compare(o1score, o2score);
         });
 
+
+
         for (int i = x * TOWNS_PER_PAGE; i < (x + 1) * TOWNS_PER_PAGE; i++) {
             if (i >= fullTowns.size()) break;
 
-            Main.msg(p, Main.color("&6" + (i+1) +
+            TextComponent fullText = new TextComponent();
+            TextComponent towntc = new TextComponent();
+
+            fullText.setText((i+1) + " ");
+            fullText.setColor(ChatColor.GOLD);
+
+            towntc.setText(fullTowns.get(i).getName());
+            towntc.setColor(ChatColor.BOLD);
+
+            towntc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder(
+                    "Level: " + fullTowns.get(i).getLevel()
+                    + "\nSize: " + fullTowns.get(i).getCitizenList().size()
+                    + "\n\n&aClick to see full list of members!").create()));
+
+            fullText.addExtra(towntc);
+
+            p.sendMessage(fullText);
+
+            /*Main.msg(p, Main.color("&6" + (i+1) +
                     "   Town: " + fullTowns.get(i).getName() +
                     "    Level: " + fullTowns.get(i).getLevel() +
-                    "    Size: " + fullTowns.get(i).getCitizenList().size()));
+                    "    Size: " + fullTowns.get(i).getCitizenList().size()));*/
         }
 
     }

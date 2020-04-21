@@ -182,7 +182,6 @@ public class Town {
     }
 
     public void pushFiles() {
-        Bukkit.broadcastMessage("pushing to " + name + ".yml");
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
         try {
@@ -209,7 +208,6 @@ public class Town {
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
         if (!tFile.exists()) {
-            Bukkit.broadcastMessage("Missing file " + name + ".yml!");
             pushFiles();
             pullFiles();
         } else {
@@ -218,7 +216,6 @@ public class Town {
              */
             List<String> pullUUIDString = tData.getStringList("CitizensList");
             for(int i = 0; i < pullUUIDString.size(); i++){
-                Bukkit.broadcastMessage("Pull town file -- UUID: " + pullUUIDString.get(i));
                 cList.add(UUID.fromString(pullUUIDString.get(i)));
             }
 
