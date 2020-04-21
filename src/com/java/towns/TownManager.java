@@ -119,18 +119,18 @@ public class TownManager implements Listener {
             tcc.sendInvite(e.getPlayer(), receiverName);
 
         } else if (c.getPromoteStatus().equals("Prompted")) { // promotion prompt
-            String recieverName = e.getMessage();
+            String receiverName = e.getMessage();
             e.setCancelled(true);
             c.setPromoteStatus("Normal");
 
-            tcc.promotePlayer(sender, recieverName);
+            tcc.promotePlayer(sender, receiverName);
 
         } else if (c.getDemoteStatus().equals("Prompted")) { // demotion prompt
-            String recieverName = e.getMessage();
+            String receiverName = e.getMessage();
             e.setCancelled(true);
             c.setDemoteStatus("Normal");
 
-            tcc.demotePlayer(sender, recieverName);
+            tcc.demotePlayer(sender, receiverName);
         } else if (c.getTownChat()){
             Town t = findTown(c);
             e.setCancelled(true);

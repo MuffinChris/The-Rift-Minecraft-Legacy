@@ -655,7 +655,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     }
 
     private void sendLeaderboardPage(Player p, int x) {
-        Main.msg(p, Main.color("&l&b━━━LEADERBOARD━━━"));
+        Main.sendCenteredMessage(p, Main.color("&a&m------------------\n"));
+        Main.sendCenteredMessage(p, Main.color("&b&lLEADERBOARD"));
         List<String> fullTownNames = main.getFullTownList();
 
         ArrayList<Town> fullTowns = new ArrayList<Town>();
@@ -699,19 +700,17 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             click.setColor(ChatColor.GREEN);
             click.setBold(true);
 
-            towntc.addExtra(lvl);
-            towntc.addExtra(sz);
-            towntc.addExtra(click);
-
+            towntc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder().append(lvl).append(sz).append(click).create()));
             fullText.addExtra(towntc);
 
-            p.sendMessage(fullText);
+            Main.sendCenteredMessage(p, fullText.getText());
 
             /*Main.msg(p, Main.color("&6" + (i+1) +
                     "   Town: " + fullTowns.get(i).getName() +
                     "    Level: " + fullTowns.get(i).getLevel() +
                     "    Size: " + fullTowns.get(i).getCitizenList().size()));*/
         }
+        Main.sendCenteredMessage(p, Main.color("&a&m------------------"));
 
     }
 
