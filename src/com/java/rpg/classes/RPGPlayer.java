@@ -35,6 +35,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -195,16 +196,31 @@ public class RPGPlayer extends Leveleable {
     public List<Skill> getSkillsAll() {
         Player p = player;
         List<Skill> pSkills = new ArrayList<>();
-        int index = 0;
         for (Skill s : main.getRP(p).getPClass().getSkills()) {
             if (main.getRP(p).getSkillLevels() != null && main.getRP(p).getSkillLevels().get(s.getName()) == 0) {
                 pSkills.add(s);
             } else {
-                if (!main.getRP(p).getPClass().getSuperSkills().isEmpty() && main.getRP(p).getPClass().getSuperSkills().get(index) != null) {
-                    pSkills.add(main.getRP(p).getPClass().getSuperSkills().get(index));
-                }
+                pSkills.add(s.getUpgradedSkill());
             }
-            index++;
+        }
+        return pSkills;
+    }
+
+    public List<Skill> getSkillsCastable() {
+        Player p = player;
+        List<Skill> pSkills = new ArrayList<>();
+        for (Skill s : main.getRP(p).getPClass().getSkills()) {
+            if (main.getRP(p).getSkillLevels() != null && main.getRP(p).getSkillLevels().get(s.getName()) == 0) {
+                if (s.getSkillType() == Skill.SkillType.PASSIVE) {
+                    continue;
+                }
+                pSkills.add(s);
+            } else {
+                if (s.getUpgradedSkill().getSkillType() == Skill.SkillType.PASSIVE) {
+                    continue;
+                }
+                pSkills.add(s.getUpgradedSkill());
+            }
         }
         return pSkills;
     }
@@ -228,19 +244,7 @@ public class RPGPlayer extends Leveleable {
 
 
     public void setMana(double m) {
-        double dif = (m - getCMana());
         currentMana = Math.min(m, pclass.getCalcMana(getLevel()));
-        /*
-        if (dif > 0) {
-            DecimalFormat df = new DecimalFormat("#");
-            Hologram magic = new Hologram(player, player.getLocation(), "&9&l+" + df.format(dif), Hologram.HologramType.DAMAGE);
-            magic.rise();
-        } else {
-            DecimalFormat df = new DecimalFormat("#");
-            Hologram magic = new Hologram(player, player.getLocation(), "&9&l" + df.format(dif), Hologram.HologramType.DAMAGE);
-            magic.rise();
-        }
-        */
     }
 
     public void setManaOverflow(double m) {
@@ -494,48 +498,6 @@ public class RPGPlayer extends Leveleable {
         return currentMana;
     }
 
-    public void getTextureMap() {
-        if (main.getTextureValues().containsKey(player.getUniqueId())) {
-            selfTextureValue = main.getTextureValues().get(player.getUniqueId());
-            selfTextureSignature = main.getTextureSigs().get(player.getUniqueId());
-        } else {
-            try {
-                URL url = new URL("https://api.mineskin.org/generate/user/" + player.getUniqueId());
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        con.getInputStream()));
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                JsonParser jsonParser = new JsonParser();
-                JsonElement element = jsonParser.parse(response.toString());
-
-                JsonElement ja = element.getAsJsonObject().get("data");
-                JsonElement texture = ja.getAsJsonObject().get("texture");
-
-                selfTextureValue = texture.getAsJsonObject().get("value").toString().replaceAll("\"", "");
-                selfTextureSignature = texture.getAsJsonObject().get("signature").toString().replaceAll("\"", "");
-
-                main.getTextureValues().put(player.getUniqueId(), selfTextureValue);
-                main.getTextureSigs().put(player.getUniqueId(), selfTextureSignature);
-            } catch (IOException e) {
-                selfTextureValue = textureValue;
-                selfTextureSignature = textureSignature;
-
-                main.getTextureValues().put(player.getUniqueId(), selfTextureValue);
-                main.getTextureSigs().put(player.getUniqueId(), selfTextureSignature);
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void setUsernameFile(FileConfiguration pData, String username) {
         if (pData.contains("Username")) {
             if (pData.getString("Username").equalsIgnoreCase(player.getName())) {
@@ -744,7 +706,7 @@ public class RPGPlayer extends Leveleable {
                 for (Skill s : pclass.getSkills()) {
                     sz.clearTitleIndiscrim(s.getName(), player);
                 }
-                for (Skill s : pclass.getSuperSkills()) {
+                for (Skill s : pclass.getUpgradedSkills()) {
                     sz.clearTitleIndiscrim(s.getName(), player);
                 }
             }
@@ -795,7 +757,7 @@ public class RPGPlayer extends Leveleable {
             }
         }
         float currentWs = Math.max(0, player.getWalkSpeed());
-        float actualWs = Math.max(0, Float.valueOf(String.valueOf(df.format((getWalkspeed().getValue() * 1.0 + getWalkSpeedS().getValue() * 1.0) / 100.0))));
+        float actualWs = Math.max(0, Float.parseFloat(String.valueOf(df.format((getWalkspeed().getValue() * 1.0 + getWalkSpeedS().getValue() * 1.0) / 100.0))));
         if (currentWs != actualWs) {
             player.setWalkSpeed(Math.min(actualWs, 1.0F));
         }
@@ -828,7 +790,6 @@ public class RPGPlayer extends Leveleable {
                 }
             }
         }
-        //}
         return null;
     }
 
@@ -859,7 +820,63 @@ public class RPGPlayer extends Leveleable {
                 }
             }
         }
-        //}
+        return null;
+    }
+
+    public boolean isTarget(Skill s) {
+        return (s.getSkillType() == Skill.SkillType.PASSIVE_TARGET || s.getSkillType() == Skill.SkillType.TARGET);
+    }
+
+    public boolean isToggle(Skill s) {
+        return (s.getSkillType() == Skill.SkillType.PASSIVE_TOGGLE || s.getSkillType() == Skill.SkillType.TOGGLE);
+    }
+
+    public boolean isCast(Skill s) {
+        return (s.getSkillType() == Skill.SkillType.PASSIVE_CAST || s.getSkillType() == Skill.SkillType.CAST);
+    }
+
+    public boolean isPassive(Skill s) {
+        return (s.getSkillType() == Skill.SkillType.PASSIVE_CAST || s.getSkillType() == Skill.SkillType.PASSIVE_TARGET || s.getSkillType() == Skill.SkillType.PASSIVE_TOGGLE || s.getSkillType() == Skill.SkillType.PASSIVE);
+    }
+
+    public String isTargetValid(Skill s) {
+        target = getNearestTargetInSight(player, s.getTargetRange() * 2);
+        if (target != null) {
+            if (target.getLocation().distance(player.getLocation()) > s.getTargetRange()) {
+                target = null;
+                getStatuses().remove("Warmup" + s.getName());
+                return "OutOfRangeTarget";
+            }
+            s.targetParticles(player, target);
+        } else {
+            getStatuses().remove("Warmup" + s.getName());
+            target = null;
+            return "BadTarget";
+        }
+        return null;
+    }
+
+    public List<Integer> removeWarmupStatuses(Skill s) {
+        List<Integer> indexesToRemove = new ArrayList<>();
+        int index = 0;
+        for (String status : statuses) {
+            if (status.contains("Warmup")) {
+                if (!status.contains(s.getName())) {
+                    indexesToRemove.add(index);
+                }
+                index++;
+            }
+        }
+        for (int ind : indexesToRemove) {
+            statuses.remove(ind);
+        }
+        return indexesToRemove;
+    }
+
+    public String removeWarmupStatusesIntCheck(Skill s) {
+        if (removeWarmupStatuses(s).size() > 0) {
+            return "Interrupted";
+        }
         return null;
     }
 
@@ -869,264 +886,206 @@ public class RPGPlayer extends Leveleable {
             for (Skill st : pclass.getSkills()) {
                 if (name.equalsIgnoreCase(st.getName())) {
                     if (skillLevels.get(st.getName()) != 0) {
-                        return "AlreadySuper";
+                        return "AlreadyUpgraded";
                     }
                     s = st;
                 }
             }
-            for (Skill st : pclass.getSuperSkills()) {
+            for (Skill st : pclass.getUpgradedSkills()) {
                 if (name.equalsIgnoreCase(st.getName())) {
-                    if (skillLevels.get(pclass.getSkills().get(pclass.getSuperSkills().indexOf(st)).getName()) == 0) {
-                        return "NotSuper";
+                    if (skillLevels.get(getSkillFromUpgradedSkill(st.getName()).getName()) == 0) {
+                        return "NotUpgraded";
                     }
                     s = st;
                 }
             }
             if (s != null) {
-            /*for (Skill s : pclass.getSkills()) {
-                if (name.equalsIgnoreCase(s.getName())) {*/
-                    if (s.getLevel() <= getLevel()) {
-                        if (s.getManaCost() <= currentMana || (s.getType().contains("TOGGLE") && getToggles().contains(s.getName()))) {
-                            if (stun.getValue() > 0) {
-                                return "Stunned";
-                            }
-                            String cd = getCooldown(s);
-                            final BukkitScheduler scheduler = Bukkit.getScheduler();
-                            if (cd.equalsIgnoreCase("Warmup")) {
-                                if (!statuses.contains("Warmup" + s.getName())) {
-                                    getStatuses().add("Warmup" + s.getName());
-                                } else {
-                                    return "AlreadyCasting";
-                                }
-
-                                if (s.getType().contains("TARGET")) {
-                                    if (getNearestTargetInSight(player, s.getTargetRange() * 2) instanceof LivingEntity) {
-                                        target = getNearestTargetInSight(player, s.getTargetRange() * 2);
-                                        if (target.getLocation().distance(player.getLocation()) > s.getTargetRange()) {
-                                            target = null;
-                                            getStatuses().remove("Warmup" + s.getName());
-                                            return "OutOfRangeTarget";
-                                        }
-                                        s.targetParticles(player, target);
-                                    } else {
-                                        getStatuses().remove("Warmup" + s.getName());
-                                        target = null;
-                                        return "BadTarget";
-                                    }
-                                }
-
-                                List<Integer> indexesToRemove = new ArrayList<>();
-                                int index = 0;
-                                for (String status : statuses) {
-                                    if (status.contains("Warmup")) {
-                                        if (!status.contains(s.getName())) {
-                                            indexesToRemove.add(index);
-                                        }
-                                        index++;
-                                    }
-                                }
-                                for (int ind : indexesToRemove) {
-                                    statuses.remove(ind);
-                                }
-                                String nameS = s.getName();
-                                int warmup = s.getWarmup();
-                                int manaCost = s.getManaCost();
-                                String type = s.getType();
-                                final Skill sk = s;
-                                Player p = player;
-                                final int task = scheduler.scheduleSyncDelayedTask(main, new Runnable() {
-                                    public void run() {
-                                        if (!p.isOnline() || player.isDead()) {
-                                            if (p.isOnline() && p.isDead()) {
-                                                statuses.remove("Warmup" + nameS);
-                                                target = null;
-                                            }
-                                        } else {
-                                            if (cooldowns.containsKey(nameS)) {
-                                                cooldowns.replace(nameS, System.currentTimeMillis());
-                                            } else {
-                                                cooldowns.put(nameS, System.currentTimeMillis());
-                                            }
-                                            if (currentMana >= manaCost) {
-                                                if (type.contains("TARGET")) {
-                                                    if (target == null || (target != null && target.isDead())) {
-                                                        statuses.remove("Warmup" + nameS);
-                                                        return;
-                                                    }
-                                                    sk.target(player, target);
-                                                    target = null;
-                                                } else {
-                                                    sk.cast(player);
-                                                }
-                                                currentMana -= manaCost;
-                                            } else {
-                                                Main.msg(player, "&cOut of mana to cast " + nameS + "!");
-                                            }
-                                            statuses.remove("Warmup" + nameS);
-                                        }
-                                    }
-                                }, s.getWarmup());
-
-                                new BukkitRunnable() {
-                                    Player p = player;
-                                    int time = 0;
-                                    public void run() {
-                                        if (!p.isOnline()) {
-                                            cancel();
-                                            return;
-                                        }
-                                        if (player.isDead()) {
-                                            cancel();
-                                            target = null;
-                                            statuses.remove("Warmup" + name);
-                                            return;
-                                        }
-                                        time++;
-                                        if (time >= warmup) {
-                                            cancel();
-                                            return;
-                                        }
-                                        if (!getStatuses().contains("Warmup" + nameS) || (target != null) && target.isDead() && type.contains("TARGET") || (target == null && type.contains("TARGET"))) {
-                                            scheduler.cancelTask(task);
-                                            if (target == null && type.contains("TARGET")) {
-                                                Main.msg(player, "&cYour target died!");
-                                                statuses.remove("Warmup" + name);
-                                            }
-                                            if (target != null && target.isDead() && type.contains("TARGET")) {
-                                                Main.msg(player, "&cYour target died!");
-                                                statuses.remove("Warmup" + name);
-                                                target = null;
-                                            }
-                                            cancel();
-                                        }
-                                    }
-                                }.runTaskTimer(Main.getInstance(),  0, 1);
-                                return "Warmup:" + s.getWarmup();
-                            }
-                            if (cd.equalsIgnoreCase("Invalid")) {
-                                return "Failure";
-                            }
-                            if (cd.contains("CD:")) {
-                                return cd;
-                            }
-                            if (s.getType().contains("TOGGLE")) {
-                                if (getToggles().contains(s.getName())) {
-                                    s.toggleEnd(player);
-                                } else {
-                                    getToggles().add(s.getName());
-                                    Map<Integer, String> map = new HashMap<>();
-                                    map.put(s.toggleInit(player), s.getName());
-                                    getToggleTasks().add(map);
-                                    currentMana -= s.getManaCost();
-                                    List<Integer> indexesToRemove = new ArrayList<>();
-                                    int index = 0;
-                                    for (String status : statuses) {
-                                        if (status.contains("Warmup")) {
-                                            if (!status.contains(s.getName())) {
-                                                indexesToRemove.add(index);
-                                            }
-                                            index++;
-                                        }
-                                    }
-                                    for (int ind : indexesToRemove) {
-                                        statuses.remove(ind);
-                                    }
-                                    if (cooldowns.containsKey(s.getName())) {
-                                        cooldowns.replace(s.getName(), System.currentTimeMillis());
-                                    } else {
-                                        cooldowns.put(s.getName(), System.currentTimeMillis());
-                                    }
-                                }
-                                return "CastedSkill";
-                            }
-                            if (s.getType().contains("TARGET")) {
-                                if (getNearestTargetInSight(player, s.getTargetRange() * 2) != null) {
-                                    target = getNearestTargetInSight(player, s.getTargetRange() * 2);
-                                    if (target.getLocation().distance(player.getLocation()) > s.getTargetRange()) {
-                                        target = null;
-                                        getStatuses().remove("Warmup" + s.getName());
-                                        return "OutOfRangeTarget";
-                                    }
-                                    s.targetParticles(player, target);
-                                } else {
-                                    getStatuses().remove("Warmup" + s.getName());
-                                    target = null;
-                                    return "BadTarget";
-                                }
-                                List<Integer> indexesToRemove = new ArrayList<>();
-                                int index = 0;
-                                for (String status : statuses) {
-                                    if (status.contains("Warmup")) {
-                                        if (!status.contains(s.getName())) {
-                                            indexesToRemove.add(index);
-                                        }
-                                        index++;
-                                    }
-                                }
-                                for (int ind : indexesToRemove) {
-                                    statuses.remove(ind);
-                                }
-                                if (cooldowns.containsKey(s.getName())) {
-                                    cooldowns.replace(s.getName(), System.currentTimeMillis());
-                                } else {
-                                    cooldowns.put(s.getName(), System.currentTimeMillis());
-                                }
-                                currentMana -= s.getManaCost();
-                                s.target(player, target);
-                                if (indexesToRemove.size() > 0) {
-                                    return "Interrupted";
-                                }
-                                target = null;
-                                return "CastedSkill";
-                            }
-                            if (cd.equalsIgnoreCase("Casted")) {
-                                if (!s.getType().contains("CAST")) {
-                                    return "CannotCast";
-                                }
-                                List<Integer> indexesToRemove = new ArrayList<>();
-                                int index = 0;
-                                for (String status : statuses) {
-                                    if (status.contains("Warmup")) {
-                                        if (!status.contains(s.getName())) {
-                                            indexesToRemove.add(index);
-                                        }
-                                        index++;
-                                    }
-                                }
-                                for (int ind : indexesToRemove) {
-                                    statuses.remove(ind);
-                                }
-                                if (cooldowns.containsKey(s.getName())) {
-                                    cooldowns.replace(s.getName(), System.currentTimeMillis());
-                                } else {
-                                    cooldowns.put(s.getName(), System.currentTimeMillis());
-                                }
-                                currentMana -= s.getManaCost();
-                                s.cast(player);
-                                if (indexesToRemove != null && indexesToRemove.size() > 0) {
-                                    return "Interrupted";
-                                }
-
-                                return "CastedSkill";
-                                //return s.getFlavor();
-                            }
+                if (s.getLevel() <= getLevel()) {
+                    if (s.getManaCost() <= currentMana || (isToggle(s) && getToggles().contains(s.getName()))) {
+                        if (stun.getValue() > 0) {
+                            return "Stunned";
                         }
-                        return "NoMana";
+                        String cd = getCooldown(s);
+
+                        if (cd.equalsIgnoreCase("Invalid")) {
+                            return "Failure";
+                        }
+
+                        if (cd.contains("CD:")) {
+                            return cd;
+                        }
+
+                        final BukkitScheduler scheduler = Bukkit.getScheduler();
+                        if (cd.equalsIgnoreCase("Warmup") && !(isToggle(s) && getToggles().contains(s.getName()))) {
+
+                            if (!statuses.contains("Warmup" + s.getName())) {
+                                getStatuses().add("Warmup" + s.getName());
+                            } else {
+                                return "AlreadyCasting";
+                            }
+
+                            if (isTarget(s)) {
+                                String itv = isTargetValid(s);
+                                if (itv != null) {
+                                    return itv;
+                                }
+                            }
+
+                            removeWarmupStatuses(s);
+
+                            String nameS = s.getName();
+                            int warmup = s.getWarmup();
+                            int manaCost = s.getManaCost();
+                            final Skill sk = s;
+                            Player p = player;
+
+                            final int task = scheduler.scheduleSyncDelayedTask(main, () -> {
+                                if (!p.isOnline() || player.isDead()) {
+                                    if (p.isOnline() && p.isDead()) {
+                                        statuses.remove("Warmup" + nameS);
+                                        target = null;
+                                    }
+                                } else {
+                                    cooldowns.put(nameS, System.currentTimeMillis());
+
+                                    if (currentMana >= manaCost) {
+                                        if (isTarget(sk)) {
+                                            if (target == null || target.isDead()) {
+                                                statuses.remove("Warmup" + nameS);
+                                                return;
+                                            }
+                                            sk.target(player, target);
+                                            target = null;
+                                        } else if (isToggle(sk)) {
+                                            getToggles().add(sk.getName());
+                                            Map<Integer, String> map = new HashMap<>();
+                                            map.put(sk.toggleInit(player), sk.getName());
+                                            getToggleTasks().add(map);
+                                            currentMana -= sk.getManaCost();
+                                        } else {
+                                            sk.cast(player);
+                                        }
+                                        currentMana -= manaCost;
+                                    } else {
+                                        Main.msg(player, "&cOut of mana to cast " + nameS + "!");
+                                    }
+                                    statuses.remove("Warmup" + nameS);
+                                }
+                            }, s.getWarmup());
+
+                            new BukkitRunnable() {
+                                Player p = player;
+                                int time = 0;
+                                public void run() {
+                                    if (!p.isOnline()) {
+                                        cancel();
+                                        return;
+                                    }
+                                    if (player.isDead()) {
+                                        cancel();
+                                        target = null;
+                                        statuses.remove("Warmup" + name);
+                                        return;
+                                    }
+                                    time++;
+                                    if (time >= warmup) {
+                                        cancel();
+                                        return;
+                                    }
+                                    if (!getStatuses().contains("Warmup" + nameS) || isTarget(sk) && target != null && target.isDead() || (target == null && isTarget(sk))) {
+                                        scheduler.cancelTask(task);
+                                        if (target == null && isTarget(sk)) {
+                                            Main.msg(player, "&cYour target died!");
+                                            statuses.remove("Warmup" + name);
+                                        }
+                                        if (target != null && target.isDead() && isTarget(sk)) {
+                                            Main.msg(player, "&cYour target died!");
+                                            statuses.remove("Warmup" + name);
+                                            target = null;
+                                        }
+                                        cancel();
+                                    }
+                                }
+                            }.runTaskTimer(Main.getInstance(),  0, 1);
+                            return "Warmup:" + s.getWarmup();
+                        }
+
+
+                        if (isToggle(s)) {
+                            if (getToggles().contains(s.getName())) {
+                                s.toggleEnd(player);
+                            } else {
+                                getToggles().add(s.getName());
+                                Map<Integer, String> map = new HashMap<>();
+                                map.put(s.toggleInit(player), s.getName());
+                                getToggleTasks().add(map);
+                                currentMana -= s.getManaCost();
+                                cooldowns.put(s.getName(), System.currentTimeMillis());
+
+                                if (removeWarmupStatusesIntCheck(s) != null) {
+                                    return "Interrupted";
+                                }
+                            }
+                            return "CastedSkill";
+                        }
+
+                        if (isTarget(s)) {
+                            if (isTarget(s)) {
+                                String itv = isTargetValid(s);
+                                if (itv != null) {
+                                    return itv;
+                                }
+                            }
+
+                            cooldowns.put(s.getName(), System.currentTimeMillis());
+                            currentMana -= s.getManaCost();
+                            s.target(player, target);
+
+                            if (removeWarmupStatusesIntCheck(s) != null) {
+                                return "Interrupted";
+                            }
+
+                            target = null;
+                            return "CastedSkill";
+                        }
+                        if (cd.equalsIgnoreCase("Casted")) {
+                            if (!isCast(s)) {
+                                return "CannotCast";
+                            }
+
+                            cooldowns.put(s.getName(), System.currentTimeMillis());
+                            currentMana -= s.getManaCost();
+                            s.cast(player);
+
+                            if (removeWarmupStatusesIntCheck(s) != null) {
+                                return "Interrupted";
+                            }
+
+                            return "CastedSkill";
+                        }
                     }
-                    return "Level" + s.getLevel();
-                //}
+                    return "NoMana";
+                }
+                return "Level" + s.getLevel();
             }
         }
         return "Invalid";
     }
 
     public String getCooldown(Skill s) {
-        if (pclass instanceof PlayerClass) {
+        if (pclass != null) {
             for (Skill sk : getSkillsAll()) {
                 if (sk.equals(s)) {
                     if (cooldowns.containsKey(s.getName())) {
                         long timeLeft = System.currentTimeMillis() - cooldowns.get(s.getName());
-                        if (timeLeft * 0.001 * 20 >= s.getCooldown()) {
+
+                        long cooldown;
+                        if (getToggles().contains(sk.getName())) {
+                            cooldown = s.getToggleCooldown();
+                        } else {
+                            cooldown = s.getCooldown();
+                        }
+                        if (timeLeft * 0.001 * 20 >= cooldown) {
                             if (s.getWarmup() != 0) {
                                 return "Warmup";
                             }
@@ -1151,40 +1110,19 @@ public class RPGPlayer extends Leveleable {
         return "Invalid";
     }
 
-    public Skill getSkillFromSuper(String name) {
-        if (pclass != null) {
-            for (Skill s : pclass.getSuperSkills()) {
-                if (name.equalsIgnoreCase(s.getName())) {
-                    return pclass.getSkills().get(pclass.getSuperSkills().indexOf(s));
-                }
-            }
-        }
-        return null;
-    }
-
-    public Skill getSkillFromName(String name) {
-        if (pclass != null) {
-            for (Skill s : pclass.getSkills()) {
-                if (name.equalsIgnoreCase(s.getName())) {
-                    return s;
-                }
-            }
-            for (Skill s : pclass.getSuperSkills()) {
-                if (name.equalsIgnoreCase(s.getName())) {
-                    return s;
-                }
-            }
-        }
-        return null;
-    }
-
     public void refreshCooldowns() {
         if (pclass != null) {
             for (int i = cooldowns.keySet().size() - 1; i >= 0; i--) {
                 String name = cooldowns.keySet().toArray()[i].toString();
                 long timeLeft = System.currentTimeMillis() - cooldowns.get(name);
                 if (getSkillFromName(name) != null) {
-                    if (timeLeft * 0.001 * 20 >= getSkillFromName(name).getCooldown()) {
+                    long cooldown;
+                    if (getToggles().contains(getSkillFromName(name).getName())) {
+                        cooldown = getSkillFromName(name).getToggleCooldown();
+                    } else {
+                        cooldown = getSkillFromName(name).getCooldown();
+                    }
+                    if (timeLeft * 0.001 * 20 >= cooldown) {
                         cooldowns.remove(name);
                     }
                 }
@@ -1212,6 +1150,37 @@ public class RPGPlayer extends Leveleable {
         return passiveTasks;
     }
 
+    public Skill getSkillFromUpgradedSkill(String name) {
+        if (pclass != null) {
+            for (Skill s : pclass.getSkills()) {
+                if (s.isUpgradeable() && name.equalsIgnoreCase(s.getUpgradedSkill().getName())) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Skill getSkillFromName(String name) {
+        if (pclass != null) {
+            for (Skill s : pclass.getSkills()) {
+                if (name.equalsIgnoreCase(s.getName())) {
+                    return s;
+                }
+                if (s.isUpgradeable() && name.equalsIgnoreCase(s.getUpgradedSkill().getName())) {
+                    return s.getUpgradedSkill();
+                }
+            }
+        }
+        return null;
+    }
+
+    /*
+
+    Tablist
+
+     */
+
     private TablistSlots playerSlots;
     private TablistSlots partySlots;
 
@@ -1225,6 +1194,48 @@ public class RPGPlayer extends Leveleable {
 
     private static String textureValue = "eyJ0aW1lc3RhbXAiOjE1ODYwNzU3NjM1MzYsInByb2ZpbGVJZCI6IjZiMjIwMzdkYzA0MzQyNzE5NGYyYWRiMDAzNjhiZjE2IiwicHJvZmlsZU5hbWUiOiJMaWdodG5lbiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjRkNDA3OTk1ZjVjNGFhOTlhMjg5ZmI0YWFhMDQwZTFjYzVlOWIzM2JiOWJlYWM2NTRkZmZhMDljYzZjZmQ5MiJ9fX0=";
     private static String textureSignature = "caGGJhsAP6hC1gzzo1lwm4bAPbW6XE5KUqLzlXOaTYGB2eqpCzq9oUUZg26kxCQ0io57VPOpQtQfdUHqSyVBpN+AGcBBuNYWSY5X0F0isxC/t1JpX4wcLW7Y7CCEj2nOQ0SEkJU5wJyDCdCHbk4VU4kvMd00oqlsTwIG5PzovT/8oq8uC9nME3/Tzds7lqAYHDBKJgMFSQ9D17RwnpQc0DoNpJ9KM2AxNtJa5M2UFr+d7x5z5Kicc+fG+4VX4wwVcRhnpGzzQTKL3gCOURvAOCfi9NBRADw2Ch7Tw8xj3c+c4NSgGoQ+2yaqU3BpwEiSvoNva7WidSwfQ3x99DCwZ6Gth8n9OWC/p1X9lfZ2sAF1VUkXg/j6pTvhsS+yDk3tZDbdJ8HyyN4NFZIN5H/2K8c+GgUy4zfnO2/2O5FOtArzzpo/z9GCaO4rbPL8OQ1KIRKC1CbBqLkqsHZjhTLHZ46EQFxODlCEhoLTxfB1mwxjLePSEROwxgT4zAP6hx0uRKqby73yx7BX51thg+xPZ5U04wI7ts76YWNAUFwd8Acj+HkxrTekAKacFkK6U9Me118OpZwgBXe4TXnpcfh4/X8grT21TZm4vxk0YESlmkzqIFQYnsPLoHVGmowLbNpntBe/iDIEs+pTcVgtONXcBA0DLPkcgqKxMh2yUmZP50w=";
+
+    public void getTextureMap() {
+        if (main.getTextureValues().containsKey(player.getUniqueId())) {
+            selfTextureValue = main.getTextureValues().get(player.getUniqueId());
+            selfTextureSignature = main.getTextureSigs().get(player.getUniqueId());
+        } else {
+            try {
+                URL url = new URL("https://api.mineskin.org/generate/user/" + player.getUniqueId());
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                JsonParser jsonParser = new JsonParser();
+                JsonElement element = jsonParser.parse(response.toString());
+
+                JsonElement ja = element.getAsJsonObject().get("data");
+                JsonElement texture = ja.getAsJsonObject().get("texture");
+
+                selfTextureValue = texture.getAsJsonObject().get("value").toString().replaceAll("\"", "");
+                selfTextureSignature = texture.getAsJsonObject().get("signature").toString().replaceAll("\"", "");
+
+                main.getTextureValues().put(player.getUniqueId(), selfTextureValue);
+                main.getTextureSigs().put(player.getUniqueId(), selfTextureSignature);
+            } catch (IOException e) {
+                selfTextureValue = textureValue;
+                selfTextureSignature = textureSignature;
+
+                main.getTextureValues().put(player.getUniqueId(), selfTextureValue);
+                main.getTextureSigs().put(player.getUniqueId(), selfTextureSignature);
+                e.printStackTrace();
+            }
+        }
+    }
 
     public List<Player> getSortedOnlinePlayers() {
         List<Player> pl = new ArrayList<>();
@@ -1254,6 +1265,49 @@ public class RPGPlayer extends Leveleable {
             }
         }
         return pl;
+    }
+
+    public void updatePlayerCount() {
+        int tl = 20;
+        String gpName = "#" + tl;
+        String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
+        uuid+=tl;
+        GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
+        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+        String name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS [" + Bukkit.getOnlinePlayers().size() + "]";
+        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
+        PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
+        fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
+        fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
+        try {
+            main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePartyCount() {
+        int tl = 0;
+        String gpName = "#0" + tl;
+        String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
+        uuid+= "0" + tl;
+        GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
+        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+        String name;
+        if (main.getPM().hasParty(player)) {
+            name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [" + main.getPM().getParty(player).getPlayers().size() + "]";
+        } else {
+            name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [0]";
+        }
+        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
+        PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
+        fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
+        fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
+        try {
+            main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void nameUpdate(Player pl, boolean placeholder) {
@@ -1320,19 +1374,6 @@ public class RPGPlayer extends Leveleable {
         tabPacket.getChatComponents().write(1, footer);
         main.getProtocolManager().sendServerPacket(player, tabPacket);
 
-        /*List<Player> playerL = new ArrayList<>();
-        for (TabSlot t : playerSlots.getTs()) {
-            if (t.getPlayer() != null) {
-                if (!t.getPlayer().isOnline()) {
-                    continue;
-                }
-                playerL.add(t.getPlayer());
-            } else {
-                break;
-            }
-        }*/
-
-
         List<Player> partyL = new ArrayList<>();
         for (TabSlot t : partySlots.getTs()) {
             if (t.getPlayer() != null) {
@@ -1363,6 +1404,7 @@ public class RPGPlayer extends Leveleable {
                 int tlIndex = tl - party.get(0);
                 if (index >= main.getPM().getParty(player).getPlayers().size()) {
                     if (partySlots.getTs().get(tlIndex).getPlayer() != null) {
+                        updatePartyNumber = true;
                         PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
                         fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
                         String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
@@ -1473,6 +1515,7 @@ public class RPGPlayer extends Leveleable {
             int tlIndex = tl - players.get(0);
             if (index >= Bukkit.getOnlinePlayers().size()) {
                 if (playerSlots.getTs().get(tlIndex).getPlayer() != null) {
+                    updatePlayerCount = true;
                     PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
                     fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
                     String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
@@ -1532,12 +1575,6 @@ public class RPGPlayer extends Leveleable {
                 }
                 GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
                 prof.getProperties().put("textures", new Property("textures", main.getRP(playerSlots.getTs().get(tlIndex).getPlayer()).selfTextureValue, main.getRP(playerSlots.getTs().get(tlIndex).getPlayer()).selfTextureSignature));
-                /*
-                if (main.getRP(playerSlots.getTs().get(tlIndex).getPlayer()) != null) {
-                    prof.getProperties().put("textures", new Property("textures", main.getRP(playerSlots.getTs().get(tlIndex).getPlayer()).selfTextureValue, main.getRP(playerSlots.getTs().get(tlIndex).getPlayer()).selfTextureSignature));
-                } else {
-                    prof.getProperties().put("textures", new Property("textures", main.getTextureValues().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId()), main.getTextureSigs().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId())));
-                }*/
                 PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
                 fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
                 main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
@@ -1546,49 +1583,6 @@ public class RPGPlayer extends Leveleable {
         }
         if (updatePlayerCount) {
             updatePlayerCount();
-        }
-    }
-
-    public void updatePlayerCount() {
-        int tl = 20;
-        String gpName = "#" + tl;
-        String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
-        uuid+=tl;
-        GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
-        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
-        String name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS [" + Bukkit.getOnlinePlayers().size() + "]";
-        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
-        PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
-        fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
-        fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
-        try {
-            main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updatePartyCount() {
-        int tl = 0;
-        String gpName = "#0" + tl;
-        String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
-        uuid+= "0" + tl;
-        GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
-        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
-        String name;
-        if (main.getPM().hasParty(player)) {
-            name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [" + main.getPM().getParty(player).getPlayers().size() + "]";
-        } else {
-            name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [0]";
-        }
-        PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
-        PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
-        fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
-        fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
-        try {
-            main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
         }
     }
 
@@ -1633,13 +1627,6 @@ public class RPGPlayer extends Leveleable {
             }
             GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
 
-            
-            //GameProfile prof = new GameProfile(null, tl + "");
-            //PropertyMap pm = prof.getProperties();
-            /*if (tl == 40) {
-                Bukkit.broadcastMessage(((Property) prof.getProperties().get("textures").toArray()[0]).getValue());
-                //Bukkit.broadcastMessage(((Property) prof.getProperties().get("textures").toArray()[0]).getSignature());
-            }*/
             String name = "";
             if (tl == 0) {
                 name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [0]";
@@ -1647,9 +1634,6 @@ public class RPGPlayer extends Leveleable {
             if (tl == 20) {
                 name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS [" + Bukkit.getOnlinePlayers().size() + "]";
             }
-            /*if (tl == 0) {
-                name = ChatColor.GREEN + "" + ChatColor.BOLD + "♦ FRIENDS LIST";
-            }*/
             if (tl == 60) {
                 name = ChatColor.AQUA + "" + ChatColor.BOLD + "♦ TOWN MEMBERS [0]";
             }
@@ -1688,6 +1672,10 @@ public class RPGPlayer extends Leveleable {
         nameUpdate(player, false);
     }
 
+    /*
+    Cleanup after yourself!
+     */
+
     public void scrub() {
         if (player.hasPotionEffect(PotionEffectType.SLOW) && player.getPotionEffect(PotionEffectType.SLOW).getAmplifier() == 2 && player.getPotionEffect(PotionEffectType.SLOW).getDuration() > 999) {
             player.removePotionEffect(PotionEffectType.SLOW);
@@ -1705,17 +1693,13 @@ public class RPGPlayer extends Leveleable {
         }
         BukkitScheduler scheduler = Bukkit.getScheduler();
         List<String> skillsToRemove = new ArrayList<>();
-        for (String s : getToggles()) {
-            skillsToRemove.add(s);
-        }
+        skillsToRemove.addAll(getToggles());
         for (String s : skillsToRemove) {
             getSkillFromName(s).toggleEnd(player);
         }
         skillsToRemove = new ArrayList<>();
 
-        for (String s : getPassives()) {
-            skillsToRemove.add(s);
-        }
+        skillsToRemove.addAll(getPassives());
         for (String s : skillsToRemove) {
             getPassives().remove(s);
             List<Map<Integer, String>> tasksToRemove = new ArrayList<>();

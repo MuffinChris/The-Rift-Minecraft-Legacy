@@ -21,12 +21,12 @@ public class Skillboard {
     private Main main = Main.getInstance();
 
     private UUID uuid;
-    private BossBar bossbarOne_3;
+    private BossBar statusesBossbar;
     private BossBar bossbarTwo_5;
     private BossBar skillCastBossbar;
     private BossBar messagesBossbar;
     private BossBar hpbarBossbar;
-    private BossBar bossbarFour_6;
+    private BossBar bossbarThree_6;
     private boolean skillbar;
     List<Integer> prefixes = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class Skillboard {
 
     public void statusUpdate() {
         String statuses = "";
-        DecimalFormat dF = new DecimalFormat("#.##");
+        DecimalFormat dF = new DecimalFormat("#.00");
         for (StatusObject so : main.getRP(Bukkit.getPlayer(uuid)).getSo()) {
             if (so.active() && !so.getSilent()) {
                 if (so.getName().equals("PStrength")) {
@@ -107,7 +107,7 @@ public class Skillboard {
             Player p = Bukkit.getPlayer(uuid);
             String output = "";
             int slot = 1;
-            List<Skill> pSkills = main.getRP(p).getSkillsAll();
+            List<Skill> pSkills = main.getRP(p).getSkillsCastable();
             for (Skill s : pSkills) {
                 if (slot == main.getRP(p).getIdleSlot() + 1) {
                     slot++;
@@ -142,7 +142,7 @@ public class Skillboard {
                 output = output.substring(0, output.length() - 4);
             }
 
-            bossbarOne_3.setTitle(Main.color(output));
+            statusesBossbar.setTitle(Main.color(output));
 
             /*ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
             ItemMeta meta = item.getItemMeta();
@@ -159,7 +159,7 @@ public class Skillboard {
             }*/
 
         } else {
-            bossbarOne_3.setTitle("");
+            statusesBossbar.setTitle("");
         }
     }
 
@@ -206,10 +206,10 @@ public class Skillboard {
         uuid = p.getUniqueId();
         skillCastBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbarTwo_5 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
-        bossbarOne_3 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         messagesBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        statusesBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         hpbarBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
-        bossbarFour_6 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        bossbarThree_6 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         /*bossbarPH2 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbarPH3 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbarPH4 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
@@ -217,16 +217,16 @@ public class Skillboard {
         bossbarPH6 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);*/
         uuid = p.getUniqueId();
         hpbarBossbar.addPlayer(p);
-        bossbarOne_3.addPlayer(p);
+        statusesBossbar.addPlayer(p);
         skillCastBossbar.addPlayer(p);
         messagesBossbar.addPlayer(p);
         bossbarTwo_5.addPlayer(p);
-        bossbarFour_6.addPlayer(p);
+        bossbarThree_6.addPlayer(p);
 
         setScoreBoard(p);
         update();
         hpbarBossbar.setVisible(true);
-        bossbarOne_3.setVisible(true);
+        statusesBossbar.setVisible(true);
         skillCastBossbar.setVisible(true);
         messagesBossbar.setVisible(true);
         /*bossbarPH2.setVisible(true);
@@ -235,17 +235,17 @@ public class Skillboard {
         bossbarPH5.setVisible(true);
         bossbarPH6.setVisible(true);*/
         bossbarTwo_5.setVisible(true);
-        bossbarFour_6.setVisible(true);
+        bossbarThree_6.setVisible(true);
     }
 
     public void scrub() {
         uuid = null;
-        bossbarOne_3 = null;
+        statusesBossbar = null;
         bossbarTwo_5 = null;
         skillCastBossbar = null;
         messagesBossbar = null;
         hpbarBossbar = null;
-        bossbarFour_6 = null;
+        bossbarThree_6 = null;
         /*bossbarPH2 = null;
         bossbarPH3 = null;
         bossbarPH4 = null;

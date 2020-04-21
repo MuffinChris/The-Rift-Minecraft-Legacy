@@ -4,11 +4,14 @@ import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
+import com.java.rpg.damage.utility.PhysicalStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -23,20 +26,17 @@ public class Blaze extends Skill {
     int movespeed = 7;
     int duration = 8;
     int spotduration = 3;
-    double damage = 80;
+    double magicDamage = 80;
     double apscale = 0.05;
     double radius = 0.75;
 
-    Map<Player, List<BlazeSpot>> blazeLocations;
+    private ElementalStack eDmg = new ElementalStack(0, 0, 0, 75, 0);
 
-    public static Map<Player, HashMap<LivingEntity, Integer>> ticks;
-
-    public static Map<Player, HashMap<LivingEntity, Integer>> getTicks() {
-        return ticks;
-    }
+    public Map<Player, List<BlazeSpot>> blazeLocations;
+    private static Map<Player, HashMap<LivingEntity, Integer>> ticks;
 
     public Blaze() {
-        super("Blaze", 100, 25 * 20, 0, 15, "%player% has shot a fireball!", "CAST", Material.BLAZE_POWDER);
+        super("Blaze", 100, 25 * 20, 0, 15, SkillType.CAST, null, Material.BLAZE_POWDER);
         blazeLocations = new HashMap<>();
         ticks = new HashMap<>();
     }
@@ -47,28 +47,51 @@ public class Blaze extends Skill {
         desc.add(Main.color("&7For &e" + duration + " &7seconds, leave a trail of flame"));
         desc.add(Main.color("&7in your wake and increase your"));
         desc.add(Main.color("&7movement speed by &a" + movespeed + " &7points."));
-        desc.add(Main.color("&7The flame trail deals &b" + getDmg(p) + " &7every half a second."));
+        desc.add(Main.color("&7The flame trail deals &b" + getMagicDmg(p) + " &7+ " + getEDmg(p).getFancyNumberFire() + " &7every half a second."));
         return desc;
+    }
+
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&7For &e" + duration + " &7seconds, leave a trail of flame"));
+        desc.add(Main.color("&7in your wake and increase your"));
+        desc.add(Main.color("&7movement speed by &a" + movespeed + " &7points."));
+        desc.add(Main.color("&7The flame trail deals &b" + magicDamage + " &7+ " + eDmg.getFancyNumberFire() + " &7every half a second."));
+        return desc;
+    }
+
+    public double getMagicDmg(Player p) {
+        return magicDamage + main.getRP(p).getAP() * apscale;
+    }
+    public ElementalStack getEDmg(Player p) {
+        return eDmg;
     }
 
     public void cast(Player p) {
         super.cast(p);
+
+        if (!getTasks().isEmpty()) {
+            for (int i : getTasks()) {
+                Bukkit.getScheduler().cancelTask(i);
+            }
+            getTasks().clear();
+
+            main.getRP(p).getWalkspeed().clearBasedTitle(getName(), p);
+            main.getRP(p).updateStats();
+        }
+
         main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), movespeed, duration * 20, System.currentTimeMillis(), false));
         main.getRP(p).updateStats();
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_BURN, 1.0F, 1.0F);
 
-        if (blazeLocations.containsKey(p)) {
-            blazeLocations.remove(p);
-        }
-
+        blazeLocations.remove(p);
         blazeLocations.put(p, new ArrayList<>());
 
-        if (ticks.containsKey(p)) {
-            ticks.remove(p);
-        }
-
+        ticks.remove(p);
         ticks.put(p, new HashMap<>());
-        new BukkitRunnable() {
+
+        BukkitTask blaze = new BukkitRunnable() {
             int times = 0;
             public void run() {
                 if (!p.isOnline()) {
@@ -123,11 +146,10 @@ public class Blaze extends Skill {
                 for (BlazeSpot b : blazeLocations.get(p)) {
                     for (LivingEntity ent : main.getNearbyLivingEntitiesTargetValid(b.getLoc(), p, radius)) {
                         if (!alreadyLooped.contains(ent)) {
-                            if (ticks.containsKey(p) && ticks.get(p).containsKey(ent)) {
-                            } else {
+                            if (!(ticks.containsKey(p) && ticks.get(p).containsKey(ent))) {
                                 ticks.get(p).put(ent, 10);
                                 ent.setFireTicks(Math.min(ent.getFireTicks() + 20, 60));
-                                Skill.spellDamageStatic(p, ent, getDmg(p), new ElementalStack(10, 0, 0, 10, 0));
+                                spellDamage(p, ent, new PhysicalStack(), getEDmg(p), getMagicDmg(p), 0);
                             }
                             alreadyLooped.add(ent);
                         }
@@ -135,7 +157,7 @@ public class Blaze extends Skill {
                 }
                 if (!fail) {
                     if (!(times >= duration * 20)) {
-                        blazeLocations.get(p).add(new BlazeSpot(p, p.getEyeLocation().subtract(new Vector(0, p.getHeight() * 0.7, 0)), getDmg(p), 0.75, spotduration));
+                        blazeLocations.get(p).add(new BlazeSpot(p.getEyeLocation().subtract(new Vector(0, p.getHeight() * 0.7, 0)), spotduration));
                     }
                     if (times == duration * 20) {
                         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_BURN, 1.0F, 1.0F);
@@ -144,10 +166,8 @@ public class Blaze extends Skill {
 
             }
         }.runTaskTimer(Main.getInstance(), 0, 1);
-    }
 
-    public double getDmg(Player p) {
-        return damage + main.getRP(p).getAP() * apscale;
+        getTasks().add(blaze.getTaskId());
     }
 
 }

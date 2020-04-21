@@ -3,6 +3,7 @@ package com.java.rpg.classes.skills.Pyromancer;
 import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -12,14 +13,9 @@ import org.bukkit.util.Vector;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class PyroclasmProjectile {
+import static com.java.rpg.classes.Skill.spellDamage;
 
-    private double damage = 100;
-    private double empowered = 1.25;
-    private int range = 8;
-    private int duration = 20 * 15;
-    private int maxbounces = 25;
-    private double ratio = 0.9;
+public class PyroclasmProjectile {
     private Map<UUID, LivingEntity> target;
     private Map<UUID, LivingEntity> lastTarget;
     private Map<UUID, Location> clasm;
@@ -28,13 +24,7 @@ public class PyroclasmProjectile {
 
     private Main main = Main.getInstance();
 
-    public PyroclasmProjectile(Player p, LivingEntity t, double damage, double empowered, int range, int duration, int maxbounces, double ratio, double travelspeed) {
-        this.damage = damage;
-        this.empowered = empowered;
-        this.range = range;
-        this.duration = duration;
-        this.maxbounces = maxbounces;
-        this.ratio = ratio;
+    public PyroclasmProjectile(Player p, LivingEntity t, double damage, ElementalStack eDmg, double empowered, int range, int duration, int maxbounces, double ratio, double travelspeed) {
         this.travelspeed = travelspeed;
         fireblocks = new HashMap<>();
         target = new HashMap<>();
@@ -117,11 +107,13 @@ public class PyroclasmProjectile {
                     locOf = locOf.add(target.get(p.getUniqueId()).getEyeLocation().subtract(new Vector(0, target.get(p.getUniqueId()).getHeight() * 0.5, 0)).toVector().subtract(locOf.toVector()).normalize().multiply((travelspeed * 1.0)));
                     if (locOf.distance(target.get(p.getUniqueId()).getEyeLocation().subtract(new Vector(0, target.get(p.getUniqueId()).getHeight() * 0.5, 0))) <= 0.5) {
                         double dmg = damage * (Math.pow(ratio, bounces));
+                        eDmg.scaleAll((Math.pow(ratio, bounces)));
                         if (target.get(p.getUniqueId()).getFireTicks() > 0) {
                             dmg*=empowered;
+                            eDmg.scaleAll(empowered);
                         }
                         target.get(p.getUniqueId()).setFireTicks(Math.min(80 + target.get(p.getUniqueId()).getFireTicks(), 100));
-                        Skill.spellDamageStatic(p, target.get(p.getUniqueId()), dmg, new ElementalStack(0, 0, 0, 50, 0));
+                        spellDamage(p, target.get(p.getUniqueId()), new PhysicalStack(), eDmg, dmg, 0);
                         target.get(p.getUniqueId()).getWorld().playSound(target.get(p.getUniqueId()).getEyeLocation(), Sound.ITEM_BUCKET_FILL_LAVA, 1.0F, 1.0F);
 
                         if (lastTarget.containsKey(p.getUniqueId())) {

@@ -23,7 +23,7 @@ public class Conflagration extends Skill {
     private int tickrate = 1;
 
     public Conflagration() {
-        super("Conflagration", 0, 20, 0, 5, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FLINT_AND_STEEL);
+        super("Conflagration", 0, 20, 0, 5, SkillType.TOGGLE, null, Material.FLINT_AND_STEEL);
         setToggleMana(0);
         setToggleTicks(tickrate);
     }
@@ -37,12 +37,17 @@ public class Conflagration extends Skill {
         return desc;
     }
 
-    public double getDmg(Player p) {
-        return damage + main.getRP(p).getAP() * apscale;
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&7You become immune to fire damage."));
+        desc.add(Main.color("&7All blocks in a &a" + range + " &7radius are lit on fire."));
+        desc.add(Main.color("&7Every time someone is damaged by the fire, gain AP..."));
+        return desc;
     }
 
-    public void cast(Player p) {
-        super.cast(p);
+    public double getDmg(Player p) {
+        return damage + main.getRP(p).getAP() * apscale;
     }
 
     public boolean toggleCont(Player p) {

@@ -16,7 +16,7 @@ public class Adrenaline extends Skill {
     private int duration = 5;
 
     public Adrenaline() {
-        super("Adrenaline", 30, 13 * 20, 0, 0, "%player% has shot a fireball!", "CAST");
+        super("Adrenaline", 30, 13 * 20, 0, 0, SkillType.CAST, null, null);
     }
 
     public List<String> getDescription(Player p) {

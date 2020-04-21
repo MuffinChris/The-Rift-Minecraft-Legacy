@@ -46,7 +46,6 @@ import com.java.rpg.mobs.grassy.WarriorZombie;
 import com.java.rpg.damage.DamageListener;
 import com.java.rpg.damage.Environmental;
 import com.java.rpg.damage.utility.Damage;
-import com.java.rpg.damage.utility.DamageTypes;
 import com.java.rpg.player.*;
 import com.java.rpg.player.Items;
 import com.java.rpg.player.utility.PlayerListener;
@@ -459,12 +458,6 @@ public class Main extends JavaPlugin {
         return holograms;
     }
 
-    public DamageTypes dmg = new DamageTypes();
-
-    public List<Damage> getDmg() {
-        return dmg.getDamages();
-    }
-
     /*
     *
     * PARTY VARIABLES
@@ -542,19 +535,10 @@ public class Main extends JavaPlugin {
     }
 
     public int getSkillLevel(Player p, String name) {
-        if (getRP(p).getPClass().getSuperSkills().contains(getRP(p).getSkillFromName(name))) {
-            int index = 0;
-            for (Skill sk : getRP(p).getPClass().getSuperSkills()) {
-                if (sk.getName().equalsIgnoreCase(name)) {
-                    return getRP(p).getSkillLevels().get(getRP(p).getPClass().getSkills().get(index).getName());
-                }
-                index++;
-            }
+        if (getRP(p).getSkillFromUpgradedSkill(name) != null) {
+            return getRP(p).getSkillLevels().get(getRP(p).getSkillFromUpgradedSkill(name).getName());
         }
-        if (getRP(p).getSkillLevels().containsKey(name)) {
-            return getRP(p).getSkillLevels().get(name);
-        }
-        return -1;
+        return getRP(p).getSkillLevels().get(getRP(p).getSkillFromName(name).getName());
     }
 
     private ClassManager cm;
@@ -570,7 +554,7 @@ public class Main extends JavaPlugin {
     public double getMana(Player pl) {
         UUID p = pl.getUniqueId();
         if (getPC().get(p) != null) {
-            if (getPC().get(p).getPClass() instanceof PlayerClass) {
+            if (getPC().get(p).getPClass() != null) {
                 return getPC().get(p).getCMana();
             }
             return getPC().get(p).getCMana();
@@ -962,7 +946,8 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Combust(), this);
         so("&dRIFT: &fRegistered events!");
 
-
+        final BukkitScheduler scheduler = Bukkit.getScheduler();
+        scheduler.cancelTasks(this);
 
         RPGConstants loadLevels = new RPGConstants();
         hpRegen();
@@ -1037,13 +1022,17 @@ public class Main extends JavaPlugin {
 
         List<String> projectiles = new ArrayList<>();
         projectiles.add("Fireball");
-        projectiles.add("Meteor");
         projectiles.add("Combust");
 
         for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {
                 if (e != null && e.getCustomName() != null && e.getCustomName() != null && projectiles.contains(e.getCustomName())) {
                     e.remove();
+                    for (String s : projectiles) {
+                        if (e != null && MobEXP.getCustomName(e) != null && MobEXP.getCustomName(e).equalsIgnoreCase(s)) {
+                            e.remove();
+                        }
+                    }
                 }
             }
         }

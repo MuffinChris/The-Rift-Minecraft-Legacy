@@ -26,7 +26,7 @@ public class Bulwark extends Skill implements Listener {
     private int duration = 8;
 
     public Bulwark() {
-        super("Bulwark", 25, 20 * 20, 0, 4, "%player% has shot a fireball!", "CAST");
+        super("Bulwark", 25, 20 * 20, 0, 4, SkillType.CAST, null, null);
     }
 
     public List<String> getDescription(Player p) {

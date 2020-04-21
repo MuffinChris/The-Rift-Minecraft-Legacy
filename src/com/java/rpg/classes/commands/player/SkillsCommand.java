@@ -48,30 +48,32 @@ public class SkillsCommand implements CommandExecutor, Listener {
     }
 
     public void sendSkillsInv(Player p, String c) {
+        RPGPlayer rp = main.getRP(p);
+        Inventory playerInv = Bukkit.createInventory(null, 45, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
+
+        ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+        ItemMeta phM = ph.getItemMeta();
+        phM.setDisplayName(" ");
+        ph.setItemMeta(phM);
+        for (int i = 0; i < playerInv.getSize(); i++) {
+            playerInv.setItem(i, ph);
+        }
+
+        ph = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
+        phM = ph.getItemMeta();
+        phM.setDisplayName(" ");
+        ph.setItemMeta(phM);
+        for (int i = 20; i < 20 + rp.getPClass().getSkills().size(); i++) {
+            playerInv.setItem(i, ph);
+        }
+
+        List<String> lore;
+        ItemStack sp;
+        ItemMeta spMeta;
+
         if (c.isEmpty()) {
-            RPGPlayer rp = main.getRP(p);
-            Inventory playerInv = Bukkit.createInventory(null, 45, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
-
-            ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-            ItemMeta phM = ph.getItemMeta();
-            phM.setDisplayName(" ");
-            ph.setItemMeta(phM);
-            for (int i = 0; i < playerInv.getSize(); i++) {
-                playerInv.setItem(i, ph);
-            }
-
-            ph = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
-            phM = ph.getItemMeta();
-            phM.setDisplayName(" ");
-            ph.setItemMeta(phM);
-            for (int i = 20; i < 20 + rp.getPClass().getSkills().size(); i++) {
-                playerInv.setItem(i, ph);
-            }
-
-            List<String> lore;
-
-            ItemStack sp = new ItemStack(Material.NETHER_STAR);
-            ItemMeta spMeta = sp.getItemMeta();
+            sp = new ItemStack(Material.NETHER_STAR);
+            spMeta = sp.getItemMeta();
             spMeta.setDisplayName(Main.color("&6Skillpoints: &f" + rp.calculateSP()));
             lore = new ArrayList<>();
             lore.add(Main.color("&fClick a non-upgraded spell to upgrade it!"));
@@ -101,98 +103,117 @@ public class SkillsCommand implements CommandExecutor, Listener {
             infoM.setDisplayName(Main.color("&eCasting Guide"));
             info.setItemMeta(infoM);
             playerInv.setItem(27, info);
+        }
 
 
-            int i = 11;
-            int index = 0;
-            for (Skill s : rp.getPClass().getSkills()) {
-                Material mat = s.getSkillIcon();
-                if (main.getSkillLevel(p, s.getName()) > 0) {
-                    mat = Material.GRAY_DYE;
-                }
-                sp = new ItemStack(mat);
-                spMeta = sp.getItemMeta();
-                if (main.getSkillLevel(p, s.getName()) == 0 && s.getLevel() <= rp.getLevel()) {
-                    spMeta.addEnchant(Enchantment.MENDING, 1, true);
-                    spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
+        int i = 11;
+        for (Skill s : rp.getPClass().getSkills()) {
+            Material mat = s.getSkillIcon();
+            if (main.getSkillLevel(p, s.getName()) > 0) {
+                mat = Material.GRAY_DYE;
+            }
+            sp = new ItemStack(mat);
+            spMeta = sp.getItemMeta();
+            if (c.isEmpty() && main.getSkillLevel(p, s.getName()) == 0 && s.getLevel() <= rp.getLevel()) {
+                spMeta.addEnchant(Enchantment.MENDING, 1, true);
+                spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
 
-                boolean upgraded = main.getSkillLevel(p, s.getName()) > 0;
-                String displayName = "&e&l" + s.getName();
-                String lockStatus = "&aUNLOCKED";
-                if (upgraded) {
-                    displayName = "&e&l" + s.getName();
-                    lockStatus = "&bUPGRADED";
-                }
+            boolean upgraded = main.getSkillLevel(p, s.getName()) > 0;
+            String displayName = "&e&l" + s.getName();
+            String lockStatus = "&aUNLOCKED";
+            if (upgraded) {
+                displayName = "&e&l" + s.getName();
+                lockStatus = "&bUPGRADED";
+            }
 
-                spMeta.setDisplayName(Main.color(displayName));
-                lore = new ArrayList<>();
+            spMeta.setDisplayName(Main.color(displayName));
+            lore = new ArrayList<>();
+            if (c.isEmpty()) {
                 if (s.getLevel() <= rp.getLevel()) {
                     lore.add(Main.color(lockStatus));
                     lore.add(Main.color(""));
-                    if (main.getRP(p).getPClass().getSuperSkills().size() > index) {
-                        lore.add(Main.color("&bUpgraded Form: &7" + main.getRP(p).getPClass().getSuperSkills().get(index).getName()));
+                    if (s.isUpgradeable()) {
+                        lore.add(Main.color("&bUpgraded Form: &7" + s.getUpgradedSkill().getName()));
                         lore.add("");
                     } else {
-                        lore.add(Main.color("&bUpgrade not Implemented"));
+                        lore.add(Main.color("&bNo Upgrade"));
                         lore.add("");
                     }
                 } else {
                     lore.add(Main.color("&cLOCKED &8(&cLVL &f" + s.getLevel() + "&8)"));
                     lore.add(Main.color(""));
                 }
+            } else {
+                if (s.isUpgradeable()) {
+                    lore.add(Main.color("&bUpgraded Form: &7" + s.getUpgradedSkill().getName()));
+                    lore.add("");
+                } else {
+                    lore.add(Main.color("&bNo Upgrade"));
+                    lore.add("");
+                }
+                lore.add(Main.color("&eUnlock Level: &7" + s.getLevel()));
+                lore.add("");
+            }
 
-                index++;
-
-                DecimalFormat dF = new DecimalFormat("#.##");
-                if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
-                }
-                if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
-                }
-                if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
-                }
-                lore.add(Main.color(""));
+            DecimalFormat dF = new DecimalFormat("#.##");
+            if (s.getManaCost() > 0) {
+                lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
+            }
+            if (s.getToggleMana() > 0) {
+                lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
+            }
+            if (s.getToggleTicks() > 0) {
+                lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
+            }
+            if (s.getWarmup() > 0) {
+                lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
+            }
+            if (s.getCooldown() > 0) {
+                lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
+            }
+            if (s.getToggleCooldown() != s.getCooldown()) {
+                lore.add(Main.color("&eToggle Cooldown: &7" + dF.format((s.getToggleCooldown() * 1.0) / 20.0) + " seconds"));
+            }
+            lore.add(Main.color(""));
+            if (c.isEmpty()) {
                 for (String st : s.getDescription(p)) {
                     lore.add(Main.color(st));
                 }
-
-                spMeta.setLore(lore);
-                sp.setItemMeta(spMeta);
-                playerInv.setItem(i, sp);
-                i++;
+            } else {
+                for (String st : s.getDescription()) {
+                    lore.add(Main.color(st));
+                }
             }
-            i = 29;
-            index = 0;
-            for (Skill s : rp.getPClass().getSuperSkills()) {
-                Material mat = Material.GRAY_DYE;
-                if (main.getSkillLevel(p, s.getName()) > 0) {
-                    mat = s.getSkillIcon();
-                }
-                sp = new ItemStack(mat);
-                spMeta = sp.getItemMeta();
-                if (main.getSkillLevel(p, s.getName()) > 0) {
-                    spMeta.addEnchant(Enchantment.MENDING, 1, true);
-                    spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-                boolean upgraded = main.getSkillLevel(p, s.getName()) > 0;
-                String displayName = "&b&l" + s.getName();
-                String lockStatus = "&cLOCKED &8(&c1 SP&8)";
-                if (upgraded) {
-                    displayName = "&b&l" + s.getName();
-                    lockStatus = "&aUNLOCKED";
-                }
 
-                spMeta.setDisplayName(Main.color(displayName));
-                lore = new ArrayList<>();
+            spMeta.setLore(lore);
+            sp.setItemMeta(spMeta);
+            playerInv.setItem(i, sp);
+            i++;
+        }
+        i = 29;
+        for (Skill s : rp.getPClass().getUpgradedSkills()) {
+            Material mat = Material.GRAY_DYE;
+            if (main.getSkillLevel(p, s.getName()) > 0 || !c.isEmpty()) {
+                mat = s.getSkillIcon();
+            }
+            sp = new ItemStack(mat);
+            spMeta = sp.getItemMeta();
+            if (!c.isEmpty() || main.getSkillLevel(p, s.getName()) > 0) {
+                spMeta.addEnchant(Enchantment.MENDING, 1, true);
+                spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+            boolean upgraded = main.getSkillLevel(p, s.getName()) > 0;
+            String displayName = "&b&l" + s.getName();
+            String lockStatus = "&cLOCKED &8(&c1 SP&8)";
+            if (upgraded) {
+                displayName = "&b&l" + s.getName();
+                lockStatus = "&aUNLOCKED";
+            }
+
+            spMeta.setDisplayName(Main.color(displayName));
+            lore = new ArrayList<>();
+            if (c.isEmpty()) {
                 if (s.getLevel() <= rp.getLevel()) {
                     lore.add(Main.color(lockStatus));
                     lore.add(Main.color(""));
@@ -200,153 +221,53 @@ public class SkillsCommand implements CommandExecutor, Listener {
                     lore.add(Main.color("&cLOCKED &8(&cLVL &f" + s.getLevel() + "&8)"));
                     lore.add(Main.color(""));
                 }
-
-                index++;
-
-                DecimalFormat dF = new DecimalFormat("#.##");
-                if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
-                }
-                if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
-                }
-                if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
-                }
-                lore.add(Main.color(""));
-                for (String st : s.getDescription(p)) {
-                    lore.add(Main.color(st));
-                }
-
-                spMeta.setLore(lore);
-                sp.setItemMeta(spMeta);
-                playerInv.setItem(i, sp);
-                i++;
-            }
-            p.openInventory(playerInv);
-        } else {
-            Inventory playerInv = Bukkit.createInventory(null, 45, Main.color("&e&l" + c + " &e&lSkills"));
-            ArrayList<String> lore;
-
-            ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-            ItemMeta phM = ph.getItemMeta();
-            phM.setDisplayName(" ");
-            ph.setItemMeta(phM);
-            for (int i = 0; i < playerInv.getSize(); i++) {
-                playerInv.setItem(i, ph);
-            }
-
-            ph = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
-            phM = ph.getItemMeta();
-            phM.setDisplayName(" ");
-            ph.setItemMeta(phM);
-            for (int i = 20; i < 20 + main.getCM().getPClassFromString(c).getSkills().size(); i++) {
-                playerInv.setItem(i, ph);
-            }
-
-            int i = 11;
-            int index = 0;
-            for (Skill s : main.getCM().getPClassFromString(c).getSkills()) {
-                Material mat = s.getSkillIcon();
-                ItemStack sp = new ItemStack(mat);
-                ItemMeta spMeta = sp.getItemMeta();
-                String displayName = "&e&l" + s.getName();
-
-                spMeta.setDisplayName(Main.color(displayName));
-                lore = new ArrayList<>();
-
-                if (main.getCM().getPClassFromString(c).getSuperSkills().size() > index) {
-                    lore.add(Main.color("&bUpgraded Form: &7" + main.getRP(p).getPClass().getSuperSkills().get(index).getName()));
+            } else {
+                if (s.isUpgradeable()) {
+                    lore.add(Main.color("&bUpgraded Form: &7" + s.getUpgradedSkill().getName()));
                     lore.add("");
                 } else {
-                    lore.add(Main.color("&bUpgrade not Implemented"));
+                    lore.add(Main.color("&bNo Upgrade"));
                     lore.add("");
                 }
                 lore.add(Main.color("&eUnlock Level: &7" + s.getLevel()));
                 lore.add("");
-
-                index++;
-
-                DecimalFormat dF = new DecimalFormat("#.##");
-                if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
-                }
-                if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
-                }
-                if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
-                }
-                lore.add(Main.color(""));
+            }
+            DecimalFormat dF = new DecimalFormat("#.##");
+            if (s.getManaCost() > 0) {
+                lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
+            }
+            if (s.getToggleMana() > 0) {
+                lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
+            }
+            if (s.getToggleTicks() > 0) {
+                lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
+            }
+            if (s.getWarmup() > 0) {
+                lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
+            }
+            if (s.getCooldown() > 0) {
+                lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
+            }
+            if (s.getToggleCooldown() != s.getCooldown()) {
+                lore.add(Main.color("&eToggle Cooldown: &7" + dF.format((s.getToggleCooldown() * 1.0) / 20.0) + " seconds"));
+            }
+            lore.add(Main.color(""));
+            if (c.isEmpty()) {
                 for (String st : s.getDescription(p)) {
                     lore.add(Main.color(st));
                 }
-
-                spMeta.setLore(lore);
-                sp.setItemMeta(spMeta);
-                playerInv.setItem(i, sp);
-                i++;
-            }
-            i = 29;
-            index = 0;
-            for (Skill s : main.getCM().getPClassFromString(c).getSuperSkills()) {
-                Material mat = s.getSkillIcon();
-                ItemStack sp = new ItemStack(mat);
-                ItemMeta spMeta = sp.getItemMeta();
-
-                String displayName = "&b&l" + s.getName();
-
-                spMeta.setDisplayName(Main.color(displayName));
-                spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                spMeta.addEnchant(Enchantment.MENDING, 1, true);
-                lore = new ArrayList<>();
-                lore.add(Main.color("&bUpgraded Skill"));
-                lore.add(Main.color("&eUnlock Level: &7" + s.getLevel()));
-                lore.add(Main.color(""));
-
-                index++;
-
-                DecimalFormat dF = new DecimalFormat("#.##");
-                if (s.getManaCost() > 0) {
-                    lore.add(Main.color("&bMana Cost: &7" + s.getManaCost()));
-                }
-                if (s.getToggleMana() > 0) {
-                    lore.add(Main.color("&bToggle Mana Cost: &7" + s.getToggleMana()));
-                }
-                if (s.getToggleTicks() > 0) {
-                    lore.add(Main.color("&eToggle Tick Rate: &7" + dF.format((s.getToggleTicks() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getWarmup() > 0) {
-                    lore.add(Main.color("&eWarmup: &7" + dF.format((s.getWarmup() * 1.0) / 20.0) + " seconds"));
-                }
-                if (s.getCooldown() > 0) {
-                    lore.add(Main.color("&eCooldown: &7" + dF.format((s.getCooldown() * 1.0) / 20.0) + " seconds"));
-                }
-                lore.add(Main.color(""));
-                for (String st : s.getDescription(p)) {
+            } else {
+                for (String st : s.getDescription()) {
                     lore.add(Main.color(st));
                 }
-
-                spMeta.setLore(lore);
-                sp.setItemMeta(spMeta);
-                playerInv.setItem(i, sp);
-                i++;
             }
-            p.openInventory(playerInv);
-            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
+
+            spMeta.setLore(lore);
+            sp.setItemMeta(spMeta);
+            playerInv.setItem(i, sp);
+            i++;
         }
+        p.openInventory(playerInv);
     }
 
     @EventHandler
@@ -359,7 +280,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
                     RPGPlayer rp = main.getRP(p);
                     int total = rp.calculateSP();
                     if (total > 0) {
-                        Skill s = rp.getSkillFromSuper(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
+                        Skill s = rp.getSkillFromUpgradedSkill(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
                         if (s != null) {
                             p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
                             rp.getSkillLevels().replace(s.getName(), 1);

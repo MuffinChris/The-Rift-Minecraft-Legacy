@@ -28,67 +28,55 @@ public class Skill {
         return skillicon;
     }
 
-    public static void damageNoKB(Player caster, LivingEntity target, double damage) {
-        double kbr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue();
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        target.setNoDamageTicks(0);
-        target.damage(damage, caster);
-        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(kbr);
+    public enum SkillType
+    {
+        CAST, TARGET, TOGGLE, PASSIVE, PASSIVE_CAST, PASSIVE_TARGET, PASSIVE_TOGGLE
     }
-
-    public void spellDamage(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
-        if (!main.isValidTarget(target, caster)) {
-            return;
-        }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
-            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
-        }
-        main.getRP(caster).getDamages().add(new Damage(caster, target, new PhysicalStack(), damage, 0, edmg, 1));
-        damageNoKB(caster, target, damage);
-    }
-
-    public static void spellDamageStatic(Player caster, LivingEntity target, double damage, ElementalStack edmg) {
-        if (!Main.getInstance().isValidTarget(target, caster)) {
-            return;
-        }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
-            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
-        }
-        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, new PhysicalStack(), damage, 0, edmg, 1));
-        damageNoKB(caster, target, damage);
-
-    }
-
-    public static void healTarget(Player target, double hp) {
-        if (target.getHealth() + hp <= target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
-            target.setHealth(target.getHealth() + hp);
-
-            List<Player> players = new ArrayList<>(target.getWorld().getNearbyPlayers(target.getEyeLocation(), 24));
-            DecimalFormat df = new DecimalFormat("#.##");
-            Hologram magic = new Hologram(target, target.getLocation(), "&a❤" + df.format(hp), Hologram.HologramType.DAMAGE, players);
-            magic.rise();
-        } else {
-            target.setHealth(target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-        }
+    private SkillType skillType;
+    public SkillType getSkillType() {
+        return skillType;
     }
 
     private int manaCost;
-    private double cooldown;
+    private int cooldown;
     private int warmup;
     private int level;
 
     private int passiveTicks;
+
     private int toggleTicks;
     private int toggleMana;
+    private int toggleCooldown;
 
-    private String name;
-    private String flavor;
-
-    private String type;
-
+    private String name = "DEFAULT_NAME";
     private List<String> description;
 
     private int targetRange;
+
+    private Skill upgradedSkill;
+
+    private List<Integer> tasks;
+
+    public Skill(String name, int manaCost, int cooldown, int warmup, int level, SkillType skilltype, Skill upgradedSkill, Material skillicon) {
+        this.name = name;
+        this.manaCost = manaCost;
+        this.cooldown = cooldown;
+        this.toggleCooldown = cooldown;
+        this.warmup = warmup;
+        this.level = level;
+        skillType = skilltype;
+        this.skillicon = skillicon;
+        this.upgradedSkill = upgradedSkill;
+        tasks = new ArrayList<>();
+    }
+
+    public boolean isUpgradeable() {
+        return upgradedSkill != null;
+    }
+
+    public Skill getUpgradedSkill() {
+        return upgradedSkill;
+    }
 
     public int getTargetRange() {
         return targetRange;
@@ -98,30 +86,8 @@ public class Skill {
         targetRange = t;
     }
 
-    private List<Integer> tasks;
-
-    public Skill(String name, int manaCost, double cooldown, int warmup, int level, String flavor, String type, Material skillicon) {
-        this.name = name;
-        this.manaCost = manaCost;
-        this.cooldown = cooldown;
-        this.warmup = warmup;
-        this.level = level;
-        this.flavor = flavor;
-        this.type = type;
-        this.skillicon = skillicon;
-        tasks = new ArrayList<>();
-    }
-
-    public Skill(String name, int manaCost, double cooldown, int warmup, int level, String flavor, String type) {
-        this(name, manaCost, cooldown, warmup, level, flavor, type, null);
-    }
-
     public List<Integer> getTasks() {
         return tasks;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public void setDescription(List<String> desc) {
@@ -144,19 +110,26 @@ public class Skill {
         return toggleTicks;
     }
 
+    public void setToggleCooldown(int i) {
+        toggleCooldown = i;
+    }
+
+    public int getToggleCooldown() {
+        return toggleCooldown;
+    }
+
     public List<String> getDescription(Player p) {
         return description;
     }
-
-    public String getFlavor() {
-        return flavor;
+    public List<String> getDescription() {
+        return description;
     }
 
     public int getManaCost() {
         return manaCost;
     }
 
-    public double getCooldown() {
+    public int getCooldown() {
         return cooldown;
     }
 
@@ -199,7 +172,7 @@ public class Skill {
     }
 
     public int toggleInit(Player p) {
-        return Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> toggleCont(p), 1, toggleTicks);
+        return Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> toggleCont(p), 0, toggleTicks);
     }
 
     public void toggleEnd(Player p) {
@@ -223,6 +196,37 @@ public class Skill {
 
     public void warmup(Player p) {
         Main.getInstance().getPC().get(p.getUniqueId()).getBoard().updateWarmup(this, getWarmup());
+    }
+
+    public static void damageNoKB(Player caster, LivingEntity target, double damage) {
+        double kbr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue();
+        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        target.setNoDamageTicks(0);
+        target.damage(damage, caster);
+        target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(kbr);
+    }
+
+    public static void spellDamage(Player caster, LivingEntity target, PhysicalStack damage, ElementalStack edmg, double magicDamage, double trueDamage) {
+        if (!Main.getInstance().isValidTarget(target, caster)) {
+            return;
+        }
+        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
+            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
+        }
+        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, damage, magicDamage, trueDamage, edmg, 1));
+        damageNoKB(caster, target, damage.getTotal() + edmg.getTotal() + magicDamage + trueDamage);
+    }
+
+    public static void healTarget(Player target, double hp) {
+        if (target.getHealth() + hp <= target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
+            target.setHealth(target.getHealth() + hp);
+
+            List<Player> players = new ArrayList<>(target.getWorld().getNearbyPlayers(target.getEyeLocation(), 24));
+            DecimalFormat df = new DecimalFormat("#.##");
+            Hologram magic = new Hologram(target, target.getLocation(), "&a❤" + df.format(hp), Hologram.HologramType.DAMAGE, players);
+        } else {
+            target.setHealth(target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+        }
     }
 
 }

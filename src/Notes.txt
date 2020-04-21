@@ -73,6 +73,10 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
     - Every 1 level
     - Update levelup msg
 
+    Armor:
+        - Each armor type is a set. Classes are bound to one set.
+        - Elements give their effects in stats and have identities
+
     Elemental Info:
 
             (When on items)
@@ -128,6 +132,28 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -32. Convert Skill Descs to have Ability Power icon! Fix visual display (some skills have electric [pyroclasm] but only display fire)
+
+    -31. PYroclasm fire not removed on server stop
+
+    -30. Add warmups to Toggles
+
+    -29. For skills rework, move all listeners into that Skills own listener file
+
+    -28. Convert Party invites to Town System Style
+
+    -27. Online Players count is busted? (should be fixed)
+
+    -26. Stunned message is spazzy (make all the same length, df format) (should be fixed)
+
+    -25. Rework Skillboard to not show passives (or show them in a dif way, like how Ranger Focus will be on bossbar)
+
+    -24. Players are able to crit?
+
+    -23. Make Discord Bot for auto role (and future stuff)
+
+    -22. Add custom item texture for Basic wand (and add the recipe) as well as Spear?
+
     -21. Gravestone find location to place (not just on player)
 
     -20. Call Supers Skill Upgrades lmao
@@ -171,21 +197,15 @@ DIRECT LINE TODO LIST:
 
     10. Pyroclasm targets allies and in general non pvp targets. Separate targetting func into Target Ally, Target Enemy, Target All.
 
-    11. Improve visuals of Skills GUI. Update Class and Info cmd
-
-    12. zombie warrior has enchanted item!!!?!??!?! Look into it
+    12. Zombie Warriors can have Enchanted items and be Baby Mobs (fix dat stuff man)
 
     13. Make experience bottles give class exp
 
     14. Make wither always lvl 50
 
-    15. Display Raids and Boss Health on the top bar? (change color of top bar)
-
     16. Wither Explosions are crazy Strong.
 
     17. All biomes capped 1-20 (some a bit higher, but never extremes) Dungeons forced to level
-
-    18. More vanilla exp drop from better mobs
 
     19. Balance totems of undying (make them good, perhaps have durability or charges!)
 
@@ -194,8 +214,6 @@ DIRECT LINE TODO LIST:
     21. Disallow Shield usage for non shield classes
 
     22. Iron golem healing is absolute dogshit
-
-    23. Allow spells to be casted twice! (no errors lul)
 
     0. ITEM STUFF / IDEAS:
     - make classes use specific item type.

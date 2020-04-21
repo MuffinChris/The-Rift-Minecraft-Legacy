@@ -27,7 +27,7 @@ public class MeteorShower extends Skill implements Listener {
     private int range = 8;
 
     public MeteorShower() {
-        super("MeteorShower", 150, 40 * 20, 40, 8, "%player% has created a Meteor Shower!", "CAST", null);
+        super("MeteorShower", 150, 40 * 20, 40, 8,  SkillType.CAST, null, null);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fRain hell on opponents within &e" + range + " &fblocks."));
@@ -194,7 +194,7 @@ public class MeteorShower extends Skill implements Listener {
                     continue;
                 }
             }
-            spellDamage(caster, ent, dmg, new ElementalStack(0, 0, 0, 50, 0));
+            //spellDamage(caster, ent, dmg, new ElementalStack(0, 0, 0, 50, 0));
             ent.setFireTicks(Math.min(100 + ent.getFireTicks(), 200));
         }
     }

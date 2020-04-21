@@ -2,6 +2,7 @@ package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
+import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.party.Party;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
@@ -23,9 +24,10 @@ import java.util.List;
 public class Combust extends Skill implements Listener {
 
     private Main main = Main.getInstance();
-    private double damage = 100;
-
-    private double damagePerEntity = 20;
+    private double damage = 50;
+    private double damagePerEntity = 5;
+    private ElementalStack eDmg = new ElementalStack(0, 0, 0, 100, 0);
+    private ElementalStack eDmgPerEntity = new ElementalStack(0, 0, 0, 25, 0);
 
     private double apscale = 0.4;
     private double apscalePerEnt = 0.1;
@@ -35,80 +37,55 @@ public class Combust extends Skill implements Listener {
     private int travelRange = 8;
 
     public Combust() {
-        super("Combust", 200, 60 * 20, 50, 35, "%player% has shot a fireball!", "CAST", Material.DRAGON_BREATH);
+        super("Combust", 200, 60 * 20, 50, 35, SkillType.CAST, null, Material.DRAGON_BREATH);
     }
 
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&7Launch an explosive projectile."));
-        desc.add(Main.color("&7It explodes at the nearest target hit for &b" + getDmg(p) + " &7damage."));
+        desc.add(Main.color("&7It explodes at the nearest target hit for &b" + getMagicDmg(p) + " &7+ " + getEDmg(p).getFancyNumberFire() + " &7damage."));
         desc.add(Main.color("&7A second delayed explosion hits a huge radius of &e" + range + "&7."));
-        desc.add(Main.color("&7It deals &b" + getDmg(p) + " &7damage + &b" + getDmgPerEntity(p)));
+        desc.add(Main.color("&7It deals &b" + getMagicDmg(p) + " &7+ " + getEDmg(p).getFancyNumberFire() + " &7damage + &b" + getMagicDmgPerEntity(p) + " &7+ " + getEDmgPerEntity(p).getFancyNumberFire()));
         desc.add(Main.color("&7damage per nearby entity."));
         return desc;
     }
 
-    public double getDmg(Player p) {
-        return damage + main.getRP(p).getAP() * apscale;
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&7Launch an explosive projectile."));
+        desc.add(Main.color("&7It explodes at the nearest target hit for &b" + damage + " &7+ " + eDmg.getFancyNumberFire() + " &7damage."));
+        desc.add(Main.color("&7A second delayed explosion hits a huge radius of &e" + range + "&7."));
+        desc.add(Main.color("&7It deals &b" + damage + " &7+ " + eDmg.getFancyNumberFire() + " &7damage + &b" + damagePerEntity + " &7+ " + eDmgPerEntity.getFancyNumberFire()));
+        desc.add(Main.color("&7damage per nearby entity."));
+        return desc;
     }
 
-    public double getDmgPerEntity(Player p) {
+    public double getMagicDmg(Player p) {
+        return damage + main.getRP(p).getAP() * apscale;
+    }
+    public double getMagicDmgPerEntity(Player p) {
         return damagePerEntity + main.getRP(p).getAP() * apscalePerEnt;
+    }
+
+    public ElementalStack getEDmg(Player p) {
+        return eDmg;
+    }
+
+    public ElementalStack getEDmgPerEntity(Player p) {
+        return eDmgPerEntity;
     }
 
     public void cast(Player p) {
         super.cast(p);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
-        CombustProjectile proj = new CombustProjectile(p, range, 5, getDmg(p), getDmgPerEntity(p), travelRange);
+        CombustProjectile proj = new CombustProjectile(p, range, 5, getMagicDmg(p), getMagicDmgPerEntity(p), getEDmg(p), getEDmgPerEntity(p), travelRange);
     }
 
     public void warmup(Player p) {
         super.warmup(p);
         p.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, p.getLocation().clone().subtract(new Vector(0, 0.1, 0)), 1, 0.1, 0.01, 0.1, 0.1, null, true);
-    }
-
-    @EventHandler
-    public void projectileHe (ProjectileHitEvent e) {
-        if (e.getEntity() instanceof Arrow) {
-            Arrow a = (Arrow) e.getEntity();
-            if (a.getCustomName() != null && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
-                Player shooter = (Player) a.getShooter();
-                /*if (e.getHitEntity() instanceof Entity) {
-                    explodeSingle(shooter, e.getHitEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
-                    //e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getHitEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
-                } else {
-                    explodeSingle(shooter, e.getEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Combust:", "")));
-                    //e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 15, 0.08, 0.08, 0.08, 0.08,null, true);
-                }*/
-                a.remove();
-            }
-        }
-    }
-
-    @EventHandler (priority = EventPriority.LOWEST)
-    public void onHit (EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Arrow && !(e.getEntity() instanceof ArmorStand)) {
-            Arrow a = (Arrow) e.getDamager();
-            if (a.getCustomName() != null && a.getCustomName().contains("Combust:") && a.getShooter() instanceof Player) {
-                Player shooter = (Player) a.getShooter();
-                if (!main.isValidTarget(e.getEntity(), shooter)) {
-                    a.remove();
-                    e.setDamage(0);
-                    e.setCancelled(true);
-                    return;
-                    //((CraftPlayer)p).getHandle().getDataWatcher().set(new DataWatcherObject<>(10, DataWatcherRegistry.b),0);
-                }
-                /*if (e.getEntity() instanceof LivingEntity) {
-                    LivingEntity ent = (LivingEntity) e.getEntity();
-                    lightEntities(e.getEntity(), shooter, e.getEntity().getLocation(), Double.valueOf(a.getCustomName().replace("Fireball:", "")));
-                    ent.getWorld().spawnParticle(Particle.LAVA, ent.getLocation(), 50, 0.04, 0.04, 0.04, 0.04);
-                }*/
-                a.remove();
-                e.setDamage(0);
-                e.setCancelled(true);
-            }
-        }
     }
 
 }

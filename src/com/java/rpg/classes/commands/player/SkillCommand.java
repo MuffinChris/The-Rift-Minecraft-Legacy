@@ -28,7 +28,7 @@ public class SkillCommand implements CommandExecutor {
                 if (flavor.equalsIgnoreCase("NoMana")) {
                     Main.msg(p, "&cNot enough mana!");
                 } else if (flavor.contains("Level")) {
-                    int level = Integer.valueOf(flavor.replace("Level", ""));
+                    int level = Integer.parseInt(flavor.replace("Level", ""));
                     Main.msg(p, "&cYou must be level &f" + level + " &cto use that skill.");
                 } else if (flavor.contains("CD:")) {
                     String cd = flavor.replace("CD:", "");
@@ -87,9 +87,9 @@ public class SkillCommand implements CommandExecutor {
                     Main.msg(p, "&cTarget out of range!");
                 } else if (flavor.contains("Stunned")) {
                     Main.msg(p, "&cYou're stunned!");
-                } else if (flavor.contains("AlreadySuper")) {
+                } else if (flavor.contains("AlreadyUpgraded")) {
                     Main.msg(p, "&cYou can only use the upgraded form of this skill.");
-                } else if (flavor.contains("NotSuper")) {
+                } else if (flavor.contains("NotUpgraded")) {
                     Main.msg(p, "&cYou have not upgraded to this skill.");
                 }
             } else {

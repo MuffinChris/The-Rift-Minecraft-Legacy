@@ -1,9 +1,11 @@
 package com.java.rpg.classes.skills.Pyromancer.supers;
 
 import com.java.Main;
+import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -29,16 +31,26 @@ public class Flamethrower extends Skill {
     private int tickrate = 2;
 
     public Flamethrower() {
-        super("Flamethrower", 0, 10, 0, 0, "%player% has shot a fireball!", "TOGGLE-CAST", Material.FIRE_CHARGE);
+        super("Flamethrower", 0, 60, 0, 0,  SkillType.CAST, null, Material.FIRE_CHARGE);
         setToggleMana(7);
         setToggleTicks(tickrate);
+        setToggleCooldown(10);
     }
 
     public List<String> getDescription(Player p) {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&7Spew flame from your hand traveling &e" + range + "&7 blocks."));
-        desc.add(Main.color("&7It deals &b" + getDmg(p) + " &7damage per second"));
+        desc.add(Main.color("&7It deals &b" + getDmg(p) + " &7+ " + RPGConstants.fire + getFireDmg(p) + " &7damage per second"));
+        desc.add(Main.color("&7and ignites them for 1 second. You are slowed while casting."));
+        return desc;
+    }
+
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&7Spew flame from your hand traveling &e" + range + "&7 blocks."));
+        desc.add(Main.color("&7It deals &b" + damage + " &7+ " + RPGConstants.fire + fireDmg + " &7damage per second"));
         desc.add(Main.color("&7and ignites them for 1 second. You are slowed while casting."));
         return desc;
     }
@@ -48,10 +60,6 @@ public class Flamethrower extends Skill {
     }
     public double getFireDmg(Player p) {
         return fireDmg + main.getRP(p).getAP() * fireScale;
-    }
-
-    public void cast(Player p) {
-        super.cast(p);
     }
 
     public boolean toggleCont(Player p) {
@@ -95,7 +103,7 @@ public class Flamethrower extends Skill {
                 if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) <= (i * 1.05) + 0.45 && Math.abs(dist.getY()) < ent.getHeight()){
                     alreadyHit.add(ent);
                     ent.setFireTicks(Math.min(200, ent.getFireTicks() + 10));
-                    spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, firedmg, 0));
+                    spellDamage(caster, ent, new PhysicalStack(), new ElementalStack(0, 0, 0, firedmg, 0), damage, 0);
                     ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.ENTITY_BLAZE_HURT, 0.75F, 1.0F);
                 }
                 /*if(Math.sqrt(dist.getX() * dist.getX() + dist.getZ() * dist.getZ()) < 0.4 && Math.abs(dist.getY()) < ent.getHeight()){

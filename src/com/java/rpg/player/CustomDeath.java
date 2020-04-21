@@ -6,6 +6,7 @@ import com.java.rpg.classes.utility.StatusObject;
 import com.java.rpg.classes.utility.StatusValue;
 import net.minecraft.server.v1_15_R1.ChatComponentText;
 import net.minecraft.server.v1_15_R1.IChatBaseComponent;
+import net.minecraft.server.v1_15_R1.IPlayerFileData;
 import net.minecraft.server.v1_15_R1.TileEntityChest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -175,6 +176,10 @@ public class CustomDeath implements Listener {
 
         if (deathitems.isEmpty())
             return;
+
+        /*loop all nearby blocks in a radius.
+        sort the list based on distance from player.
+        grab nearest air block. Prefer similar Y level / being on top of a solid block*/
 
         Location graveLoc = new Location(p.getLocation().getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ());
         if ((graveLoc.getBlock().getType() == Material.AIR || graveLoc.getBlock().getType() == Material.CAVE_AIR)) {

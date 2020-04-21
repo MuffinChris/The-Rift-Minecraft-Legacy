@@ -24,6 +24,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class ClassManager implements Listener {
@@ -134,12 +136,9 @@ public class ClassManager implements Listener {
     public static void createClasses() {
         List<Skill> skillsNone = new ArrayList<>();
         skillsNone.add(new Adrenaline());
-        //skillsNone.add(new Rest());
         skillsNone.add(new Bulwark());
-        List<Skill> superSkillsNone = new ArrayList<>();
 
-        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 40.0, 100, 2, 3, 0.1, "SWORD", 10, 60, 0, 6, 1, 40, 32, 0.5, 0.25, skillsNone, superSkillsNone, 180, new ElementalStack(40, 40, 40, 40, 40), new ElementalStack(0.25, 0.25, 0.25, 0.25, 0.25)));
-
+        classes.put(RPGConstants.defaultClassName, new PlayerClass(RPGConstants.defaultClassName, "&e" + RPGConstants.defaultClassName, RPGConstants.defaultHP, 40.0, PlayerClass.ResourceType.MANA,100, 2, 3, 0.1, "SWORD", 10, 60, 0, 6, 1, 40, 32, 0.5, 0.25, skillsNone,  180, new ElementalStack(40, 40, 40, 40, 40), new ElementalStack(0.25, 0.25, 0.25, 0.25, 0.25)));
 
         List<Skill> skillsPyro = new ArrayList<>();
         skillsPyro.add(new Fireball());
@@ -148,11 +147,7 @@ public class ClassManager implements Listener {
         skillsPyro.add(new Pyroclasm());
         skillsPyro.add(new Combust());
 
-        List<Skill> superSkillsPyro = new ArrayList<>();
-        superSkillsPyro.add(new Flamethrower());
-        superSkillsPyro.add(new Conflagration());
-
-        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 800.0, 30, 400, 5, 7, 0.14, "HOE", 10, 60, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsPyro, superSkillsPyro, 110, new ElementalStack(5, 20, 30, 50, 100), new ElementalStack(0, 0, 0, 1, 0.25)));
+        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 800.0, 30, PlayerClass.ResourceType.MANA, 400, 5, 7, 0.14, "HOE", 10, 60, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsPyro,  110, new ElementalStack(5, 20, 30, 50, 100), new ElementalStack(0, 0, 0, 1, 0.25)));
 
         List<Skill> skillsEarthshaker = new ArrayList<>();
         skillsEarthshaker.add(new StoneSkin());
@@ -162,16 +157,8 @@ public class ClassManager implements Listener {
         skillsEarthshaker.add(new RollingStone());
         skillsEarthshaker.add(new Shatterstrike());
 
-        List<Skill> superSkillsEarthshaker = new ArrayList<>();
-        superSkillsEarthshaker.add(new ObSkin());
-        superSkillsEarthshaker.add(new Avalanche());
-        superSkillsEarthshaker.add(new UForce());
-        superSkillsEarthshaker.add(new RiftStrike());
-        superSkillsEarthshaker.add(new SeisStorm());
-        superSkillsEarthshaker.add(new Petrify());
 
-
-        classes.put("Earthshaker", new PlayerClass("Earthshaker", "&6Earthshaker", 1200.0, 40, 500, 5, 7, 0.14, "HOE", 10, 150, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsEarthshaker, superSkillsEarthshaker, 110, new ElementalStack(5, 100, 30, 50, 100), new ElementalStack(0, 1, 0, 1, 0)));
+        classes.put("Earthshaker", new PlayerClass("Earthshaker", "&6Earthshaker", 1200.0, 40, PlayerClass.ResourceType.MANA,500, 5, 7, 0.14, "HOE", 10, 150, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsEarthshaker,  110, new ElementalStack(5, 100, 30, 50, 100), new ElementalStack(0, 1, 0, 1, 0)));
 
 
     }
@@ -229,7 +216,7 @@ public class ClassManager implements Listener {
             List<Skill> skillsToAdd = new ArrayList<>();
             if (!rp.getSkillsAll().isEmpty()) {
                 for (Skill s : rp.getSkillsAll()) {
-                    if (s.getType().contains("PASSIVE") && s.getLevel() <= rp.getLevel()) {
+                    if (rp.isPassive(s) && s.getLevel() <= rp.getLevel()) {
                         if (!rp.getPassives().contains(s.getName())) {
                             skillsToAdd.add(s);
                         }
@@ -261,7 +248,7 @@ public class ClassManager implements Listener {
         if (rp != null) {
             List<String> skillsToRemove = new ArrayList<>();
             for (String s : rp.getPassives()) {
-                if (!(rp.getSkillFromName(s) instanceof Skill)) {
+                if (rp.getSkillFromName(s) == null) {
                     skillsToRemove.add(s);
                     continue;
                 }

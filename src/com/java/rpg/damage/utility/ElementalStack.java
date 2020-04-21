@@ -2,6 +2,7 @@ package com.java.rpg.damage.utility;
 
 import com.java.Main;
 import com.java.rpg.classes.utility.LevelRange;
+import com.java.rpg.classes.utility.RPGConstants;
 
 import java.text.DecimalFormat;
 
@@ -30,6 +31,14 @@ public class ElementalStack {
         this.fire = fire;
         this.ice = ice;
         this.status = false;
+    }
+
+    public void combine(ElementalStack e) {
+        air+=e.getAir();
+        earth+=e.getEarth();
+        electric+=e.getElectric();
+        fire+=e.getFire();
+        ice+=e.getIce();
     }
 
     public boolean getStatus() {
@@ -138,6 +147,11 @@ public class ElementalStack {
         return df.format(air * 100) + "%";
     }
 
+    public String getFancyNumberAir() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return RPGConstants.air + "" + df.format(air);
+    }
+
     public void setAir(double d) {
         air = d;
     }
@@ -149,6 +163,11 @@ public class ElementalStack {
     public String getFancyEarth() {
         DecimalFormat df = new DecimalFormat("#.##");
         return df.format(earth * 100) + "%";
+    }
+
+    public String getFancyNumberEarth() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return RPGConstants.earth + "" + df.format(earth);
     }
 
     public void setEarth(double d) {
@@ -164,6 +183,11 @@ public class ElementalStack {
         return df.format(fire * 100) + "%";
     }
 
+    public String getFancyNumberFire() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return RPGConstants.fire + "" + df.format(fire);
+    }
+
     public void setFire(double d) {
         fire = d;
     }
@@ -177,6 +201,11 @@ public class ElementalStack {
         return df.format(ice * 100) + "%";
     }
 
+    public String getFancyNumberIce() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return RPGConstants.ice + "" + df.format(ice);
+    }
+
     public void setIce(double d) {
         ice = d;
     }
@@ -188,6 +217,11 @@ public class ElementalStack {
     public String getFancyElectric() {
         DecimalFormat df = new DecimalFormat("#.##");
         return df.format(electric * 100) + "%";
+    }
+
+    public String getFancyNumberElectric() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return RPGConstants.electric + "" + df.format(electric);
     }
 
     public void setElectric(double d) {

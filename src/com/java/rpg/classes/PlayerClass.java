@@ -3,6 +3,8 @@ package com.java.rpg.classes;
 import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerClass {
@@ -71,13 +73,18 @@ public class PlayerClass {
 
     private int weight;
 
-    private String resourceName = "Mana";
-    private String fancyResourceName = "&bMana";
+    public enum ResourceType
+    {
+        MANA
+    }
+    private ResourceType resourceType;
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
 
     private List<Skill> skills;
-    private List<Skill> superSkills;
 
-    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, List<Skill> superSkills, int weight, ElementalStack eDef, ElementalStack eDefScale) {
+    public PlayerClass(String name, String fancyname, double basehp, double hpPerLevel, ResourceType resourceType, double mana, double manaPerLevel, double manaRegen, double manaRegenPerLevel, String weapon, double baseDmg, double ad, double ap, double adperlevel, double apperlevel, double armor, double magicresist, double armorPerLevel, double magicResistPerLevel, List<Skill> skills, int weight, ElementalStack eDef, ElementalStack eDefScale) {
         this.name = name;
         this.fancyname = fancyname;
         this.basehp = basehp;
@@ -94,11 +101,11 @@ public class PlayerClass {
         this.armorPerLevel = armorPerLevel;
         this.magicResistPerLevel = magicResistPerLevel;
         this.weight = weight;
+        this.resourceType = resourceType;
         baseAD = ad;
         baseAP = ap;
         adPerLevel = adperlevel;
         apPerLevel = apperlevel;
-        this.superSkills = superSkills;
         eDefense = eDef;
         eDefenseScaling = eDefScale;
     }
@@ -130,8 +137,11 @@ public class PlayerClass {
     public List<Skill> getSkills() {
         return skills;
     }
-    public List<Skill> getSuperSkills() {
-        return superSkills;
+
+    public List<Skill> getUpgradedSkills() {
+        List<Skill> upgraded = new ArrayList<>();
+        upgraded.addAll(skills);
+        return upgraded;
     }
 
     public String getName() {

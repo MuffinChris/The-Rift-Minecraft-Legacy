@@ -20,7 +20,7 @@ public class Leap extends Skill {
 
         // Constructor, when the plugin loads the skills get their information set up
         public Leap() {
-            super("Leap", 0, 0 * 20, 0, 0, "unimportant", "CAST");
+            super("Leap", 0, 0 * 20, 0, 0, SkillType.CAST, null, null);
             List<String> desc = new ArrayList<>();
             desc.add(Main.color("&bActive:"));
             desc.add(Main.color("&fJump forward!"));

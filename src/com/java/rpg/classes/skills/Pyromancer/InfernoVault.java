@@ -25,7 +25,7 @@ public class InfernoVault extends Skill implements Listener {
     private int range = 3;
 
     public InfernoVault() {
-        super("InfernoVault", 100, 14 * 20, 0, 4, "%player% has shot a fireball!", "CAST", null);
+        super("InfernoVault", 100, 14 * 20, 0, 4,  SkillType.CAST, null, null);
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fCombust the location at your feet, dealing &b" + vaultdamage + " &fdamage."));
@@ -126,7 +126,7 @@ public class InfernoVault extends Skill implements Listener {
             if (ent.getHealth() < landdamage && !(ent instanceof Player)) {
                 ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
             }
-            spellDamage(caster, ent, landdamage, new ElementalStack(0, 0, 0, 50, 0));
+            //spellDamage(caster, ent, landdamage, new ElementalStack(0, 0, 0, 50, 0));
             ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
         }
     }
@@ -150,7 +150,7 @@ public class InfernoVault extends Skill implements Listener {
             if (ent.getHealth() < vaultdamage && !(ent instanceof Player)) {
                 ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
             }
-            spellDamage(caster, ent, vaultdamage, new ElementalStack(0, 0, 0, 50, 0));
+            //spellDamage(caster, ent, vaultdamage, new ElementalStack(0, 0, 0, 50, 0));
             ent.setFireTicks(Math.min(60 + ent.getFireTicks(), 200));
         }
     }

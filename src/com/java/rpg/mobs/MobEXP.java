@@ -500,6 +500,74 @@ public class MobEXP implements Listener {
         return new PhysicalStack();
     }
 
+    public static void setElementalDamage (Entity ent, ElementalStack eDef) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "ElementalDamage"), PersistentDataType.STRING, eDef.getCommaDelim());
+    }
+
+    public static ElementalStack getElementalDamage (Entity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDamage"), PersistentDataType.STRING)) {
+            String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDamage"), PersistentDataType.STRING);
+            String[] ar = delim.split(",");
+            double[] ard = new double[5];
+            int index = 0;
+            for (String s : ar) {
+                ard[index] = Double.parseDouble(s);
+                index++;
+            }
+            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4]);
+        }
+        return new ElementalStack(0, 0, 0, 0, 0);
+    }
+
+    public static void setElementalDamagePerEnt (Entity ent, ElementalStack eDef) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "ElementalDamagePerEnt"), PersistentDataType.STRING, eDef.getCommaDelim());
+    }
+
+    public static ElementalStack getElementalDamagePerEnt (Entity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "ElementalDamagePerEnt"), PersistentDataType.STRING)) {
+            String delim = data.get(new NamespacedKey(Main.getInstance(), "ElementalDamagePerEnt"), PersistentDataType.STRING);
+            String[] ar = delim.split(",");
+            double[] ard = new double[5];
+            int index = 0;
+            for (String s : ar) {
+                ard[index] = Double.parseDouble(s);
+                index++;
+            }
+            return new ElementalStack(ard[0], ard[1], ard[2], ard[3], ard[4]);
+        }
+        return new ElementalStack(0, 0, 0, 0, 0);
+    }
+
+    public static double getMagicDamage(Entity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "MagicDamage"), PersistentDataType.DOUBLE)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "MagicDamage"), PersistentDataType.DOUBLE);
+        }
+        return 0;
+    }
+
+    public static void setMagicDamage(Entity ent, double magicdmg) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "MagicDamage"), PersistentDataType.DOUBLE, magicdmg);
+    }
+
+    public static double getMagicDamagePerEnt(Entity ent) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getInstance(), "MagicDamagePerEnt"), PersistentDataType.DOUBLE)) {
+            return data.get(new NamespacedKey(Main.getInstance(), "MagicDamagePerEnt"), PersistentDataType.DOUBLE);
+        }
+        return 0;
+    }
+
+    public static void setMagicDamagePerEnt(Entity ent, double magicdmg) {
+        PersistentDataContainer data = ent.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getInstance(), "MagicDamagePerEnt"), PersistentDataType.DOUBLE, magicdmg);
+    }
+
     public static void setElementalDefense (LivingEntity ent, ElementalStack eDef) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         data.set(new NamespacedKey(Main.getInstance(), "ElementalDefense"), PersistentDataType.STRING, eDef.getCommaDelim());
@@ -571,7 +639,7 @@ public class MobEXP implements Listener {
         data.set(new NamespacedKey(Main.getInstance(), "HPRegen"), PersistentDataType.DOUBLE, r);
     }
 
-    public static String getCustomName(LivingEntity ent) {
+    public static String getCustomName(Entity ent) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         if (data.has(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING)) {
             return data.get(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING);
@@ -579,7 +647,7 @@ public class MobEXP implements Listener {
         return null;
     }
 
-    public static void setCustomName(LivingEntity ent, String s) {
+    public static void setCustomName(Entity ent, String s) {
         PersistentDataContainer data = ent.getPersistentDataContainer();
         data.set(new NamespacedKey(Main.getInstance(), "CustomName"), PersistentDataType.STRING, s);
     }
