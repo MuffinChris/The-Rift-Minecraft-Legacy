@@ -129,7 +129,7 @@ public class TownManager implements Listener {
     }
 
     //should only need to be ran once
-    public void makeFullTownList() {
+    /*public void makeFullTownList() {
         try {
             File tFile = new File("plugins/Rift/data/townlist/townlist.yml");
             FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
@@ -140,7 +140,7 @@ public class TownManager implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
 }

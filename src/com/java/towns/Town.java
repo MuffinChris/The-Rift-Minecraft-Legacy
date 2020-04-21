@@ -54,6 +54,7 @@ public class Town {
         pushFiles();
     }
     public Town(String _n){
+        cList = new ArrayList<UUID>();
         name = _n;
         pullFiles();
     }
@@ -88,8 +89,8 @@ public class Town {
     public int getLevel() { return level; }
 
 
-    public void changeRankName(int i, String newname) {
-        ranks.set(i, newname);
+    public void changeRankName(int i, String newName) {
+        ranks.set(i, newName);
     }
 
     public void invite(Player inviter, Player receiver) {
@@ -181,6 +182,7 @@ public class Town {
     }
 
     public void pushFiles() {
+        Bukkit.broadcastMessage("pushing to " + name + ".yml");
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
         try {
@@ -207,6 +209,7 @@ public class Town {
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
         if (!tFile.exists()) {
+            Bukkit.broadcastMessage("Missing file " + name + ".yml!");
             pushFiles();
             pullFiles();
         } else {
@@ -214,9 +217,9 @@ public class Town {
             Town info
              */
             setName(tData.getString("TownName"));
-            List<String> pullUUIDString = new ArrayList<String>();
-            pullUUIDString = tData.getStringList("CitizensList");
+            List<String> pullUUIDString = tData.getStringList("CitizensList");
             for(int i = 0; i < pullUUIDString.size(); i++){
+                Bukkit.broadcastMessage("Pull town file -- UUID: " + pullUUIDString.get(i));
                 cList.add(UUID.fromString(pullUUIDString.get(i)));
             }
 
