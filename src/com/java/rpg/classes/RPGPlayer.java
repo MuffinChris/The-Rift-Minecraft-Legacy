@@ -1628,7 +1628,7 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                if (ChatColor.stripColor(name).length() > 37) {
+                if (name.length() > 37) {
                     name = name.substring(0, 38);
                 }
 
@@ -1725,7 +1725,7 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                if (ChatColor.stripColor(name).length() > 37) {
+                if (name.length() > 37) {
                     name = name.substring(0, 38);
                 }
 

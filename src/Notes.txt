@@ -133,6 +133,8 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -46. Add better time command alias
+
     -45. Thorns makes two damage instances, one environmental heart and one impact
 
     -44. Resistance potion effect bypasses dmg (fix this and other pot effects).
@@ -171,8 +173,6 @@ DIRECT LINE TODO LIST:
 
     -7. Friends list, blocking not nice individuals
 
-    -6. Look into packet holograms. Holos a little laggy for melee hits (why tho?) When you hit mob, should change custom name to HP Bar and HP bar to Custom Name. Swap back when done. Potentially two with packets.
-
     -5. Command to set a players class
 
     -3. Mob HP Bar and Name as hologram
@@ -181,7 +181,7 @@ DIRECT LINE TODO LIST:
 
     2. Disable Drowned Conversion (have own ocean mobs). Make sure to update DmgThreshold and EDefense when a mob transforms.
 
-    4 (RELEVANT RN): Add elemental damage from non player sources (mobs)
+    4. Add elemental damage from non player sources (mobs)
 
     5. Setting to hide dmg holograms
 
