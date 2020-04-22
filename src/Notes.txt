@@ -45,6 +45,7 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
         - Can combine enchantments past big levels (custom define this stuff)
     Enchanter:
         - Can pick any enchantment from Enchantment table (at a large cost of course)
+        ( ALTERNATIVELY ENCHANTMENT TABLE IS GONNA BE GEMSTONE INSCRIBING!)
         - Regular players have similar to Vanilla randomized enchantments
     Alchemist:
         - Custom Alchemy Menu that uses many ingredients to craft potions
@@ -131,6 +132,10 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
         Bracelet, Ring, Ring, Amulet
 
 DIRECT LINE TODO LIST:
+
+    -43. Players are not getting ignited lmao
+
+    -42. Stop hopper transfer of gravestones (and other ways of moving itmes do resaearch)
 
     -41. Make Stun Timer (and other second based measurements in Skillbar) count by 0.5 (use rounding)
 

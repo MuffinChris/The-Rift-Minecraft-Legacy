@@ -114,7 +114,7 @@ public class Environmental implements Listener {
                 e.setDamage(hp / 40.0);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
-                e.setDamage(hp * 0.025);
+                e.setDamage(Math.max(hp * 0.025, 25));
                 if (p instanceof Player) {
                     Player pl = (Player) p;
                     double fd = main.getRP(pl).getFireDefense();
@@ -126,7 +126,7 @@ public class Environmental implements Listener {
                 fire = true;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FIRE) {
-                e.setDamage(hp * 0.025);
+                e.setDamage(Math.max(hp * 0.025, 25));
                 if (p instanceof Player) {
                     Player pl = (Player) p;
                     double fd = main.getRP(pl).getFireDefense();
@@ -138,7 +138,7 @@ public class Environmental implements Listener {
                 fire = true;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
-                e.setDamage(hp * 0.05);
+                e.setDamage(Math.max(hp * 0.05, 50));
                 if (p instanceof Player) {
                     Player pl = (Player) p;
                     double fd = main.getRP(pl).getFireDefense();
