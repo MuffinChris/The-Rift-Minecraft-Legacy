@@ -139,6 +139,8 @@ DIRECT LINE TODO LIST:
 
     -43. Players are not getting ignited lmao
 
+    -42. Hoppers and Hopper Minecarts can still take items out of gravestones. InventoryMoveItemEvent seems to be bugged
+
     -39. Add fall damage reduction to big boss mobs
 
     -36. Add seasons

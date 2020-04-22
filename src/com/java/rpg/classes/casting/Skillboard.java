@@ -90,8 +90,8 @@ public class Skillboard {
                     if (so.allDurationless()) {
                         statuses += "&e" + so.getFlavor() + "&f, ";
                     } else {
-                        double ticks = Math.round(so.ticksMore()*4)/4.0;
-                        statuses += "&e" + so.getFlavor() + "&8: &6" + dF.format(ticks / 20.0) + "s&f, ";
+                        double ticks = Math.round((so.ticksMore()/20.0)*4f)/4f;
+                        statuses += "&e" + so.getFlavor() + "&8: &6" + dF.format(ticks) + "s&f, ";
                     }
                 }
             }

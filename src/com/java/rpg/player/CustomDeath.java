@@ -115,19 +115,21 @@ public class CustomDeath implements Listener {
         }
     }
 
-    @EventHandler
+    /*@EventHandler
     public void antiHopper (InventoryMoveItemEvent e) {
+        Bukkit.broadcastMessage("item moved");
+        Bukkit.broadcastMessage("Source Type: " + e.getSource().getType().toString() + " Dest Type: " + e.getDestination().getType().toString() + " Holder Source Str: " + e.getSource().getHolder().toString());
         if (e.getSource().getType() == InventoryType.CHEST && e.getDestination().getType() == InventoryType.HOPPER && e.getSource().getHolder() != null && e.getSource().getHolder() instanceof Chest && isGravestone(((Chest) e.getSource().getHolder()).getBlock())) {
             e.setCancelled(true);
         }
-    }
+    }*/
 
     @EventHandler
     public void noGravestoneMerge (BlockPlaceEvent e) {
-        if (e.getBlock().getType() == Material.CHEST) {
+        if (e.getBlock().getType() == Material.CHEST || e.getBlock().getType() == Material.HOPPER) {
             if (isGravestone(e.getBlock().getLocation().add(new Vector(1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(-1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,1)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,-1)).getBlock())) {
                 e.setCancelled(true);
-                Main.msg(e.getPlayer(), "&8» &cRemove nearby &4Gravestone &cto place this Chest.");
+                Main.msg(e.getPlayer(), "&8» &cRemove the nearby &4Gravestone &cto place this block.");
             }
         }
     }

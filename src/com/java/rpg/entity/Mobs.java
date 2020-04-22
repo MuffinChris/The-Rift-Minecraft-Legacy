@@ -17,6 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -509,7 +510,6 @@ public class Mobs implements Listener {
         }
     }
 
-
     @EventHandler
     public void onSpawn (EntityAddToWorldEvent e) {
         if (e.getEntity() instanceof ExperienceOrb) {
@@ -546,6 +546,7 @@ public class Mobs implements Listener {
             LivingEntity ent = (LivingEntity) e.getEntity().getWorld().spawnEntity(e.getEntity().getLocation(), type);
             ((Slime) ent).setSize(size);
             setupEnt(ent, level);
+            ent.setNoDamageTicks(20);
         }
     }
 
