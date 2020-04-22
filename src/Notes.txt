@@ -133,6 +133,10 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -45. Thorns makes two damage instances, one environmental heart and one impact
+
+    -44. Resistance potion effect bypasses dmg (fix this and other pot effects).
+
     -43. Players are not getting ignited lmao
 
     -42. Stop hopper transfer of gravestones (and other ways of moving itmes do resaearch)

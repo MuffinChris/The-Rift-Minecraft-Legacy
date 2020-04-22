@@ -1237,4 +1237,26 @@ public class Main extends JavaPlugin {
         }
     }
 
+    public String getTextureValueOffline(UUID id) {
+        OfflinePlayer t = Bukkit.getOfflinePlayer(id);
+        File pFile = new File("plugins/Rift/data/textures/" + t.getUniqueId() + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if (pData.contains("TextureValue")) {
+            return pData.getString("TextureValue");
+        } else {
+            return null;
+        }
+    }
+
+    public String getTextureSignatureOffline(UUID id) {
+        OfflinePlayer t = Bukkit.getOfflinePlayer(id);
+        File pFile = new File("plugins/Rift/data/textures/" + t.getUniqueId() + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if (pData.contains("TextureSignature")) {
+            return pData.getString("TextureSignature");
+        } else {
+            return null;
+        }
+    }
+
 }

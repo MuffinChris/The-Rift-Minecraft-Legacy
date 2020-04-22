@@ -1200,8 +1200,40 @@ public class RPGPlayer extends Leveleable {
     public String selfTextureValue;
     public String selfTextureSignature;
 
-    private static String textureValue = "eyJ0aW1lc3RhbXAiOjE1ODYwNzU3NjM1MzYsInByb2ZpbGVJZCI6IjZiMjIwMzdkYzA0MzQyNzE5NGYyYWRiMDAzNjhiZjE2IiwicHJvZmlsZU5hbWUiOiJMaWdodG5lbiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjRkNDA3OTk1ZjVjNGFhOTlhMjg5ZmI0YWFhMDQwZTFjYzVlOWIzM2JiOWJlYWM2NTRkZmZhMDljYzZjZmQ5MiJ9fX0=";
-    private static String textureSignature = "caGGJhsAP6hC1gzzo1lwm4bAPbW6XE5KUqLzlXOaTYGB2eqpCzq9oUUZg26kxCQ0io57VPOpQtQfdUHqSyVBpN+AGcBBuNYWSY5X0F0isxC/t1JpX4wcLW7Y7CCEj2nOQ0SEkJU5wJyDCdCHbk4VU4kvMd00oqlsTwIG5PzovT/8oq8uC9nME3/Tzds7lqAYHDBKJgMFSQ9D17RwnpQc0DoNpJ9KM2AxNtJa5M2UFr+d7x5z5Kicc+fG+4VX4wwVcRhnpGzzQTKL3gCOURvAOCfi9NBRADw2Ch7Tw8xj3c+c4NSgGoQ+2yaqU3BpwEiSvoNva7WidSwfQ3x99DCwZ6Gth8n9OWC/p1X9lfZ2sAF1VUkXg/j6pTvhsS+yDk3tZDbdJ8HyyN4NFZIN5H/2K8c+GgUy4zfnO2/2O5FOtArzzpo/z9GCaO4rbPL8OQ1KIRKC1CbBqLkqsHZjhTLHZ46EQFxODlCEhoLTxfB1mwxjLePSEROwxgT4zAP6hx0uRKqby73yx7BX51thg+xPZ5U04wI7ts76YWNAUFwd8Acj+HkxrTekAKacFkK6U9Me118OpZwgBXe4TXnpcfh4/X8grT21TZm4vxk0YESlmkzqIFQYnsPLoHVGmowLbNpntBe/iDIEs+pTcVgtONXcBA0DLPkcgqKxMh2yUmZP50w=";
+    private static String defaultTextureValue = "eyJ0aW1lc3RhbXAiOjE1ODYwNzU3NjM1MzYsInByb2ZpbGVJZCI6IjZiMjIwMzdkYzA0MzQyNzE5NGYyYWRiMDAzNjhiZjE2IiwicHJvZmlsZU5hbWUiOiJMaWdodG5lbiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjRkNDA3OTk1ZjVjNGFhOTlhMjg5ZmI0YWFhMDQwZTFjYzVlOWIzM2JiOWJlYWM2NTRkZmZhMDljYzZjZmQ5MiJ9fX0=";
+    private static String defaultTextureSignature = "caGGJhsAP6hC1gzzo1lwm4bAPbW6XE5KUqLzlXOaTYGB2eqpCzq9oUUZg26kxCQ0io57VPOpQtQfdUHqSyVBpN+AGcBBuNYWSY5X0F0isxC/t1JpX4wcLW7Y7CCEj2nOQ0SEkJU5wJyDCdCHbk4VU4kvMd00oqlsTwIG5PzovT/8oq8uC9nME3/Tzds7lqAYHDBKJgMFSQ9D17RwnpQc0DoNpJ9KM2AxNtJa5M2UFr+d7x5z5Kicc+fG+4VX4wwVcRhnpGzzQTKL3gCOURvAOCfi9NBRADw2Ch7Tw8xj3c+c4NSgGoQ+2yaqU3BpwEiSvoNva7WidSwfQ3x99DCwZ6Gth8n9OWC/p1X9lfZ2sAF1VUkXg/j6pTvhsS+yDk3tZDbdJ8HyyN4NFZIN5H/2K8c+GgUy4zfnO2/2O5FOtArzzpo/z9GCaO4rbPL8OQ1KIRKC1CbBqLkqsHZjhTLHZ46EQFxODlCEhoLTxfB1mwxjLePSEROwxgT4zAP6hx0uRKqby73yx7BX51thg+xPZ5U04wI7ts76YWNAUFwd8Acj+HkxrTekAKacFkK6U9Me118OpZwgBXe4TXnpcfh4/X8grT21TZm4vxk0YESlmkzqIFQYnsPLoHVGmowLbNpntBe/iDIEs+pTcVgtONXcBA0DLPkcgqKxMh2yUmZP50w=";
+
+    public void pushCurrentTextures() {
+        File pFile = new File("plugins/Rift/data/textures/" + player.getUniqueId() + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        try {
+            pData.set("TextureValue", selfTextureValue);
+            pData.set("TextureSignature", selfTextureSignature);
+            pData.save(pFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pullCurrentTextures() {
+        File pFile = new File("plugins/Rift/data/textures/" + player.getUniqueId() + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if (pData.contains("TextureValue")) {
+            defaultTextureValue = pData.getString("TextureValue");
+            defaultTextureSignature = pData.getString("TextureSignature");
+        } else {
+            getTextureMap();
+            pushCurrentTextures();
+        }
+    }
+
+    public String getTextureValue() {
+        return selfTextureValue;
+    }
+
+    public String getTextureSignature() {
+        return selfTextureSignature;
+    }
 
     public void getTextureMap() {
         if (main.getTextureValues().containsKey(player.getUniqueId())) {
@@ -1235,8 +1267,8 @@ public class RPGPlayer extends Leveleable {
                 main.getTextureValues().put(player.getUniqueId(), selfTextureValue);
                 main.getTextureSigs().put(player.getUniqueId(), selfTextureSignature);
             } catch (IOException e) {
-                selfTextureValue = textureValue;
-                selfTextureSignature = textureSignature;
+                selfTextureValue = defaultTextureValue;
+                selfTextureSignature = defaultTextureSignature;
 
                 main.getTextureValues().put(player.getUniqueId(), selfTextureValue);
                 main.getTextureSigs().put(player.getUniqueId(), selfTextureSignature);
@@ -1281,7 +1313,7 @@ public class RPGPlayer extends Leveleable {
         String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
         uuid+=tl;
         GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
-        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+        prof.getProperties().put("textures", new Property("textures", defaultTextureValue, defaultTextureSignature));
         String name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "♦ ONLINE PLAYERS [" + Bukkit.getOnlinePlayers().size() + "]";
         PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(Main.color(name)));
         PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
@@ -1300,7 +1332,7 @@ public class RPGPlayer extends Leveleable {
         String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
         uuid+= "0" + tl;
         GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
-        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+        prof.getProperties().put("textures", new Property("textures", defaultTextureValue, defaultTextureSignature));
         String name;
         if (main.getPM().hasParty(player)) {
             name = ChatColor.YELLOW + "" + ChatColor.BOLD + "♦ PARTY MEMBERS [" + main.getPM().getParty(player).getPlayers().size() + "]";
@@ -1432,7 +1464,7 @@ public class RPGPlayer extends Leveleable {
                             gpName = "#" + tl;
                         }
                         GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
-                        prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+                        prof.getProperties().put("textures", new Property("textures", defaultTextureValue, defaultTextureSignature));
                         PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(""));
                         fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
                         try {
@@ -1516,7 +1548,7 @@ public class RPGPlayer extends Leveleable {
                 }
                 GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
 
-                prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+                prof.getProperties().put("textures", new Property("textures", defaultTextureValue, defaultTextureSignature));
                 //GameProfile prof = new GameProfile(null, tl + "");
                 PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(""));
                 fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
@@ -1556,7 +1588,7 @@ public class RPGPlayer extends Leveleable {
                     }
 
                     GameProfile prof = new GameProfile(UUID.fromString(uuid), gpName);
-                    prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+                    prof.getProperties().put("textures", new Property("textures", defaultTextureValue, defaultTextureSignature));
                     PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(""));
                     fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
                     try {
@@ -1625,6 +1657,7 @@ public class RPGPlayer extends Leveleable {
 
     public void tabSetup() {
         getTextureMap();
+        pushCurrentTextures();
         partySlots = new TablistSlots();
         playerSlots = new TablistSlots();
         for (Integer i : players) {
@@ -1699,7 +1732,7 @@ public class RPGPlayer extends Leveleable {
                 latency = ((CraftPlayer)playerSlots.getTs().get(tl-21).getPlayer()).getHandle().ping;
                 prof.getProperties().put("textures", new Property("textures", main.getTextureValues().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId()), main.getTextureSigs().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId())));
             } else {
-                prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
+                prof.getProperties().put("textures", new Property("textures", defaultTextureValue, defaultTextureSignature));
             }
 
             PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), latency, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
