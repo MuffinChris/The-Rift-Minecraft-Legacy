@@ -12,6 +12,7 @@ import net.minecraft.server.v1_15_R1.TileEntityChest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,6 +25,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -89,8 +91,19 @@ public class CustomDeath implements Listener {
 
     @EventHandler
     public void onExplode (BlockExplodeEvent e) {
-        if (isGravestone(e.getBlock())) {
-            e.setCancelled(true);
+        for (int i = e.blockList().size() - 1; i >= 0; i--) {
+            if (isGravestone(e.blockList().get(i))) {
+                e.blockList().remove(i);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityExplode (EntityExplodeEvent e) {
+        for (int i = e.blockList().size() - 1; i >= 0; i--) {
+            if (isGravestone(e.blockList().get(i))) {
+                e.blockList().remove(i);
+            }
         }
     }
 
@@ -99,6 +112,13 @@ public class CustomDeath implements Listener {
         if (isGravestone(e.getBlock())) {
             e.setCancelled(true);
             Main.msg(e.getPlayer(), "&8» &cOpen the &4Gravestone &cinstead of breaking it.");
+        }
+    }
+
+    @EventHandler
+    public void antiHopper (InventoryMoveItemEvent e) {
+        if (e.getSource().getHolder() != null && e.getSource().getHolder() instanceof Chest && e.getDestination().getHolder() != null && e.getDestination().getHolder() instanceof Hopper && isGravestone(((Chest) e.getSource().getHolder()).getBlock())) {
+            e.setCancelled(true);
         }
     }
 
@@ -164,15 +184,6 @@ public class CustomDeath implements Listener {
                     graveLoc.getBlock().removeMetadata("Time", Main.getInstance());
                     graveLoc.getBlock().removeMetadata("Owner", Main.getInstance());
                 }
-            }
-        }
-    }
-
-    @EventHandler
-    public void antiHopper (InventoryMoveItemEvent e) {
-        if (e.getSource().getType() == InventoryType.CHEST && e.getSource().getLocation() != null && e.getDestination().getType() == InventoryType.HOPPER) {
-            if (isGravestone(e.getSource().getLocation().getBlock())) {
-                e.setCancelled(true);
             }
         }
     }

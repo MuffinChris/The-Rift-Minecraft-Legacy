@@ -143,6 +143,9 @@ public class DamageListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onDamage (EntityDamageByEntityEvent e) {
+        if (e.getCause() == EntityDamageEvent.DamageCause.THORNS) {
+
+        }
         if ((main.isPlayer(e.getDamager()) || e.getDamager() instanceof Projectile) && e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && !e.isCancelled()) {
             LivingEntity ent = (LivingEntity) e.getEntity();
             int index = 0;
