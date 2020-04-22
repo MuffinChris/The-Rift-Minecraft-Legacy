@@ -48,20 +48,17 @@ public class TownManager implements Listener {
             if (c.getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
                 return;
             }
-            Town ct = null;
+
             boolean alreadyFound = false;
             for (Town t : main.getTowns()) {
                 if (t.getName().equals(c.getTown())) {
                     alreadyFound = true;
-                    ct = t;
                     break;
                 }
             }
 
             if (!alreadyFound) {
                 main.getTowns().add(new Town(c.getTown())); // need to add it back to memory if they are the only online player (just joined)
-            } else {
-                ct.getCitizenList().add(e.getPlayer().getUniqueId());
             }
         }
     }
