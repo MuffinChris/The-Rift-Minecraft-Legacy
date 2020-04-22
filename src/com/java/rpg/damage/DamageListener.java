@@ -674,14 +674,13 @@ public class DamageListener implements Listener {
             }
         }
         if (!(e.getEntity() instanceof ArmorStand) && (e.getEntity() instanceof LivingEntity) && e.getDamager() instanceof ThrownPotion) {
+            Bukkit.broadcastMessage("Thrown Potion Dmg: " + e.getDamage());
             ThrownPotion pot = (ThrownPotion) e.getDamager();
-            if (pot.getItem().getType() == Material.LINGERING_POTION) {
-                return;
-            } else {
+            if (pot.getItem().getType() != Material.LINGERING_POTION) {
                 LivingEntity ent = (LivingEntity) e.getEntity();
                 double hp = ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
                 double dmg = hp / 20.0 * e.getDamage()/3.0;
-                if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
+                if (e.getEntity() instanceof Player && main.getPC().containsKey((e.getEntity()).getUniqueId())) {
                     Player p = (Player) e.getEntity();
                     RPGPlayer rp = main.getPC().get(p.getUniqueId());
                     double mr = rp.getMR();

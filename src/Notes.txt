@@ -132,6 +132,8 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -41. Make Stun Timer (and other second based measurements in Skillbar) count by 0.5 (use rounding)
+
     -40. Store player texture in RPGPlayer, update only if different!
 
     -39. Add fall damage reduction to big boss mobs

@@ -39,14 +39,14 @@ public class Environmental implements Listener {
                         List<Player> players = new ArrayList<>(e.getPlayer().getWorld().getNearbyPlayers(e.getPlayer().getEyeLocation(), 24));
                         double hp = e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
                         if (meta.getBasePotionData().isUpgraded()) {
-                            double dmg = 100 + hp * 0.15;
+                            double dmg = 100 + hp * 0.6;
                             double d = main.getRP(e.getPlayer()).getMR();
                             dmg*=(RPGConstants.defenseDiv)/(RPGConstants.defenseDiv + d);
                             e.getPlayer().damage(dmg);
                             DecimalFormat df = new DecimalFormat("#.##");
                             Hologram magic = new Hologram(e.getPlayer(), e.getPlayer().getLocation(), RPGConstants.magic + df.format(dmg), Hologram.HologramType.DAMAGE, players);
                         } else {
-                            double dmg = 50 + hp * 0.1;
+                            double dmg = 50 + hp * 0.3;
                             double d = main.getRP(e.getPlayer()).getMR();
                             dmg*=(RPGConstants.defenseDiv)/(RPGConstants.defenseDiv + d);
                             e.getPlayer().damage(dmg);
@@ -255,7 +255,7 @@ public class Environmental implements Listener {
                         Hologram magic = new Hologram(e.getEntity(), e.getEntity().getLocation(), RPGConstants.trued + df.format(dmg), Hologram.HologramType.DAMAGE, players);
                         e.setDamage(dmg);
                     } else {
-                        double dmg = (e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.04);
+                        double dmg = (e.getDamage() / 3.0) * (((LivingEntity) e.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * 0.06);
 
                         if (e.getEntity() instanceof Player) {
                             Player pl = (Player) e.getEntity();
