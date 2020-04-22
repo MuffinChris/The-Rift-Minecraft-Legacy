@@ -975,6 +975,8 @@ public class Main extends JavaPlugin {
 
         autorestart();
 
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "customtime sync");
+
         so("&dRIFT: &fSetup complete!");
 
     }

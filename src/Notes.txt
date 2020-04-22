@@ -133,6 +133,8 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -46. Add better time command alias
+
     -45. Thorns makes two damage instances, one environmental heart and one impact
 
     -44. Resistance potion effect bypasses dmg (fix this and other pot effects).

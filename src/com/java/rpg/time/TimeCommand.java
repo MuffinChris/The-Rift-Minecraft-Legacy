@@ -30,13 +30,13 @@ public class TimeCommand implements CommandExecutor {
             } else {
                 if (p.hasPermission("core.admin")) {
                     if (args[0].equalsIgnoreCase("help")) {
-                        Main.msg(p, "&fUsage: /customtime <startnow, sync>");
+                        Main.msg(p, "&fUsage: /customtime <startnow, sync, addday>");
                         return true;
                     } else if (args[0].equalsIgnoreCase("startnow")) {
                         long prev = getTimeMillis();
                         setTimeMillisNow();
                         Main.msg(p, "&aChanged time start in millis to &f" + System.currentTimeMillis() + " &afrom &f" + prev + "&a.");
-                        p.performCommand("time sync");
+                        p.performCommand("customtime sync");
                         return true;
                     } else if (args[0].equalsIgnoreCase("sync")) {
                         for (World w : Bukkit.getWorlds()) {
@@ -44,8 +44,13 @@ public class TimeCommand implements CommandExecutor {
                         }
                         Main.msg(p, "&aSynced all world times to current Rift time.");
                         return true;
+                    } else if (args[0].equalsIgnoreCase("addday")) {
+                        addOneDay();
+                        Main.msg(p, "&aYou added one day.");
+                        p.performCommand("customtime sync");
+                        return true;
                     } else {
-                        Main.msg(p, "&fUsage: /customtime <startnow, sync>");
+                        Main.msg(p, "&fUsage: /customtime <startnow, sync, addday>");
                         return true;
                     }
                 } else {
@@ -66,7 +71,7 @@ public class TimeCommand implements CommandExecutor {
                     long prev = getTimeMillis();
                     setTimeMillisNow();
                     Main.so( "&aChanged time start in millis to &f" + System.currentTimeMillis() + " &afrom &f" + prev + "&a.");
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time sync");
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "customtime sync");
                     return true;
                 } else if (args[0].equalsIgnoreCase("sync")) {
                     for (World w : Bukkit.getWorlds()) {
@@ -93,7 +98,7 @@ public class TimeCommand implements CommandExecutor {
     }
 
     public String getTime() {
-        String time = "";
+        String time;
         long ticksToday = getTicks();
         long hour = ticksToday/1000;
 
@@ -144,7 +149,7 @@ public class TimeCommand implements CommandExecutor {
     }
 
     public long getTotalDays() {
-        return Math.round(Math.floor((getTicksTotal()/20.0) / (60.0) / (60.0) / (24.0)));
+        return Math.round(Math.floor((getTicksTotal()/20.0) / 24000.0));
     }
 
     public long getYear() {
@@ -171,7 +176,7 @@ public class TimeCommand implements CommandExecutor {
     }
 
     public Month getMonth() {
-        long daysThisYear = getDay();
+        long daysThisYear = getDay() + 1;
         if (daysThisYear <= Month.January.getVal()) {
             return Month.January;
         } else if (daysThisYear <= Month.February.getVal()) {
@@ -220,6 +225,17 @@ public class TimeCommand implements CommandExecutor {
         File pFile = new File("plugins/Rift/time.yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
         pData.set("Time", System.currentTimeMillis());
+        try {
+            pData.save(pFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addOneDay() {
+        File pFile = new File("plugins/Rift/time.yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        pData.set("Time", getTimeMillis() - 24000);
         try {
             pData.save(pFile);
         } catch (IOException e) {
