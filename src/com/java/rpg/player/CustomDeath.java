@@ -173,7 +173,13 @@ public class CustomDeath implements Listener {
                 s.getStatuses().remove(rem);
             }
         }
-        rp.giveExpFromSource(p, p.getLocation(), rp.getMaxExp() * -0.1 * (Math.random() * 0.1 + 1), "");
+        double exp = rp.getMaxExp() * -0.1 * (Math.random() * 0.1 + 1);
+        exp = -Math.min(-exp, rp.getExp());
+
+        rp.giveExpFromSource(p, p.getLocation(), exp, "");
+        if (p.getKiller() != null) {
+            rp.giveExpFromSource(p.getKiller(), p.getKiller().getLocation(), -exp, "");
+        }
 
         if (deathitems.isEmpty())
             return;

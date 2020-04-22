@@ -214,7 +214,6 @@ public class Leveleable {
             }
             main.getRP(p).getBoard().setInfoBossbar("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
             Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(&f" + p.getName() + "&7)", Hologram.HologramType.EXP, new ArrayList<>(Arrays.asList(p)));
-            magic.rise();
             levelup();
         }
     }

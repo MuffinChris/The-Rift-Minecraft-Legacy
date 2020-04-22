@@ -66,14 +66,6 @@ public class RPGPlayer extends Leveleable {
         chatChannel = c;
     }
 
-    private int tablist = 0;
-    public int getTablist() {
-        return tablist;
-    }
-    public void incTablist() {
-        tablist++;
-    }
-
     private double currentMana;
 
     private Skillboard board;
@@ -1379,7 +1371,7 @@ public class RPGPlayer extends Leveleable {
         pl.setScoreboard(sc);
     }
 
-    public void tabUpdate(boolean force) throws InvocationTargetException {
+    public void tabUpdate() {
         nameUpdate(player, false);
 
         PacketContainer tabPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
@@ -1388,7 +1380,11 @@ public class RPGPlayer extends Leveleable {
         WrappedChatComponent footer = WrappedChatComponent.fromText(Main.color("\n&5therift.net\n"));
         tabPacket.getChatComponents().write(0, header);
         tabPacket.getChatComponents().write(1, footer);
-        main.getProtocolManager().sendServerPacket(player, tabPacket);
+        try {
+            main.getProtocolManager().sendServerPacket(player, tabPacket);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
 
         List<Player> partyL = new ArrayList<>();
         for (TabSlot t : partySlots.getTs()) {
@@ -1439,7 +1435,11 @@ public class RPGPlayer extends Leveleable {
                         prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
                         PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(""));
                         fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
-                        main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                        try {
+                            main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
                         partySlots.getTs().get(tlIndex).wipe();
                     } else {
                         break;
@@ -1481,7 +1481,11 @@ public class RPGPlayer extends Leveleable {
                     //GameProfile prof = new GameProfile(null, tl + "");
                     PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
                     fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
-                    main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                    try {
+                        main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
                 }
                 index++;
             }
@@ -1516,7 +1520,11 @@ public class RPGPlayer extends Leveleable {
                 //GameProfile prof = new GameProfile(null, tl + "");
                 PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(""));
                 fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
-                main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                try {
+                    main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
                 t.wipe();
                 index++;
             }
@@ -1551,7 +1559,11 @@ public class RPGPlayer extends Leveleable {
                     prof.getProperties().put("textures", new Property("textures", textureValue, textureSignature));
                     PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), 20000, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(""));
                     fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
-                    main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                    try {
+                        main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
                     playerSlots.getTs().get(tlIndex).wipe();
                 } else {
                     break;
@@ -1584,9 +1596,9 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                /*if (ChatColor.stripColor(name).length() > 28) {
+                if (ChatColor.stripColor(name).length() > 28) {
                     name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
-                }*/
+                }
 
                 String gpName;
                 if (tl < 10) {
@@ -1598,7 +1610,11 @@ public class RPGPlayer extends Leveleable {
                 prof.getProperties().put("textures", new Property("textures", main.getRP(playerSlots.getTs().get(tlIndex).getPlayer()).selfTextureValue, main.getRP(playerSlots.getTs().get(tlIndex).getPlayer()).selfTextureSignature));
                 PlayerInfoData pid = new PlayerInfoData(WrappedGameProfile.fromHandle(prof), ((CraftPlayer)target).getHandle().ping, EnumWrappers.NativeGameMode.SURVIVAL, WrappedChatComponent.fromText(name));
                 fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
-                main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                try {
+                    main.getProtocolManager().sendServerPacket(player, fakePlayerPacket);
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
             index++;
         }
@@ -1629,8 +1645,8 @@ public class RPGPlayer extends Leveleable {
             }
             index++;
         }
-        while (getTablist() <= 79) {
-            int tl = getTablist();
+        int tl = 0;
+        while (tl <= 79) {
             PacketContainer fakePlayerPacket = main.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
             fakePlayerPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
             String uuid = "7af87a08-170a-49be-8a1d-7dc8a89ba3";
@@ -1676,9 +1692,9 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                /*if (ChatColor.stripColor(name).length() > 28) {
+                if (ChatColor.stripColor(name).length() > 28) {
                     name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
-                }*/
+                }
 
                 latency = ((CraftPlayer)playerSlots.getTs().get(tl-21).getPlayer()).getHandle().ping;
                 prof.getProperties().put("textures", new Property("textures", main.getTextureValues().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId()), main.getTextureSigs().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId())));
@@ -1690,12 +1706,14 @@ public class RPGPlayer extends Leveleable {
             fakePlayerPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(pid));
             try {
                 main.getProtocolManager().sendServerPacket(p, fakePlayerPacket);
-                incTablist();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
+            tl++;
         }
         nameUpdate(player, false);
+
+        tabUpdate();
     }
 
     /*

@@ -731,7 +731,7 @@ public class Main extends JavaPlugin {
                     getRP(pl).pushFiles();
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 100L, 20 * 180);
+        }.runTaskTimer(this, 100L, 20 * 180);
     }
 
     public void passivesPeriodic() {
@@ -753,6 +753,19 @@ public class Main extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this, 10L, 5L);
+    }
+
+
+    public void updateTablistPeriodic() {
+        new BukkitRunnable() {
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (!isNPC(p) && getRP(p) != null) {
+                        getRP(p).tabUpdate();
+                    }
+                }
+            }
+        }.runTaskTimer(this, 20L, 10L);
     }
 
     /*
@@ -789,22 +802,6 @@ public class Main extends JavaPlugin {
         return signatures;
     }
 
-    public void tabUpdate() {
-        new BukkitRunnable() {
-            public void run() {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (!isNPC(p) && getPC().containsKey(p.getUniqueId()) && getRP(p) != null) {
-                        try {
-                            getRP(p).tabUpdate(false);
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }.runTaskTimer(Main.getInstance(), 10L, 10L);
-    }
-
     private Scoreboard sc;
     public Scoreboard getSC() {
         return sc;
@@ -826,7 +823,6 @@ public class Main extends JavaPlugin {
         protocolManager = ProtocolLibrary.getProtocolManager();
         so("&dRIFT&7: &fProtocolLib hooked!");
 
-        tabUpdate();
         sc = Bukkit.getScoreboardManager().getMainScoreboard();
         fake = sc.registerNewTeam("00Placeholders");
         /*Objective objective = sc.registerNewObjective("PL", "dummy", "ph");
@@ -955,6 +951,7 @@ public class Main extends JavaPlugin {
         remHpBar();
         riseBars();
         npcTags();
+        updateTablistPeriodic();
 
         /*for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {
