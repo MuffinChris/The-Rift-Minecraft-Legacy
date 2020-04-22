@@ -51,7 +51,7 @@ public class DamageListener implements Listener {
     public void attack (EntityDamageByEntityEvent e) {
         if ((main.isPlayer(e.getDamager()) || e.getDamager() instanceof Projectile) && !e.isCancelled() && !(e.getEntity() instanceof ArmorStand)) {
             Player damager;
-            if (e.getDamager() instanceof Projectile) {
+            if (e.getDamager() instanceof Projectile && !(e.getDamager() instanceof ThrownPotion)) {
                 Projectile p = (Projectile) e.getDamager();
                 if (p.getShooter() instanceof Player) {
                     damager = (Player) p.getShooter();
@@ -674,7 +674,6 @@ public class DamageListener implements Listener {
             }
         }
         if (!(e.getEntity() instanceof ArmorStand) && (e.getEntity() instanceof LivingEntity) && e.getDamager() instanceof ThrownPotion) {
-            Bukkit.broadcastMessage("Thrown Potion Dmg: " + e.getDamage());
             ThrownPotion pot = (ThrownPotion) e.getDamager();
             if (pot.getItem().getType() != Material.LINGERING_POTION) {
                 LivingEntity ent = (LivingEntity) e.getEntity();

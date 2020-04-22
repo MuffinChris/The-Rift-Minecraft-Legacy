@@ -1596,8 +1596,8 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                if (ChatColor.stripColor(name).length() > 28) {
-                    name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
+                if (ChatColor.stripColor(name).length() > 40) {
+                    name = name.substring(0, 41);
                 }
 
                 String gpName;
@@ -1692,8 +1692,8 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                if (ChatColor.stripColor(name).length() > 28) {
-                    name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
+                if (ChatColor.stripColor(name).length() > 40) {
+                    name = name.substring(0, 41);
                 }
 
                 latency = ((CraftPlayer)playerSlots.getTs().get(tl-21).getPlayer()).getHandle().ping;
