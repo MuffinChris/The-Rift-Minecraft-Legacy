@@ -22,9 +22,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -82,6 +84,13 @@ public class CustomDeath implements Listener {
                     chest.getBlock().getWorld().playEffect(chest.getBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onExplode (BlockExplodeEvent e) {
+        if (isGravestone(e.getBlock())) {
+            e.setCancelled(true);
         }
     }
 
@@ -155,6 +164,15 @@ public class CustomDeath implements Listener {
                     graveLoc.getBlock().removeMetadata("Time", Main.getInstance());
                     graveLoc.getBlock().removeMetadata("Owner", Main.getInstance());
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void antiHopper (InventoryMoveItemEvent e) {
+        if (e.getSource().getType() == InventoryType.CHEST && e.getSource().getLocation() != null && e.getDestination().getType() == InventoryType.HOPPER) {
+            if (isGravestone(e.getSource().getLocation().getBlock())) {
+                e.setCancelled(true);
             }
         }
     }

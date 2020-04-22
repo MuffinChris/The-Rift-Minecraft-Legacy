@@ -209,14 +209,16 @@ public class Skill {
     }
 
     public static void spellDamage(Player caster, LivingEntity target, PhysicalStack damage, ElementalStack edmg, double magicDamage, double trueDamage) {
-        if (!Main.getInstance().isValidTarget(target, caster)) {
-            return;
+        if (caster != null && caster.isOnline()) {
+            if (!Main.getInstance().isValidTarget(target, caster)) {
+                return;
+            }
+            if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
+                edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
+            }
+            Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, damage, magicDamage, trueDamage, edmg, 1));
+            damageNoKB(caster, target, damage.getTotal() + edmg.getTotal() + magicDamage + trueDamage);
         }
-        if (Main.getInstance().getRP(caster).getPassives().contains("WorldOnFire")) {
-            edmg.setFire(WorldOnFire.getEmp() * edmg.getFire());
-        }
-        Main.getInstance().getRP(caster).getDamages().add(new Damage(caster, target, damage, magicDamage, trueDamage, edmg, 1));
-        damageNoKB(caster, target, damage.getTotal() + edmg.getTotal() + magicDamage + trueDamage);
     }
 
     public static void healTarget(Player target, double hp) {

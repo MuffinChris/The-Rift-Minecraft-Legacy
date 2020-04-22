@@ -139,21 +139,11 @@ DIRECT LINE TODO LIST:
 
     -43. Players are not getting ignited lmao
 
-    -42. Stop hopper transfer of gravestones (and other ways of moving itmes do resaearch)
-
-    -41. Make Stun Timer (and other second based measurements in Skillbar) count by 0.5 (use rounding)
-
-    -40. Store player texture in RPGPlayer, update only if different!
-
     -39. Add fall damage reduction to big boss mobs
-
-    -38. Give EXP on kill. Make the death exp loss be math maxed to how much exp u have (check if works)
 
     -36. Add seasons
 
     -34. Reduce length of playername if too big
-
-    -33. Make NameTags change customName.
 
     -32. Convert Skill Descs to have Ability Power icon! Fix visual display (some skills have electric [pyroclasm] but only display fire)
 
@@ -161,22 +151,9 @@ DIRECT LINE TODO LIST:
 
     -30. Add warmups to Toggles
 
-    -26. Stunned message is spazzy (make all the same length, df format) (should be fixed)
-
-    -24. Players are able to crit?
-
     -23. Make Discord Bot for auto role (and future stuff)
 
     -22. Add custom item texture for Basic wand (and add the recipe) as well as Spear?
-
-    -21. Gravestone find location to place (not just on player)
-
-    -20. Call Supers Skill Upgrades lmao
-
-    -19. Make MenuManager to make menus that are ease
-
-    -18. Rework Skill System to instantiate skills (Give each class a dedicated skill listener)
-        - Cooldowns must still be stored independent of skill because recast
 
     -16. Reduce Environmental Damager as level increases (just more durable to environmental sources)
 
