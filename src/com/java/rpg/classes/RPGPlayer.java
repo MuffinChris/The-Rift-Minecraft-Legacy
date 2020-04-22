@@ -35,7 +35,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
-import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -720,10 +719,10 @@ public class RPGPlayer extends Leveleable {
         if (pclass != null) {
             for (StatusObject sz : so) {
                 for (Skill s : pclass.getSkills()) {
-                    sz.clearTitleIndiscrim(s.getName(), player);
+                    sz.clearBasedTitle(s.getName(), player);
                 }
                 for (Skill s : pclass.getUpgradedSkills()) {
-                    sz.clearTitleIndiscrim(s.getName(), player);
+                    sz.clearBasedTitle(s.getName(), player);
                 }
             }
         }
@@ -913,6 +912,7 @@ public class RPGPlayer extends Leveleable {
                         return "NotUpgraded";
                     }
                     s = st;
+                    Bukkit.broadcastMessage("Replaced to Upgraded Version: " + s.getName());
                 }
             }
             if (s != null) {
@@ -1108,7 +1108,7 @@ public class RPGPlayer extends Leveleable {
                             return "Casted";
                         } else {
                             DecimalFormat dF = new DecimalFormat("#.#");
-                            String cd = dF.format((s.getCooldown() / 20.0) - (timeLeft/1000.0));
+                            String cd = dF.format((cooldown / 20.0) - (timeLeft/1000.0));
                             if (!cd.contains(".")) {
                                 cd+=".0";
                             }
@@ -1584,9 +1584,9 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                if (ChatColor.stripColor(name).length() > 28) {
+                /*if (ChatColor.stripColor(name).length() > 28) {
                     name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
-                }
+                }*/
 
                 String gpName;
                 if (tl < 10) {
@@ -1676,9 +1676,9 @@ public class RPGPlayer extends Leveleable {
                     name = name + " " + suffix;
                 }
 
-                if (ChatColor.stripColor(name).length() > 28) {
+                /*if (ChatColor.stripColor(name).length() > 28) {
                     name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
-                }
+                }*/
 
                 latency = ((CraftPlayer)playerSlots.getTs().get(tl-21).getPlayer()).getHandle().ping;
                 prof.getProperties().put("textures", new Property("textures", main.getTextureValues().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId()), main.getTextureSigs().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId())));

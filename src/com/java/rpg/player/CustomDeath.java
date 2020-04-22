@@ -229,15 +229,13 @@ public class CustomDeath implements Listener {
                     continue;
                 }
                 for (int x = -1 - n; x <= 1 + n; x++) {
-                    if (Math.abs(x) <= n) {
-                        continue;
-                    }
                     for (int z = -1 - n; z <= 1 + n; z++) {
-                        if (Math.abs(z) <= n) {
+                        if (Math.abs(x) <= n && Math.abs(z) <= n) {
                             continue;
                         }
-                        if (loc.add(x, y, z).getBlock().getType() == Material.AIR || loc.add(x, n, z).getBlock().getType() == Material.CAVE_AIR) {
-                            return loc.add(x, y, z);
+                        Location newLoc = loc.clone().add(x,y,z);
+                        if (newLoc.getBlock().getType() == Material.AIR || newLoc.getBlock().getType() == Material.CAVE_AIR) {
+                            return newLoc;
                         }
                     }
                 }

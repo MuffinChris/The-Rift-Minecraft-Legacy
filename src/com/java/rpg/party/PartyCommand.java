@@ -228,7 +228,7 @@ public class PartyCommand implements CommandExecutor, Listener {
                                 Main.msg(p, "&cDisabled Party Chat.");
                                 return false;
                             } else {
-                                main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Global);
+                                main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Party);
                                 Main.msg(p, "&aEnabled Party Chat.");
                                 return false;
                             }

@@ -45,7 +45,7 @@ public class TownManager implements Listener {
 
             Citizen c = main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId());
 
-            if (c.getTown().equals(Citizen.defaultTownName)) {
+            if (c.getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
                 return;
             }
 

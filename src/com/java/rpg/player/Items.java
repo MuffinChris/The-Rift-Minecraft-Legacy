@@ -578,7 +578,7 @@ public class Items implements Listener {
     }
 
     public void clearArmorWS(Player p) {
-        main.getRP(p).getWalkspeed().clearBasedTitle("ARMOR", p);
+        main.getRP(p).getWalkspeed().clearBasedTitleDurationless("ARMOR", p);
     }
 
     /*@EventHandler

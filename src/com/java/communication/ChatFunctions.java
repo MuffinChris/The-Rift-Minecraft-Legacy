@@ -130,7 +130,7 @@ public class ChatFunctions implements Listener {
             boolean townchat = false;
 
             if (main.getRP(e.getPlayer()).getChatChannel() == RPGPlayer.ChatChannel.Town) {
-                if (!main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId()).getTown().equals(Citizen.defaultTownName)) {
+                if (!main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId()).getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
                     townchat = true;
                 }
             }

@@ -6,10 +6,7 @@ import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
 import com.java.rpg.damage.utility.PhysicalStack;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
@@ -31,7 +28,7 @@ public class Flamethrower extends Skill {
     private int tickrate = 2;
 
     public Flamethrower() {
-        super("Flamethrower", 0, 60, 0, 0,  SkillType.CAST, null, Material.FIRE_CHARGE);
+        super("Flamethrower", 0, 60, 0, 0,  SkillType.TOGGLE, null, Material.FIRE_CHARGE);
         setToggleMana(7);
         setToggleTicks(tickrate);
         setToggleCooldown(10);
@@ -66,13 +63,14 @@ public class Flamethrower extends Skill {
         if (!super.toggleCont(p)) {
             return false;
         }
+        Bukkit.broadcastMessage("spewflame!!!");
         spewFlame(p, getDmg(p)/(1.0 * (20/(tickrate * 1.0))), getFireDmg(p)/(1.0 * (20/(tickrate * 1.0))));
         return false;
     }
 
     public void toggleEnd(Player p) {
         super.toggleEnd(p);
-        main.getRP(p).getWalkspeed().clearBasedTitle(getName(), p);
+        main.getRP(p).getWalkspeed().clearBasedTitleDurationless(getName(), p);
         main.getRP(p).updateWS();
         p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
         p.getLocation().getWorld().spawnParticle(Particle.SMOKE_LARGE, p.getLocation().add(new Vector(0, 0.25, 0)), 25, 0.01, 0.01, 0.01, 0.01, null, true);

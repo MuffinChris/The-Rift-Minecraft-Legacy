@@ -140,7 +140,11 @@ public class PlayerClass {
 
     public List<Skill> getUpgradedSkills() {
         List<Skill> upgraded = new ArrayList<>();
-        upgraded.addAll(skills);
+        for (Skill s : skills) {
+            if (s.isUpgradeable()) {
+                upgraded.add(s.getUpgradedSkill());
+            }
+        }
         return upgraded;
     }
 

@@ -132,6 +132,8 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -37. See what happens if you rename a skill or add a new one (config break or something? idk)
+
     -36. Add seasons
 
     -35. Make damage log for each player (fight info / history purposes)

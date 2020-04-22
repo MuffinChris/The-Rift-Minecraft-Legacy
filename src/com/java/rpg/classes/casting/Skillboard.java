@@ -21,10 +21,10 @@ public class Skillboard {
     private Main main = Main.getInstance();
 
     private UUID uuid;
-    private BossBar statusesBossbar;
+    private BossBar skillCastingBar;
     private BossBar bossbarTwo_5;
-    private BossBar skillCastBossbar;
-    private BossBar messagesBossbar;
+    private BossBar statusesBossbar;
+    private BossBar infoBossbar;
     private BossBar hpbarBossbar;
     private BossBar bossbarThree_6;
     private boolean skillbar;
@@ -50,13 +50,13 @@ public class Skillboard {
         hpbarBossbar.setColor(BarColor.YELLOW);
     }
 
-    public void setMessagesBossbar(String s) {
-        if (messagesBossbar != null) {
-            messagesBossbar.setTitle(Main.color(s));
+    public void setInfoBossbar(String s) {
+        if (infoBossbar != null) {
+            infoBossbar.setTitle(Main.color(s));
             new BukkitRunnable() {
                 public void run() {
-                    if (messagesBossbar != null) {
-                        messagesBossbar.setTitle("");
+                    if (infoBossbar != null) {
+                        infoBossbar.setTitle("");
                     }
                 }
             }.runTaskLater(Main.getInstance(), 80L);
@@ -99,7 +99,7 @@ public class Skillboard {
             statuses = statuses.substring(0, statuses.length() - 2);
         }
 
-        skillCastBossbar.setTitle(Main.color(statuses));
+        statusesBossbar.setTitle(Main.color(statuses));
     }
 
     public void updateSkillbar() {
@@ -142,7 +142,7 @@ public class Skillboard {
                 output = output.substring(0, output.length() - 4);
             }
 
-            statusesBossbar.setTitle(Main.color(output));
+            skillCastingBar.setTitle(Main.color(output));
 
             /*ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
             ItemMeta meta = item.getItemMeta();
@@ -159,7 +159,7 @@ public class Skillboard {
             }*/
 
         } else {
-            statusesBossbar.setTitle("");
+            skillCastingBar.setTitle("");
         }
     }
 
@@ -204,10 +204,10 @@ public class Skillboard {
     public Skillboard(Player p) {
         skillbar = false;
         uuid = p.getUniqueId();
-        skillCastBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
-        bossbarTwo_5 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
-        messagesBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         statusesBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        bossbarTwo_5 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        infoBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        skillCastingBar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         hpbarBossbar = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         bossbarThree_6 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         /*bossbarPH2 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
@@ -217,18 +217,18 @@ public class Skillboard {
         bossbarPH6 = Bukkit.getServer().createBossBar("", BarColor.YELLOW, BarStyle.SOLID);*/
         uuid = p.getUniqueId();
         hpbarBossbar.addPlayer(p);
+        skillCastingBar.addPlayer(p);
+        infoBossbar.addPlayer(p);
         statusesBossbar.addPlayer(p);
-        skillCastBossbar.addPlayer(p);
-        messagesBossbar.addPlayer(p);
         bossbarTwo_5.addPlayer(p);
         bossbarThree_6.addPlayer(p);
 
         setScoreBoard(p);
         update();
         hpbarBossbar.setVisible(true);
+        skillCastingBar.setVisible(true);
         statusesBossbar.setVisible(true);
-        skillCastBossbar.setVisible(true);
-        messagesBossbar.setVisible(true);
+        infoBossbar.setVisible(true);
         /*bossbarPH2.setVisible(true);
         bossbarPH3.setVisible(true);
         bossbarPH4.setVisible(true);
@@ -240,10 +240,10 @@ public class Skillboard {
 
     public void scrub() {
         uuid = null;
-        statusesBossbar = null;
+        skillCastingBar = null;
         bossbarTwo_5 = null;
-        skillCastBossbar = null;
-        messagesBossbar = null;
+        statusesBossbar = null;
+        infoBossbar = null;
         hpbarBossbar = null;
         bossbarThree_6 = null;
         /*bossbarPH2 = null;
@@ -278,11 +278,11 @@ public class Skillboard {
 
     public void updateWarmup(Skill s, int warmup) {
 
-        messagesBossbar.setTitle(Main.color("&bChanneling ") + s.getName() + "...");
+        infoBossbar.setTitle(Main.color("&bChanneling ") + s.getName() + "...");
         new BukkitRunnable() {
             public void run() {
-                if (messagesBossbar != null && messagesBossbar.getTitle().equalsIgnoreCase(Main.color("&bChanneling ") + s.getName() + "...")) {
-                    messagesBossbar.setTitle("");
+                if (infoBossbar != null && infoBossbar.getTitle().equalsIgnoreCase(Main.color("&bChanneling ") + s.getName() + "...")) {
+                    infoBossbar.setTitle("");
                 }
             }
         }.runTaskLater(Main.getInstance(), warmup);
@@ -292,11 +292,11 @@ public class Skillboard {
 
     public void updateCast(Skill s) {
 
-        messagesBossbar.setTitle(Main.color("&bCasted ") + s.getName() + "...");
+        infoBossbar.setTitle(Main.color("&bCasted ") + s.getName() + "...");
         new BukkitRunnable() {
             public void run() {
-                if (messagesBossbar != null && messagesBossbar.getTitle().equalsIgnoreCase(Main.color("&bCasted ") + s.getName() + "...")) {
-                    messagesBossbar.setTitle("");
+                if (infoBossbar != null && infoBossbar.getTitle().equalsIgnoreCase(Main.color("&bCasted ") + s.getName() + "...")) {
+                    infoBossbar.setTitle("");
                 }
             }
         }.runTaskLater(Main.getInstance(), 40L);
@@ -304,28 +304,28 @@ public class Skillboard {
 
     public void clearChannel() {
 
-        if (messagesBossbar.getTitle().contains("Channeling")) {
-            messagesBossbar.setTitle("");
+        if (infoBossbar.getTitle().contains("Channeling")) {
+            infoBossbar.setTitle("");
         }
     }
 
     public void clearBoard() {
 
-        messagesBossbar.setTitle("");
+        infoBossbar.setTitle("");
 
 
     }
 
     public void updateToggle(Skill s) {
 
-        if (messagesBossbar.getTitle().equals("")) {
-            messagesBossbar.setTitle(Main.color("&bEnabled ") + s.getName() + "");
+        if (infoBossbar.getTitle().equals("")) {
+            infoBossbar.setTitle(Main.color("&bEnabled ") + s.getName() + "");
         }
     }
 
     public void endToggle(Skill s) {
-        if (messagesBossbar.getTitle().contains("Enabled")) {
-            messagesBossbar.setTitle("");
+        if (infoBossbar.getTitle().contains("Enabled")) {
+            infoBossbar.setTitle("");
         }
     }
 

@@ -120,7 +120,7 @@ public class Leveleable {
         }
 
         DecimalFormat dF =  new DecimalFormat("#.##");
-        main.getRP(p).getBoard().setMessagesBossbar("&e&lLEVEL UP &7- &6" + playerclass.getName() + " &7(&f" + (oldlvl) + " &7-> &f" + newlvl + "&7)");
+        main.getRP(p).getBoard().setInfoBossbar("&e&lLEVEL UP &7- &6" + playerclass.getName() + " &7(&f" + (oldlvl) + " &7-> &f" + newlvl + "&7)");
         Main.msg(p, "");
         Main.msg(p, "&e&lLEVEL UP &7- &6" + playerclass.getName() + " &7(&f" + (oldlvl) + " &7-> &f" + newlvl + "&7)");
         Main.msg(p, "");
@@ -196,10 +196,10 @@ public class Leveleable {
                             DecimalFormat dF = new DecimalFormat("#");
                             if (pp.equals(p)) {
                                 Main.msg(pp, "   &7[+" + dF.format(xp) + "&7 XP]");
-                                rp.getBoard().setMessagesBossbar("&7[+" + dF.format(xp) + "&7 XP]");
+                                rp.getBoard().setInfoBossbar("&7[+" + dF.format(xp) + "&7 XP]");
                             } else {
                                 Main.msg(pp, "   &7[+" + dF.format(xp) + "&7 XP]" + " &7(" + p.getName() + "&7)");
-                                rp.getBoard().setMessagesBossbar("&7[+" + dF.format(xp) + "&7 XP]" + " &7(" + p.getName() + "&7)");
+                                rp.getBoard().setInfoBossbar("&7[+" + dF.format(xp) + "&7 XP]" + " &7(" + p.getName() + "&7)");
                             }
                         }
                         return;
@@ -212,7 +212,7 @@ public class Leveleable {
             if (main.getRP(p).getSendExp()) {
                 Main.msg(p, "   &7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
             }
-            main.getRP(p).getBoard().setMessagesBossbar("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
+            main.getRP(p).getBoard().setInfoBossbar("&7[" + sign + dF.format(xp) + "&7 XP]" + flavor);
             Hologram magic = new Hologram(p, t, "&7[" + sign + dF.format(xp) + " XP] &7(&f" + p.getName() + "&7)", Hologram.HologramType.EXP, new ArrayList<>(Arrays.asList(p)));
             magic.rise();
             levelup();

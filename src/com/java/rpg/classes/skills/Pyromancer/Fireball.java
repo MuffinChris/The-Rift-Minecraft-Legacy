@@ -37,8 +37,8 @@ public class Fireball extends Skill implements Listener {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&7Shoot a flaming projectile that travels for &e" + range + "&7 seconds."));
-        desc.add(Main.color("&7It deals &b" + getMagicDmg(p) + " &7+ " + getEDmg(p) + " &7damage to nearby foes"));
-        desc.add(Main.color("&7and ignites them for 5 seconds."));
+        desc.add(Main.color("&7It deals &b" + getMagicDmg(p) + " &7+ " + getEDmg(p).getFancyNumberFire() + " &7damage"));
+        desc.add(Main.color("&7and ignites targets hit for 5 seconds."));
         return desc;
     }
 

@@ -123,7 +123,7 @@ public class WorldOnFire extends Skill implements Listener {
 
     public void toggleEnd(Player p) {
         super.toggleEnd(p);
-        main.getRP(p).getBonusAP().clearBasedTitle(getName(), p);
+        main.getRP(p).getBonusAP().clearBasedTitleDurationless(getName(), p);
         endDamage(p);
     }
 

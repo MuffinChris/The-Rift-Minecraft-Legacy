@@ -57,7 +57,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         Player p = (Player) sender;
 
         if (args.length == 0) {
-            if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equals(Citizen.defaultTownName))
+            if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase(Citizen.defaultTownName))
                 sendTownlessInv(p);
             else
                 sendTownInv(p);
@@ -740,7 +740,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     }
 
     private boolean toggleTownChat(Player p){
-        if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown() == Citizen.defaultTownName) {
+        if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
             Main.msg(p, "&cYou must be in a town to use this command");
             main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Global);
             return false;
