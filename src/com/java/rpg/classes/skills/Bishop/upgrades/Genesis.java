@@ -1,9 +1,10 @@
-package com.java.rpg.classes.skills.Bishop.supers;
+package com.java.rpg.classes.skills.Bishop.upgrades;
 
 import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffectType;
@@ -20,7 +21,7 @@ public class Genesis extends Skill {
     
     private Main main = Main.getInstance();
     public Genesis() {
-        super("Genesis", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST");
+        super("Genesis", 200, 160, 30, 6, SkillType.CAST, null, null);
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
@@ -46,11 +47,11 @@ public class Genesis extends Skill {
                 ent.setKiller(p);
                 ent.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(80,2));
                 
-                spellDamage(p, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
+                spellDamage(p, ent, new PhysicalStack(), new ElementalStack(0, 0, 0, 50, 0), damage, 0);
             }
             ent.setKiller(p);
             ent.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(80,2));
-            spellDamage(p, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
+            spellDamage(p, ent, new PhysicalStack(), new ElementalStack(0, 0, 0, 50, 0), damage, 0);
     	}
     }
     

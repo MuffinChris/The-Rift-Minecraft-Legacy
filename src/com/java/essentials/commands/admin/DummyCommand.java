@@ -1,6 +1,7 @@
 package com.java.essentials.commands.admin;
 
 import com.java.Main;
+import com.java.rpg.entity.EntityUtils;
 import com.java.rpg.entity.Mobs;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -40,7 +41,7 @@ public class DummyCommand implements CommandExecutor, Listener {
                 ent.setCanPickupItems(false);
                 ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(1000000);
                 ent.setHealth(100000);
-                Mobs.setLevel(ent, 50);
+                EntityUtils.setLevel(ent, 50);
             } else {
                 Main.msg(p, Main.getInstance().noperm);
             }

@@ -3,6 +3,7 @@ package com.java.rpg.classes.skills.Bishop;
 import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 
@@ -32,7 +33,7 @@ public class Heal extends Skill {
 	// You should not be able to die with a healer spamming heal off cd on you,
 	// unless you have some healing debuff, or you get oneshot
 	public Heal() {
-		super("Heal", 80, 20, 0, 3, "%player% has shot a fireball!", "CAST");
+		super("Heal", 80, 20, 0, 3, SkillType.CAST, null, null);
 		DecimalFormat df = new DecimalFormat("#");
 		List<String> desc = new ArrayList<>();
 		desc.add(Main.color("&bActive:"));
@@ -51,7 +52,7 @@ public class Heal extends Skill {
 					|| ent instanceof WitherSkeleton || ent instanceof Wither || ent instanceof Drowned
 					|| ent instanceof Husk || ent instanceof PigZombie || ent instanceof ZombieVillager
 					|| ent instanceof Phantom) {
-				spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0));
+				spellDamage(p, ent, new PhysicalStack(), new ElementalStack(0, 0, 0, 50, 0), getDmg(p), 0 );
 				p.spawnParticle(Particle.VILLAGER_ANGRY, p.getEyeLocation(), 5, 0.5, 0.5, 0.5);
 			}
 			if (ent instanceof Player) {

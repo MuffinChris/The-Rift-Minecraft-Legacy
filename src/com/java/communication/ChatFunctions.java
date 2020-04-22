@@ -1,6 +1,10 @@
 package com.java.communication;
 
 import com.java.Main;
+import com.java.rpg.classes.RPGPlayer;
+import com.java.towns.Citizen;
+import com.java.towns.Town;
+import com.java.towns.TownManager;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -16,6 +20,7 @@ import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.util.UUID;
 
 public class ChatFunctions implements Listener {
 
@@ -100,20 +105,7 @@ public class ChatFunctions implements Listener {
 
     public static void updateName(Player p) {
         Chat c = Main.getInstance().getChat();
-        //c.setPlayerPrefix(p, Main.color("&7"));
         c.setPlayerSuffix(p, Main.color("&8[&eLv. " + Main.getInstance().getPC().get(p.getUniqueId()).getLevel() + "&8]"));
-		/*if (p.hasPermission("core.helper")) {
-			c.setPlayerPrefix(p, Main.color("&8[&aHelper&8]&f"));
-		}
-		if (p.hasPermission("core.mod")) {
-			c.setPlayerPrefix(p, Main.color("&8[&bMod&8]&f"));
-		}
-		if (p.hasPermission("core.admin")) {
-			c.setPlayerPrefix(p, Main.color("&8[&cAdmin&8]&f"));
-		}
-		if (p.hasPermission("core.owner")) {
-			c.setPlayerPrefix(p, Main.color("&8[&6Owner&8]&e"));
-		}*/
     }
 
     @EventHandler
@@ -130,11 +122,19 @@ public class ChatFunctions implements Listener {
     public void onChat (AsyncPlayerChatEvent e) {
         if (!e.isCancelled()) {
             boolean partychat = false;
-            if (main.getPChat().containsKey(e.getPlayer())) {
-                if (main.getPChat().get(e.getPlayer()) && main.getPM().hasParty(e.getPlayer())) {
+            if (main.getRP(e.getPlayer()).getChatChannel() == RPGPlayer.ChatChannel.Party) {
+                if (main.getPM().hasParty(e.getPlayer())) {
                     partychat = true;
                 }
             }
+            boolean townchat = false;
+
+            if (main.getRP(e.getPlayer()).getChatChannel() == RPGPlayer.ChatChannel.Town) {
+                if (!main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId()).getTown().equals(Citizen.defaultTownName)) {
+                    townchat = true;
+                }
+            }
+
             Chat chat = main.getChat();
             if (e.getPlayer().hasPermission("core.chatcolor")) {
                 e.setMessage(Main.color(e.getMessage()));
@@ -144,7 +144,7 @@ public class ChatFunctions implements Listener {
             if (prefix.length() > 2) {
                 prefix += " ";
             }
-            if (!partychat) {
+            if (!partychat && !townchat) {
                 String format = Main.color(prefix + "%s " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f %s");
                 e.setFormat(format);
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -152,10 +152,27 @@ public class ChatFunctions implements Listener {
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
                     }
                 }
-            } else {
+            } else if (partychat) {
                 e.setCancelled(true);
                 main.getPM().getParty(e.getPlayer()).sendMessage("&a&l[PARTY] &7" + (e.getPlayer().getName() + " " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f " + e.getMessage()));
                 Main.so("   &a&l[PARTY] &7" + (e.getPlayer().getName() + " " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f " + e.getMessage()));
+            } else if (townchat) {
+                e.setCancelled(true);
+                Town town = null;
+                for (Town t : main.getTowns()) {
+                    if (t.getName().equalsIgnoreCase(main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId()).getTown())) {
+                        town = t;
+                    }
+                }
+                if (town == null) {
+                    Main.msg(e.getPlayer(), "&cInternal Error Occurred.");
+                    return;
+                }
+                e.setCancelled(true);
+                for(UUID uid : town.getCitizenList()){
+                    Main.msg(Bukkit.getPlayer(uid), "&b&l[TOWN] &7" + (e.getPlayer().getName() + " " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f " + e.getMessage()));
+                }
+                Main.so( "   &b&l[TOWN] &7" + (e.getPlayer().getName() + " " + chat.getPlayerSuffix(e.getPlayer()) + " &8\u00BB" + "&f " + e.getMessage()));
             }
         }
     }

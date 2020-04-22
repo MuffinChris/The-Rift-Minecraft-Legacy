@@ -49,12 +49,13 @@ public class FlameTornado extends Skill {
             tornados.remove(p.getUniqueId());
         }
         tornados.put(p.getUniqueId(), p.getLocation());
+        /*
         if (!getTasks().isEmpty()) {
             for (int i : getTasks()) {
                 Bukkit.getScheduler().cancelTask(i);
             }
             getTasks().clear();
-        }
+        }*/
         new BukkitRunnable() {
             int times = 0;
             public void run() {

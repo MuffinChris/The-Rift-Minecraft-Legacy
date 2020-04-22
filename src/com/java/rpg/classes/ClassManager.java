@@ -3,12 +3,10 @@ package com.java.rpg.classes;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
 import com.java.rpg.classes.skills.Earthshaker.*;
-import com.java.rpg.classes.skills.Earthshaker.supers.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
-import com.java.rpg.classes.skills.Pyromancer.supers.Conflagration;
-import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
 import com.java.rpg.classes.skills.Wanderer.Adrenaline;
 import com.java.rpg.classes.skills.Wanderer.Bulwark;
+import com.java.rpg.classes.statuses.Stuns;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.utility.RPGConstants;
 import org.bukkit.Bukkit;
@@ -24,8 +22,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class ClassManager implements Listener {
@@ -71,7 +67,7 @@ public class ClassManager implements Listener {
 
     @EventHandler
     public void onClick (PlayerInteractEvent e) {
-        if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+        if (!Stuns.isStunned(e.getPlayer()) && e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             if (main.getPC().get(e.getPlayer().getUniqueId()) != null) {
                 if (main.getPC().get(e.getPlayer().getUniqueId()).getStatuses() != null) {
                     List<String> statuses = main.getPC().get(e.getPlayer().getUniqueId()).getStatuses();

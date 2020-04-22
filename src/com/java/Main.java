@@ -17,6 +17,7 @@ import com.java.essentials.commands.admin.warp.DelWarpCommand;
 import com.java.essentials.commands.admin.warp.SetWarpCommand;
 import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
+import com.java.rpg.classes.skills.Wanderer.WandererListeners;
 import com.java.rpg.entity.EntityUtils;
 import com.java.towns.Citizen;
 import com.java.towns.Town;
@@ -468,11 +469,6 @@ public class Main extends JavaPlugin {
     public Map<Player, Party> invite = new HashMap<Player, Party>();
     public Map<Player, Party> getInvites() {
         return invite;
-    }
-
-    public Map<Player, Boolean> pchat = new HashMap<Player, Boolean>();
-    public Map<Player, Boolean> getPChat() {
-        return pchat;
     }
 
     private PartyManager pm;
@@ -938,6 +934,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BindCommand(), this);
 
         Bukkit.getPluginManager().registerEvents(new PyromancerListeners(), this);
+        Bukkit.getPluginManager().registerEvents(new WandererListeners(), this);
         so("&dRIFT: &fRegistered events!");
 
         final BukkitScheduler scheduler = Bukkit.getScheduler();

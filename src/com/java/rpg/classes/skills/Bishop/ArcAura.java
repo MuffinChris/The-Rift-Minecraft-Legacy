@@ -17,7 +17,7 @@ public class ArcAura extends Skill {
 	private double range = 6;
 	
 	public ArcAura() {
-		super("Arcane Aura", 0, 0, 0, 3, "%player% has shot a fireball!", "PASSIVE");
+		super("Arcane Aura", 0, 0, 0, 3, SkillType.PASSIVE, null, null);
 		DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bPassive:"));

@@ -45,7 +45,7 @@ public class TownManager implements Listener {
 
             Citizen c = main.getUUIDCitizenMap().get(e.getPlayer().getUniqueId());
 
-            if (c.getTown().equals("None")) {
+            if (c.getTown().equals(Citizen.defaultTownName)) {
                 return;
             }
 
@@ -101,7 +101,7 @@ public class TownManager implements Listener {
     public void onChat(AsyncPlayerChatEvent e) {
 
         Player sender = e.getPlayer();
-        if (!main.getUUIDCitizenMap().containsKey(sender.getUniqueId())) return; // idk if this can ever even be false
+        if (!main.getUUIDCitizenMap().containsKey(sender.getUniqueId())) return; // cant be false pepelaugh
 
         Citizen c = main.getUUIDCitizenMap().get(sender.getUniqueId());
         if (c.getCreationStatus().equals("Prompted")) { // creating town
@@ -131,12 +131,6 @@ public class TownManager implements Listener {
             c.setDemoteStatus("Normal");
 
             tcc.demotePlayer(sender, receiverName);
-        } else if (c.getTownChat()){
-            Town t = findTown(c);
-            e.setCancelled(true);
-            for(UUID uid : t.getCitizenList()){
-                Main.msg(Bukkit.getPlayer(uid), e.getMessage());
-            }
         }
 
     }

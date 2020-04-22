@@ -1,6 +1,7 @@
 package com.java.rpg.classes.casting;
 
 import com.java.Main;
+import com.java.rpg.classes.statuses.Stuns;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -99,7 +100,7 @@ public class BindCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onRightClick (PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (!Stuns.isStunned(e.getPlayer()) && e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (e.getHand() == EquipmentSlot.HAND) {
                 if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
                     if (!getBind(e.getPlayer(), e.getPlayer().getInventory().getItemInMainHand()).isEmpty()) {

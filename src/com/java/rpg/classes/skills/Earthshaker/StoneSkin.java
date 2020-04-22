@@ -1,5 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
+import com.java.rpg.classes.skills.Earthshaker.upgrades.UForce;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -25,10 +27,16 @@ public class StoneSkin extends Skill implements Listener {
     }
     
     public StoneSkin() {
-        super("Stone Skin", 0, 0, 0, 5, " ", "PASSIVE");
+        super("Stone Skin", 0, 0, 0, 5, SkillType.PASSIVE, new UForce(), Material.STONE);
     }
 
     public List<String> getDescription(Player p) {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&7Hotdog"));
+        return desc;
+    }
+
+    public List<String> getDescription() {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&7Hotdog"));
         return desc;

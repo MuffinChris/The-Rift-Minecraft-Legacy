@@ -1,9 +1,11 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.skills.Earthshaker.upgrades.Petrify;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
+import com.java.rpg.damage.utility.PhysicalStack;
 import com.java.rpg.party.Party;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,7 +32,7 @@ public class RockToss extends Skill implements Listener {
     }
     
     public RockToss() {
-    	super("RockToss", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST-TARGET");
+    	super("RockToss", 100, 20, 0, 5, SkillType.TARGET, new Petrify(),  Material.FLINT);
         setTargetRange(range);
     }
 
@@ -39,6 +41,15 @@ public class RockToss extends Skill implements Listener {
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fSummon a large rock above an emnemy"));
         desc.add(Main.color("&fStunning all enemies for" + stunD/20 + "seconds and dealing " + getDmg(p) + "damage" ));
+        desc.add(Main.color("&fAround the target. "));
+        return desc;
+    }
+
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&fSummon a large rock above an emnemy"));
+        desc.add(Main.color("&fStunning all enemies for" + stunD/20 + "seconds and dealing " + damage + "damage" ));
         desc.add(Main.color("&fAround the target. "));
         return desc;
     }
@@ -65,7 +76,7 @@ public class RockToss extends Skill implements Listener {
                 }
             }
             ent.setKiller(p);
-            spellDamage(p, ent, getDmg(p), new ElementalStack());
+            spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p), 0);
             stun(p, ent, stunD);
     	}
     }

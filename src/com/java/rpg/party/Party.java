@@ -1,6 +1,7 @@
 package com.java.rpg.party;
 
 import com.java.Main;
+import com.java.rpg.classes.RPGPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -98,11 +99,7 @@ public class Party {
     public void disband() {
         sendMessage("&8» &e&l" + leader.getName() + " &fhas disbanded the party!");
         for (Player p : players) {
-            if (main.getPChat().containsKey(p)) {
-                main.getPChat().replace(p, false);
-            } else {
-                main.getPChat().put(p, false);
-            }
+            main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Global);
         }
         leader = null;
         players = null;

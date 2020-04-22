@@ -26,6 +26,13 @@ public class Adrenaline extends Skill {
         return desc;
     }
 
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&fSpeed yourself up for &a" + duration + " &fseconds!"));
+        return desc;
+    }
+
     public void cast(Player p) {
         super.cast(p);
         main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), 12, duration * 20, System.currentTimeMillis(), false));

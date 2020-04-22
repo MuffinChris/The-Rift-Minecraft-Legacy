@@ -1,8 +1,9 @@
-package com.java.rpg.classes.skills.Earthshaker.supers;
+package com.java.rpg.classes.skills.Earthshaker.upgrades;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.damage.utility.ElementalStack;
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
@@ -30,7 +31,7 @@ public class UForce extends Skill implements Listener {
     }
 
     public UForce() {
-    	super("Unstoppable Force", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST");
+    	super("Unstoppable Force", 100, 20, 0, 5, SkillType.CAST, null, null);
     	DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         setDescription(desc);
@@ -75,7 +76,7 @@ public class UForce extends Skill implements Listener {
     public void collide(Player p) {
     	for(LivingEntity ent: p.getLocation().getNearbyLivingEntities(hitRad)) {
     		ent.setVelocity(new Vector(0,launchVelocity,0));
-    		spellDamage(p,ent,getDmg(p),new ElementalStack(0,200,0,0,0));
+    		spellDamage(p,ent,new PhysicalStack(),new ElementalStack(0,200,0,0,0), getDmg(p), 0);
     	}
     }
 } 

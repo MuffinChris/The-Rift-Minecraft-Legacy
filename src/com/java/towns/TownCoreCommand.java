@@ -1,6 +1,7 @@
 package com.java.towns;
 
 import com.java.Main;
+import com.java.rpg.classes.RPGPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -56,7 +57,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         Player p = (Player) sender;
 
         if (args.length == 0) {
-            if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equals("None"))
+            if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equals(Citizen.defaultTownName))
                 sendTownlessInv(p);
             else
                 sendTownInv(p);
@@ -356,7 +357,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     public boolean createNewTown(Player p, String townName) {
 
         if (townName.equalsIgnoreCase("")) {
-            if (!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase("None")) {
+            if (!main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
                 Main.msg(p, Main.color("&4You are already in a town!"));
                 return false;
             }
@@ -387,7 +388,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return false;
             }
 
-            if (townName.equalsIgnoreCase("None")) {
+            if (townName.equalsIgnoreCase(Citizen.defaultTownName)) {
                 Main.msg(p, Main.color("&4That is a protected town name!"));
                 return false;
             }
@@ -411,14 +412,14 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         // TODO: if the owner of a town leaves -- then either the town should disband or the max level role needs to be transferred (randomly to a maxlvl -1 member?)
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
-        if (c.getTown().equalsIgnoreCase("None")) {
+        if (c.getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
             Main.msg(p, "&4You aren't in any town!");
             return false;
         }
 
         Town t = getTownFromCitizen(c);
 
-        c.setTown("None"); // default values
+        c.setTown(Citizen.defaultTownName); // default values
         c.setRank(-1); // %
         Main.msg(p, "&4You have successfully left " + t.getName());
 
@@ -463,7 +464,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         for (UUID pt : t.getCitizenList()) {
             Citizen ct = main.getUUIDCitizenMap().get(pt);
             ct.setRank(-1);
-            ct.setTown("None");
+            ct.setTown(Citizen.defaultTownName);
 
             ct.pushFiles();
         }
@@ -739,14 +740,19 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     }
 
     private boolean toggleTownChat(Player p){
-        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
-        if (c.getTownChat()){
-            Main.msg(p, "You have disabled town chat.");
+        if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown() == Citizen.defaultTownName) {
+            Main.msg(p, "&cYou must be in a town to use this command");
+            main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Global);
+            return false;
+        }
+        if (main.getRP(p).getChatChannel() == RPGPlayer.ChatChannel.Town){
+            Main.msg(p, "&cYou have disabled town chat.");
+            main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Global);
         }
         else {
-            Main.msg(p, "You have enabled town chat.");
+            Main.msg(p, "&aYou have enabled town chat.");
+            main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Town);
         }
-        c.setTownChat(!c.getTownChat());
         return true;
     }
 

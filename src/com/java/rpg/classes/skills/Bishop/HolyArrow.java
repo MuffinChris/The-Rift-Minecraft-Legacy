@@ -3,6 +3,7 @@ package com.java.rpg.classes.skills.Bishop;
 import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
+import com.java.rpg.damage.utility.PhysicalStack;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
@@ -38,7 +39,7 @@ public class HolyArrow extends Skill implements Listener {
     }
 
     public HolyArrow() {
-        super("HolyArrow", 200, 160, 30, 6, "%player% has shot a fireball!", "CAST");
+        super("HolyArrow", 200, 160, 30, 6, SkillType.CAST, null, null);
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));
@@ -187,7 +188,7 @@ public class HolyArrow extends Skill implements Listener {
                     continue;
                 }
             }
-            spellDamage(caster, ent, damage, new ElementalStack(0, 0, 0, 50, 0));
+            spellDamage(caster, ent, new PhysicalStack(), new ElementalStack(0, 0, 0, 50, 0), damage, 0);
             ent.getLocation().getWorld().playSound(ent.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
         }
     }

@@ -1,8 +1,10 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.skills.Earthshaker.upgrades.ObSkin;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
@@ -25,7 +27,7 @@ public class Quake extends Skill {
     }
 	
     public Quake() {
-    	super("Quake", 200, 200, 0, 3, "player has shot a fireball", "CAST");
+    	super("Quake", 200, 200, 0, 3, SkillType.CAST, new ObSkin(),  Material.COARSE_DIRT);
     }
 
     public List<String> getDescription(Player p) {
@@ -33,6 +35,13 @@ public class Quake extends Skill {
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fShake the Earth beneath you,"));
         desc.add(Main.color("&fDealing " + getDmg(p) + " to all enemies around you"));
+        return desc;
+    }
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&fShake the Earth beneath you,"));
+        desc.add(Main.color("&fDealing " + damage + " to all enemies around you"));
         return desc;
     }
     
@@ -53,7 +62,7 @@ public class Quake extends Skill {
                 }
             }
             ent.setKiller(p);
-            spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0));
+            spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p), 0);
     	}
     }
 

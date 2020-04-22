@@ -19,7 +19,7 @@ public class Miracle extends Skill {
     private int duration = 600;
 
     public Miracle() {
-        super("Miracle", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST");
+        super("Miracle", 400, 2400, 0, 3, SkillType.CAST, null, null);
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));

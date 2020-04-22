@@ -1,11 +1,10 @@
 package com.java.rpg.classes.skills.Pyromancer;
 
 import com.java.Main;
-import com.java.rpg.classes.skills.Pyromancer.supers.Flamethrower;
+import com.java.rpg.classes.skills.Pyromancer.upgrades.Flamethrower;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.damage.utility.PhysicalStack;
-import com.java.rpg.entity.Mobs;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;

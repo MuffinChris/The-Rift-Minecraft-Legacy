@@ -54,6 +54,19 @@ public class RPGPlayer extends Leveleable {
     private Player player;
     private PlayerClass pclass;
 
+    public enum ChatChannel {
+        Global, Town, Party
+    }
+
+    private ChatChannel chatChannel;
+    public ChatChannel getChatChannel() {
+        return chatChannel;
+    }
+
+    public void setChatChannel(ChatChannel c) {
+        chatChannel = c;
+    }
+
     private int tablist = 0;
     public int getTablist() {
         return tablist;
@@ -454,6 +467,9 @@ public class RPGPlayer extends Leveleable {
         toggleTasks = new ArrayList<>();
         toggles = new ArrayList<>();
         skillLevels = new LinkedHashMap<>();
+
+        chatChannel = ChatChannel.Global;
+
         target = null;
         pullFiles();
         board = new Skillboard(p);
@@ -1567,6 +1583,11 @@ public class RPGPlayer extends Leveleable {
                 if (!suffix.isEmpty()) {
                     name = name + " " + suffix;
                 }
+
+                if (ChatColor.stripColor(name).length() > 28) {
+                    name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
+                }
+
                 String gpName;
                 if (tl < 10) {
                     gpName = "#0" + tl;
@@ -1654,6 +1675,11 @@ public class RPGPlayer extends Leveleable {
                 if (!suffix.isEmpty()) {
                     name = name + " " + suffix;
                 }
+
+                if (ChatColor.stripColor(name).length() > 28) {
+                    name = name.substring(0, name.indexOf(ChatColor.stripColor(name).substring(29)));
+                }
+
                 latency = ((CraftPlayer)playerSlots.getTs().get(tl-21).getPlayer()).getHandle().ping;
                 prof.getProperties().put("textures", new Property("textures", main.getTextureValues().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId()), main.getTextureSigs().get(playerSlots.getTs().get(tl-21).getPlayer().getUniqueId())));
             } else {
@@ -1725,6 +1751,7 @@ public class RPGPlayer extends Leveleable {
         toggles = new ArrayList<>();
         player = null;
         pclass = null;
+        chatChannel = null;
 
         playerSlots.scrub();
         partySlots.scrub();

@@ -14,7 +14,9 @@ import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Skill {
 
@@ -55,7 +57,7 @@ public class Skill {
 
     private Skill upgradedSkill;
 
-    private List<Integer> tasks;
+    private Map<Player, List<Integer>> tasks;
 
     public Skill(String name, int manaCost, int cooldown, int warmup, int level, SkillType skilltype, Skill upgradedSkill, Material skillicon) {
         this.name = name;
@@ -67,7 +69,7 @@ public class Skill {
         skillType = skilltype;
         this.skillicon = skillicon;
         this.upgradedSkill = upgradedSkill;
-        tasks = new ArrayList<>();
+        tasks = new HashMap<>();
     }
 
     public boolean isUpgradeable() {
@@ -86,7 +88,7 @@ public class Skill {
         targetRange = t;
     }
 
-    public List<Integer> getTasks() {
+    public Map<Player, List<Integer>> getTasks() {
         return tasks;
     }
 
@@ -119,10 +121,10 @@ public class Skill {
     }
 
     public List<String> getDescription(Player p) {
-        return description;
+        return new ArrayList<>();
     }
     public List<String> getDescription() {
-        return description;
+        return new ArrayList<>();
     }
 
     public int getManaCost() {
@@ -227,6 +229,26 @@ public class Skill {
         } else {
             target.setHealth(target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         }
+    }
+
+    public void clearTasks(Player p) {
+        if (getTasks().containsKey(p)) {
+            for (int i : getTasks().get(p)) {
+                Bukkit.getScheduler().cancelTask(i);
+            }
+            getTasks().get(p).clear();
+        }
+    }
+
+    public void addTask(Player p, int id) {
+        List<Integer> tasks;
+        if (getTasks().containsKey(p)) {
+            tasks = getTasks().get(p);
+        } else {
+            tasks = new ArrayList<>();
+        }
+        tasks.add(id);
+        getTasks().put(p, tasks);
     }
 
 }

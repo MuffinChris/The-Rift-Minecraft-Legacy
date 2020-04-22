@@ -19,7 +19,7 @@ public class Blessing extends Skill {
     private Main main = Main.getInstance();
     
     public Blessing() {
-        super("Blessing", 400, 160, 0, 0, "%player% has shot a fireball!", "CAST");
+        super("Blessing", 400, 160, 0, 0, SkillType.CAST, null, null);
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));

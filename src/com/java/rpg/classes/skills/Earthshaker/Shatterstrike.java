@@ -1,6 +1,7 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.skills.Earthshaker.upgrades.SeisStorm;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 
@@ -8,6 +9,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -34,7 +36,7 @@ public class Shatterstrike extends Skill implements Listener {
     }
 	
     public Shatterstrike() {
-		super("Shatterstrike", 100, 20, 0, 1, "fireball niqqa", "CAST");
+		super("Shatterstrike", 100, 20, 0, 1, SkillType.CAST, new SeisStorm(), Material.GLASS_PANE);
 	}
     
     public List<String> getDescription(Player p) {
@@ -42,6 +44,13 @@ public class Shatterstrike extends Skill implements Listener {
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&7Tear a rift in the ground in front of you,"));
         desc.add(Main.color("&7dealing " + getDmg(p) + " &7damage to enemies."));
+        return desc;
+    }
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&7Tear a rift in the ground in front of you,"));
+        desc.add(Main.color("&7dealing " + damage + " &7damage to enemies."));
         return desc;
     }
     
@@ -66,7 +75,7 @@ public class Shatterstrike extends Skill implements Listener {
                     }
                 }
                 ent.setKiller(p);
-                spellDamage(p, ent, getDmg(p), new ElementalStack(0, 0, 0, 50, 0));
+                spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p), 0);
                 loc.getWorld().spawnParticle(Particle.BLOCK_DUST, ent.getLocation(), 50, 1, 1, 1, dust);
         	}
     	}

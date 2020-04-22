@@ -3,6 +3,7 @@ package com.java.rpg.player;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.java.Main;
+import com.java.rpg.classes.statuses.Stuns;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.utility.LevelRange;
 import de.tr7zw.nbtapi.NBTCompound;
@@ -639,7 +640,7 @@ public class Items implements Listener {
      */
     @EventHandler
     public void onAnvil (PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null) {
+        if (!Stuns.isStunned(e.getPlayer()) && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null) {
             if (e.getClickedBlock().getType() == Material.ANVIL) {
 
             }

@@ -19,7 +19,7 @@ public class CitizenList {
     public CitizenList(){
         citimap = new HashMap<Player, Citizen>();
         cList = new ArrayList<Player>();
-        town = "None";
+        town = Citizen.defaultTownName;
     }
     /*public CitizenList(List<Citizen> l){
         citimap = new HashMap<Player, Citizen>();

@@ -17,8 +17,6 @@ public class Citizen {
     private String town; //Player's town, current "Randos" if townless
     public static String defaultTownName = "None";
 
-    private boolean townChat = false;
-
     private String creationStatus = "Normal";
     private String inviteStatus = "Normal";
     private String inviteSentStatus = "Normal";
@@ -94,14 +92,6 @@ public class Citizen {
     public void setRank(int i) {
         r = i;
         pushFiles();
-    }
-
-    public boolean getTownChat(){
-        return townChat;
-    }
-
-    public void setTownChat(boolean b){
-        townChat = b;
     }
     public void setTown(String t) {
         town = t;

@@ -20,7 +20,7 @@ public class Ressurection extends Skill {
     private int duration = 600;
 
     public Ressurection() {
-        super("Ressurection", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST");
+        super("Ressurection", 400, 2400, 0, 3, SkillType.CAST, null, null);
         DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&bActive:"));

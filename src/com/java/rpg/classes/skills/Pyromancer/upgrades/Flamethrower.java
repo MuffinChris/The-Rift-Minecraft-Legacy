@@ -1,4 +1,4 @@
-package com.java.rpg.classes.skills.Pyromancer.supers;
+package com.java.rpg.classes.skills.Pyromancer.upgrades;
 
 import com.java.Main;
 import com.java.rpg.classes.utility.RPGConstants;

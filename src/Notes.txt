@@ -132,21 +132,21 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -36. Add seasons
+
+    -35. Make damage log for each player (fight info / history purposes)
+
+    -34. Reduce length of playername if too big
+
+    -33. Make NameTags change customName.
+
     -32. Convert Skill Descs to have Ability Power icon! Fix visual display (some skills have electric [pyroclasm] but only display fire)
 
-    -31. PYroclasm fire not removed on server stop
+    -31. Pyroclasm fire not removed on server stop
 
     -30. Add warmups to Toggles
 
-    -29. For skills rework, move all listeners into that Skills own listener file
-
-    -28. Convert Party invites to Town System Style
-
-    -27. Online Players count is busted? (should be fixed)
-
     -26. Stunned message is spazzy (make all the same length, df format) (should be fixed)
-
-    -25. Rework Skillboard to not show passives (or show them in a dif way, like how Ranger Focus will be on bossbar)
 
     -24. Players are able to crit?
 

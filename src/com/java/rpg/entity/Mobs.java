@@ -17,7 +17,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
@@ -272,6 +275,24 @@ public class Mobs implements Listener {
     }
 
     @EventHandler
+    public void nameTags (PlayerInteractEntityEvent e) {
+        if (e.getHand() == EquipmentSlot.HAND || e.getHand() == EquipmentSlot.OFF_HAND) {
+            ItemStack item;
+            if (e.getHand() == EquipmentSlot.HAND) {
+                item = e.getPlayer().getInventory().getItemInMainHand();
+            } else {
+                item = e.getPlayer().getInventory().getItemInOffHand();
+            }
+
+            if (item.getType() == Material.NAME_TAG) {
+                if (item.hasItemMeta()) {
+                    setCustomName(e.getRightClicked(), item.getItemMeta().getDisplayName());
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void mobSpawnEvent (CreatureSpawnEvent e) {
         LivingEntity ent = e.getEntity();
         if (!(ent instanceof ArmorStand) && !(ent instanceof Player)) {
@@ -287,22 +308,6 @@ public class Mobs implements Listener {
                 } else {
                     setupEnt(ent, new LevelRange(0, 10).getRandomLevel());
                 }
-            }
-        }
-    }
-
-    public static void removeDropChances(Entity ent) {
-        NBTEntity nent = new NBTEntity(ent);
-        if (nent.hasKey("ArmorDropChances")) {
-            NBTList list = nent.getFloatList("ArmorDropChances");
-            for (int i = 0; i < list.size(); i++) {
-                list.set(i, 0.0f);
-            }
-        }
-        if (nent.hasKey("HandDropChances")) {
-            NBTList list = nent.getFloatList("HandDropChances");
-            for (int i = 0; i < list.size(); i++) {
-                list.set(i, 0.0f);
             }
         }
     }

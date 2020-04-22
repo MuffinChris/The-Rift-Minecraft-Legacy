@@ -1,9 +1,11 @@
 package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
+import com.java.rpg.classes.skills.Earthshaker.upgrades.Avalanche;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.data.BlockData;
@@ -32,7 +34,7 @@ public class Overwhelm extends Skill {
     }
 
     public Overwhelm() {
-        super("Overwhelm", 400, 2400, 0, 3, "%player% has shot a fireball!", "CAST-TARGET");
+        super("Overwhelm", 400, 2400, 0, 3, SkillType.TARGET, new Avalanche(), Material.IRON_BARS);
         setTargetRange(range);
     }
     
@@ -41,14 +43,24 @@ public class Overwhelm extends Skill {
         desc.add(Main.color("&bActive:"));
         desc.add(Main.color("&fUse the power of Earth to suppress an enemy."));
         desc.add(Main.color("&fThe target will take damage"));
-        desc.add(Main.color("&f/equal to 10% of their maximum HP" + getDmg(p)));
+        desc.add(Main.color("&f/equal to 10% of their maximum HP + " + getDmg(p)));
+        desc.add(Main.color("&fand be stunned for 2 seconds."));
+        return desc;
+    }
+
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&fUse the power of Earth to suppress an enemy."));
+        desc.add(Main.color("&fThe target will take damage"));
+        desc.add(Main.color("&f/equal to 10% of their maximum HP + " + damage));
         desc.add(Main.color("&fand be stunned for 2 seconds."));
         return desc;
     }
     
     public void target(Player p, LivingEntity ent) {
     	super.target(p, ent);
-        spellDamage(p, ent, damage + ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, new ElementalStack(0, 0, 0, 50, 0));
+        spellDamage(p, ent, new PhysicalStack(), new ElementalStack(),  ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, 0);
         stun(p, ent, duration);
     }
 
@@ -78,7 +90,7 @@ public class Overwhelm extends Skill {
                     continue;
                 }
             } 
-            spellDamage(p, ent, damage + ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, new ElementalStack(0, 0, 0, 50, 0));
+            spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), damage + ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, 0);
             stun(p, ent, duration);
             dust(p, ent);
             return true;

@@ -28,11 +28,6 @@ import java.util.ArrayList;
 public class PartyCommand implements CommandExecutor, Listener {
 
     @EventHandler
-    public void onJoinParty(PlayerJoinEvent e) {
-        main.getPChat().put(e.getPlayer(), false);
-    }
-
-    @EventHandler
     public void onLeaveParty(PlayerQuitEvent e) {
         if (main.getPM().hasParty(e.getPlayer())) {
             if (main.getPM().getParty(e.getPlayer()).getLeader().equals(e.getPlayer())) {
@@ -43,9 +38,6 @@ public class PartyCommand implements CommandExecutor, Listener {
         }
         if (main.getInvites().containsKey(e.getPlayer())) {
             main.getInvites().remove(e.getPlayer());
-        }
-        if (main.getPChat().containsKey(e.getPlayer())) {
-            main.getPChat().remove(e.getPlayer());
         }
     }
 
@@ -231,19 +223,14 @@ public class PartyCommand implements CommandExecutor, Listener {
                         if (is(args[0],"leave")) {
                             party.removePlayer(p);
                         } else if (is(args[0],"chat")) {
-                            if (main.getPChat().containsKey(p)) {
-                                boolean pc = main.getPChat().get(p);
-                                if (pc) {
-                                    main.getPChat().replace(p, false);
-                                    Main.msg(p, "&cDisabled Party Chat.");
-                                    return false;
-                                } else {
-                                    main.getPChat().replace(p, true);
-                                    Main.msg(p, "&aEnabled Party Chat.");
-                                    return false;
-                                }
+                            if (main.getRP(p).getChatChannel() == RPGPlayer.ChatChannel.Party) {
+                                main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Global);
+                                Main.msg(p, "&cDisabled Party Chat.");
+                                return false;
                             } else {
-                                Main.msg(p, "&cInternal Exception, Party Chat variable not intialized.");
+                                main.getRP(p).setChatChannel(RPGPlayer.ChatChannel.Global);
+                                Main.msg(p, "&aEnabled Party Chat.");
+                                return false;
                             }
                         }
                     } else {

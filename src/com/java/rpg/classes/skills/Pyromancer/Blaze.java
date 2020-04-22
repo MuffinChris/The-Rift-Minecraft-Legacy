@@ -71,15 +71,9 @@ public class Blaze extends Skill {
     public void cast(Player p) {
         super.cast(p);
 
-        if (!getTasks().isEmpty()) {
-            for (int i : getTasks()) {
-                Bukkit.getScheduler().cancelTask(i);
-            }
-            getTasks().clear();
-
-            main.getRP(p).getWalkspeed().clearBasedTitle(getName(), p);
-            main.getRP(p).updateStats();
-        }
+        clearTasks(p);
+        main.getRP(p).getWalkspeed().clearBasedTitle(getName(), p);
+        main.getRP(p).updateStats();
 
         main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue(getName() + ":" + p.getName(), movespeed, duration * 20, System.currentTimeMillis(), false));
         main.getRP(p).updateStats();
@@ -167,7 +161,7 @@ public class Blaze extends Skill {
             }
         }.runTaskTimer(Main.getInstance(), 0, 1);
 
-        getTasks().add(blaze.getTaskId());
+        addTask(p, blaze.getTaskId());
     }
 
 }

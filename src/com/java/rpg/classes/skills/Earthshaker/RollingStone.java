@@ -2,6 +2,7 @@ package com.java.rpg.classes.skills.Earthshaker;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
+import com.java.rpg.classes.skills.Earthshaker.upgrades.RiftStrike;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
@@ -19,11 +20,19 @@ public class RollingStone extends Skill implements Listener {
     private int rad = 2;
     
     public RollingStone() {
-    	super("RollingStone", 100, 400, 0, 5, "%player% has shot a fireball!", "CAST");
+    	super("RollingStone", 100, 400, 0, 5, SkillType.CAST, new RiftStrike(), Material.STONE_SLAB);
     	DecimalFormat df = new DecimalFormat("#");
     }
 
     public List<String> getDescription(Player p) {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&fCharge forwards with a shell of rocks around you"));
+        desc.add(Main.color("&fEnemies around you are caught in the rockslide"));
+        desc.add(Main.color("&fand will travel with you until you stop."));
+        return desc;
+    }
+
+    public List<String> getDescription() {
         List<String> desc = new ArrayList<>();
         desc.add(Main.color("&fCharge forwards with a shell of rocks around you"));
         desc.add(Main.color("&fEnemies around you are caught in the rockslide"));

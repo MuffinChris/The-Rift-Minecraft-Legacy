@@ -3,6 +3,7 @@ package com.java.rpg.classes.skills.Wanderer;
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.StatusValue;
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -38,20 +40,22 @@ public class Bulwark extends Skill implements Listener {
         return desc;
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
-    public void onHit (EntityDamageByEntityEvent e) {
-        if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
-            Player p = (Player) e.getEntity();
-            if (main.getRP(p) != null && main.getRP(p).getStatuses().contains("Bulwark")) {
-                e.setCancelled(true);
-                e.getDamager().remove();
-                p.getWorld().playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1.0F, 1.0F);
-            }
-        }
+    public List<String> getDescription() {
+        List<String> desc = new ArrayList<>();
+        desc.add(Main.color("&bActive:"));
+        desc.add(Main.color("&fTake a defensive stance, slowing yourself but"));
+        desc.add(Main.color("&falso block all non-magic projectiles and take reduced damage."));
+        desc.add(Main.color("&fThe stance lasts for &e" + duration + " &fseconds"));
+        return desc;
     }
 
     public void cast(Player p) {
         super.cast(p);
+
+        clearTasks(p);
+        main.getRP(p).getWalkspeed().clearBasedTitle(getName(), p);
+        main.getRP(p).updateStats();
+
         main.getRP(p).getWalkspeed().getStatuses().add(new StatusValue("Bulwark", -15, duration * 20, System.currentTimeMillis(), false));
         main.getRP(p).updateWS();
 
@@ -60,7 +64,7 @@ public class Bulwark extends Skill implements Listener {
         }
         main.getRP(p).getStatuses().add("Bulwark");
 
-        new BukkitRunnable() {
+        BukkitTask cancelBulwark = new BukkitRunnable() {
             public void run() {
                 if (!p.isOnline()) {
                     cancel();
@@ -72,7 +76,7 @@ public class Bulwark extends Skill implements Listener {
             }
         }.runTaskLater(Main.getInstance(), duration * 20);
 
-        new BukkitRunnable() {
+        BukkitTask runBulwark = new BukkitRunnable() {
             int times = 0;
             public void run() {
                 if (!p.isOnline()) {
@@ -91,6 +95,9 @@ public class Bulwark extends Skill implements Listener {
                 times++;
             }
         }.runTaskTimer(Main.getInstance(), 1L, 1L);
+
+        addTask(p, cancelBulwark.getTaskId());
+        addTask(p, runBulwark.getTaskId());
 
         p.getWorld().playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_IRON, 1.0F, 1.0F);
         p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_HIT, 1.0F, 1.0F);

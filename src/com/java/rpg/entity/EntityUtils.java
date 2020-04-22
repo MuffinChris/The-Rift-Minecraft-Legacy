@@ -3,6 +3,8 @@ package com.java.rpg.entity;
 import com.java.Main;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.damage.utility.PhysicalStack;
+import de.tr7zw.nbtapi.NBTEntity;
+import de.tr7zw.nbtapi.NBTList;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
@@ -13,6 +15,21 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class EntityUtils {
 
+    public static void removeDropChances(Entity ent) {
+        NBTEntity nent = new NBTEntity(ent);
+        if (nent.hasKey("ArmorDropChances")) {
+            NBTList list = nent.getFloatList("ArmorDropChances");
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, 0.0f);
+            }
+        }
+        if (nent.hasKey("HandDropChances")) {
+            NBTList list = nent.getFloatList("HandDropChances");
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, 0.0f);
+            }
+        }
+    }
 
     public static void setExp(LivingEntity ent, double exp) {
         PersistentDataContainer data = ent.getPersistentDataContainer();

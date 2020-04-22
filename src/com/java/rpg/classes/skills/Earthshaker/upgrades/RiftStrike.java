@@ -1,9 +1,10 @@
-package com.java.rpg.classes.skills.Earthshaker.supers;
+package com.java.rpg.classes.skills.Earthshaker.upgrades;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.damage.utility.ElementalStack;
 
+import com.java.rpg.damage.utility.PhysicalStack;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
@@ -28,13 +29,16 @@ public class RiftStrike extends Skill implements Listener {
     }
 
     public RiftStrike() {
-    	super("RiftStrike", 100, 20, 0, 5, "%player% has shot a fireball!", "CAST");
+    	super("RiftStrike", 100, 20, 0, 5, SkillType.CAST, null, null);
     	DecimalFormat df = new DecimalFormat("#");
         List<String> desc = new ArrayList<>();
         setDescription(desc);
     }
 
 	public List<String> getDescription(Player p) {
+		return new ArrayList<>();
+	}
+	public List<String> getDescription() {
 		return new ArrayList<>();
 	}
 
@@ -63,7 +67,7 @@ public class RiftStrike extends Skill implements Listener {
                     }
                 }
     		}
-    		spellDamage(p, ent, getDmg(p), new ElementalStack());
+    		spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p), 0);
     		hitEntities.add(ent.getLocation());
     	}
     	hitCenter.add(facing.multiply(1.5));
@@ -85,7 +89,7 @@ public class RiftStrike extends Skill implements Listener {
                     }
                 }
     		}
-    		spellDamage(p, ent, getDmg(p), new ElementalStack());
+			spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p), 0);
     		hitEntities.add(ent.getLocation());
     	}
     	hitCenter.add(facing.multiply(1.5));
@@ -107,7 +111,7 @@ public class RiftStrike extends Skill implements Listener {
                     }
                 }
     		}
-    		spellDamage(p, ent, getDmg(p), new ElementalStack());
+			spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p), 0);
     	}
     }
     
