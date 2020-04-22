@@ -132,6 +132,8 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -40. Store player texture in RPGPlayer, update only if different!
+
     -39. Add fall damage reduction to big boss mobs
 
     -38. Give EXP on kill. Make the death exp loss be math maxed to how much exp u have (check if works)

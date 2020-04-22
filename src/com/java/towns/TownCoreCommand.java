@@ -553,7 +553,9 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         c.setRank(0); // lowest possible rank
 
         for (UUID p : townInvite.getCitizenList()) {
-            Main.msg(Bukkit.getPlayer(p), Main.color("&a" + receiver.getDisplayName() + " has accepted their invite and joined the town!"));
+            if (Bukkit.getPlayer(p) != null) {
+                Main.msg(Bukkit.getPlayer(p), Main.color("&a" + receiver.getDisplayName() + " has accepted their invite and joined the town!"));
+            }
         }
 
         townInvite.getCitizenList().add(receiver.getUniqueId());
