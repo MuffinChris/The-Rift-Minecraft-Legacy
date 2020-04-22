@@ -216,7 +216,9 @@ public class Town {
              */
             List<String> pullUUIDString = tData.getStringList("CitizensList");
             for(int i = 0; i < pullUUIDString.size(); i++){
-                cList.add(UUID.fromString(pullUUIDString.get(i)));
+                if(Bukkit.getPlayer(UUID.fromString(pullUUIDString.get(i))) != null) {
+                    cList.add(UUID.fromString(pullUUIDString.get(i)));
+                }
             }
 
         }
