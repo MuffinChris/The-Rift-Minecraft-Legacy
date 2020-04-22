@@ -81,7 +81,7 @@ commands:
   arestartfast:
     description: Restart the server on a 5 second timer
     permission: core.admin
-  time:
+  customtime:
     description: Check the time!
   speed:
     description: Set your fly and walk speed

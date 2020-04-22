@@ -891,7 +891,7 @@ public class Main extends JavaPlugin {
         getCommand("sp").setExecutor(new SkillpointCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
         getCommand("bind").setExecutor(new BindCommand());
-        getCommand("time").setExecutor(new TimeCommand());
+        getCommand("customtime").setExecutor(new TimeCommand());
 
         getCommand("town").setExecutor(new TownCoreCommand());
 

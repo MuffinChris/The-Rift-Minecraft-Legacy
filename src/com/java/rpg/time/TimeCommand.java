@@ -25,12 +25,12 @@ public class TimeCommand implements CommandExecutor {
             Player p = (Player) sender;
             if (args.length == 0) {
                 Main.msg(p, "");
-                Main.msg(p, "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&f" + getDayOfMonth() + " " + getMonth() + " " + getYear());
+                Main.msg(p, "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&f" + getDayOfMonth() + " " + getMonth() + ", " + getYear() + "&8)");
                 Main.msg(p, "");
             } else {
                 if (p.hasPermission("core.admin")) {
                     if (args[0].equalsIgnoreCase("help")) {
-                        Main.msg(p, "&fUsage: /time <startnow, sync>");
+                        Main.msg(p, "&fUsage: /customtime <startnow, sync>");
                         return true;
                     } else if (args[0].equalsIgnoreCase("startnow")) {
                         long prev = getTimeMillis();
@@ -45,7 +45,7 @@ public class TimeCommand implements CommandExecutor {
                         Main.msg(p, "&aSynced all world times to current Rift time.");
                         return true;
                     } else {
-                        Main.msg(p, "&fUsage: /time <startnow, sync>");
+                        Main.msg(p, "&fUsage: /customtime <startnow, sync>");
                         return true;
                     }
                 } else {
@@ -56,11 +56,11 @@ public class TimeCommand implements CommandExecutor {
         } else {
             if (args.length == 0) {
                 Main.so( "");
-                Main.so( "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&f" + getDayOfMonth() + " " + getMonth() + " " + getYear());
+                Main.so( "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&f" + getDayOfMonth() + " " + getMonth() + ", " + getYear() + "&8)");
                 Main.so( "");
             } else {
                 if (args[0].equalsIgnoreCase("help")) {
-                    Main.so( "&fUsage: /time <startnow, sync>");
+                    Main.so( "&fUsage: /customtime <startnow, sync>");
                     return true;
                 } else if (args[0].equalsIgnoreCase("startnow")) {
                     long prev = getTimeMillis();
@@ -75,7 +75,7 @@ public class TimeCommand implements CommandExecutor {
                     Main.so( "&aSynced all world times to current Rift time.");
                     return true;
                 } else {
-                    Main.so( "&fUsage: /time <startnow, sync>");
+                    Main.so( "&fUsage: /customtime <startnow, sync>");
                     return true;
                 }
             }
@@ -202,7 +202,7 @@ public class TimeCommand implements CommandExecutor {
     }
 
     public long getDayOfMonth() {
-        return getTotalDays() + getMonth().getVal2() - getMonth().getVal();
+        return getTotalDays() + getMonth().getVal2() - getMonth().getVal() + 1;
     }
 
     public long getTimeMillis() {
