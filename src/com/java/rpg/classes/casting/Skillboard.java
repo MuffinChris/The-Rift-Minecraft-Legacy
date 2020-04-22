@@ -78,6 +78,7 @@ public class Skillboard {
     public void statusUpdate() {
         String statuses = "";
         DecimalFormat dF = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#.0");
         for (StatusObject so : main.getRP(Bukkit.getPlayer(uuid)).getSo()) {
             if (so.active() && !so.getSilent()) {
                 if (so.getName().equals("PStrength")) {
@@ -90,8 +91,8 @@ public class Skillboard {
                     if (so.allDurationless()) {
                         statuses += "&e" + so.getFlavor() + "&f, ";
                     } else {
-                        double ticks = Math.round((so.ticksMore()/20.0)*4f)/4f;
-                        statuses += "&e" + so.getFlavor() + "&8: &6" + dF.format(ticks) + "s&f, ";
+                        double ticks = Math.round((so.ticksMore()/20.0)*10f)/10f;
+                        statuses += "&e" + so.getFlavor() + "&8: &6" + df.format(ticks) + "s&f, ";
                     }
                 }
             }

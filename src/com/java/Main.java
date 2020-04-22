@@ -19,12 +19,13 @@ import com.java.essentials.commands.admin.warp.SpawnCommand;
 import com.java.essentials.commands.admin.warp.WarpsCommand;
 import com.java.rpg.classes.skills.Wanderer.WandererListeners;
 import com.java.rpg.entity.EntityUtils;
+import com.java.rpg.holograms.NPCTag;
+import com.java.rpg.time.TimeCommand;
 import com.java.towns.Citizen;
 import com.java.towns.Town;
 import com.java.towns.TownCoreCommand;
 import com.java.rpg.holograms.EntityHealthBars;
 import com.java.rpg.holograms.Hologram;
-import com.java.rpg.*;
 import com.java.rpg.classes.*;
 import com.java.rpg.classes.casting.BindCommand;
 import com.java.rpg.classes.casting.Skillcast;
@@ -34,8 +35,6 @@ import com.java.rpg.classes.commands.admin.ManaCommand;
 import com.java.rpg.classes.commands.admin.SetClassCommand;
 import com.java.rpg.classes.commands.player.*;
 import com.java.rpg.classes.skills.Pyromancer.*;
-import com.java.rpg.classes.skills.Pyromancer.Fireball;
-import com.java.rpg.classes.skills.Wanderer.Bulwark;
 import com.java.rpg.classes.statuses.Stuns;
 import com.java.rpg.classes.utility.RPGConstants;
 import com.java.rpg.classes.utility.StatusObject;
@@ -81,7 +80,6 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -886,15 +884,14 @@ public class Main extends JavaPlugin {
         getCommand("biomes").setExecutor(new BiomesCommand());
         getCommand("mute").setExecutor(new MuteCommand());
         getCommand("unmute").setExecutor(new UnmuteCommand());
-
         getCommand("warp").setExecutor(new WarpsCommand());
         getCommand("setwarp").setExecutor(new SetWarpCommand());
         getCommand("delwarp").setExecutor(new DelWarpCommand());
         getCommand("spawn").setExecutor(new SpawnCommand());
-
         getCommand("sp").setExecutor(new SkillpointCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
         getCommand("bind").setExecutor(new BindCommand());
+        getCommand("time").setExecutor(new TimeCommand());
 
         getCommand("town").setExecutor(new TownCoreCommand());
 

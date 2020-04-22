@@ -126,8 +126,18 @@ public class CustomDeath implements Listener {
 
     @EventHandler
     public void noGravestoneMerge (BlockPlaceEvent e) {
-        if (e.getBlock().getType() == Material.CHEST || e.getBlock().getType() == Material.HOPPER) {
+        if (e.getBlock().getType() == Material.CHEST) {
             if (isGravestone(e.getBlock().getLocation().add(new Vector(1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(-1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,1)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,-1)).getBlock())) {
+                e.setCancelled(true);
+                Main.msg(e.getPlayer(), "&8» &cRemove the nearby &4Gravestone &cto place this block.");
+            }
+        }
+    }
+
+    @EventHandler
+    public void noGravestoneHopperPlace (BlockPlaceEvent e) {
+        if (e.getBlock().getType() == Material.HOPPER) {
+            if (isGravestone(e.getBlock().getLocation().add(new Vector(1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(-1, 0,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,1)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 0,-1)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, -1,0)).getBlock()) || isGravestone(e.getBlock().getLocation().add(new Vector(0, 1,0)).getBlock())) {
                 e.setCancelled(true);
                 Main.msg(e.getPlayer(), "&8» &cRemove the nearby &4Gravestone &cto place this block.");
             }

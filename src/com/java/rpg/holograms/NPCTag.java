@@ -1,4 +1,4 @@
-package com.java.rpg;
+package com.java.rpg.holograms;
 
 import com.java.Main;
 import com.java.rpg.holograms.Hologram;
