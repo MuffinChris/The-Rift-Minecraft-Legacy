@@ -9,6 +9,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Citizen {
 
@@ -32,7 +33,6 @@ public class Citizen {
         this.r = -1;
         this.town = defaultTownName;
         pullFiles();
-
     }
 
     public Citizen(Player pl, int rnk) {
@@ -89,10 +89,12 @@ public class Citizen {
     public int getLeaderboardPage() {
         return leaderboardPage;
     }
+
     public void setRank(int i) {
         r = i;
         pushFiles();
     }
+
     public void setTown(String t) {
         town = t;
         pushFiles();
@@ -175,11 +177,11 @@ public class Citizen {
              */
             setRank(pData.getInt("Rank"));
             setTown(pData.getString("CurrentTown"));
-
             /*
             User Status info
              */
         }
     }
+
 
 }

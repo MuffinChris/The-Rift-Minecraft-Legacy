@@ -9,10 +9,13 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,10 +25,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventPriority;
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,6 +103,10 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return promotePlayer(p, args[1]);
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, args[1]);
+            }
+
+            if(args[0].equalsIgnoreCase("show")) {
+                return showTownMemberInv(p, args[1]);
             }
 
             if(args[0].equalsIgnoreCase("leaderboard")) {
@@ -337,14 +346,48 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private void showTownMemberInv(Player p, String townName) {
+    private ItemStack getPlayerHead(UUID puuid, Town t) {
+
+        ItemStack is = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) is.getItemMeta();
+
+        OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(puuid);
+
+        meta.setOwningPlayer(op);
+        meta.setDisplayName(Main.color("&f&eUsername: &f" + op.getName()));
+
+        File pFile = new File("plugins/Rift/data/towns/" + puuid + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+
+        String rankName = t.getRanks().get(pData.getInt("Rank"));
+
+        meta.setLore(new ArrayList<String>() {
+            {
+                add(Main.color("&6Rank: " + rankName));
+            }
+        });
+
+        is.setItemMeta(meta);
+
+        return is;
+
+    }
+
+    private boolean showTownMemberInv(Player p, String townName) {
 
         // fetching heads is hard
         Inventory menu = Bukkit.createInventory(null, 54, Main.color("&b&l" + townName + " Members"));
 
+        if(!main.getFullTownList().contains(townName)) {
+            Main.msg(p, Main.color("&cTown not found!"));
+            return false; // doesn't contain this town
+        }
+
         Town t = new Town(townName);
 
-
+        for(int i = 0; i < t.getCitizenList().size(); i++) {
+            menu.setItem(i, getPlayerHead(t.getCitizenList().get(i), t));
+        }
 
         for (int i = 39; i <= 53; i++) {
             menu.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
@@ -352,6 +395,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
+        return true;
     }
 
     public boolean createNewTown(Player p, String townName) {
@@ -690,6 +734,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
             fullText.setText((i+1) + "   ");
             fullText.setColor(ChatColor.GOLD);
+            fullText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town show " + fullTowns.get(i).getName()));
+
 
             towntc.setText(fullTowns.get(i).getName());
             towntc.setColor(ChatColor.BOLD);
@@ -712,10 +758,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
             Main.sendCenteredMessage(p, fullText);
 
-            /*Main.msg(p, Main.color("&6" + (i+1) +
-                    "   Town: " + fullTowns.get(i).getName() +
-                    "    Level: " + fullTowns.get(i).getLevel() +
-                    "    Size: " + fullTowns.get(i).getCitizenList().size()));*/
         }
         Main.sendCenteredMessage(p, Main.color("&a&m------------------"));
 
@@ -797,6 +839,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Leaderboard")) {
                 showLeaderboard((Player) e.getWhoClicked());
+                e.getWhoClicked().closeInventory();
             }
         } else if (e.getView().getTitle().equals("§e§lDisband Town?")) {
             if (e.getCurrentItem() == null) return;
@@ -823,6 +866,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return;
             }
             e.getWhoClicked().closeInventory();
+        } else if (e.getView().getTitle().startsWith("§b§l") && e.getView().getTitle().endsWith("Members")) { // town member inventory
+            e.setCancelled(true);
         }
     }
 }
