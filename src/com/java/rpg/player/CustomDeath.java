@@ -92,7 +92,7 @@ public class CustomDeath implements Listener {
     @EventHandler
     public void onExplode (BlockExplodeEvent e) {
         for (int i = e.blockList().size() - 1; i >= 0; i--) {
-            if (isGravestone(e.blockList().get(i))) {
+            if (isGravestone(e.blockList().get(i)) && hasTime(e.blockList().get(i))) {
                 e.blockList().remove(i);
             }
         }
@@ -101,7 +101,7 @@ public class CustomDeath implements Listener {
     @EventHandler
     public void onEntityExplode (EntityExplodeEvent e) {
         for (int i = e.blockList().size() - 1; i >= 0; i--) {
-            if (isGravestone(e.blockList().get(i))) {
+            if (isGravestone(e.blockList().get(i)) && hasTime(e.blockList().get(i))) {
                 e.blockList().remove(i);
             }
         }
@@ -109,7 +109,7 @@ public class CustomDeath implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onGravestoneBreak (BlockBreakEvent e) {
-        if (isGravestone(e.getBlock())) {
+        if (isGravestone(e.getBlock()) && hasTime(e.getBlock())) {
             e.setCancelled(true);
             Main.msg(e.getPlayer(), "&8» &cOpen the &4Gravestone &cinstead of breaking it.");
         }
@@ -117,7 +117,7 @@ public class CustomDeath implements Listener {
 
     @EventHandler
     public void antiHopper (InventoryMoveItemEvent e) {
-        if (e.getSource().getHolder() != null && e.getSource().getHolder() instanceof Chest && e.getDestination().getHolder() != null && e.getDestination().getHolder() instanceof Hopper && isGravestone(((Chest) e.getSource().getHolder()).getBlock())) {
+        if (e.getSource().getType() == InventoryType.CHEST && e.getDestination().getType() == InventoryType.HOPPER && e.getSource().getHolder() != null && e.getSource().getHolder() instanceof Chest && isGravestone(((Chest) e.getSource().getHolder()).getBlock())) {
             e.setCancelled(true);
         }
     }
@@ -152,6 +152,10 @@ public class CustomDeath implements Listener {
             }
         }
         return "";
+    }
+
+    public boolean hasTime(Block b) {
+        return (b.hasMetadata("Time"));
     }
 
     @EventHandler (priority = EventPriority.MONITOR)
