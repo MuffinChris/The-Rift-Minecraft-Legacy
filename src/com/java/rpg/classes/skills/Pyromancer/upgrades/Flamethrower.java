@@ -63,7 +63,6 @@ public class Flamethrower extends Skill {
         if (!super.toggleCont(p)) {
             return false;
         }
-        Bukkit.broadcastMessage("spewflame!!!");
         spewFlame(p, getDmg(p)/(1.0 * (20/(tickrate * 1.0))), getFireDmg(p)/(1.0 * (20/(tickrate * 1.0))));
         return false;
     }

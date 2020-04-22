@@ -912,7 +912,6 @@ public class RPGPlayer extends Leveleable {
                         return "NotUpgraded";
                     }
                     s = st;
-                    Bukkit.broadcastMessage("Replaced to Upgraded Version: " + s.getName());
                 }
             }
             if (s != null) {
@@ -1030,6 +1029,7 @@ public class RPGPlayer extends Leveleable {
                         if (isToggle(s)) {
                             if (getToggles().contains(s.getName())) {
                                 s.toggleEnd(player);
+                                cooldowns.put(s.getName(), System.currentTimeMillis());
                             } else {
                                 getToggles().add(s.getName());
                                 Map<Integer, String> map = new HashMap<>();
