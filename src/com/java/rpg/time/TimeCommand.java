@@ -247,6 +247,8 @@ public class TimeCommand implements CommandExecutor {
             return Month.February;
         } else if (daysThisYear <= Month.March.getVal()) {
             return Month.March;
+        } else if (daysThisYear <= Month.April.getVal()) {
+            return Month.April;
         } else if (daysThisYear <= Month.May.getVal()) {
             return Month.May;
         } else if (daysThisYear <= Month.June.getVal()) {
