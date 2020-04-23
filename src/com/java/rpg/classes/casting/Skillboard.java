@@ -78,7 +78,7 @@ public class Skillboard {
     public void statusUpdate() {
         String statuses = "";
         DecimalFormat dF = new DecimalFormat("#.00");
-        DecimalFormat df = new DecimalFormat("#.0");
+        DecimalFormat df = new DecimalFormat("0.0");
         for (StatusObject so : main.getRP(Bukkit.getPlayer(uuid)).getSo()) {
             if (so.active() && !so.getSilent()) {
                 if (so.getName().equals("PStrength")) {
