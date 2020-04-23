@@ -126,7 +126,21 @@ public class Town {
     }
 
     public void kick(Player kicker, Player receiver) {
-
+        int krank = getRank(kicker);
+        int rrank = getRank(receiver);
+        if(krank <= 3){
+            main.msg(kicker, "You are not high enough rank to kick.");
+            return;
+        }
+        if(krank <= rrank){
+            main.msg(kicker, "You are not high enough rank to kick " + receiver.getName() + ".");
+            return;
+        }
+        Citizen c = main.getUUIDCitizenMap().get(receiver.getUniqueId());
+        c.setRank(-1); c.setTown(Citizen.defaultTownName);
+        this.getCitizenList().remove(receiver.getUniqueId());
+        c.pushFiles();
+        pushFiles();
     }
 
     public void promote(Player promoter, Player receiver) {
