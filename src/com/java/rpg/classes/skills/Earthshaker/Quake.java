@@ -47,7 +47,7 @@ public class Quake extends Skill {
     
     public void cast(Player p) {
     	super.cast(p);
-    	p.getWorld().spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 300, 4, 1, 4, dust);
+    	makeCircle(p,range,80,.1);
     	p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_SHOOT, 2.0F, 0.5F);
     	for (LivingEntity ent : p.getLocation().getNearbyLivingEntities(range)) {
             if (ent instanceof ArmorStand) {
@@ -64,6 +64,16 @@ public class Quake extends Skill {
             ent.setKiller(p);
             spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p), 0);
     	}
+    }
+    
+    public void makeCircle(Player caster, double radius, double cnt, double height) {
+        for (double alpha = 0; alpha < Math.PI; alpha+= Math.PI/cnt) {
+            Location loc = caster.getLocation();
+            Location firstLocation = loc.clone().add( radius * Math.cos( alpha ), height, radius * Math.sin( alpha ) );
+            Location secondLocation = loc.clone().add( radius * Math.cos( alpha + Math.PI ), height, radius * Math.sin( alpha + Math.PI ) );
+            caster.getWorld().spawnParticle( Particle.BLOCK_DUST, firstLocation, 1, 0.01, 0.01, 0.01, 0.01, dust);
+            caster.getWorld().spawnParticle( Particle.BLOCK_DUST, secondLocation, 1, 0.01, 0.01, 0.01, 0.01, dust);
+        }
     }
 
 }
