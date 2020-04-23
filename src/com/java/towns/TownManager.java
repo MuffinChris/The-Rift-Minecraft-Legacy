@@ -30,14 +30,16 @@ public class TownManager implements Listener {
     public TownManager() {
 
     }
-    public Town findTown(Citizen c){
-        for (Town t : main.getTowns()){
-            if(t.getName() == c.getTown()){
+
+    public Town findTown(Citizen c) {
+        for (Town t : main.getTowns()) {
+            if (t.getName() == c.getTown()) {
                 return t;
             }
         }
         return null;
     }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (!main.getUUIDCitizenMap().containsKey(e.getPlayer().getUniqueId())) {
@@ -131,7 +133,15 @@ public class TownManager implements Listener {
             c.setDemoteStatus("Normal");
 
             tcc.demotePlayer(sender, receiverName);
+
+        } else if (c.getSearchStatus().equals("Prompted")) { // search prompt
+            String query = e.getMessage();
+            e.setCancelled(true);
+            c.setSearchStatus("Normal");
+
+            tcc.searchTown(sender, query, 0);
         }
+
 
     }
 

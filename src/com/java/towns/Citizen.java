@@ -25,9 +25,6 @@ public class Citizen {
     private String promoteStatus = "Normal";
     private String demoteStatus = "Normal";
 
-    private int leaderboardPage = 0;
-
-
     public Citizen(Player pl) {
         this.p = pl;
         this.r = -1;
@@ -86,10 +83,6 @@ public class Citizen {
         return demoteStatus;
     }
 
-    public int getLeaderboardPage() {
-        return leaderboardPage;
-    }
-
     public void setRank(int i) {
         r = i;
         pushFiles();
@@ -122,10 +115,6 @@ public class Citizen {
 
     public void setDemoteStatus(String demoteStatus) {
         this.demoteStatus = demoteStatus;
-    }
-
-    public void setLeaderboardPage(int lpage) {
-        leaderboardPage = lpage;
     }
 
     public void setUsernameFile(FileConfiguration pData, String username) {
