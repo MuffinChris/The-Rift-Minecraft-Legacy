@@ -101,7 +101,7 @@ public class TimeCommand implements CommandExecutor {
                 Main.so( "");
             } else {
                 if (args[0].equalsIgnoreCase("help")) {
-                    Main.so( "&fUsage: /time <startnow, sync, add>");
+                    Main.so( "&fUsage: /time <startnow, sync, add, addticks>");
                     return true;
                 } else if (args[0].equalsIgnoreCase("startnow")) {
                     long prev = getTimeMillis();
@@ -144,7 +144,7 @@ public class TimeCommand implements CommandExecutor {
                     }
                     return true;
                 } else {
-                    Main.so( "&fUsage: /time <startnow, sync, add>");
+                    Main.so( "&fUsage: /time <startnow, sync, add, addticks>");
                     return true;
                 }
             }
