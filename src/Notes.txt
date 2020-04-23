@@ -133,6 +133,8 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
+    -47. Cutting the name may leave the chat color symbol without the actual color code thus causing an issue showing only the symbol.
+
     -46. Add better time command alias
 
     -45. Thorns makes two damage instances, one environmental heart and one impact

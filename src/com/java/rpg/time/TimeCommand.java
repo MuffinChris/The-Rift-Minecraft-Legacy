@@ -149,7 +149,7 @@ public class TimeCommand implements CommandExecutor {
     }
 
     public long getTotalDays() {
-        return Math.round(Math.floor(getTicksTotal() / 24000.0));
+        return Math.round(Math.floor(getTicksTotal() / 24000.0 + 6000.0));
     }
 
     public long getYear() {
