@@ -1,6 +1,7 @@
 package com.java.rpg.classes.commands.player;
 
 import com.java.Main;
+import com.java.rpg.classes.PlayerClass;
 import com.java.rpg.classes.RPGPlayer;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.classes.utility.RPGConstants;
@@ -49,7 +50,13 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
     public void sendSkillsInv(Player p, String c) {
         RPGPlayer rp = main.getRP(p);
-        Inventory playerInv = Bukkit.createInventory(null, 45, Main.color("&e&l" + rp.getPClass().getName() + " &e&lSkills"));
+        PlayerClass pclass;
+        if (c.isEmpty()) {
+            pclass = rp.getPClass();
+        } else {
+            pclass = main.getCM().getPClassFromString(c);
+        }
+        Inventory playerInv = Bukkit.createInventory(null, 45, Main.color("&e&l" + pclass.getName() + " &e&lSkills"));
 
         ItemStack ph = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
         ItemMeta phM = ph.getItemMeta();
@@ -63,7 +70,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
         phM = ph.getItemMeta();
         phM.setDisplayName(" ");
         ph.setItemMeta(phM);
-        for (int i = 20; i < 20 + rp.getPClass().getSkills().size(); i++) {
+        for (int i = 20; i < 20 + pclass.getSkills().size(); i++) {
             playerInv.setItem(i, ph);
         }
 
@@ -107,7 +114,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
 
 
         int i = 11;
-        for (Skill s : rp.getPClass().getSkills()) {
+        for (Skill s : pclass.getSkills()) {
             Material mat = s.getSkillIcon();
             if (main.getSkillLevel(p, s.getName()) > 0) {
                 mat = Material.GRAY_DYE;
@@ -192,7 +199,7 @@ public class SkillsCommand implements CommandExecutor, Listener {
             i++;
         }
         i = 29;
-        for (Skill s : rp.getPClass().getUpgradedSkills()) {
+        for (Skill s : pclass.getUpgradedSkills()) {
             Material mat = Material.GRAY_DYE;
             if (main.getSkillLevel(p, s.getName()) > 0 || !c.isEmpty()) {
                 mat = s.getSkillIcon();
