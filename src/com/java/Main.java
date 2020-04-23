@@ -891,7 +891,7 @@ public class Main extends JavaPlugin {
         getCommand("sp").setExecutor(new SkillpointCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
         getCommand("bind").setExecutor(new BindCommand());
-        getCommand("customtime").setExecutor(new TimeCommand());
+        getCommand("time").setExecutor(new TimeCommand());
 
         getCommand("town").setExecutor(new TownCoreCommand());
 
@@ -975,7 +975,7 @@ public class Main extends JavaPlugin {
 
         autorestart();
 
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "customtime sync");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time sync");
 
         so("&dRIFT: &fSetup complete!");
 
