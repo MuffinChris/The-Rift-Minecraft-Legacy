@@ -235,7 +235,7 @@ public class TimeCommand implements CommandExecutor {
     public void addOneDay() {
         File pFile = new File("plugins/Rift/time.yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
-        pData.set("Time", getTimeMillis() - 24000);
+        pData.set("Time", getTimeMillis() - (24000/20 * 1000));
         try {
             pData.save(pFile);
         } catch (IOException e) {
