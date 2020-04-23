@@ -273,7 +273,7 @@ public class TimeCommand implements CommandExecutor {
     }
 
     public long getDayOfMonth() {
-        return getTotalDays() + getMonth().getVal2() - getMonth().getVal() + 1;
+        return getDay() + getMonth().getVal2() - getMonth().getVal() + 1;
     }
 
     public long getTimeMillis() {
