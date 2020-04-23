@@ -30,7 +30,7 @@ public class TimeCommand implements CommandExecutor {
             } else {
                 if (p.hasPermission("core.admin")) {
                     if (args[0].equalsIgnoreCase("help")) {
-                        Main.msg(p, "&fUsage: /time <startnow, sync, addday>");
+                        Main.msg(p, "&fUsage: /time <startnow, sync, add>");
                         return true;
                     } else if (args[0].equalsIgnoreCase("startnow")) {
                         long prev = getTimeMillis();
@@ -44,26 +44,49 @@ public class TimeCommand implements CommandExecutor {
                         }
                         Main.msg(p, "&aSynced all world times to current Rift time.");
                         return true;
-                    } else if (args[0].equalsIgnoreCase("addday")) {
+                    } else if (args[0].equalsIgnoreCase("add")) {
                         if (args.length > 1) {
-                            addDays(Integer.parseInt(args[1]));
-                            Main.msg(p, "&aYou added &f" + Integer.parseInt(args[1]) + " &adays.");
-                            p.performCommand("time sync");
+                            try {
+                                addDays(Integer.parseInt(args[1]));
+                                Main.msg(p, "&aYou added &f" + Integer.parseInt(args[1]) + " &adays.");
+                                p.performCommand("time sync");
+                            } catch (NumberFormatException e) {
+                                Main.msg(p, "&cInvalid Argument, enter an Integer.");
+                            }
                         } else {
                             addDays(1);
                             Main.msg(p, "&aYou added one day.");
                             p.performCommand("time sync");
                         }
                         return true;
+                    } else if (args[0].equalsIgnoreCase("addticks")) {
+                        if (args.length > 1) {
+                            try {
+                                addTicks(Integer.parseInt(args[1]));
+                                Main.msg(p, "&aYou added &f" + Integer.parseInt(args[1]) + " &aticks.");
+                                p.performCommand("time sync");
+                            } catch (NumberFormatException e) {
+                                Main.msg(p, "&cInvalid Argument, enter an Integer.");
+                            }
+                        } else {
+                            Main.msg(p, "&fUsage: /time addticks <ticks>");
+                        }
+                        return true;
                     } else if (args[0].equalsIgnoreCase("set")) {
                         if (args.length > 1) {
-                            p.getWorld().setTime(Integer.parseInt(args[1]));
+                            try {
+                                p.getWorld().setTime(Integer.parseInt(args[1]));
+                                Main.msg(p, "&aUnsynced time set.");
+                                return true;
+                            } catch (NumberFormatException e) {
+                                Main.msg(p, "&cInvalid Argument, enter an Integer.");
+                            }
                         } else {
                             Main.msg(p, "&fUsage: /time set <ticks>");
                             return true;
                         }
                     } else {
-                        Main.msg(p, "&fUsage: /time <startnow, sync, addday>");
+                        Main.msg(p, "&fUsage: /time <startnow, sync, add>");
                         return true;
                     }
                 } else {
@@ -78,7 +101,7 @@ public class TimeCommand implements CommandExecutor {
                 Main.so( "");
             } else {
                 if (args[0].equalsIgnoreCase("help")) {
-                    Main.so( "&fUsage: /time <startnow, sync>");
+                    Main.so( "&fUsage: /time <startnow, sync, add>");
                     return true;
                 } else if (args[0].equalsIgnoreCase("startnow")) {
                     long prev = getTimeMillis();
@@ -92,8 +115,36 @@ public class TimeCommand implements CommandExecutor {
                     }
                     Main.so( "&aSynced all world times to current Rift time.");
                     return true;
+                } else if (args[0].equalsIgnoreCase("add")) {
+                    if (args.length > 1) {
+                        try {
+                            addDays(Integer.parseInt(args[1]));
+                            Main.so( "&aYou added &f" + Integer.parseInt(args[1]) + " &adays.");
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time sync");
+                        } catch (NumberFormatException e) {
+                            Main.so( "&cInvalid Argument, enter an Integer.");
+                        }
+                    } else {
+                        addDays(1);
+                        Main.so( "&aYou added one day.");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time sync");
+                    }
+                    return true;
+                } else if (args[0].equalsIgnoreCase("addticks")) {
+                    if (args.length > 1) {
+                        try {
+                            addTicks(Integer.parseInt(args[1]));
+                            Main.so( "&aYou added &f" + Integer.parseInt(args[1]) + " &aticks.");
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time sync");
+                        } catch (NumberFormatException e) {
+                            Main.so( "&cInvalid Argument, enter an Integer.");
+                        }
+                    } else {
+                        Main.so( "&fUsage: /time addticks <ticks>");
+                    }
+                    return true;
                 } else {
-                    Main.so( "&fUsage: /time <startnow, sync>");
+                    Main.so( "&fUsage: /time <startnow, sync, add>");
                     return true;
                 }
             }
@@ -249,6 +300,17 @@ public class TimeCommand implements CommandExecutor {
         File pFile = new File("plugins/Rift/time.yml");
         FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
         pData.set("Time", getTimeMillis() - ((24000 * i)/20 * 1000));
+        try {
+            pData.save(pFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addTicks(int i) {
+        File pFile = new File("plugins/Rift/time.yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        pData.set("Time", getTimeMillis() - ((i)/20 * 1000));
         try {
             pData.save(pFile);
         } catch (IOException e) {
