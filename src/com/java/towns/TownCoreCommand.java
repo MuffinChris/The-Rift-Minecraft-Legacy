@@ -894,7 +894,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         Main.sendCenteredMessage(p, Main.color("&a&m------------------"));
     }
 
-    private int pogdistance(String a, String b) { // O(n^2)
+    private int pogdistance(String a, String b) {
         int[][] dp = new int[a.length() + 1][b.length() + 1];
         for(int i = 0; i <= a.length(); i++) {
             for(int j = 0; j <= b.length(); j++) {
