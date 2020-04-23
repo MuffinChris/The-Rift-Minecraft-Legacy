@@ -17,15 +17,14 @@ import java.util.List;
 public class UForce extends Skill implements Listener {
 
     private Main main = Main.getInstance();
-    private double speed = .2;
     private double launchVelocity = 10;
     private double hitRad = 2;
 
     private double APscale = .5;
     private double ADscale = 1;
 
-    double damage = 0;
-    double detectRadius = 0;
+    double damage = 600;
+    double detectRadius = 2;
     public double getDmg(Player p) {
         return (damage + main.getRP(p).getAP() * APscale + main.getRP(p).getAD() * ADscale );
     }
@@ -43,10 +42,11 @@ public class UForce extends Skill implements Listener {
 
     public void cast(Player p) {
     	super.cast(p);
+    	p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 2.0F, 0.5F);
     	new BukkitRunnable() {
     		int times = 0;
 			public void run() {
-				charge(p);
+				p.setVelocity(p.getEyeLocation().getDirection().multiply(3.0));
 				if(detectCollision(p)) {
 					collide(p);
 					cancel();
@@ -61,19 +61,25 @@ public class UForce extends Skill implements Listener {
     }
 
     public boolean detectCollision(Player p) {
+    	Location loc = p.getEyeLocation();
+    	loc.add(p.getEyeLocation().getDirection().setY(0).normalize());
+    	if(loc.getBlock().getType() != Material.AIR)
+    		return true;
     	for(LivingEntity ent: p.getLocation().getNearbyLivingEntities(detectRadius)) {
     		return true;
     	}
     	return false;
     }
 
-    public void charge(Player p) {
+    //doesn't work pepega
+    /*public void charge(Player p) {
     	Location start = p.getLocation().clone();
     	Vector face = p.getEyeLocation().getDirection().clone();
     	p.teleport(start.add(face).multiply(speed));
-    }
+    }*/
 
     public void collide(Player p) {
+    	p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 2.0F, 0.5F);
     	for(LivingEntity ent: p.getLocation().getNearbyLivingEntities(hitRad)) {
     		ent.setVelocity(new Vector(0,launchVelocity,0));
     		spellDamage(p,ent,new PhysicalStack(),new ElementalStack(0,200,0,0,0), getDmg(p), 0);

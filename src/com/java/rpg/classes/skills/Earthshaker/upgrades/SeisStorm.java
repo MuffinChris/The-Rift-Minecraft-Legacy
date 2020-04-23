@@ -45,9 +45,7 @@ public class SeisStorm extends Skill implements Listener {
     		double random;
     		public void run() {
     			for (LivingEntity ent: p.getLocation().getNearbyLivingEntities(radius)) {
-    				
     				random = 10 * Math.random();
-    			
     				if (ent instanceof ArmorStand) {
     	                continue;
     	            }

@@ -90,7 +90,7 @@ public class Overwhelm extends Skill {
                     continue;
                 }
             } 
-            spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), damage + ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, 0);
+            spellDamage(p, ent, new PhysicalStack(), new ElementalStack(), getDmg(p) + ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 0.1, 0);
             stun(p, ent, duration);
             dust(p, ent);
             return true;
