@@ -1093,9 +1093,9 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 sm.getOwningPlayer();
                 if(!sm.getOwningPlayer().isOnline()){
                     t.promote(p, sm.getOwningPlayer());
-                    return;
+                } else {
+                    t.promote(p, sm.getOwningPlayer().getPlayer());
                 }
-                t.promote(p, sm.getOwningPlayer().getPlayer());
             }
             e.getWhoClicked().closeInventory();
 
@@ -1112,9 +1112,9 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 sm.getOwningPlayer();
                 if (!sm.getOwningPlayer().isOnline()) {
                     t.demote(p, sm.getOwningPlayer());
-                    return;
+                } else {
+                    t.demote(p, sm.getOwningPlayer().getPlayer());
                 }
-                t.demote(p, sm.getOwningPlayer().getPlayer());
             }
             e.getWhoClicked().closeInventory();
 
@@ -1132,8 +1132,9 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                     if(!sm.getOwningPlayer().isOnline()){
                         t.kick(p, sm.getOwningPlayer());
                         return;
+                    } else {
+                        t.demote(p, sm.getOwningPlayer().getPlayer());
                     }
-                    t.demote(p, sm.getOwningPlayer().getPlayer());
                 }
                 e.getWhoClicked().closeInventory();
 

@@ -281,8 +281,7 @@ public class Town {
             return;
         }
         Main.msg(demoter, "You have demoted " + receiver.getName() + " to " + ranks.get(rrank - 1));
-        main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(cr.getRank() - 1);
-        main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
+        cr.setRank(rrank - 1);
     }
 
     public void pushFiles() {
