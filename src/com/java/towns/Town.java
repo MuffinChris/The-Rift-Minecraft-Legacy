@@ -133,6 +133,10 @@ public class Town {
     }
 
     public void kick(Player kicker, Player receiver) {
+        if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
+            Main.msg(kicker, receiver.getName() + " is not in your town!");
+            return;
+        }
         int krank = getRank(kicker);
         int rrank = getRank(receiver);
         if(krank <= 3){
@@ -150,6 +154,26 @@ public class Town {
         pushFiles();
     }
 
+    public void kick(Player kicker, OfflinePlayer receiver) {
+        OfflineCitizen cr = new OfflineCitizen(receiver);
+        if(!cr.getTown().equals(name)){
+            Main.msg(kicker, receiver.getName() + " is not in your town!");
+            return;
+        }
+        int krank = getRank(kicker);
+        int rrank = cr.getRank();
+        if(krank <= 3){
+            main.msg(kicker, "You are not high enough rank to kick.");
+            return;
+        }
+        if(krank <= rrank){
+            main.msg(kicker, "You are not high enough rank to kick " + receiver.getName() + ".");
+            return;
+        }
+        cr.setRank(-1); cr.setTown(Citizen.defaultTownName);
+        this.getCitizenList().remove(receiver.getUniqueId());
+        pushFiles();
+    }
     public void promote(Player promoter, Player receiver) {
         if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
             Main.msg(promoter, receiver.getName() + " is not in your town!");

@@ -84,7 +84,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
                 return showLeaderboard(p, 0);
             } else if (args[0].equalsIgnoreCase("kick")) {
-                // TODO: implement
+                return kickPlayer(p, "");
             } else if (args[0].equalsIgnoreCase("promote")) {
                 return promotePlayer(p, "");
             } else if (args[0].equalsIgnoreCase("demote")) {
@@ -103,7 +103,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (args[0].equalsIgnoreCase("create")) {
                 return createNewTown(p, args[1]); // args[1] is name of town
             } else if (args[0].equalsIgnoreCase("kick")) {
-                // TODO: implement
+                return kickPlayer(p, args[1]);
             } else if (args[0].equalsIgnoreCase("promote")) {
                 return promotePlayer(p, args[1]);
             } else if (args[0].equalsIgnoreCase("demote")) {
@@ -703,16 +703,19 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }.runTaskLater(Main.getInstance(), 20 * 60);*/
             openPlayerHeadInv(p, "Promote");
         } else {
-            Player receiver = Bukkit.getPlayer(r);
-
-            if (receiver == null) {
-                Main.msg(p, Main.color("&cPlayer not found!"));
+            OfflinePlayer receiver = Bukkit.getOfflinePlayer(r);
+            if(!receiver.hasPlayedBefore()){
+                main.msg(p, "Could not find this player");
                 return false;
             }
-
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
-            t.promote(p, receiver);
+            if(receiver.isOnline()) {
+                t.promote(p, receiver.getPlayer());
+                return true;
+            } else {
+                t.promote(p, receiver);
+            }
         }
         return true;
     }
@@ -733,19 +736,44 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }.runTaskLater(Main.getInstance(), 20 * 60);*/
             openPlayerHeadInv(p, "Demote");
         } else {
-            Player receiver = Bukkit.getPlayer(r);
-
-            if (receiver == null) {
-                Main.msg(p, Main.color("&cPlayer not found!"));
+            OfflinePlayer receiver = Bukkit.getOfflinePlayer(r);
+            if(!receiver.hasPlayedBefore()){
+                main.msg(p, "Could not find this player");
                 return false;
             }
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
-            t.demote(p, receiver);
+            if(receiver.isOnline()) {
+                t.demote(p, receiver.getPlayer());
+                return true;
+            } else {
+                t.demote(p, receiver);
+            }
         }
         return true;
     }
 
+    public boolean kickPlayer(Player p, String r) {
+        if (r.equalsIgnoreCase("")) {
+            openPlayerHeadInv(p, "Kick");
+        } else {
+            OfflinePlayer receiver = Bukkit.getOfflinePlayer(r);
+            if(!receiver.hasPlayedBefore()){
+                main.msg(p, "Could not find this player");
+                return false;
+            }
+            Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+            Town t = getTownFromCitizen(c);
+            if(receiver.isOnline()) {
+                t.kick(p, receiver.getPlayer());
+                return true;
+            } else {
+                t.kick(p, receiver);
+                return true;
+            }
+        }
+        return true;
+    }
     private boolean showLeaderboard(Player p, int x) {
 
         sendLeaderboardPage(p, x);
@@ -1014,6 +1042,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (itemDispName.contains("Demote")) {
                 demotePlayer((Player) e.getWhoClicked(), "");
                 //e.getWhoClicked().closeInventory();
+            } else if(itemDispName.contains("Kick")) {
+                kickPlayer((Player) e.getWhoClicked(), "");
             } else if (itemDispName.contains("Leaderboard")) {
                 showLeaderboard((Player) e.getWhoClicked(), 0);
                 e.getWhoClicked().closeInventory();
@@ -1071,22 +1101,41 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
 
         } else if(e.getView().getTitle().contains("Demote")) {
-            if(e.getCurrentItem() == null) return;
-            if(!e.getCurrentItem().hasItemMeta()) return;
+            if (e.getCurrentItem() == null) return;
+            if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
 
-            if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+            if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
                 Player p = (Player) e.getWhoClicked();
                 Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
                 SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
                 sm.getOwningPlayer();
-                if(!sm.getOwningPlayer().isOnline()){
+                if (!sm.getOwningPlayer().isOnline()) {
                     t.demote(p, sm.getOwningPlayer());
                     return;
                 }
                 t.demote(p, sm.getOwningPlayer().getPlayer());
             }
             e.getWhoClicked().closeInventory();
+
+
+        } else if(e.getView().getTitle().contains("Kick")) {
+                if(e.getCurrentItem() == null) return;
+                if(!e.getCurrentItem().hasItemMeta()) return;
+                e.setCancelled(true);
+
+                if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                    Player p = (Player) e.getWhoClicked();
+                    Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
+                    SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
+                    sm.getOwningPlayer();
+                    if(!sm.getOwningPlayer().isOnline()){
+                        t.kick(p, sm.getOwningPlayer());
+                        return;
+                    }
+                    t.demote(p, sm.getOwningPlayer().getPlayer());
+                }
+                e.getWhoClicked().closeInventory();
 
 
         } else if (e.getView().getTitle().startsWith("§b§l") && e.getView().getTitle().endsWith("Members")) { // town member inventory
