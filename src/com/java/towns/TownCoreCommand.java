@@ -42,6 +42,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     final int TOWNS_PER_PAGE = 5;
 
     private Main main = Main.getInstance();
+
     private Town getTownFromCitizen(Citizen c) {
         Town t = null;
         for (Town ct : main.getTowns()) {
@@ -374,7 +375,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         ItemStack next = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
         for(int i = 0; i <= t.getSize() / pagesize; i++) {
-            page.add(Bukkit.createInventory(null, 54, Main.color("&b&l" + invName + " &r&b(Page " + (i+1) + ")")));
+            page.add(Bukkit.createInventory(null, 54, Main.color("&6&l" + invName + " &l(Page " + (i+1) + ")")));
             page.get(i).setItem(48, prev);
             page.get(i).setItem(50, next);
             Inventory menu = page.get(i);
@@ -688,7 +689,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     public boolean promotePlayer(Player p, String r) {
         if (r.equalsIgnoreCase("")) {
-            /*Main.msg(p, Main.color("&l&eWho do you want to promote?"));
+            Main.msg(p, Main.color("&l&eWho do you want to promote?"));
 
             main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
             new BukkitRunnable() {
@@ -699,8 +700,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                         Main.msg(p, Main.color("&4Prompt Timed Out."));
                     }
                 }
-            }.runTaskLater(Main.getInstance(), 20 * 60);*/
-            openPlayerHeadInv(p, "Promote");
+            }.runTaskLater(Main.getInstance(), 20 * 60);
         } else {
             Player receiver = Bukkit.getPlayer(r);
 
@@ -1008,7 +1008,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Promote")) {
                 promotePlayer((Player) e.getWhoClicked(), "");
-                //e.getWhoClicked().closeInventory();
+                e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Demote")) {
                 demotePlayer((Player) e.getWhoClicked(), "");
                 e.getWhoClicked().closeInventory();
@@ -1049,24 +1049,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }
             e.getWhoClicked().closeInventory();
 
-
-        } else if(e.getView().getTitle().contains("Promote")) {
-            if(e.getCurrentItem() == null) return;
-            if(!e.getCurrentItem().hasItemMeta()) return;
-            e.setCancelled(true);
-
-            if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
-                Player p = (Player) e.getWhoClicked();
-                Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
-                SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
-                sm.getOwningPlayer();
-                if(!sm.getOwningPlayer().isOnline()){
-                    t.promote(p, sm.getOwningPlayer());
-                    return;
-                }
-                t.promote(p, sm.getOwningPlayer().getPlayer());
-            }
-            e.getWhoClicked().closeInventory();
 
         } else if (e.getView().getTitle().startsWith("§b§l") && e.getView().getTitle().endsWith("Members")) { // town member inventory
             e.setCancelled(true);
