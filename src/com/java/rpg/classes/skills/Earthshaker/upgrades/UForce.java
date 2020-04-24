@@ -4,6 +4,8 @@ import com.java.Main;
 import com.java.rpg.classes.Skill;
 import com.java.rpg.damage.utility.ElementalStack;
 import com.java.rpg.damage.utility.PhysicalStack;
+import com.java.rpg.party.Party;
+
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
@@ -66,6 +68,20 @@ public class UForce extends Skill implements Listener {
     	if(loc.getBlock().getType() != Material.AIR)
     		return true;
     	for(LivingEntity ent: p.getLocation().getNearbyLivingEntities(detectRadius)) {
+    		if (ent instanceof ArmorStand) {
+                continue;
+            }
+            if (ent instanceof Player) {
+                Player pl = (Player) ent;
+                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
+                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
+                        continue;
+                    }
+                }
+                if(pl == p) {
+                	continue;
+                }
+            }
     		return true;
     	}
     	return false;

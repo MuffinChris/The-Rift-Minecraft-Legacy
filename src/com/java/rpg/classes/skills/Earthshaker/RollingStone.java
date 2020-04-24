@@ -129,7 +129,7 @@ public class RollingStone extends Skill implements Listener {
                     continue;
                 }
             }
-    		ent.setVelocity(ent.getVelocity().add(new Vector(0, 1, 0)));
+    		ent.setVelocity(pl.getEyeLocation().getDirection().multiply(3.0));
     	}
     }
     
