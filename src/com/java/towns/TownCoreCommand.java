@@ -89,7 +89,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return promotePlayer(p, "");
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, "");
-            } else if (args[0].equalsIgnoreCase("members")){
+            } else if (args[0].equalsIgnoreCase("members")) {
                 return openPlayerHeadInv(p, "Town Members");
             }
 
@@ -111,15 +111,19 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }
 
             if (args[0].equalsIgnoreCase("show")) {
-                return showTownMemberInv(p, args[1]);
+                return openPlayerHeadInv(p, args[1]);
             }
 
             if (args[0].equalsIgnoreCase("leaderboard")) {
                 return showLeaderboard(p, Integer.parseInt(args[1]));
             }
 
-        } else if(args.length == 3) {
-            if(args[0].equalsIgnoreCase("search")) {
+            if(args[0].equalsIgnoreCase("invite")) {
+                return showTownList(p, Integer.parseInt(args[1]));
+            }
+
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("search")) {
                 return searchTown(p, args[1], Integer.parseInt(args[2]));
             }
         }
@@ -368,45 +372,29 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private boolean openPlayerHeadInv(Player p, String invName){
+    private boolean openPlayerHeadInv(Player p, String invName) {
         List<Inventory> page = new ArrayList<Inventory>();
         int pagesize = 29;
         ItemStack prev = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemStack next = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
-        for(int i = 0; i <= t.getSize() / pagesize; i++) {
-            page.add(Bukkit.createInventory(null, 54, Main.color("&6&l" + invName + " &l(Page " + (i+1) + ")")));
+        for (int i = 0; i <= t.getSize() / pagesize; i++) {
+            page.add(Bukkit.createInventory(null, 54, Main.color("&6&l" + invName + " &l(Page " + (i + 1) + ")")));
             page.get(i).setItem(48, prev);
             page.get(i).setItem(50, next);
             Inventory menu = page.get(i);
             for (int j = 39; j <= 53; j++) {
-                if(j % 9 <= 4) menu.setItem(j, prev);
+                if (j % 9 <= 4) menu.setItem(j, prev);
                 else menu.setItem(j, next);
             }
         }
         int pagenum = 0;
-        for(int i = 0; i < t.getSize(); i++){
-            if(i % pagesize == 0 && i != 0) pagenum++;
+        for (int i = 0; i < t.getSize(); i++) {
+            if (i % pagesize == 0 && i != 0) pagenum++;
             page.get(pagenum).setItem(i - pagenum * pagesize, getPlayerHead(t.getCitizenList().get(i), t));
         }
         p.openInventory(page.get(0));
         return true;
-    }
-
-    private ItemStack getPlayerHead(UUID puuid) {
-
-        ItemStack is = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) is.getItemMeta();
-
-        OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(puuid);
-
-        meta.setOwningPlayer(op);
-        meta.setDisplayName(Main.color("&f&eUsername: &f" + op.getName()));
-
-        is.setItemMeta(meta);
-
-        return is;
-
     }
 
     private ItemStack getPlayerHead(UUID puuid, Town t) {
@@ -827,8 +815,91 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     }
 
+    private boolean showTownList(Player p, int x) {
+
+        sendTownListPage(p, x);
+
+        int npage = (int) ((x + 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
+        int ppage = (int) ((x - 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
+
+        TextComponent nextText = new TextComponent("[Next Page]");
+        TextComponent previousText = new TextComponent("[Previous Page]");
+        nextText.setBold(true);
+        previousText.setBold(true);
+        nextText.setColor(ChatColor.GREEN);
+        previousText.setColor(ChatColor.RED);
+        nextText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town list " + npage));
+        previousText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town list " + ppage));
+        // TODO: maybe do some hover events to make it more obvious what's going on
+        TextComponent invText2 = new TextComponent();
+
+        invText2.addExtra(previousText);
+        invText2.addExtra(" or ");
+        invText2.addExtra(nextText);
+        p.sendMessage(invText2);
+
+        return true;
+    }
+
+    private void sendTownListPage(Player p, int x) {
+        Main.sendCenteredMessage(p, Main.color("&a&m------------------\n"));
+        Main.sendCenteredMessage(p, Main.color("&b&lTOWN LIST"));
+        List<String> fullTownNames = main.getFullTownList();
+
+        ArrayList<Town> fullTowns = new ArrayList<Town>();
+
+        for (int i = 0; i < fullTownNames.size(); i++) {
+            fullTowns.add(new Town(fullTownNames.get(i)));
+        }
+
+        fullTowns.sort((o1, o2) -> {
+            // this is kind of a weird metric (lvl^2 * citizenCount)
+            int o1score = o1.getCitizenList().size();
+            int o2score = o2.getCitizenList().size();
+
+            return Integer.compare(o1score, o2score);
+        });
+
+
+        for (int i = x * TOWNS_PER_PAGE; i < (x + 1) * TOWNS_PER_PAGE; i++) {
+            if (i >= fullTowns.size()) break;
+
+            TextComponent fullText = new TextComponent();
+            TextComponent towntc = new TextComponent();
+
+            fullText.setText((i + 1) + "   ");
+            fullText.setColor(ChatColor.GOLD);
+            fullText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town show " + fullTowns.get(i).getName()));
+
+
+            towntc.setText(fullTowns.get(i).getName());
+            towntc.setColor(ChatColor.BOLD);
+
+            TextComponent lvl = new TextComponent();
+            lvl.setText("Level: " + fullTowns.get(i).getLevel());
+            lvl.setColor(ChatColor.BLUE);
+
+            TextComponent sz = new TextComponent();
+            sz.setText("\nSize: " + fullTowns.get(i).getCitizenList().size());
+            sz.setColor(ChatColor.BLUE);
+
+            TextComponent click = new TextComponent();
+            click.setText("\n\nClick to see full list of members!");
+            click.setColor(ChatColor.GREEN);
+            click.setBold(true);
+
+            towntc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder().append(lvl).append(sz).append(click).create()));
+            fullText.addExtra(towntc);
+
+            Main.sendCenteredMessage(p, fullText);
+
+        }
+        Main.sendCenteredMessage(p, Main.color("&a&m------------------"));
+
+    }
+
     public boolean searchTown(Player p, String query, int pageNum) {
-        if(pageNum < 0) {
+        if (pageNum < 0) {
             Main.msg(p, Main.color("&cInvalid page number!"));
             return false;
         }
@@ -859,7 +930,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     private boolean sendSearchResults(Player p, String query, int pageNum) {
         sendSearchPage(p, query, pageNum);
 
-        int npage = (int) ((pageNum+ 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
+        int npage = (int) ((pageNum + 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
         int ppage = (int) ((pageNum - 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
 
         TextComponent nextText = new TextComponent("[Next Page]");
@@ -939,16 +1010,15 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     private int pogdistance(String a, String b) {
         int[][] dp = new int[a.length() + 1][b.length() + 1];
-        for(int i = 0; i <= a.length(); i++) {
-            for(int j = 0; j <= b.length(); j++) {
-                if(i == 0) {
+        for (int i = 0; i <= a.length(); i++) {
+            for (int j = 0; j <= b.length(); j++) {
+                if (i == 0) {
                     dp[i][j] = j;
-                } else if(j == 0) {
+                } else if (j == 0) {
                     dp[i][j] = i;
-                }
-                else {
-                    int c = a.charAt(i-1) == b.charAt(j-1) ? 0 : 1;
-                    dp[i][j] = Math.min(dp[i-1][j-1]+c, Math.min(dp[i-1][j]+1, dp[i][j-1]+1));
+                } else {
+                    int c = a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1;
+                    dp[i][j] = Math.min(dp[i - 1][j - 1] + c, Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1));
                 }
             }
         }
@@ -1015,7 +1085,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (itemDispName.contains("Leaderboard")) {
                 showLeaderboard((Player) e.getWhoClicked(), 0);
                 e.getWhoClicked().closeInventory();
-            } else if(itemDispName.contains(("Search"))) {
+            } else if (itemDispName.contains(("Search"))) {
                 searchTown((Player) e.getWhoClicked(), "", 0);
                 e.getWhoClicked().closeInventory();
             }
