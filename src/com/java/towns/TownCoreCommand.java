@@ -384,6 +384,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             if(i % 45 == 0 && i != 0) pagenum++;
             page.get(pagenum).setItem(i - pagenum * 45, getPlayerHead(t.getCitizenList().get(i), t));
         }
+        p.openInventory(page.get(0));
         return true;
     }
 
