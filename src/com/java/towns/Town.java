@@ -228,6 +228,34 @@ public class Town {
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(getRank(receiver) - 1);
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
     }
+    public void demote(Player demoter, OfflinePlayer receiver){
+        OfflineCitizen cr = new OfflineCitizen(receiver);
+        if(!cr.getTown().equals(name)){
+            Main.msg(demoter, receiver.getName() + " is not in your town!");
+            return;
+        }
+        int drank = getRank(demoter);
+        int rrank = cr.getRank();
+        if(drank <= 2){
+            Main.msg(demoter, "You are not high enough rank to demote someone");
+            return;
+        }
+        if(drank == rrank){
+            Main.msg(demoter, "You cannot demote someone that is the same rank as you");
+            return;
+        }
+        if(drank < rrank){
+            Main.msg(demoter, "You cannot demote someone that is a higher rank than you");
+            return;
+        }
+        if(rrank <= 0){
+            Main.msg(demoter, receiver.getName() + " cannot be demoted any lower");
+            return;
+        }
+        Main.msg(demoter, "You have demoted " + receiver.getName() + " to " + ranks.get(rrank - 1));
+        main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(cr.getRank() - 1);
+        main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
+    }
 
     public void pushFiles() {
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
