@@ -691,7 +691,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         if (r.equalsIgnoreCase("")) {
             Main.msg(p, Main.color("&l&eWho do you want to promote?"));
 
-            main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
+            /*main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
             new BukkitRunnable() {
                 public void run() {
                     Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
@@ -700,7 +700,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                         Main.msg(p, Main.color("&4Prompt Timed Out."));
                     }
                 }
-            }.runTaskLater(Main.getInstance(), 20 * 60);
+            }.runTaskLater(Main.getInstance(), 20 * 60);*/
+            openPlayerHeadInv(p, "Promote");
         } else {
             Player receiver = Bukkit.getPlayer(r);
 
@@ -1008,7 +1009,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Promote")) {
                 promotePlayer((Player) e.getWhoClicked(), "");
-                e.getWhoClicked().closeInventory();
+                //e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Demote")) {
                 demotePlayer((Player) e.getWhoClicked(), "");
                 e.getWhoClicked().closeInventory();
@@ -1046,6 +1047,24 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (itemDispName.equals("§c§lNo")) {
                 e.getWhoClicked().closeInventory();
                 return;
+            }
+            e.getWhoClicked().closeInventory();
+
+        } else if(e.getView().getTitle().contains("Promote")) {
+            if(e.getCurrentItem() == null) return;
+            if(!e.getCurrentItem().hasItemMeta()) return;
+            e.setCancelled(true);
+
+            if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                Player p = (Player) e.getWhoClicked();
+                Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
+                SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
+                sm.getOwningPlayer();
+                if(!sm.getOwningPlayer().isOnline()){
+                    t.promote(p, sm.getOwningPlayer());
+                    return;
+                }
+                t.promote(p, sm.getOwningPlayer().getPlayer());
             }
             e.getWhoClicked().closeInventory();
 
