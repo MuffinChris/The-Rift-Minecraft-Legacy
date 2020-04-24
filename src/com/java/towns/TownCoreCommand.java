@@ -89,6 +89,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return promotePlayer(p, "");
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, "");
+            } else if (args[0].equalsIgnoreCase("members")){
+                return openPlayerHeadInv(p, "Town Members");
             }
 
             if (args[0].equalsIgnoreCase("chat")) {
@@ -364,6 +366,41 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
         p.openInventory(menu);
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
+    }
+
+    private boolean openPlayerHeadInv(Player p, String invName){
+        List<Inventory> page = new ArrayList<Inventory>();
+        ItemStack prev = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemStack next = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
+        for(int i = 0; i <= t.getSize() / 45; i++) {
+            page.add(Bukkit.createInventory(null, 54, Main.color("&e&l" + invName + "(Page " + (i+1) + ")")));
+            page.get(i).setItem(48, prev);
+            page.get(i).setItem(50, next);
+        }
+
+        int pagenum = 0;
+        for(int i = 0; i < t.getSize(); i++){
+            if(i % 45 == 0) pagenum++;
+            page.get(pagenum).setItem(i - pagenum * 45, getPlayerHead(t.getCitizenList().get(i), t));
+        }
+        return true;
+    }
+
+    private ItemStack getPlayerHead(UUID puuid) {
+
+        ItemStack is = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) is.getItemMeta();
+
+        OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(puuid);
+
+        meta.setOwningPlayer(op);
+        meta.setDisplayName(Main.color("&f&eUsername: &f" + op.getName()));
+
+        is.setItemMeta(meta);
+
+        return is;
+
     }
 
     private ItemStack getPlayerHead(UUID puuid, Town t) {

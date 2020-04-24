@@ -84,6 +84,9 @@ public class Town {
         return name;
     }
 
+    public int getSize(){
+        return cList.size();
+    }
     public void setLevel(int l) { level = l; pushFiles(); }
 
     public int getLevel() { return level; }
