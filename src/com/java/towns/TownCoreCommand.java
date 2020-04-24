@@ -1047,7 +1047,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }
             e.getWhoClicked().closeInventory();
 
-        } else if (e.getView().getTitle().contains("&6&lPromote")) {
+        } else if (e.getView().getTitle().contains("§6§lPromote")) {
             if (e.getCurrentItem() == null) return;
             if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
@@ -1068,7 +1068,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }
 
 
-        } else if (e.getView().getTitle().contains("&6&lDemote")) {
+        } else if (e.getView().getTitle().contains("§6§lDemote")) {
             if (e.getCurrentItem() == null) return;
             if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
@@ -1089,7 +1089,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }
 
 
-        } else if (e.getView().getTitle().contains("&6&lKick")) {
+        } else if (e.getView().getTitle().contains("§6§lKick")) {
             if (e.getCurrentItem() == null) return;
             if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
