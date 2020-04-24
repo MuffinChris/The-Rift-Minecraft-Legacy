@@ -40,6 +40,7 @@ import java.util.List;
 public class TownCoreCommand implements CommandExecutor, Listener {
 
     final int TOWNS_PER_PAGE = 5;
+    final int MEMBERS_PER_PAGE = 45;
 
     private Main main = Main.getInstance();
 
@@ -89,8 +90,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return promotePlayer(p, "");
             } else if (args[0].equalsIgnoreCase("demote")) {
                 return demotePlayer(p, "");
-            } else if (args[0].equalsIgnoreCase("members")){
-                return openPlayerHeadInv(p, "Town Members");
             }
 
             if (args[0].equalsIgnoreCase("chat")) {
@@ -111,15 +110,15 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }
 
             if (args[0].equalsIgnoreCase("show")) {
-                return showTownMemberInv(p, args[1]);
+                return sendTownMemberInv(p, args[1], args[1] + " Members", 0);
             }
 
             if (args[0].equalsIgnoreCase("leaderboard")) {
                 return showLeaderboard(p, Integer.parseInt(args[1]));
             }
 
-        } else if(args.length == 3) {
-            if(args[0].equalsIgnoreCase("search")) {
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("search")) {
                 return searchTown(p, args[1], Integer.parseInt(args[2]));
             }
         }
@@ -368,45 +367,55 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
     }
 
-    private boolean openPlayerHeadInv(Player p, String invName){
-        List<Inventory> page = new ArrayList<Inventory>();
-        int pagesize = 29;
-        ItemStack prev = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemStack next = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
-        for(int i = 0; i <= t.getSize() / pagesize; i++) {
-            page.add(Bukkit.createInventory(null, 54, Main.color("&6&l" + invName + " &l(Page " + (i+1) + ")")));
-            page.get(i).setItem(48, prev);
-            page.get(i).setItem(50, next);
-            Inventory menu = page.get(i);
-            for (int j = 39; j <= 53; j++) {
-                if(j % 9 <= 4) menu.setItem(j, prev);
-                else menu.setItem(j, next);
-            }
+    private boolean sendTownMemberInv(Player p, String townName, String invName, int page) {
+        ItemStack prev = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemStack next = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+
+        ItemMeta prevMeta = prev.getItemMeta();
+        prevMeta.setDisplayName("Go to Page " + (page - 1));
+
+        ItemMeta nextMeta = prev.getItemMeta();
+        nextMeta.setDisplayName("Go to Page " + (page + 1));
+
+        prev.setItemMeta(prevMeta);
+        next.setItemMeta(nextMeta);
+
+        if (!main.getFullTownList().contains(townName)) {
+            Main.msg(p, Main.color("&cTown not found!"));
+            return false;
         }
-        int pagenum = 0;
-        for(int i = 0; i < t.getSize(); i++){
-            if(i % pagesize == 0 && i != 0) pagenum++;
-            page.get(pagenum).setItem(i - pagenum * pagesize, getPlayerHead(t.getCitizenList().get(i), t));
+
+        Town t = new Town(townName);
+
+        Inventory inv = Bukkit.createInventory(null, 54, Main.color("&6&l" + invName + " &l(Page " + page + ")"));
+
+        for (int i = 45; i <= 48; i++) {
+            inv.setItem(i, prev);
         }
-        p.openInventory(page.get(0));
+
+        for (int i = 50; i <= 53; i++) {
+            inv.setItem(i, next);
+        }
+
+        ItemStack dt = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta dataMeta = dt.getItemMeta();
+        dataMeta.setDisplayName(townName);
+        dt.setItemMeta(dataMeta);
+
+        inv.setItem(49, dt);
+
+        int stind = page * MEMBERS_PER_PAGE;
+        if (stind > t.getCitizenList().size() || stind < 0) {
+            Main.msg(p, Main.color("&cInvalid page number!"));
+            return false;
+        }
+
+        for (int i = 0; i < t.getCitizenList().size() % MEMBERS_PER_PAGE; i++) {
+            inv.setItem(i, getPlayerHead(t.getCitizenList().get(stind + i), t));
+        }
+
+        p.openInventory(inv);
         return true;
-    }
-
-    private ItemStack getPlayerHead(UUID puuid) {
-
-        ItemStack is = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) is.getItemMeta();
-
-        OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(puuid);
-
-        meta.setOwningPlayer(op);
-        meta.setDisplayName(Main.color("&f&eUsername: &f" + op.getName()));
-
-        is.setItemMeta(meta);
-
-        return is;
-
     }
 
     private ItemStack getPlayerHead(UUID puuid, Town t) {
@@ -434,31 +443,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
         return is;
 
-    }
-
-    private boolean showTownMemberInv(Player p, String townName) {
-
-        // fetching heads is hard
-        Inventory menu = Bukkit.createInventory(null, 54, Main.color("&b&l" + townName + " Members"));
-
-        if (!main.getFullTownList().contains(townName)) {
-            Main.msg(p, Main.color("&cTown not found!"));
-            return false; // doesn't contain this town
-        }
-
-        Town t = new Town(townName);
-
-        for (int i = 0; i < t.getCitizenList().size(); i++) {
-            menu.setItem(i, getPlayerHead(t.getCitizenList().get(i), t));
-        }
-
-        for (int i = 39; i <= 53; i++) {
-            menu.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        }
-
-        p.openInventory(menu);
-        p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
-        return true;
     }
 
     public boolean createNewTown(Player p, String townName) {
@@ -689,28 +673,16 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     public boolean promotePlayer(Player p, String r) {
         if (r.equalsIgnoreCase("")) {
-            /*Main.msg(p, Main.color("&l&eWho do you want to promote?"));
-
-            main.getUUIDCitizenMap().get(p.getUniqueId()).setPromoteStatus("Prompted");
-            new BukkitRunnable() {
-                public void run() {
-                    Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
-                    if (!mc.getPromoteStatus().equals("Normal")) {
-                        mc.setPromoteStatus("Normal");
-                        Main.msg(p, Main.color("&4Prompt Timed Out."));
-                    }
-                }
-            }.runTaskLater(Main.getInstance(), 20 * 60);*/
-            openPlayerHeadInv(p, "Promote");
+            sendTownMemberInv(p, main.getUUIDCitizenMap().get(p.getUniqueId()).getTown(), "Promote", 0);
         } else {
             OfflinePlayer receiver = Bukkit.getOfflinePlayer(r);
-            if(!receiver.hasPlayedBefore()){
-                main.msg(p, "Could not find this player");
+            if (!receiver.hasPlayedBefore()) {
+                Main.msg(p, "Could not find this player");
                 return false;
             }
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
-            if(receiver.isOnline()) {
+            if (receiver.isOnline()) {
                 t.promote(p, receiver.getPlayer());
                 return true;
             } else {
@@ -722,28 +694,16 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     public boolean demotePlayer(Player p, String r) {
         if (r.equalsIgnoreCase("")) {
-            /*Main.msg(p, Main.color("&l&eWho do you want to demote?"));
-
-            main.getUUIDCitizenMap().get(p.getUniqueId()).setDemoteStatus("Prompted");
-            new BukkitRunnable() {
-                public void run() {
-                    Citizen mc = main.getUUIDCitizenMap().get(p.getUniqueId());
-                    if (!mc.getDemoteStatus().equals("Normal")) {
-                        mc.setDemoteStatus("Normal");
-                        Main.msg(p, Main.color("&4Prompt Timed Out."));
-                    }
-                }
-            }.runTaskLater(Main.getInstance(), 20 * 60);*/
-            openPlayerHeadInv(p, "Demote");
+            sendTownMemberInv(p, main.getUUIDCitizenMap().get(p.getUniqueId()).getTown(), "Demote", 0);
         } else {
             OfflinePlayer receiver = Bukkit.getOfflinePlayer(r);
-            if(!receiver.hasPlayedBefore()){
-                main.msg(p, "Could not find this player");
+            if (!receiver.hasPlayedBefore()) {
+                Main.msg(p, "Could not find this player");
                 return false;
             }
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
-            if(receiver.isOnline()) {
+            if (receiver.isOnline()) {
                 t.demote(p, receiver.getPlayer());
                 return true;
             } else {
@@ -755,25 +715,25 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     public boolean kickPlayer(Player p, String r) {
         if (r.equalsIgnoreCase("")) {
-            openPlayerHeadInv(p, "Kick");
+            sendTownMemberInv(p, main.getUUIDCitizenMap().get(p.getUniqueId()).getTown(), "Kick", 0);
         } else {
             OfflinePlayer receiver = Bukkit.getOfflinePlayer(r);
-            if(!receiver.hasPlayedBefore()){
-                main.msg(p, "Could not find this player");
+            if (!receiver.hasPlayedBefore()) {
+                Main.msg(p, "Could not find this player");
                 return false;
             }
             Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
             Town t = getTownFromCitizen(c);
-            if(receiver.isOnline()) {
+            if (receiver.isOnline()) {
                 t.kick(p, receiver.getPlayer());
-                return true;
             } else {
                 t.kick(p, receiver);
-                return true;
             }
+            return true;
         }
         return true;
     }
+
     private boolean showLeaderboard(Player p, int x) {
 
         sendLeaderboardPage(p, x);
@@ -858,7 +818,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     }
 
     public boolean searchTown(Player p, String query, int pageNum) {
-        if(pageNum < 0) {
+        if (pageNum < 0) {
             Main.msg(p, Main.color("&cInvalid page number!"));
             return false;
         }
@@ -889,7 +849,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     private boolean sendSearchResults(Player p, String query, int pageNum) {
         sendSearchPage(p, query, pageNum);
 
-        int npage = (int) ((pageNum+ 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
+        int npage = (int) ((pageNum + 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
         int ppage = (int) ((pageNum - 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
 
         TextComponent nextText = new TextComponent("[Next Page]");
@@ -967,25 +927,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         Main.sendCenteredMessage(p, Main.color("&a&m------------------"));
     }
 
-    private int pogdistance(String a, String b) {
-        int[][] dp = new int[a.length() + 1][b.length() + 1];
-        for(int i = 0; i <= a.length(); i++) {
-            for(int j = 0; j <= b.length(); j++) {
-                if(i == 0) {
-                    dp[i][j] = j;
-                } else if(j == 0) {
-                    dp[i][j] = i;
-                }
-                else {
-                    int c = a.charAt(i-1) == b.charAt(j-1) ? 0 : 1;
-                    dp[i][j] = Math.min(dp[i-1][j-1]+c, Math.min(dp[i-1][j]+1, dp[i][j-1]+1));
-                }
-            }
-        }
-
-        return dp[a.length()][b.length()];
-    }
-
     private boolean toggleTownChat(Player p) {
         if (main.getUUIDCitizenMap().get(p.getUniqueId()).getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
             Main.msg(p, "&cYou must be in a town to use this command");
@@ -1001,6 +942,31 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         }
         return true;
     }
+
+    private int pogdistance(String a, String b) {
+        int[][] dp = new int[a.length() + 1][b.length() + 1];
+        for (int i = 0; i <= a.length(); i++) {
+            for (int j = 0; j <= b.length(); j++) {
+                if (i == 0) {
+                    dp[i][j] = j;
+                } else if (j == 0) {
+                    dp[i][j] = i;
+                } else {
+                    int c = a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1;
+                    dp[i][j] = Math.min(dp[i - 1][j - 1] + c, Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1));
+                }
+            }
+        }
+
+        return dp[a.length()][b.length()];
+    }
+
+    private int getItemStackPage(ItemStack s) {
+        String nm = s.getI18NDisplayName();
+        String[] a = nm.split(" ");
+        return Integer.parseInt(a[a.length - 1]);
+    }
+
 
     @EventHandler(priority = EventPriority.LOW)
     public void onClick(InventoryClickEvent e) {
@@ -1042,12 +1008,12 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             } else if (itemDispName.contains("Demote")) {
                 demotePlayer((Player) e.getWhoClicked(), "");
                 //e.getWhoClicked().closeInventory();
-            } else if(itemDispName.contains("Kick")) {
+            } else if (itemDispName.contains("Kick")) {
                 kickPlayer((Player) e.getWhoClicked(), "");
             } else if (itemDispName.contains("Leaderboard")) {
                 showLeaderboard((Player) e.getWhoClicked(), 0);
                 e.getWhoClicked().closeInventory();
-            } else if(itemDispName.contains(("Search"))) {
+            } else if (itemDispName.contains(("Search"))) {
                 searchTown((Player) e.getWhoClicked(), "", 0);
                 e.getWhoClicked().closeInventory();
             }
@@ -1081,26 +1047,28 @@ public class TownCoreCommand implements CommandExecutor, Listener {
             }
             e.getWhoClicked().closeInventory();
 
-        } else if(e.getView().getTitle().contains("Promote")) {
-            if(e.getCurrentItem() == null) return;
-            if(!e.getCurrentItem().hasItemMeta()) return;
+        } else if (e.getView().getTitle().contains("&6&lPromote")) {
+            if (e.getCurrentItem() == null) return;
+            if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
 
-            if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+            if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
                 Player p = (Player) e.getWhoClicked();
                 Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
                 SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
                 sm.getOwningPlayer();
-                if(!sm.getOwningPlayer().isOnline()){
+                if (!sm.getOwningPlayer().isOnline()) {
                     t.promote(p, sm.getOwningPlayer());
                 } else {
                     t.promote(p, sm.getOwningPlayer().getPlayer());
                 }
+                e.getWhoClicked().closeInventory();
+            } else if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), "&6&lPromote &l(Page " + getItemStackPage(e.getCurrentItem()) + ")", getItemStackPage(e.getCurrentItem()));
             }
-            e.getWhoClicked().closeInventory();
 
 
-        } else if(e.getView().getTitle().contains("Demote")) {
+        } else if (e.getView().getTitle().contains("&6&lDemote")) {
             if (e.getCurrentItem() == null) return;
             if (!e.getCurrentItem().hasItemMeta()) return;
             e.setCancelled(true);
@@ -1115,32 +1083,41 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 } else {
                     t.demote(p, sm.getOwningPlayer().getPlayer());
                 }
+                e.getWhoClicked().closeInventory();
+            } else if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), "&6&lDemote &l(Page " + getItemStackPage(e.getCurrentItem()) + ")", getItemStackPage(e.getCurrentItem()));
             }
-            e.getWhoClicked().closeInventory();
 
 
-        } else if(e.getView().getTitle().contains("Kick")) {
-                if(e.getCurrentItem() == null) return;
-                if(!e.getCurrentItem().hasItemMeta()) return;
-                e.setCancelled(true);
+        } else if (e.getView().getTitle().contains("&6&lKick")) {
+            if (e.getCurrentItem() == null) return;
+            if (!e.getCurrentItem().hasItemMeta()) return;
+            e.setCancelled(true);
 
-                if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
-                    Player p = (Player) e.getWhoClicked();
-                    Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
-                    SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
-                    sm.getOwningPlayer();
-                    if(!sm.getOwningPlayer().isOnline()){
-                        t.kick(p, sm.getOwningPlayer());
-                        return;
-                    } else {
-                        t.demote(p, sm.getOwningPlayer().getPlayer());
-                    }
+            if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                Player p = (Player) e.getWhoClicked();
+                Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
+                SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
+                sm.getOwningPlayer();
+                if (!sm.getOwningPlayer().isOnline()) {
+                    t.kick(p, sm.getOwningPlayer());
+                    return;
+                } else {
+                    t.demote(p, sm.getOwningPlayer().getPlayer());
                 }
                 e.getWhoClicked().closeInventory();
+            } else if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), "&6&lKick &l(Page " + getItemStackPage(e.getCurrentItem()) + ")", getItemStackPage(e.getCurrentItem()));
+            }
 
 
-        } else if (e.getView().getTitle().startsWith("§b§l") && e.getView().getTitle().endsWith("Members")) { // town member inventory
+        } else if (e.getView().getTitle().startsWith("§b§l") && e.getView().getTitle().contains("Members")) { // town member inventory
+            if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
+                String invName = "§b§l" + e.getClickedInventory().getItem(49).getI18NDisplayName() + " Members &l(Page " + getItemStackPage(e.getCurrentItem()) + ")";
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), invName, getItemStackPage(e.getCurrentItem()));
+            }
             e.setCancelled(true);
+
         }
     }
 }

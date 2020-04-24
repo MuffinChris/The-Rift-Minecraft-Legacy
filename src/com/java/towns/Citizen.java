@@ -22,8 +22,6 @@ public class Citizen extends OfflineCitizen{
     private String inviteStatus = "Normal";
     private String inviteSentStatus = "Normal";
     private String searchStatus = "Normal";
-    private String promoteStatus = "Normal";
-    private String demoteStatus = "Normal";
 
     public Citizen() {
         r = -1; p = null; town = defaultTownName;
@@ -78,14 +76,6 @@ public class Citizen extends OfflineCitizen{
         return searchStatus;
     }
 
-    public String getPromoteStatus() {
-        return promoteStatus;
-    }
-
-    public String getDemoteStatus() {
-        return demoteStatus;
-    }
-
     public void setRank(int i) {
         r = i;
         pushFiles();
@@ -110,14 +100,6 @@ public class Citizen extends OfflineCitizen{
 
     public void setSearchStatus(String status) {
         searchStatus = status;
-    }
-
-    public void setPromoteStatus(String promoteStatus) {
-        this.promoteStatus = promoteStatus;
-    }
-
-    public void setDemoteStatus(String demoteStatus) {
-        this.demoteStatus = demoteStatus;
     }
 
     public void setUsernameFile(FileConfiguration pData, String username) {
