@@ -205,6 +205,10 @@ public class Town {
     }
 
     public void demote(Player demoter, Player receiver){
+        if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
+            Main.msg(demoter, receiver.getName() + " is not in your town!");
+            return;
+        }
         int drank = getRank(demoter);
         int rrank = getRank(receiver);
         if(drank <= 2){

@@ -1013,7 +1013,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 //e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Demote")) {
                 demotePlayer((Player) e.getWhoClicked(), "");
-                e.getWhoClicked().closeInventory();
+                //e.getWhoClicked().closeInventory();
             } else if (itemDispName.contains("Leaderboard")) {
                 showLeaderboard((Player) e.getWhoClicked(), 0);
                 e.getWhoClicked().closeInventory();
