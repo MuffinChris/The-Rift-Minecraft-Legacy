@@ -48,8 +48,8 @@ public class RollingStone extends Skill implements Listener {
         super.cast(p);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_MINECART_RIDING, 2F, .5F);
         ArrayList<LivingEntity> hit = new ArrayList<LivingEntity> ();
-        Vector face = p.getEyeLocation().getDirection().clone();
         new BukkitRunnable() {
+        	Vector face = p.getEyeLocation().getDirection().clone();
             int times = 16;
             
             public void run() {
