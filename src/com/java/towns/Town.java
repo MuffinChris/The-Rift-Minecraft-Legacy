@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -76,6 +77,9 @@ public class Town {
         return ranks.get(getRank(p));
     }
 
+    public String getRankName(int i) {
+        return ranks.get(i);
+    }
     public void setName(String s) {
         name = s; pushFiles();
     }
@@ -173,6 +177,33 @@ public class Town {
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(getRank(receiver) + 1);
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
     }
+    public void promote(Player promoter, OfflinePlayer receiver) {
+        OfflineCitizen cr = new OfflineCitizen(receiver);
+        if(!cr.getTown().equals(name)){
+            Main.msg(promoter, receiver.getName() + " is not in your town!");
+            return;
+        }
+        int prank = getRank(promoter); int rrank = cr.getRank();
+        //Check if promoter rank is high enough
+        if(prank <= 2){
+            Main.msg(promoter, "You are not high enough rank to promote.");
+            return;
+        }
+        if(rrank == ranks.size() - 1){
+            Main.msg(promoter, receiver.getName() + " is " + getRankName(cr.getRank()) +".");
+            Main.msg(promoter, receiver.getName() + " cannot be promoted");
+            return;
+        }
+        if(prank - rrank < 2 && prank != ranks.size() - 1){
+            Main.msg(promoter, "You are not high enough rank to promote " + receiver.getName() + " to "
+                    + ranks.get(rrank + 1));
+            return;
+        }
+        //TODO: Promote sub-owner to owner
+        Main.msg(promoter, "You have promoted " + receiver.getName() + " to " + ranks.get(rrank + 1));
+        cr.setRank(cr.getRank() + 1);
+    }
+
     public void demote(Player demoter, Player receiver){
         int drank = getRank(demoter);
         int rrank = getRank(receiver);

@@ -145,6 +145,23 @@ public class TownManager implements Listener {
 
     }
 
+    public int getRankOffline(UUID uuid){
+        File pFile = new File("plugins/Rift/data/towns/" + uuid + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if(!pFile.exists()){
+            return -1;
+        }
+        return pData.getInt("Rank");
+    }
+
+    public String getTownOffline(UUID uuid){
+        File pFile = new File("plugins/Rift/data/towns/" + uuid + ".yml");
+        FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
+        if(!pFile.exists()){
+            return "None";
+        }
+        return pData.getString("CurrentTown");
+    }
     //should only need to be ran once
     /*public void makeFullTownList() {
         try {

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Citizen {
+public class Citizen extends OfflineCitizen{
 
     private int r; //Rank in town, -1 if no town
     private Player p;
@@ -25,6 +25,9 @@ public class Citizen {
     private String promoteStatus = "Normal";
     private String demoteStatus = "Normal";
 
+    public Citizen() {
+        r = -1; p = null; town = defaultTownName;
+    }
     public Citizen(Player pl) {
         this.p = pl;
         this.r = -1;
