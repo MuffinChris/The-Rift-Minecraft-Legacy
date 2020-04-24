@@ -58,7 +58,8 @@ public class RollingStone extends Skill implements Listener {
                 if (checkStep(p)) {
                     p.teleport(p.getLocation().add(new Vector(0,1,0)));
                 }
-                p.setVelocity(face.multiply(1.0));
+                face = p.getEyeLocation().getDirection().clone();
+                p.setVelocity(face.multiply(1.5));
                 for (LivingEntity ent: p.getLocation().getNearbyLivingEntities(2)) {
                 	if (ent instanceof ArmorStand) {
                         continue;
