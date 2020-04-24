@@ -370,19 +370,24 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     private boolean openPlayerHeadInv(Player p, String invName){
         List<Inventory> page = new ArrayList<Inventory>();
-        ItemStack prev = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemStack next = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        int pagesize = 29;
+        ItemStack prev = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack next = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         Town t = getTownFromCitizen(main.getUUIDCitizenMap().get(p.getUniqueId()));
-        for(int i = 0; i <= t.getSize() / 45; i++) {
-            page.add(Bukkit.createInventory(null, 54, Main.color("&e&l" + invName + "(Page " + (i+1) + ")")));
+        for(int i = 0; i <= t.getSize() / pagesize; i++) {
+            page.add(Bukkit.createInventory(null, 54, Main.color("&6&l" + invName + " &l(Page " + (i+1) + ")")));
             page.get(i).setItem(48, prev);
             page.get(i).setItem(50, next);
+            Inventory menu = page.get(i);
+            for (int j = 39; j <= 53; j++) {
+                if(j % 9 <= 4) menu.setItem(j, prev);
+                else menu.setItem(j, next);
+            }
         }
-
         int pagenum = 0;
         for(int i = 0; i < t.getSize(); i++){
-            if(i % 45 == 0 && i != 0) pagenum++;
-            page.get(pagenum).setItem(i - pagenum * 45, getPlayerHead(t.getCitizenList().get(i), t));
+            if(i % pagesize == 0 && i != 0) pagenum++;
+            page.get(pagenum).setItem(i - pagenum * pagesize, getPlayerHead(t.getCitizenList().get(i), t));
         }
         p.openInventory(page.get(0));
         return true;
