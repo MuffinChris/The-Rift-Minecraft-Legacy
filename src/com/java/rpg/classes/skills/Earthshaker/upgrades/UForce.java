@@ -53,6 +53,9 @@ public class UForce extends Skill implements Listener {
 					collide(p);
 					cancel();
 				}
+				if(checkStep(p)) {
+					p.teleport(p.getLocation().add(new Vector(0,1,0)));
+				}
 				times++;
 				if (times >= 20) {
 					cancel();
@@ -86,6 +89,14 @@ public class UForce extends Skill implements Listener {
     	}
     	return false;
     }
+    
+    public boolean checkStep(Player pl) {
+    	Location loc = pl.getEyeLocation();
+    	loc.add(pl.getEyeLocation().getDirection().setY(0).normalize().add(new Vector(0, -1, 0)));
+    	if(loc.getBlock().getType() != Material.AIR)
+    		return true;
+    	return false;
+    }
 
     //doesn't work pepega
     /*public void charge(Player p) {
@@ -97,6 +108,20 @@ public class UForce extends Skill implements Listener {
     public void collide(Player p) {
     	p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 2.0F, 0.5F);
     	for(LivingEntity ent: p.getLocation().getNearbyLivingEntities(hitRad)) {
+    		if (ent instanceof ArmorStand) {
+                continue;
+            }
+            if (ent instanceof Player) {
+                Player pl = (Player) ent;
+                if (main.getPM().getParty(pl) instanceof Party && !main.getPM().getParty(pl).getPvp()) {
+                    if (main.getPM().getParty(pl).getPlayers().contains(p)) {
+                        continue;
+                    }
+                }
+                if(pl.equals(p)) {
+                	continue;
+                }
+            }
     		ent.setVelocity(new Vector(0,launchVelocity,0));
     		spellDamage(p,ent,new PhysicalStack(),new ElementalStack(0,200,0,0,0), getDmg(p), 0);
     	}

@@ -1,4 +1,4 @@
-package com.java.rpg.classes.skills.Bishop;
+package com.java.rpg.classes.skills.Bishop.upgrades;
 
 import com.java.Main;
 import com.java.rpg.classes.Skill;

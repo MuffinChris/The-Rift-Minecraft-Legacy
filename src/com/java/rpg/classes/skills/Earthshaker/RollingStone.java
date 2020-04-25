@@ -145,9 +145,8 @@ public class RollingStone extends Skill implements Listener {
     
     //check if the player hits a 1 block high wall
     public boolean checkStep(Player pl) {
-    	Location loc = pl.getLocation();
-    	Vector facing = pl.getEyeLocation().getDirection().clone();
-    	loc.add(pl.getLocation().add(facing.setY(0).normalize()));
+    	Location loc = pl.getEyeLocation();
+    	loc.add(pl.getEyeLocation().getDirection().setY(0).normalize().add(new Vector(0, -1, 0)));
     	if(loc.getBlock().getType() != Material.AIR)
     		return true;
     	return false;
