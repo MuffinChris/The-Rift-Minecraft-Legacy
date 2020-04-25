@@ -40,7 +40,7 @@ import java.util.List;
 public class TownCoreCommand implements CommandExecutor, Listener {
 
     final int TOWNS_PER_PAGE = 5;
-    final int MEMBERS_PER_PAGE = 45;
+    final int MEMBERS_PER_PAGE = 40;
 
     private Main main = Main.getInstance();
 
@@ -84,6 +84,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 return declineInvite(p);
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
                 return showLeaderboard(p, 0);
+            } else if(args[0].equalsIgnoreCase("list")) {
+                return showTownList(p, 0);
             } else if (args[0].equalsIgnoreCase("kick")) {
                 return kickPlayer(p, "");
             } else if (args[0].equalsIgnoreCase("promote")) {
@@ -115,6 +117,10 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
             if (args[0].equalsIgnoreCase("leaderboard")) {
                 return showLeaderboard(p, Integer.parseInt(args[1]));
+            }
+
+            if(args[0].equalsIgnoreCase("list")) {
+                return showTownList(p, Integer.parseInt(args[1]));
             }
 
         } else if (args.length == 3) {
@@ -372,10 +378,10 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         ItemStack next = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         ItemMeta prevMeta = prev.getItemMeta();
-        prevMeta.setDisplayName("&c&lGo to Page " + (page - 1));
+        prevMeta.setDisplayName(Main.color("&c&lGo to Page " + (page - 1)));
 
         ItemMeta nextMeta = prev.getItemMeta();
-        nextMeta.setDisplayName("&a&lGo to Page " + (page + 1));
+        nextMeta.setDisplayName(Main.color("&a&lGo to Page " + (page + 1)));
 
         prev.setItemMeta(prevMeta);
         next.setItemMeta(nextMeta);
@@ -389,17 +395,6 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
         Inventory inv = Bukkit.createInventory(null, 54, Main.color("&6&l" + invName + " &l(Page " + (page + 1) + ")"));
 
-        if(page - 1 >= 0) {
-            for (int i = 45; i <= 48; i++) {
-                inv.setItem(i, prev);
-            }
-        }
-
-        if(page + 1 < Math.ceil((double)t.getSize() / MEMBERS_PER_PAGE))
-        for (int i = 50; i <= 53; i++) {
-            inv.setItem(i, next);
-        }
-
         ItemStack dt = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta dataMeta = dt.getItemMeta();
         dataMeta.setDisplayName(townName);
@@ -407,13 +402,27 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
         inv.setItem(49, dt);
 
+        if(page - 1 >= 0) {
+            for (int i = 45; i <= 48; i++) {
+                inv.setItem(i, prev);
+            }
+        }
+
+        if(page + 1 < Math.ceil((double)t.getSize() / MEMBERS_PER_PAGE)) {
+            for (int i = 50; i <= 53; i++) {
+                inv.setItem(i, next);
+            }
+        }
+
+
+
         int stind = page * MEMBERS_PER_PAGE;
         if (stind > t.getSize() || stind < 0) {
             Main.msg(p, Main.color("&cInvalid page number!"));
             return false;
         }
 
-        for (int i = 0; i < t.getSize() % MEMBERS_PER_PAGE; i++) {
+        for (int i = 0; i < MEMBERS_PER_PAGE; i++) {
             inv.setItem(i, getPlayerHead(t.getCitizenList().get(stind + i), t));
         }
 
@@ -503,11 +512,10 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
     public boolean leaveTown(Player p) {
 
-        // TODO: if the owner of a town leaves -- then either the town should disband or the max level role needs to be transferred (randomly to a maxlvl -1 member?)
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
 
         if (c.getTown().equalsIgnoreCase(Citizen.defaultTownName)) {
-            Main.msg(p, "&4You aren't in any town!");
+            Main.msg(p, "&cYou aren't in any town!");
             return false;
         }
 
@@ -728,6 +736,89 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         return true;
     }
 
+    private boolean showTownList(Player p, int x) {
+
+        sendTownListPage(p, x);
+
+        int npage = (int) ((x + 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
+        int ppage = (int) ((x - 1) % Math.ceil((double) (main.getFullTownList().size() / TOWNS_PER_PAGE)));
+
+        TextComponent nextText = new TextComponent("[Next Page]");
+        TextComponent previousText = new TextComponent("[Previous Page]");
+        nextText.setBold(true);
+        previousText.setBold(true);
+        nextText.setColor(ChatColor.GREEN);
+        previousText.setColor(ChatColor.RED);
+        nextText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town list " + npage));
+        previousText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town list " + ppage));
+        // TODO: maybe do some hover events to make it more obvious what's going on
+        TextComponent invText2 = new TextComponent();
+
+        invText2.addExtra(previousText);
+        invText2.addExtra(" or ");
+        invText2.addExtra(nextText);
+        p.sendMessage(invText2);
+
+        return true;
+    }
+
+    private void sendTownListPage(Player p, int x) {
+        Main.sendCenteredMessage(p, Main.color("&a&m------------------\n"));
+        Main.sendCenteredMessage(p, Main.color("&b&lTOWN LIST"));
+        List<String> fullTownNames = main.getFullTownList();
+
+        ArrayList<Town> fullTowns = new ArrayList<Town>();
+
+        for (int i = 0; i < fullTownNames.size(); i++) {
+            fullTowns.add(new Town(fullTownNames.get(i)));
+        }
+
+        fullTowns.sort((o1, o2) -> {
+            // this is kind of a weird metric (lvl^2 * citizenCount)
+            int o1score = -o1.getSize();
+            int o2score = -o2.getSize();
+
+            return Integer.compare(o1score, o2score);
+        });
+
+
+        for (int i = x * TOWNS_PER_PAGE; i < (x + 1) * TOWNS_PER_PAGE; i++) {
+            if (i >= fullTowns.size()) break;
+
+            TextComponent fullText = new TextComponent();
+            TextComponent towntc = new TextComponent();
+
+            fullText.setText((i + 1) + "   ");
+            fullText.setColor(ChatColor.GOLD);
+            fullText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/town show " + fullTowns.get(i).getName()));
+
+
+            towntc.setText(fullTowns.get(i).getName());
+            towntc.setColor(ChatColor.BOLD);
+
+            TextComponent lvl = new TextComponent();
+            lvl.setText("Level: " + fullTowns.get(i).getLevel());
+            lvl.setColor(ChatColor.BLUE);
+
+            TextComponent sz = new TextComponent();
+            sz.setText("\nSize: " + fullTowns.get(i).getSize());
+            sz.setColor(ChatColor.BLUE);
+
+            TextComponent click = new TextComponent();
+            click.setText("\n\nClick to see full list of members!");
+            click.setColor(ChatColor.GREEN);
+            click.setBold(true);
+
+            towntc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder().append(lvl).append(sz).append(click).create()));
+            fullText.addExtra(towntc);
+
+            Main.sendCenteredMessage(p, fullText);
+
+        }
+        Main.sendCenteredMessage(p, Main.color("&a&m------------------"));
+
+    }
+
     private boolean showLeaderboard(Player p, int x) {
 
         sendLeaderboardPage(p, x);
@@ -767,8 +858,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
 
         fullTowns.sort((o1, o2) -> {
             // this is kind of a weird metric (lvl^2 * citizenCount)
-            int o1score = (int) Math.pow((o1.getLevel() + 1), 2) * o1.getSize();
-            int o2score = (int) Math.pow((o2.getLevel() + 1), 2) * o2.getSize();
+            int o1score = -(int) Math.pow((o1.getLevel() + 1), 2) * o1.getSize();
+            int o2score = -(int) Math.pow((o2.getLevel() + 1), 2) * o2.getSize();
 
             return Integer.compare(o1score, o2score);
         });
@@ -956,7 +1047,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
     }
 
     private int getItemStackPage(ItemStack s) {
-        String nm = s.getI18NDisplayName();
+        String nm = s.getItemMeta().getDisplayName();
         String[] a = nm.split(" ");
         return Integer.parseInt(a[a.length - 1]);
     }
@@ -1058,7 +1149,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 }
                 e.getWhoClicked().closeInventory();
             } else if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
-                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), "&6&lPromote &l(Page " + getItemStackPage(e.getCurrentItem()) + ")", getItemStackPage(e.getCurrentItem()));
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getItemMeta().getDisplayName(), "Promote", getItemStackPage(e.getCurrentItem()));
             }
 
 
@@ -1079,7 +1170,7 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 }
                 e.getWhoClicked().closeInventory();
             } else if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
-                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), "&6&lDemote &l(Page " + getItemStackPage(e.getCurrentItem()) + ")", getItemStackPage(e.getCurrentItem()));
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getItemMeta().getDisplayName(), "Demote", getItemStackPage(e.getCurrentItem()));
             }
 
 
@@ -1097,11 +1188,11 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                     t.kick(p, sm.getOwningPlayer());
                     return;
                 } else {
-                    t.demote(p, sm.getOwningPlayer().getPlayer());
+                    t.kick(p, sm.getOwningPlayer().getPlayer());
                 }
                 e.getWhoClicked().closeInventory();
             } else if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
-                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), "&6&lKick &l(Page " + getItemStackPage(e.getCurrentItem()) + ")", getItemStackPage(e.getCurrentItem()));
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getItemMeta().getDisplayName(), "Kick", getItemStackPage(e.getCurrentItem()));
             }
 
 
@@ -1124,12 +1215,12 @@ public class TownCoreCommand implements CommandExecutor, Listener {
                 t.leave(p);
                 e.getWhoClicked().closeInventory();
             } else if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
-                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), "&6&lKick &l(Page " + getItemStackPage(e.getCurrentItem()) + ")", getItemStackPage(e.getCurrentItem()));
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getItemMeta().getDisplayName(), "Kick", getItemStackPage(e.getCurrentItem()));
             }
         } else if (e.getView().getTitle().startsWith("§6§l") && e.getView().getTitle().contains("Members")) { // town member inventory
             if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE || e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
-                String invName = "§b§l" + e.getClickedInventory().getItem(49).getI18NDisplayName() + " Members &l(Page " + getItemStackPage(e.getCurrentItem()) + ")";
-                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getI18NDisplayName(), invName, getItemStackPage(e.getCurrentItem()));
+                String invName = e.getClickedInventory().getItem(49).getItemMeta().getDisplayName() + " Members";
+                sendTownMemberInv((Player) e.getWhoClicked(), e.getClickedInventory().getItem(49).getItemMeta().getDisplayName(), invName, getItemStackPage(e.getCurrentItem()));
             }
             e.setCancelled(true);
 

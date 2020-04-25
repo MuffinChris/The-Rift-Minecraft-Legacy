@@ -42,6 +42,7 @@ public class Town {
     private String name;
     private int level = 1;
     private List<UUID> cList;
+
     public Town(Player p, String _n) {
         //cl = new CitizenList();
         cList = new ArrayList<UUID>();
@@ -54,7 +55,8 @@ public class Town {
         this.name = _n;
         pushFiles();
     }
-    public Town(String _n){
+
+    public Town(String _n) {
         cList = new ArrayList<UUID>();
         name = _n;
         pullFiles();
@@ -67,7 +69,7 @@ public class Town {
 
     public List<String> getRanks() {
         return ranks;
-    } // TODO: have some way for town members to create ranks
+    }
 
     public int getRank(Player p) {
         return main.getUUIDCitizenMap().get(p.getUniqueId()).getRank();
@@ -80,20 +82,28 @@ public class Town {
     public String getRankName(int i) {
         return ranks.get(i);
     }
+
     public void setName(String s) {
-        name = s; pushFiles();
+        name = s;
+        pushFiles();
     }
 
     public String getName() {
         return name;
     }
 
-    public int getSize(){
+    public int getSize() {
         return cList.size();
     }
-    public void setLevel(int l) { level = l; pushFiles(); }
 
-    public int getLevel() { return level; }
+    public void setLevel(int l) {
+        level = l;
+        pushFiles();
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
 
     public void changeRankName(int i, String newName) {
@@ -133,64 +143,74 @@ public class Town {
     }
 
     public void kick(Player kicker, Player receiver) {
-        if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
+        if (!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)) {
             Main.msg(kicker, receiver.getName() + " is not in your town!");
             return;
         }
         int krank = getRank(kicker);
         int rrank = getRank(receiver);
-        if(krank <= 3){
+        if (krank <= 3) {
             Main.msg(kicker, Main.color("&cYou are not high enough rank to kick."));
             return;
         }
-        if(krank <= rrank){
+        if (krank <= rrank) {
             Main.msg(kicker, Main.color("&cYou are not high enough rank to kick " + receiver.getName() + "."));
             return;
         }
         Citizen c = main.getUUIDCitizenMap().get(receiver.getUniqueId());
-        c.setRank(-1); c.setTown(Citizen.defaultTownName);
+        c.setRank(-1);
+        c.setTown(Citizen.defaultTownName);
         this.getCitizenList().remove(receiver.getUniqueId());
+
+        Main.msg(receiver, Main.color("&cYou have been kicked from " + main.getUUIDCitizenMap().get(kicker.getUniqueId()).getTown()));
+        Main.msg(kicker, Main.color("&aSuccessfully kicked player from town."));
+
         c.pushFiles();
         pushFiles();
     }
 
     public void kick(Player kicker, OfflinePlayer receiver) {
         OfflineCitizen cr = new OfflineCitizen(receiver);
-        if(!cr.getTown().equals(name)){
+        if (!cr.getTown().equals(name)) {
             Main.msg(kicker, receiver.getName() + " is not in your town!");
             return;
         }
         int krank = getRank(kicker);
         int rrank = cr.getRank();
-        if(krank <= 3){
+        if (krank <= 3) {
             Main.msg(kicker, Main.color("&cYou are not high enough rank to kick."));
             return;
         }
-        if(krank <= rrank){
+        if (krank <= rrank) {
             Main.msg(kicker, Main.color("&cYou are not high enough rank to kick " + receiver.getName() + "."));
             return;
         }
-        cr.setRank(-1); cr.setTown(Citizen.defaultTownName);
+        cr.setRank(-1);
+        cr.setTown(Citizen.defaultTownName);
         this.getCitizenList().remove(receiver.getUniqueId());
+
+        Main.msg(kicker, Main.color("&aSuccessfully kicked player from town."));
         pushFiles();
     }
+
     public void promote(Player promoter, Player receiver) {
-        if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
+        if (!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)) {
             Main.msg(promoter, Main.color("&c" + receiver.getName() + " is not in your town!"));
             return;
         }
-        int prank = getRank(promoter); int rrank = getRank(receiver);
+        int prank = getRank(promoter);
+        int rrank = getRank(receiver);
         //Check if promoter rank is high enough
-        if(prank <= 2){
+        if (prank <= 2) {
             Main.msg(promoter, Main.color("&cYou are not high enough rank to promote."));
             return;
         }
-        if(rrank == maxRank){
-            Main.msg(promoter, Main.color("&c" + receiver.getName() + " is " + getRankName(receiver) +"."));
+        if (rrank == maxRank) {
+            Main.msg(promoter, Main.color("&c" + receiver.getName() + " is " + getRankName(receiver) + "."));
             Main.msg(promoter, Main.color("&c" + receiver.getName() + " cannot be promoted"));
             return;
         }
-        if(prank - rrank < 2 && prank != ranks.size() - 1){
+        if (prank - rrank < 2 && prank != ranks.size() - 1) {
             Main.msg(promoter, Main.color("&cYou are not high enough rank to promote " + receiver.getName() + " to "
                     + ranks.get(rrank + 1)));
             return;
@@ -204,22 +224,23 @@ public class Town {
 
     public void promote(Player promoter, OfflinePlayer receiver) {
         OfflineCitizen cr = new OfflineCitizen(receiver);
-        if(!cr.getTown().equals(name)){
+        if (!cr.getTown().equals(name)) {
             Main.msg(promoter, Main.color("&a" + receiver.getName() + " is not in your town!"));
             return;
         }
-        int prank = getRank(promoter); int rrank = cr.getRank();
+        int prank = getRank(promoter);
+        int rrank = cr.getRank();
         //Check if promoter rank is high enough
-        if(prank <= 2){
+        if (prank <= 2) {
             Main.msg(promoter, Main.color("&aYou are not high enough rank to promote."));
             return;
         }
-        if(rrank == ranks.size() - 1){
-            Main.msg(promoter, Main.color("&a" + receiver.getName() + " is " + getRankName(cr.getRank()) +"."));
+        if (rrank == ranks.size() - 1) {
+            Main.msg(promoter, Main.color("&a" + receiver.getName() + " is " + getRankName(cr.getRank()) + "."));
             Main.msg(promoter, Main.color("&a" + receiver.getName() + " cannot be promoted"));
             return;
         }
-        if(prank - rrank < 2 && prank != ranks.size() - 1){
+        if (prank - rrank < 2 && prank != ranks.size() - 1) {
             Main.msg(promoter, Main.color("&aYou are not high enough rank to promote " + receiver.getName() + " to "
                     + ranks.get(rrank + 1)));
             return;
@@ -229,26 +250,26 @@ public class Town {
         cr.setRank(cr.getRank() + 1);
     }
 
-    public void demote(Player demoter, Player receiver){
-        if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
+    public void demote(Player demoter, Player receiver) {
+        if (!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)) {
             Main.msg(demoter, Main.color("&c" + receiver.getName() + " is not in your town!"));
             return;
         }
         int drank = getRank(demoter);
         int rrank = getRank(receiver);
-        if(drank <= 2){
+        if (drank <= 2) {
             Main.msg(demoter, Main.color("&cYou are not high enough rank to demote someone"));
             return;
         }
-        if(drank == rrank){
+        if (drank == rrank) {
             Main.msg(demoter, Main.color("&cYou cannot demote someone that is the same rank as you"));
             return;
         }
-        if(drank < rrank){
+        if (drank < rrank) {
             Main.msg(demoter, Main.color("&cYou cannot demote someone that is a higher rank than you"));
             return;
         }
-        if(rrank <= 0){
+        if (rrank <= 0) {
             Main.msg(demoter, Main.color("&c" + receiver.getName() + " cannot be demoted any lower"));
             return;
         }
@@ -258,27 +279,27 @@ public class Town {
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
     }
 
-    public void demote(Player demoter, OfflinePlayer receiver){
+    public void demote(Player demoter, OfflinePlayer receiver) {
         OfflineCitizen cr = new OfflineCitizen(receiver);
-        if(!cr.getTown().equals(name)){
+        if (!cr.getTown().equals(name)) {
             Main.msg(demoter, Main.color("&c" + receiver.getName() + " is not in your town!"));
             return;
         }
         int drank = getRank(demoter);
         int rrank = cr.getRank();
-        if(drank <= 2){
+        if (drank <= 2) {
             Main.msg(demoter, Main.color("&cYou are not high enough rank to demote someone"));
             return;
         }
-        if(drank == rrank){
+        if (drank == rrank) {
             Main.msg(demoter, Main.color("&cYou cannot demote someone that is the same rank as you"));
             return;
         }
-        if(drank < rrank){
+        if (drank < rrank) {
             Main.msg(demoter, Main.color("&cYou cannot demote someone that is a higher rank than you"));
             return;
         }
-        if(rrank <= 0){
+        if (rrank <= 0) {
             Main.msg(demoter, Main.color("&c" + receiver.getName() + " cannot be demoted any lower"));
             return;
         }
@@ -286,11 +307,11 @@ public class Town {
         cr.setRank(rrank - 1);
     }
 
-    public void leave(Player p){
+    public void leave(Player p) {
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
         c.setTown(Citizen.defaultTownName); // default values
         c.setRank(-1); // %
-        Main.msg(p, "&4You have successfully left " + getName());
+        Main.msg(p, "&cYou have successfully left " + getName());
 
         getCitizenList().remove(p.getUniqueId());
 
@@ -307,6 +328,7 @@ public class Town {
         c.pushFiles();
         //pushFiles();
     }
+
     public void pushFiles() {
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
@@ -319,7 +341,7 @@ public class Town {
             Citizens
              */
             List<String> citizenData = new ArrayList<String>();
-            for(int i = 0; i < cList.size(); i++){
+            for (int i = 0; i < cList.size(); i++) {
                 citizenData.add(cList.get(i).toString());
             }
 
@@ -341,7 +363,7 @@ public class Town {
             Town info
              */
             List<String> pullUUIDString = tData.getStringList("CitizensList");
-            for(int i = 0; i < pullUUIDString.size(); i++){
+            for (int i = 0; i < pullUUIDString.size(); i++) {
                 cList.add(UUID.fromString(pullUUIDString.get(i)));
             }
 
@@ -351,7 +373,7 @@ public class Town {
     // this function is broken (?)
     //      - tFile.delete() returns true so it thinks it works except the file is not actually removed
     //      - low prio fix though because it will get overridden if someone creates a town of the same name
-    public void deleteFiles(){
+    public void deleteFiles() {
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         tFile.delete();
     }
