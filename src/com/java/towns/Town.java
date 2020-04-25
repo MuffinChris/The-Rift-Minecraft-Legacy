@@ -26,7 +26,7 @@ public class Town {
     /*
     Ranks go from 0 to 5 inclusive (default names subject to change)
     */
-    public static int maxRank = 5;
+    public int maxRank = 5;
     private Main main = Main.getInstance();
     private List<String> ranks = new ArrayList<String>() {
         {
@@ -125,8 +125,8 @@ public class Town {
             public void run() {
                 if (!mc.getInviteStatus().equals("Normal")) {
                     mc.setInviteStatus("Normal");
-                    Main.msg(inviter, Main.color("&4Invite Timed Out."));
-                    Main.msg(receiver, Main.color("&4Invite Timed Out."));
+                    Main.msg(inviter, Main.color("&cInvite Timed Out."));
+                    Main.msg(receiver, Main.color("&cInvite Timed Out."));
                 }
             }
         }.runTaskLater(Main.getInstance(), 20 * 60);
@@ -140,11 +140,11 @@ public class Town {
         int krank = getRank(kicker);
         int rrank = getRank(receiver);
         if(krank <= 3){
-            main.msg(kicker, "You are not high enough rank to kick.");
+            Main.msg(kicker, Main.color("&cYou are not high enough rank to kick."));
             return;
         }
         if(krank <= rrank){
-            main.msg(kicker, "You are not high enough rank to kick " + receiver.getName() + ".");
+            Main.msg(kicker, Main.color("&cYou are not high enough rank to kick " + receiver.getName() + "."));
             return;
         }
         Citizen c = main.getUUIDCitizenMap().get(receiver.getUniqueId());
@@ -163,11 +163,11 @@ public class Town {
         int krank = getRank(kicker);
         int rrank = cr.getRank();
         if(krank <= 3){
-            main.msg(kicker, "You are not high enough rank to kick.");
+            Main.msg(kicker, Main.color("&cYou are not high enough rank to kick."));
             return;
         }
         if(krank <= rrank){
-            main.msg(kicker, "You are not high enough rank to kick " + receiver.getName() + ".");
+            Main.msg(kicker, Main.color("&cYou are not high enough rank to kick " + receiver.getName() + "."));
             return;
         }
         cr.setRank(-1); cr.setTown(Citizen.defaultTownName);
@@ -176,113 +176,116 @@ public class Town {
     }
     public void promote(Player promoter, Player receiver) {
         if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
-            Main.msg(promoter, receiver.getName() + " is not in your town!");
+            Main.msg(promoter, Main.color("&c" + receiver.getName() + " is not in your town!"));
             return;
         }
         int prank = getRank(promoter); int rrank = getRank(receiver);
         //Check if promoter rank is high enough
         if(prank <= 2){
-            Main.msg(promoter, "You are not high enough rank to promote.");
+            Main.msg(promoter, Main.color("&cYou are not high enough rank to promote."));
             return;
         }
-        if(rrank == ranks.size() - 1){
-            Main.msg(promoter, receiver.getName() + " is " + getRankName(receiver) +".");
-            Main.msg(promoter, receiver.getName() + " cannot be promoted");
+        if(rrank == maxRank){
+            Main.msg(promoter, Main.color("&c" + receiver.getName() + " is " + getRankName(receiver) +"."));
+            Main.msg(promoter, Main.color("&c" + receiver.getName() + " cannot be promoted"));
             return;
         }
         if(prank - rrank < 2 && prank != ranks.size() - 1){
-            Main.msg(promoter, "You are not high enough rank to promote " + receiver.getName() + " to "
-                    + ranks.get(rrank + 1));
+            Main.msg(promoter, Main.color("&cYou are not high enough rank to promote " + receiver.getName() + " to "
+                    + ranks.get(rrank + 1)));
             return;
         }
         //TODO: Promote sub-owner to owner
-        Main.msg(promoter, "You have promoted " + receiver.getName() + " to " + ranks.get(rrank + 1));
-        Main.msg(receiver, "You have been promoted to " + ranks.get(rrank + 1) + " by " + promoter.getName());
+        Main.msg(promoter, Main.color("&aYou have promoted " + receiver.getName() + " to " + ranks.get(rrank + 1)));
+        Main.msg(receiver, Main.color("&aYou have been promoted to " + ranks.get(rrank + 1) + " by " + promoter.getName()));
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(getRank(receiver) + 1);
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
     }
+
     public void promote(Player promoter, OfflinePlayer receiver) {
         OfflineCitizen cr = new OfflineCitizen(receiver);
         if(!cr.getTown().equals(name)){
-            Main.msg(promoter, receiver.getName() + " is not in your town!");
+            Main.msg(promoter, Main.color("&a" + receiver.getName() + " is not in your town!"));
             return;
         }
         int prank = getRank(promoter); int rrank = cr.getRank();
         //Check if promoter rank is high enough
         if(prank <= 2){
-            Main.msg(promoter, "You are not high enough rank to promote.");
+            Main.msg(promoter, Main.color("&aYou are not high enough rank to promote."));
             return;
         }
         if(rrank == ranks.size() - 1){
-            Main.msg(promoter, receiver.getName() + " is " + getRankName(cr.getRank()) +".");
-            Main.msg(promoter, receiver.getName() + " cannot be promoted");
+            Main.msg(promoter, Main.color("&a" + receiver.getName() + " is " + getRankName(cr.getRank()) +"."));
+            Main.msg(promoter, Main.color("&a" + receiver.getName() + " cannot be promoted"));
             return;
         }
         if(prank - rrank < 2 && prank != ranks.size() - 1){
-            Main.msg(promoter, "You are not high enough rank to promote " + receiver.getName() + " to "
-                    + ranks.get(rrank + 1));
+            Main.msg(promoter, Main.color("&aYou are not high enough rank to promote " + receiver.getName() + " to "
+                    + ranks.get(rrank + 1)));
             return;
         }
         //TODO: Promote sub-owner to owner
-        Main.msg(promoter, "You have promoted " + receiver.getName() + " to " + ranks.get(rrank + 1));
+        Main.msg(promoter, Main.color("&aYou have promoted " + receiver.getName() + " to " + ranks.get(rrank + 1)));
         cr.setRank(cr.getRank() + 1);
     }
 
     public void demote(Player demoter, Player receiver){
         if(!main.getUUIDCitizenMap().get(receiver.getUniqueId()).getTown().equals(name)){
-            Main.msg(demoter, receiver.getName() + " is not in your town!");
+            Main.msg(demoter, Main.color("&c" + receiver.getName() + " is not in your town!"));
             return;
         }
         int drank = getRank(demoter);
         int rrank = getRank(receiver);
         if(drank <= 2){
-            Main.msg(demoter, "You are not high enough rank to demote someone");
+            Main.msg(demoter, Main.color("&cYou are not high enough rank to demote someone"));
             return;
         }
         if(drank == rrank){
-            Main.msg(demoter, "You cannot demote someone that is the same rank as you");
+            Main.msg(demoter, Main.color("&cYou cannot demote someone that is the same rank as you"));
             return;
         }
         if(drank < rrank){
-            Main.msg(demoter, "You cannot demote someone that is a higher rank than you");
+            Main.msg(demoter, Main.color("&cYou cannot demote someone that is a higher rank than you"));
             return;
         }
         if(rrank <= 0){
-            Main.msg(demoter, receiver.getName() + " cannot be demoted any lower");
+            Main.msg(demoter, Main.color("&c" + receiver.getName() + " cannot be demoted any lower"));
             return;
         }
-        Main.msg(demoter, "You have demoted " + receiver.getName() + " to " + ranks.get(rrank - 1));
-        Main.msg(receiver, "You have been demoted to " + ranks.get(rrank - 1) + " by " + demoter.getName());
+        Main.msg(demoter, Main.color("&aYou have demoted " + receiver.getName() + " to " + ranks.get(rrank - 1)));
+        Main.msg(receiver, Main.color("&cYou have been demoted to " + ranks.get(rrank - 1) + " by " + demoter.getName()));
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).setRank(getRank(receiver) - 1);
         main.getUUIDCitizenMap().get(receiver.getUniqueId()).pushFiles();
     }
+
     public void demote(Player demoter, OfflinePlayer receiver){
         OfflineCitizen cr = new OfflineCitizen(receiver);
         if(!cr.getTown().equals(name)){
-            Main.msg(demoter, receiver.getName() + " is not in your town!");
+            Main.msg(demoter, Main.color("&c" + receiver.getName() + " is not in your town!"));
             return;
         }
         int drank = getRank(demoter);
         int rrank = cr.getRank();
         if(drank <= 2){
-            Main.msg(demoter, "You are not high enough rank to demote someone");
+            Main.msg(demoter, Main.color("&cYou are not high enough rank to demote someone"));
             return;
         }
         if(drank == rrank){
-            Main.msg(demoter, "You cannot demote someone that is the same rank as you");
+            Main.msg(demoter, Main.color("&cYou cannot demote someone that is the same rank as you"));
             return;
         }
         if(drank < rrank){
-            Main.msg(demoter, "You cannot demote someone that is a higher rank than you");
+            Main.msg(demoter, Main.color("&cYou cannot demote someone that is a higher rank than you"));
             return;
         }
         if(rrank <= 0){
-            Main.msg(demoter, receiver.getName() + " cannot be demoted any lower");
+            Main.msg(demoter, Main.color("&c" + receiver.getName() + " cannot be demoted any lower"));
             return;
         }
         Main.msg(demoter, "You have demoted " + receiver.getName() + " to " + ranks.get(rrank - 1));
         cr.setRank(rrank - 1);
     }
+
     public void leave(Player p){
         Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
         c.setTown(Citizen.defaultTownName); // default values
