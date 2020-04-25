@@ -26,7 +26,7 @@ public class Town {
     /*
     Ranks go from 0 to 5 inclusive (default names subject to change)
     */
-
+    public static int maxRank = 5;
     private Main main = Main.getInstance();
     private List<String> ranks = new ArrayList<String>() {
         {
@@ -283,7 +283,27 @@ public class Town {
         Main.msg(demoter, "You have demoted " + receiver.getName() + " to " + ranks.get(rrank - 1));
         cr.setRank(rrank - 1);
     }
+    public void leave(Player p){
+        Citizen c = main.getUUIDCitizenMap().get(p.getUniqueId());
+        c.setTown(Citizen.defaultTownName); // default values
+        c.setRank(-1); // %
+        Main.msg(p, "&4You have successfully left " + getName());
 
+        getCitizenList().remove(p.getUniqueId());
+
+        if (getCitizenList().size() == 0) {
+            // there are no more people in this town -- delete it
+            main.getTowns().remove(this);
+            deleteFiles();
+            List<String> fullTowns = main.getFullTownList();
+            fullTowns.remove(getName());
+            main.setFullTownList(fullTowns);
+
+            Bukkit.broadcastMessage(Main.color("&l&4Town " + getName() + " has been disbanded!"));
+        }
+        c.pushFiles();
+        //pushFiles();
+    }
     public void pushFiles() {
         File tFile = new File("plugins/Rift/data/towns/" + name + ".yml");
         FileConfiguration tData = YamlConfiguration.loadConfiguration(tFile);
