@@ -511,6 +511,8 @@ public class TownCoreCommand implements CommandExecutor, Listener {
         Town t = getTownFromCitizen(c);
 
         //check if player is leader and town has other players
+        //if(c.getRank() == t.maxRank) { main.msg(p, "owner"); }
+        //main.msg(p, "" + t.getSize());
         if(c.getRank() == t.maxRank && t.getSize() > 1) {
             sendTownMemberInv(p, c.getTown(), "Appoint new " + t.getRanks().get(c.getRank()), 0);
             return true;
