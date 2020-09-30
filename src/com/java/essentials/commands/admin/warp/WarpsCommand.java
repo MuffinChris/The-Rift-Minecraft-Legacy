@@ -33,7 +33,7 @@ public class WarpsCommand implements CommandExecutor {
 
                 Main.msg(p, warps);
             } else {
-                if (String.valueOf(args[0]) instanceof String) {
+                if (String.valueOf(args[0]) != null) {
                     File pFile = new File("plugins/Rift/warps.yml");
                     FileConfiguration pData = YamlConfiguration.loadConfiguration(pFile);
                     if (pData.contains(String.valueOf(args[0]))) {
@@ -41,7 +41,7 @@ public class WarpsCommand implements CommandExecutor {
                         p.teleport((Location) pData.get(String.valueOf(args[0])));
                         p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
                     } else {
-                        Main.msg(p, "&cWarp does not exist.");
+                        Main.msg(p, "&cWarp does not exist (Case Sensitive).");
                     }
                 } else {
                     Main.msg(p, "&cInvalid warp name.");

@@ -416,7 +416,7 @@ public class RPGPlayer extends Leveleable {
         manafreeze = new StatusObject("ManaFreeze", "Mana Frozen", false);
         hpfreeze = new StatusObject("HPFreeze", "HP Frozen", false);
         pstrength2 = new StatusObject("PStrength", "Power Strength", false);
-        walkspeed = new StatusObject("Walkspeed", "Movespeed", false);
+        walkspeed = new StatusObject("Walkspeed", "Speed", false);
         walkspeedS = new StatusObject("Walkspeed", "Movespeed", true);
         bonusap = new StatusObject("AP", "AP", false);
         bonusapS = new StatusObject("AP", "AP", true);
@@ -791,7 +791,7 @@ public class RPGPlayer extends Leveleable {
             Vector direction = player.getEyeLocation().getDirection();
             double dot = toEntity.normalize().dot(direction);
             double dot2 = toEntity2.normalize().dot(direction);
-            if (dot > 0.98 || dot2 > 0.98) {
+            if (dot > 0.972 || dot2 > 0.972) {
                 if (player.hasLineOfSight(ent)) {
                     return ent;
                 }
@@ -821,7 +821,7 @@ public class RPGPlayer extends Leveleable {
             Vector direction = player.getEyeLocation().getDirection();
             double dot = toEntity.normalize().dot(direction);
             double dot2 = toEntity2.normalize().dot(direction);
-            if (dot > 0.98 || dot2 > 0.98) {
+            if (dot > 0.972 || dot2 > 0.972) {
                 if (player.hasLineOfSight(ent)) {
                     return ent;
                 }
@@ -952,6 +952,9 @@ public class RPGPlayer extends Leveleable {
                                         statuses.remove("Warmup" + nameS);
                                         target = null;
                                     }
+                                } else if (stun.getValue() > 0) {
+                                    statuses.remove("Warmup" + nameS);
+                                    target = null;
                                 } else {
                                     cooldowns.put(nameS, System.currentTimeMillis());
 
@@ -986,12 +989,21 @@ public class RPGPlayer extends Leveleable {
                                 public void run() {
                                     if (!p.isOnline()) {
                                         cancel();
+                                        scheduler.cancelTask(task);
                                         return;
                                     }
                                     if (player.isDead()) {
                                         cancel();
                                         target = null;
                                         statuses.remove("Warmup" + name);
+                                        scheduler.cancelTask(task);
+                                        return;
+                                    }
+                                    if (stun.getValue() > 0) {
+                                        cancel();
+                                        target = null;
+                                        statuses.remove("Warmup" + name);
+                                        scheduler.cancelTask(task);
                                         return;
                                     }
                                     time++;

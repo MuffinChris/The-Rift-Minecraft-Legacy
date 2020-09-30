@@ -57,6 +57,9 @@ public class CustomDeath implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST)
     public void customDeath (PlayerDeathEvent e) {
         if (e.getEntity().isOnline() && !e.isCancelled()) {
+            String deathMessage = e.getDeathMessage();
+            deathMessage = deathMessage.replaceAll("§f", "&7");
+            e.setDeathMessage(Main.color("&8[&c☠&8] " + deathMessage));
             e.setShouldDropExperience(false);
             doDeath(e.getEntity(), e.getDrops());
             e.getDrops().clear();
@@ -66,12 +69,6 @@ public class CustomDeath implements Listener {
     @EventHandler
     public void onRespawn (PlayerRespawnEvent e) {
         Player p = e.getPlayer();
-        new BukkitRunnable() {
-            public void run() {
-                p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 30, 0));
-            }
-        }.runTaskLater(Main.getInstance(), 1L);
-
         main.setMana(p, 0);
     }
 
@@ -84,6 +81,8 @@ public class CustomDeath implements Listener {
                     chest.getBlock().setType(Material.AIR);
                     chest.getBlock().getWorld().playSound(chest.getBlock().getLocation(), Sound.BLOCK_CHEST_CLOSE, 1.0F, 1.0F);
                     chest.getBlock().getWorld().playEffect(chest.getBlock().getLocation(), Effect.MOBSPAWNER_FLAMES, 25);
+                    chest.getBlock().removeMetadata("Time", Main.getInstance());
+                    chest.getBlock().removeMetadata("Owner", Main.getInstance());
                 }
             }
         }
@@ -196,9 +195,6 @@ public class CustomDeath implements Listener {
                             return;
                         }
                     }
-
-                    graveLoc.getBlock().removeMetadata("Time", Main.getInstance());
-                    graveLoc.getBlock().removeMetadata("Owner", Main.getInstance());
                 }
             }
         }
@@ -218,6 +214,7 @@ public class CustomDeath implements Listener {
                 s.getStatuses().remove(rem);
             }
         }
+
         double exp = rp.getMaxExp() * -0.1 * (Math.random() * 0.1 + 1);
         exp = -Math.min(-exp, rp.getExp());
 
@@ -276,19 +273,21 @@ public class CustomDeath implements Listener {
     }
 
     public Location getNearestSuitableLocation(Location loc) {
-        for (int n = 0; n < 12; n++) {
-            for (int y = -n; y <= n; y++) {
-                if (Math.abs(y) < n) {
+        for (int ymod = 0; ymod <= 8; ymod++) {
+            for (int y = -ymod; y <= ymod; y++) {
+                if (Math.abs(y) < ymod) {
                     continue;
                 }
-                for (int x = -1 - n; x <= 1 + n; x++) {
-                    for (int z = -1 - n; z <= 1 + n; z++) {
-                        if (Math.abs(x) <= n && Math.abs(z) <= n) {
-                            continue;
-                        }
-                        Location newLoc = loc.clone().add(x,y,z);
-                        if (newLoc.getBlock().getType() == Material.AIR || newLoc.getBlock().getType() == Material.CAVE_AIR) {
-                            return newLoc;
+                for (int n = 0; n < 8; n++) {
+                    for (int x = -1 - n; x <= 1 + n; x++) {
+                        for (int z = -1 - n; z <= 1 + n; z++) {
+                            if (Math.abs(x) <= n && Math.abs(z) <= n) {
+                                continue;
+                            }
+                            Location newLoc = loc.clone().add(x, y, z);
+                            if (newLoc.getBlock().getType() == Material.AIR || newLoc.getBlock().getType() == Material.CAVE_AIR) {
+                                return newLoc;
+                            }
                         }
                     }
                 }

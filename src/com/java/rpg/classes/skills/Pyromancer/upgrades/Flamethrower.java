@@ -23,7 +23,7 @@ public class Flamethrower extends Skill {
     private double fireDmg = 150;
     private double fireScale = 0.25;
 
-    private int range = 4;
+    private int range = 5;
 
     private int tickrate = 2;
 

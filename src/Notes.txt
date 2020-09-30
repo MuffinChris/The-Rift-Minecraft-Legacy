@@ -133,11 +133,56 @@ Future Planning Segment (LOTS OF GOOD IDEAS FOR INTERESTING MECHANICS):
 
 DIRECT LINE TODO LIST:
 
-    -48. Make warps not case sensitive/
+    -73. Flamethrower changed to Flame laser beam moira style
+
+    -72. https://www.youtube.com/watch?v=rbIVXXw59h8 (custom biomes support. Mobs made better!)
+
+    -71. Instanced tutorial (clientside block changes and hide players)
+
+    -70. * (psuedocomds)
+
+    -69. Party scoreboard with hp bar (thespire)
+
+    -68. Nerf Spawners (ie spawners (and farms!) should not just mass spawn mobs)
+
+    -67. Cryomancer (ice make). One ability to make multiple objects, based on some factors (idk, sprinting, crouching, item held, perhaps toggle like vauban, show info on skill info bar)
+
+    -66. Kick players no join leave msg on restart
+
+    -65. On null health, u should kick player and say failed to load player / data (unless op)
+
+   -64. Not bad help menu GUI Setup in screenshots (AzeriaMC), (Lectern)
+
+    -63. Explore Custom Advancements (may not be able to work with RPG stuff. Perhaps can just remove advancements, or make location based ones)
+
+    -62. Make Classes menu be for loop
+
+    -61. Play music dsics for atmospheric sound :3
+
+    -60. Add Descs to commands (wip)
+
+    -59. Show toggles enabled in skilbar (done)
+
+    -58. clear statuses on death? (test this)
+
+    -57. Skills proc advancements
+
+    -56. Make /bind default to help info (done / test)
+
+    -55. In general standardize formats for chat. Make custom symbols for Towns and Party chats etc. ([!] Alert Message) is pretty decent. Could just be a symbol for TheRift!
+        - &a&l TITLE &7arrow &ftext is a good format
+
+    -53. Save multiple times with time command
+
+    -52. Convert RPGPlayer, Warps to JSON (towns too, ask jon and mchen). Convert Time to JSON (to store multiple times incase some dumbass overrides)
+
+    -51. Snowballs and eggs dont do dmg (fixed)
+
+    -50. Disable crouch on stun. Disable attacking on stun (get stunned for e dmg by e?)
+
+    -49. Stuns are not stopping warmups. (test)
 
     -47. Cutting the name may leave the chat color symbol without the actual color code thus causing an issue showing only the symbol.
-
-    -46. Add better time command alias
 
     -45. Thorns makes two damage instances, one environmental heart and one impact
 
@@ -151,13 +196,11 @@ DIRECT LINE TODO LIST:
 
     -36. Add seasons
 
-    -34. Reduce length of playername if too big
-
     -32. Convert Skill Descs to have Ability Power icon! Fix visual display (some skills have electric [pyroclasm] but only display fire)
 
     -31. Pyroclasm fire not removed on server stop
 
-    -30. Add warmups to Toggles
+    -30. Add warmups to Toggles (test)
 
     -23. Make Discord Bot for auto role (and future stuff)
 

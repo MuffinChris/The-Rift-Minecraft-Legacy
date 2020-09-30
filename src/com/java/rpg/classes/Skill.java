@@ -178,7 +178,6 @@ public class Skill {
     }
 
     public void toggleEnd(Player p) {
-        Main.getInstance().getPC().get(p.getUniqueId()).getBoard().endToggle(this);
         Main.getInstance().getCM().cleanToggle(p, this);
     }
 

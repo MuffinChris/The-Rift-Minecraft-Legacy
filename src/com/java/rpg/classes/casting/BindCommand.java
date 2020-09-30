@@ -117,12 +117,10 @@ public class BindCommand implements CommandExecutor, Listener {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 0) {
-                if (p.getInventory().getItemInMainHand().getType() == Material.AIR) {
-                    Main.msg(p, "&cYou cannot bind Skills to an empty hand!");
-                } else  if (getBind(p, p.getInventory().getItemInMainHand()).isEmpty()) {
+                if (p.getInventory().getItemInMainHand().getType() == Material.AIR || getBind(p, p.getInventory().getItemInMainHand()).isEmpty()) {
                     Main.msg(p, "&fUsage: /bind <skill name>");
-                    Main.msg(p, "&fUnbind all: /bind clearall");
-                    Main.msg(p, "&fUnbind all for all Classes: /bind clearallclasses");
+                    Main.msg(p, "&fDesc: Bind a skill to your held item. Right-click to cast the skill.");
+                    Main.msg(p, "&fClear Binds: /bind clearall, /bind clearallclasses");
                 } else {
                     Main.msg(p, "&aCleared bind &f" + getBind(p, p.getInventory().getItemInMainHand()) + " &afrom &f" + p.getInventory().getItemInMainHand().getType().toString() + "&a.");
                     setBind(p, p.getInventory().getItemInMainHand(), "");
@@ -157,6 +155,7 @@ public class BindCommand implements CommandExecutor, Listener {
                     }
                 }
             }
+            return true;
         } else {
             Main.so("Not a console command!");
         }

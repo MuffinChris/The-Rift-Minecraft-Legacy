@@ -143,7 +143,7 @@ public class ClassManager implements Listener {
         skillsPyro.add(new Pyroclasm());
         skillsPyro.add(new Combust());
 
-        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 800.0, 30, PlayerClass.ResourceType.MANA, 400, 5, 7, 0.14, "HOE", 10, 60, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsPyro,  110, new ElementalStack(5, 20, 30, 50, 100), new ElementalStack(0, 0, 0, 1, 0.25)));
+        classes.put("Pyromancer", new PlayerClass("Pyromancer", "&6Pyromancer", 1500.0, 30, PlayerClass.ResourceType.MANA, 400, 5, 7, 0.14, "HOE", 10, 60, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsPyro,  110, new ElementalStack(5, 20, 30, 50, 100), new ElementalStack(0, 0, 0, 1, 0.25)));
 
         List<Skill> skillsEarthshaker = new ArrayList<>();
         skillsEarthshaker.add(new StoneSkin());
@@ -154,7 +154,7 @@ public class ClassManager implements Listener {
         skillsEarthshaker.add(new Shatterstrike());
 
 
-        classes.put("Earthshaker", new PlayerClass("Earthshaker", "&6Earthshaker", 1200.0, 40, PlayerClass.ResourceType.MANA,500, 5, 7, 0.14, "HOE", 10, 150, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsEarthshaker,  110, new ElementalStack(5, 100, 30, 50, 100), new ElementalStack(0, 1, 0, 1, 0)));
+        classes.put("Earthshaker", new PlayerClass("Earthshaker", "&6Earthshaker", 2000.0, 40, PlayerClass.ResourceType.MANA,500, 5, 7, 0.14, "HOE", 10, 150, 0, 2.5, 20,20, 22, 0.41, 0.22, skillsEarthshaker,  110, new ElementalStack(5, 100, 30, 50, 100), new ElementalStack(0, 1, 0, 1, 0)));
 
 
     }
@@ -184,7 +184,6 @@ public class ClassManager implements Listener {
             scheduler.cancelTask((int) map.keySet().toArray()[0]);
             rp.getToggleTasks().remove(map);
         }
-        tasksToRemove = new ArrayList<>();
     }
 
     /*

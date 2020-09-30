@@ -194,6 +194,12 @@ public class DamageListener implements Listener {
                                 double trueDamage = d.getTrueDamage();
                                 ElementalStack elementalDamage = d.getElementalDamage();
 
+                                if (e.getDamager() instanceof Snowball || e.getDamager() instanceof Egg) {
+                                    if (d.getPhysicalDamage().getTotal() <= 0) {
+                                        physicalDamage.setImpact(1);
+                                    }
+                                }
+
                                 DecimalFormat df = new DecimalFormat("#.##");
 
                                 if (elementalDamage.getAir() > 0) {
@@ -293,17 +299,7 @@ public class DamageListener implements Listener {
                                     if (!(e.getEntity() instanceof Player) && (e.getEntity() instanceof LivingEntity) && !(e.getEntity() instanceof ArmorStand)) {
                                         magicDamage = magicDamage * (RPGConstants.defenseDiv / (RPGConstants.defenseDiv + EntityUtils.getMagicResist((LivingEntity) e.getEntity())));
                                     }
-                                    //ent.damage(damage);
-                                    //e.setCancelled(true);
-                                    //e.setDamage(damage);
-                                    //break;
                                 }
-                                //if (trueDamage > 0) {
-                                    //ent.damage(damage);
-                                    //e.setCancelled(true);
-                                    //e.setDamage(damage);
-                                    //break;
-                                //}
 
                                 if (elementalDamage.getFire() > 0) {
                                     if (e.getEntity() instanceof Player && main.getPC().containsKey(((Player) e.getEntity()).getUniqueId())) {
@@ -534,6 +530,11 @@ public class DamageListener implements Listener {
                         if (physicalDamage.getTotal() <= 0) {
                             physicalDamage = new PhysicalStack(e.getDamage(), 0, 0);
                         }
+                        if (e.getDamager() instanceof Snowball || e.getDamager() instanceof Egg) {
+                            if (physicalDamage.getTotal() <= 0) {
+                                physicalDamage.setImpact(1);
+                            }
+                        }
                     } else {
                         if (EntityUtils.getPhysicalDamage(damager).getTotal() <= 0) {
                             physicalDamage = new PhysicalStack(0, e.getDamage(), 0);
@@ -541,10 +542,9 @@ public class DamageListener implements Listener {
                             physicalDamage = EntityUtils.getPhysicalDamage(damager);
                         }
                     }
+
                     if (physicalDamage.getTotal() > 0) {
-
                         DecimalFormat df = new DecimalFormat("#.##");
-
                         LivingEntity ent = (LivingEntity) e.getEntity();
                         if (physicalDamage.getPuncture() > 0) {
                             BlockData blood = Material.REDSTONE_BLOCK.createBlockData();

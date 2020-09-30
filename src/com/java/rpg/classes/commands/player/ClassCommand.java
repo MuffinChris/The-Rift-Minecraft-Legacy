@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClassCommand implements CommandExecutor, Listener {
 
@@ -64,8 +65,6 @@ public class ClassCommand implements CommandExecutor, Listener {
     }
 
     public ItemStack getWandererItemStack(Player p) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        DecimalFormat dF = new DecimalFormat("#");
 
         ArrayList<String> lore;
         ItemStack sp;
@@ -76,23 +75,6 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore = new ArrayList<>();
 
         PlayerClass pc = main.getCM().getPClassFromString("Wanderer");
-        double baseHp = pc.getBaseHP();
-        double hpPerLvl = pc.getHpPerLevel();
-        double mana = pc.getMana();
-        double manaPerLvl = pc.getManaPerLevel();
-        double mreg = pc.getManaRegen();
-        double mregPerLvl = pc.getManaRegenPerLevel();
-        double armor = pc.getCalcArmor(0);
-        double armorPerLvl = pc.getArmorPerLevel();
-        double mr = pc.getCalcMR(0);
-        double mrPerLvl = pc.getMagicResistPerLevel();
-        double ap = pc.getBaseAP();
-        double ad = pc.getBaseAD();
-        double apPerLvl = pc.getAPPerLevel();
-        double adPerLvl = pc.getADPerLevel();
-
-        ElementalStack ed = pc.getEDefense();
-        ElementalStack edS = pc.getEDefenseScaling();
 
         spMeta.setDisplayName(Main.color("&6Wanderer"));
         sp.setType(Material.LEATHER_HELMET);
@@ -101,19 +83,7 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color("&fThe Wanderer has no true path or focus."));
         lore.add(Main.color("&fAll wanderers eventually find a new Class."));
         lore.add(Main.color(""));
-        lore.add(Main.color(hpString + df.format(baseHp) + " &8(&7+" + df.format(hpPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(manaRegenString + df.format(mreg) + " &8(&7+" + df.format(mregPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(""));
-        lore.add(Main.color(adString + df.format(ad) + " &8(&7+" + df.format(adPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(apString + df.format(ap) + " &8(&7+" + df.format(apPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(""));
-        lore.add(Main.color(armorString + df.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(mrString + df.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(edString + "&8<" + ed.getFancyStack() + "&8>"));
-        lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
-        lore.add(Main.color(""));
-        lore.add(Main.color("&fView its Skills with &e/skills Wanderer&f."));
+        doClassNumbers(lore, pc);
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {
             spMeta.addEnchant(Enchantment.MENDING, 1, true);
@@ -126,8 +96,6 @@ public class ClassCommand implements CommandExecutor, Listener {
     }
 
     public ItemStack getPyromancerItemStack(Player p) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        DecimalFormat dF = new DecimalFormat("#");
 
         ArrayList<String> lore;
         ItemStack sp;
@@ -138,23 +106,6 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore = new ArrayList<>();
 
         PlayerClass pc = main.getCM().getPClassFromString("Pyromancer");
-        double baseHp = pc.getBaseHP();
-        double hpPerLvl = pc.getHpPerLevel();
-        double mana = pc.getMana();
-        double manaPerLvl = pc.getManaPerLevel();
-        double mreg = pc.getManaRegen();
-        double mregPerLvl = pc.getManaRegenPerLevel();
-        double armor = pc.getCalcArmor(0);
-        double armorPerLvl = pc.getArmorPerLevel();
-        double mr = pc.getCalcMR(0);
-        double mrPerLvl = pc.getMagicResistPerLevel();
-        double ap = pc.getBaseAP();
-        double ad = pc.getBaseAD();
-        double apPerLvl = pc.getAPPerLevel();
-        double adPerLvl = pc.getADPerLevel();
-
-        ElementalStack ed = pc.getEDefense();
-        ElementalStack edS = pc.getEDefenseScaling();
 
         spMeta.setDisplayName(Main.color("&6Pyromancer"));
         sp.setType(Material.FIRE_CHARGE);
@@ -163,19 +114,7 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color("&fPyromancer's have powerful short range skills"));
         lore.add(Main.color("&fthat decimate nearby enemies and ignite them."));
         lore.add(Main.color(""));
-        lore.add(Main.color(hpString + df.format(baseHp) + " &8(&7+" + df.format(hpPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(manaRegenString + df.format(mreg) + " &8(&7+" + df.format(mregPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(""));
-        lore.add(Main.color(adString + dF.format(ad) + " &8(&7+" + df.format(adPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(apString + df.format(ap) + " &8(&7+" + df.format(apPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(""));
-        lore.add(Main.color(armorString + dF.format(armor) + " &8(&7+" + df.format(armorPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(mrString + dF.format(mr) + " &8(&7+" + df.format(mrPerLvl) + "/lvl&8)"));
-        lore.add(Main.color(edString + "&8<" + ed.getFancyStack() + "&8>"));
-        lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
-        lore.add(Main.color(""));
-        lore.add(Main.color("&fView its Skills with &e/skills Pyromancer&f."));
+        doClassNumbers(lore, pc);
         spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {
             spMeta.addEnchant(Enchantment.MENDING, 1, true);
@@ -188,8 +127,6 @@ public class ClassCommand implements CommandExecutor, Listener {
     }
 
     public ItemStack getEarthshakerItemStack(Player p) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        DecimalFormat dF = new DecimalFormat("#");
 
         ArrayList<String> lore;
         ItemStack sp;
@@ -200,6 +137,27 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore = new ArrayList<>();
 
         PlayerClass pc = main.getCM().getPClassFromString("Earthshaker");
+
+        spMeta.setDisplayName(Main.color("&6Earthshaker"));
+        sp.setType(Material.COARSE_DIRT);
+        lore.add(Main.color("&bJeffrey Purdue"));
+        lore.add(Main.color("&f"));
+        lore.add(Main.color("&fNOT BAD FOR A GIRL"));
+        lore.add(Main.color(""));
+        doClassNumbers(lore, pc);
+        spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {
+            spMeta.addEnchant(Enchantment.MENDING, 1, true);
+            spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+
+        spMeta.setLore(lore);
+        sp.setItemMeta(spMeta);
+        return sp;
+    }
+
+    public void doClassNumbers(List<String> lore, PlayerClass pc) {
+
         double baseHp = pc.getBaseHP();
         double hpPerLvl = pc.getHpPerLevel();
         double mana = pc.getMana();
@@ -214,16 +172,11 @@ public class ClassCommand implements CommandExecutor, Listener {
         double ad = pc.getBaseAD();
         double apPerLvl = pc.getAPPerLevel();
         double adPerLvl = pc.getADPerLevel();
-
         ElementalStack ed = pc.getEDefense();
         ElementalStack edS = pc.getEDefenseScaling();
 
-        spMeta.setDisplayName(Main.color("&6Earthshaker"));
-        sp.setType(Material.COARSE_DIRT);
-        lore.add(Main.color("&bJeffrey Purdue"));
-        lore.add(Main.color("&f"));
-        lore.add(Main.color("&fNOT BAD FOR A GIRL"));
-        lore.add(Main.color(""));
+        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat dF = new DecimalFormat("#");
         lore.add(Main.color(hpString + df.format(baseHp) + " &8(&7+" + df.format(hpPerLvl) + "/lvl&8)"));
         lore.add(Main.color(manaString + dF.format(mana) + " &8(&7+" + df.format(manaPerLvl) + "/lvl&8)"));
         lore.add(Main.color(manaRegenString + df.format(mreg) + " &8(&7+" + df.format(mregPerLvl) + "/lvl&8)"));
@@ -236,16 +189,7 @@ public class ClassCommand implements CommandExecutor, Listener {
         lore.add(Main.color(edString + "&8<" + ed.getFancyStack() + "&8>"));
         lore.add(Main.color(edLvlString + "&8<" + edS.getFancyStack() + "&8>"));
         lore.add(Main.color(""));
-        lore.add(Main.color("&fView its Skills with &e/skills Earthshaker&f."));
-        spMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        if (ChatColor.stripColor(spMeta.getDisplayName()).equalsIgnoreCase(main.getRP(p).getPClass().getName())) {
-            spMeta.addEnchant(Enchantment.MENDING, 1, true);
-            spMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
-
-        spMeta.setLore(lore);
-        sp.setItemMeta(spMeta);
-        return sp;
+        lore.add(Main.color("&fView its Skills with &e/skills " + pc.getName() + "&f."));
     }
 
     @EventHandler
@@ -254,7 +198,6 @@ public class ClassCommand implements CommandExecutor, Listener {
             e.setCancelled(true);
             if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
                 if (e.getCurrentItem().getItemMeta().getDisplayName().contains("§6")) {
-
                     if (main.getCM().getPClassFromString(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName())) != null) {
                         if (!main.getPC().get(e.getWhoClicked().getUniqueId()).changeClass(main.getCM().getPClassFromString(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName())))) {
                             Main.msg((Player) e.getWhoClicked(), "&cYou are already that class!");

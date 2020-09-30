@@ -46,7 +46,7 @@ public class WorldOnFire extends Skill implements Listener {
     public WorldOnFire() {
         super("WorldOnFire", 50, 10 * 20, 0, 5, SkillType.PASSIVE_TOGGLE, new Conflagration(), Material.FLINT_AND_STEEL);
         setPassiveTicks(20);
-        setToggleTicks(10);
+        setToggleTicks(5);
         setToggleMana(10);
         setToggleCooldown(10);
     }

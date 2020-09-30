@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class Stuns implements Listener {
 
@@ -23,7 +24,14 @@ public class Stuns implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler
+    public void cancelCrouch (PlayerToggleSneakEvent e) {
+        if (isStunned(e.getPlayer())) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler (priority = EventPriority.LOWEST)
     public void cancelAttack (PlayerInteractEvent e) {
         if (isStunned(e.getPlayer())) {
             e.setCancelled(true);

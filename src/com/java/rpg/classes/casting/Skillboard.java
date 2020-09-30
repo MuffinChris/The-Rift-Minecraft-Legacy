@@ -85,7 +85,7 @@ public class Skillboard {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "%&f, ";
                 } else if (so.getName().equals("AP")) {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "&f, ";
-                } else if (so.getName().equals("Walkspeed")) {
+                } else if (so.getName().equals("Speed")) {
                     statuses += "&e" + so.getFlavor() + "&8: &6" + so.getValue() + "&f, ";
                 } else {
                     if (so.allDurationless()) {
@@ -118,6 +118,7 @@ public class Skillboard {
                 boolean nolevel = false;
                 boolean cd = false;
                 boolean manacost = false;
+
                 if (main.getRP(p).getLevel() < s.getLevel()) {
                     name = "&c" + s.getName();
                     nolevel = true;
@@ -128,7 +129,13 @@ public class Skillboard {
                     name = "&c" + s.getName();
                     manacost = true;
                 }
-                output+="&e" + name;
+
+                if (main.getRP(p).getToggles().contains(name)) {
+                    output += "&b" + name;
+                } else {
+                    output += "&e" + name;
+                }
+
                 if (nolevel) {
                     output+=" &8<&cLv. " + s.getLevel() + "&8> || ";
                 } else if (cd) {
@@ -138,6 +145,7 @@ public class Skillboard {
                 } else {
                     output+=" &8<&6" + slot + "&8> || ";
                 }
+
                 slot++;
             }
             if (output.contains("||")) {
@@ -145,21 +153,6 @@ public class Skillboard {
             }
 
             skillCastingBar.setTitle(Main.color(output));
-
-            /*ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
-            ItemMeta meta = item.getItemMeta();
-            List<String> lore = new ArrayList<>();
-            lore.add(Main.color("&aSkill Item"));
-            meta.setLore(lore);
-            meta.setDisplayName(Main.color(output));
-            item.setItemMeta(meta);
-            if (Bukkit.getPlayer(uuid).getInventory().getHeldItemSlot() == 0) {
-                Bukkit.getPlayer(uuid).getInventory().setHeldItemSlot(8);
-            } else {
-                Bukkit.getPlayer(uuid).getInventory().setHeldItemSlot(0);
-                Bukkit.getPlayer(uuid).getInventory().setItemInMainHand(item);
-            }*/
-
         } else {
             skillCastingBar.setTitle("");
         }
@@ -225,8 +218,8 @@ public class Skillboard {
         bossbarTwo_5.addPlayer(p);
         bossbarThree_6.addPlayer(p);
 
-        setScoreBoard(p);
-        update();
+        //setScoreBoard(p);
+        //update();
         hpbarBossbar.setVisible(true);
         skillCastingBar.setVisible(true);
         statusesBossbar.setVisible(true);
@@ -274,7 +267,7 @@ public class Skillboard {
                 }
             }
             bossbar.setTitle(title);*/
-            updateScoreboard(p);
+            //updateScoreboard(p);
         }
     }
 

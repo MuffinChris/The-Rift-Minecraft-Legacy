@@ -22,7 +22,7 @@ public class GamemodeCommand implements CommandExecutor {
 						Main.msg(p, "&aSet Gamemode to Creative!");
 					} else {
 						if (args.length == 1) {
-							if (Bukkit.getPlayerExact(args[0]) instanceof Player) {
+							if (Bukkit.getPlayer(args[0]) instanceof Player) {
 								Player target = (Player) Bukkit.getPlayer(args[0]);
 								target.setGameMode(GameMode.CREATIVE);
 								Main.msg(p, "&aSet Gamemode of " + target.getName() + " to Creative!");
@@ -40,7 +40,7 @@ public class GamemodeCommand implements CommandExecutor {
 						Main.msg(p, "&aSet Gamemode to Survival!");
 					} else {
 						if (args.length == 1) {
-							if (Bukkit.getPlayerExact(args[0]) instanceof Player) {
+							if (Bukkit.getPlayer(args[0]) instanceof Player) {
 								Player target = (Player) Bukkit.getPlayer(args[0]);
 								target.setGameMode(GameMode.SURVIVAL);
 								Main.msg(p, "&aSet Gamemode of " + target.getName() + " to Survival!");
@@ -58,7 +58,7 @@ public class GamemodeCommand implements CommandExecutor {
 						Main.msg(p, "&aSet Gamemode to Spectator!");
 					} else {
 						if (args.length == 1) {
-							if (Bukkit.getPlayerExact(args[0]) instanceof Player) {
+							if (Bukkit.getPlayer(args[0]) instanceof Player) {
 								Player target = (Player) Bukkit.getPlayer(args[0]);
 								target.setGameMode(GameMode.SPECTATOR);
 								Main.msg(p, "&aSet Gamemode of " + target.getName() + " to Spectator!");

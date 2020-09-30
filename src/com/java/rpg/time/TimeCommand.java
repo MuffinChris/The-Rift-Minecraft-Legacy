@@ -25,12 +25,12 @@ public class TimeCommand implements CommandExecutor {
             Player p = (Player) sender;
             if (args.length == 0) {
                 Main.msg(p, "");
-                Main.msg(p, "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&f" + getDayOfMonth() + " " + getMonth() + ", " + getYear() + "&8)");
+                Main.msg(p, "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&7" + getDayOfMonth() + " " + getMonth() + ", " + getYear() + "&8)");
                 Main.msg(p, "");
             } else {
                 if (p.hasPermission("core.admin")) {
                     if (args[0].equalsIgnoreCase("help")) {
-                        Main.msg(p, "&fUsage: /time <startnow, sync, add>");
+                        Main.msg(p, "&fUsage: /time <add, set, sync, startnow> <days/ticks>");
                         return true;
                     } else if (args[0].equalsIgnoreCase("startnow")) {
                         long prev = getTimeMillis();
@@ -74,19 +74,29 @@ public class TimeCommand implements CommandExecutor {
                         return true;
                     } else if (args[0].equalsIgnoreCase("set")) {
                         if (args.length > 1) {
-                            try {
-                                p.getWorld().setTime(Integer.parseInt(args[1]));
-                                Main.msg(p, "&aUnsynced time set.");
+                            if (args[1].equalsIgnoreCase("day")) {
+                                p.getWorld().setTime(1000);
+                                Main.msg(p, "&aUnsynced time set to day.");
                                 return true;
-                            } catch (NumberFormatException e) {
-                                Main.msg(p, "&cInvalid Argument, enter an Integer.");
+                            } else if (args[1].equalsIgnoreCase("night")) {
+                                p.getWorld().setTime(13000);
+                                Main.msg(p, "&aUnsynced time set to night.");
+                                return true;
+                            } else {
+                                try {
+                                    p.getWorld().setTime(Integer.parseInt(args[1]));
+                                    Main.msg(p, "&aUnsynced time set.");
+                                    return true;
+                                } catch (NumberFormatException e) {
+                                    Main.msg(p, "&cInvalid Argument, enter an Integer.");
+                                }
                             }
                         } else {
                             Main.msg(p, "&fUsage: /time set <ticks>");
                             return true;
                         }
                     } else {
-                        Main.msg(p, "&fUsage: /time <startnow, sync, add>");
+                        Main.msg(p, "&fUsage: /time <add, set, sync, startnow> <days/ticks>");
                         return true;
                     }
                 } else {
@@ -97,7 +107,7 @@ public class TimeCommand implements CommandExecutor {
         } else {
             if (args.length == 0) {
                 Main.so( "");
-                Main.so( "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&f" + getDayOfMonth() + " " + getMonth() + ", " + getYear() + "&8)");
+                Main.so( "&8" + RPGConstants.arrow + " &eTime: &f" + getTime() + " &8(&7" + getDayOfMonth() + " " + getMonth() + ", " + getYear() + "&8)");
                 Main.so( "");
             } else {
                 if (args[0].equalsIgnoreCase("help")) {

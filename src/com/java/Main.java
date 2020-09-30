@@ -305,7 +305,7 @@ public class Main extends JavaPlugin {
     public void autorestart() {
         new BukkitRunnable() {
             public void run() {
-                Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Automatically Restarting in 5 minutes!"));
+                Bukkit.getServer().broadcastMessage(Main.color("&8\u00BB &a&lServer Automatically Restarting in &f&l5 &a&lminutes!"));
                 for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
                 }
@@ -666,7 +666,7 @@ public class Main extends JavaPlugin {
                     if (getPC().get(p) != null && getPC().get(p).getBoard() != null) {
                         //try {
                             getPC().get(p).refreshCooldowns();
-                            getPC().get(p).getBoard().update();
+                            //getPC().get(p).getBoard().update();
                         //} catch (ConcurrentModificationException ex) {
 
                         //}
